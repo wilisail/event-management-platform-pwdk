@@ -1,4 +1,4 @@
-<img src="docs/branding/temuevent-logo.svg" alt="TemuEvent" width="180" height="45" />
+<img src="docs/branding/temuevent-logo.png" alt="TemuEvent" width="140" height="28" />
 
 # TemuEvent — Event Management Platform
 
