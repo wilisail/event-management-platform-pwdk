@@ -40,7 +40,7 @@
             "--background": "#fcf9ff",
             "--foreground": "#11103d",
             "--border": "#ebe7f5",
-            "--brand": "#5148df",
+            "--primary": "#5148df",
             "--accent": "#e539a7",
             "--ring": "#4f46e5",
             "--event-gradient": "linear-gradient(90deg, #3f41db, #bd2b9e)",
@@ -97,7 +97,7 @@
             "--background": "#fcf9ff",
             "--foreground": "#11103d",
             "--border": "#ebe7f5",
-            "--brand": "#5148df",
+            "--primary": "#5148df",
             "--accent": "#e539a7",
             "--ring": "#4f46e5",
             "--event-gradient": "linear-gradient(90deg, #3f41db, #bd2b9e)",
@@ -137,4 +137,3 @@
   "sourceAndBothCopiesByteIdentical": true,
   "logoSha256": "a45d9733417fc3fccd32e21a8f01500b395f953a158251bde4fce24181711cf2"
 }
-

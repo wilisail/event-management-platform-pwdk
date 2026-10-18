@@ -1,9 +1,9 @@
-<img src="docs/branding/temuevent-logo.png" alt="TemuEvent" width="140" height="28" />
+<img src="docs/ui/temuevent-logo.png" alt="TemuEvent" width="140" height="28" />
 
 # TemuEvent — Event Management Platform
 
 - [Shared project record](docs/shared/README.md)
-- [TemuEvent logo reference](docs/branding/README.md) · [Social-preview image](docs/branding/temuevent-social-preview.png)
+- [TemuEvent UI reference](docs/ui/README.md) · [Social-preview image](docs/ui/temuevent-social-preview.png)
 - [Shared database/backend technical reference](docs/shared/technical-reference.md)
 - [Shared UX reference and working defaults](docs/shared/ux-reference.md)
 - [Feature 1 source](https://github.com/wilisail/event-management-platform-pwdk/tree/feature-1) · [Feature 2 source and run instructions](https://github.com/wilisail/event-management-platform-pwdk/tree/feature-2/feature-2)
