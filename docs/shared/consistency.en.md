@@ -10,6 +10,7 @@ Updated: 18 October 2026.
 | --- | --- |
 | Visual direction | Rizky's TemuEvent prototype, accepted in [PR #1](https://github.com/wilisail/event-management-platform-pwdk/pull/1). feature 2 follows this direction and subsequent styling updates. |
 | Styling | Tailwind, shadcn setup, rounded cards/buttons, light surfaces, purple/indigo and pink accents. Source: [feature 1 stylesheet](../../app/globals.css) and feature 1 components. |
+| Logo | Rizky's simple TemuEvent header mark. The repository welcome page and both feature 2 headers use the same SVG at 180 × 45 pixels. Asset and reuse rules: [logo reference](../branding/README.md). |
 | Colors/font | Background `#fcf9ff`; text `#11103d`; primary `#5148df` / `#4f46e5`; accent `#e539a7`; border `#ebe7f5`; Arial/Helvetica/sans-serif. |
 | Frontend | Current prototypes: Next.js + React + TypeScript. The earlier proposal mentioned Vite; final project setup remains to be confirmed. |
 | Backend/API | feature 2 preview: Express + TypeScript, REST/JSON, read-only fixture data. feature 1 business backend is pending. |
