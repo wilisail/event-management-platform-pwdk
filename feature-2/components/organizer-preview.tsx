@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import type { OrganizerView } from '../contracts/types'
 import { loadOrganizer } from '../lib/api-client'
-import { Brand } from './brand'
+import { UiLogo } from './ui-logo'
 
 export function OrganizerPreview({ organizerId }: { organizerId: string }) {
   const [organizer, setOrganizer] = useState<OrganizerView | null>(null)
@@ -22,7 +22,7 @@ export function OrganizerPreview({ organizerId }: { organizerId: string }) {
   }, [organizerId])
   return (
     <main className="width public-profile">
-      <Brand />
+      <UiLogo />
       <p className="demo-label">Prototype F2 · profil organizer dari demo API</p>
       {error ? (
         <div role="alert" className="panel">

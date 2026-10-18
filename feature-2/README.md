@@ -2,6 +2,8 @@
 
 A separately runnable feature 2 prototype matching Rizky's accepted TemuEvent visual direction. The existing feature 1 application at the repository root is not edited by this module.
 
+Logo and theme values follow [Rizky's feature 1 push](https://github.com/wilisail/event-management-platform-pwdk/commit/cd582753a480d68ce14e00021a52f8ec93d8372f). The [shared UI reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/ui/README.md) records the original logo, colours, typography and reuse details.
+
 ## Run
 
 Requires Node 22.12+ and npm. From the repository root:

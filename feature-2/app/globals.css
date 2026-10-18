@@ -3,7 +3,7 @@
   --background: #fcf9ff;
   --foreground: #11103d;
   --border: #ebe7f5;
-  --brand: #5148df;
+  --primary: #5148df;
   --muted: #77738b;
   --accent: #e539a7;
   --ring: #4f46e5;
@@ -78,7 +78,7 @@ h3 {
   border-bottom: 1px solid #eee9fb;
   backdrop-filter: blur(8px);
 }
-.brand {
+.ui-logo {
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
@@ -86,20 +86,20 @@ h3 {
   height: 28px;
   line-height: 1;
 }
-.brand img {
+.ui-logo img {
   display: block;
   width: 140px;
   height: 28px;
   max-width: none;
 }
 .link {
-  color: var(--brand);
+  color: var(--primary);
   font-size: 13px;
   font-weight: 700;
 }
 .demo {
   background: #f0ecff;
-  color: var(--brand);
+  color: var(--primary);
   padding: 10px 0;
   font-size: 12px;
 }
@@ -120,9 +120,9 @@ h3 {
   min-height: 36px;
 }
 .persona button[aria-pressed='true'] {
-  background: var(--brand);
+  background: var(--primary);
   color: #fff;
-  border-color: var(--brand);
+  border-color: var(--primary);
 }
 .main {
   padding-top: 38px;
@@ -165,7 +165,7 @@ h3 {
   place-items: center;
   border-radius: 16px;
   background: #eeeaff;
-  color: var(--brand);
+  color: var(--primary);
   font-size: 22px;
   font-weight: 900;
   margin-bottom: 12px;
@@ -176,7 +176,7 @@ h3 {
 }
 .badge {
   display: inline-block;
-  color: var(--brand);
+  color: var(--primary);
   background: #f0edff;
   border-radius: 20px;
   padding: 4px 9px;
@@ -202,7 +202,7 @@ h3 {
 }
 .sidebar nav button.selected {
   background: #eeeaff;
-  color: var(--brand);
+  color: var(--primary);
   font-weight: 700;
 }
 .organizer-link {
@@ -280,7 +280,7 @@ h3 {
   padding: 19px;
 }
 .coupon h3 {
-  color: var(--brand);
+  color: var(--primary);
   font-size: 25px;
   margin-top: 15px;
   margin-bottom: 4px;
@@ -383,7 +383,7 @@ h3 {
 .secondary {
   width: fit-content;
   max-width: 100%;
-  border: 1px solid var(--brand);
+  border: 1px solid var(--primary);
   border-radius: var(--control-radius);
   padding: 12px 18px;
   min-height: 44px;
@@ -391,12 +391,12 @@ h3 {
   font-size: 13px;
 }
 .primary {
-  background: var(--brand);
+  background: var(--primary);
   color: #fff;
 }
 .secondary {
   background: #fff;
-  color: var(--brand);
+  color: var(--primary);
 }
 .referral-hero {
   border-radius: var(--card-radius);
@@ -421,14 +421,14 @@ h3 {
   background: #fff;
   border-radius: var(--control-radius);
   padding: 11px 18px;
-  color: var(--brand);
+  color: var(--primary);
   font-size: 20px;
   letter-spacing: 0.16em;
   font-weight: 700;
 }
 .copy button {
   border: 0;
-  background: var(--brand);
+  background: var(--primary);
   color: #fff;
   border-radius: var(--control-radius);
   padding: 14px 18px;
