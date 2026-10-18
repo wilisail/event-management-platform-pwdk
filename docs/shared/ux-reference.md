@@ -1,5 +1,9 @@
 # Shared UX reference
 
+[![UX journey across frontend, backend and database, with purple for feature 1, teal for feature 2, and paired colours for shared work.](assets/ux-journey-stack-map.png)](assets/ux-journey-stack-map.png)
+
+[Full-size PNG](assets/ux-journey-stack-map.png) · [Editable SVG](assets/ux-journey-stack-map.svg)
+
 [Project record](consistency.en.md) · [Technical reference](technical-reference.md) · [UI previews](../previews/README.md)
 
 Updated: **18 October 2026**. Status: working defaults supplied by Wili, open to changes following input. The bold options are the current defaults; the alternatives describe the resulting changes to feature 1 and feature 2. This reference records planned behavior; implementation status is in the project record.
@@ -147,6 +151,7 @@ The map follows the supplied PRD and the working defaults below. Website referen
 | --- | --- |
 | 2026-10-18 | Options A recorded as working defaults, open to changes following input. PRD requirements and inferred behavior are identified above. |
 | 2026-10-18 | Added journey/stack matrices, organizer/account flows and cross-feature data/operation ownership; linked the technical reference. |
+| 2026-10-18 | Added a colour-coded journey/stack flow diagram at the top, with full-size PNG and editable SVG assets. Existing UX defaults are unchanged. |
 
 For a revision, record the changed option, reason, date and affected customer/organizer flow. Update both features' interface expectations and relevant tests together. Decisions internal to one feature remain with its builder.
 
