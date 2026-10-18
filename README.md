@@ -1,6 +1,9 @@
+![TemuEvent](docs/branding/temuevent-logo.svg)
+
 # TemuEvent — Event Management Platform
 
 - [Shared project record](docs/shared/README.md)
+- [TemuEvent social-preview image](docs/branding/temuevent-social-preview.png)
 - [Shared database/backend technical reference](docs/shared/technical-reference.md)
 - [Shared UX reference and working defaults](docs/shared/ux-reference.md)
 - [Feature 1 source](https://github.com/wilisail/event-management-platform-pwdk/tree/feature-1) · [Feature 2 source and run instructions](https://github.com/wilisail/event-management-platform-pwdk/tree/feature-2/feature-2)
