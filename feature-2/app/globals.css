@@ -66,17 +66,21 @@ h3 {
 .header {
   background: #fff;
   border-bottom: 1px solid var(--border);
-  padding: 19px 0;
+  padding: 9px 0;
 }
 .brand {
-  color: #11103d;
-  font-size: 21px;
-  font-weight: 900;
-  white-space: nowrap;
-  letter-spacing: -0.6px;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  width: 180px;
+  height: 45px;
+  line-height: 1;
 }
-.brand span {
-  color: #e539a7;
+.brand img {
+  display: block;
+  width: 180px;
+  height: 45px;
+  max-width: none;
 }
 .link {
   color: var(--brand);

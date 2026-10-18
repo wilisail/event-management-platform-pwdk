@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import type { DemoPersona, UserView, WalletView } from '../contracts/types'
 import { loadAccount } from '../lib/api-client'
+import { Brand } from './brand'
 import { date, money, number } from '../lib/format'
 
 type Tab = 'profile' | 'rewards' | 'referral'
@@ -57,9 +58,7 @@ export function AccountPreview() {
     <div>
       <header className="header">
         <div className="width flex items-center justify-between gap-3">
-          <Link href="/" className="brand">
-            ✦ Temu<span>Event</span>
-          </Link>
+          <Brand />
           <a className="link" href={process.env.NEXT_PUBLIC_F1_ORIGIN || 'http://localhost:3000'}>
             Jelajahi event ↗
           </a>
