@@ -2,12 +2,12 @@
 
 Updated: 18 October 2026.
 
-| Record | Contents |
+| Reference | Contents |
 | --- | --- |
-| [Project](consistency.en.md) | Visual baseline, current stack, ownership and open interfaces |
-| [UX choices](ux-votes.md) | Options, reference patterns and vote results |
-| [WhatsApp ballot](whatsapp-vote.md) | Copyable Indonesian message |
+| [Project record](consistency.en.md) | Styling, current stack, ownership and interfaces |
+| [UX reference](ux-reference.md) | Working defaults, alternatives, PRD sources, website references and change impacts |
+| [UI previews](../previews/README.md) | Feature 1 and feature 2 screenshots |
 
-Decisions follow the supplied PRD and course constraints. Website references describe public UX patterns. Proposed options remain open until a result is recorded.
+The bold options in the UX reference are the current working defaults, supplied by Wili and open to changes following input. Record a change with its date, reason and effect on feature 1 and feature 2 so both builders and their coding agents use the same reference.
 
-The reference link is `main/docs/shared`; updates are also carried into `integration`.
+The canonical link is `main/docs/shared`. Updates are also carried into `integration`.
