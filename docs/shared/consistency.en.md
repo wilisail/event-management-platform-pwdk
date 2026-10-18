@@ -8,9 +8,9 @@ Updated: 18 October 2026.
 
 | Item | Record |
 | --- | --- |
-| Visual direction | Rizky's TemuEvent prototype, accepted in [PR #1](https://github.com/wilisail/event-management-platform-pwdk/pull/1). feature 2 follows this direction and subsequent styling updates. |
+| Visual direction | Rizky's TemuEvent feature 1 UI pushed to this repository, accepted in [PR #1](https://github.com/wilisail/event-management-platform-pwdk/pull/1). Feature 2 follows this direction and subsequent styling updates. The [UI reference](../ui/README.md) links the original push and records the reusable values. |
 | Styling | Tailwind, shadcn setup, rounded cards/buttons, light surfaces, purple/indigo and pink accents. Source: [feature 1 stylesheet](../../app/globals.css) and feature 1 components. |
-| Logo | Direct PNG export of Rizky's original rendered header. The repository welcome page and both feature 2 headers use identical PNG bytes at 140 × 28 CSS pixels. Source, theme and verification: [logo reference](../branding/README.md). |
+| Logo | Direct PNG export of Rizky's original rendered header. The repository welcome page and both feature 2 headers use identical PNG bytes at 140 × 28 CSS pixels. Source, theme and verification: [UI reference](../ui/README.md). |
 | Colors/font | Source-derived background `#fcf9ff`, text `#11103d`, primary `#5148df` / `#4f46e5`, accent `#e539a7`, border `#ebe7f5`, Arial/Helvetica/sans-serif, heading weight 900, 24px panels and 12px actions. Shared gradient/hero treatments follow the feature 1 stylesheet. |
 | Frontend | Current prototypes: Next.js + React + TypeScript. The earlier proposal mentioned Vite; final project setup remains to be confirmed. |
 | Backend/API | feature 2 preview: Express + TypeScript, REST/JSON, read-only fixture data. feature 1 business backend is pending. |
