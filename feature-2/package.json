@@ -1,0 +1,37 @@
+{
+  "name": "temuevent-feature-2-preview",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Standalone F2 account/rewards prototype and read-only demo API",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "concurrently --kill-others -n web,api \"npm:dev:web\" \"npm:dev:api\"",
+    "dev:web": "next dev --hostname 127.0.0.1 --port 3001",
+    "dev:api": "node --import tsx --watch server/index.ts",
+    "build": "next build",
+    "start:web": "next start --hostname 127.0.0.1 --port 3001",
+    "start:api": "node --import tsx server/index.ts",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "express": "5.3.0",
+    "next": "16.4.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/express": "^5.0.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "concurrently": "^9.2.0",
+    "tailwindcss": "4.3.3",
+    "tsx": "^4.20.0",
+    "typescript": "^5.7.3"
+  }
+}
