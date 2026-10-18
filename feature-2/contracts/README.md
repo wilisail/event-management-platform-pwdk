@@ -1,10 +1,10 @@
-# Proposed F1 ↔ F2 data contract
+# Proposed feature 1 ↔ feature 2 data contract
 
-Status: **prototype proposal, not a jointly accepted contract**. The UX ballot is in `../docs/shared-ux-ballot.md`. No F1 source files were changed.
+Status: proposed data contract. Shared UX working defaults and change impacts are recorded in the [canonical UX reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/ux-reference.md).
 
-## Try the read-only F2 data
+## Try the read-only feature 2 data
 
-Run `npm run dev` from `feature-2`. F2 web runs on 3001, Express on 4002. F1 can remain on 3000.
+Run `npm run dev` from `feature-2`. feature 2 web runs on 3001, Express on 4002. feature 1 can remain on 3000.
 
 ```sh
 curl http://127.0.0.1:4002/api/demo/checkout-context -H 'x-demo-persona: customer'
@@ -16,7 +16,7 @@ The first response has this shape (sample dates omitted here):
 ```json
 {
   "success": true,
-  "message": "Read-only data for the F1 checkout prototype",
+  "message": "Read-only data for the feature 1 checkout prototype",
   "data": {
     "user": {
       "id": "demo-customer-001",
@@ -43,7 +43,7 @@ The running API returns real fixture arrays and expiry fields; `contracts/types.
 
 ## Proposed endpoints and ownership
 
-| Demo route                     | F2 purpose                         | F1 consumer                            |
+| Demo route                     | feature 2 purpose                         | feature 1 consumer                            |
 | ------------------------------ | ---------------------------------- | -------------------------------------- |
 | GET /api/demo/me               | Safe user identity and role shape  | Signed-in header / purchase identity   |
 | GET /api/demo/me/rewards       | Points and platform coupons        | Checkout reward picker                 |
@@ -54,19 +54,19 @@ These routes use a demo selector and fake `.test` accounts. **They are not real 
 
 ## Fixed rules and open decisions
 
-- F2 defines referral award grants at 10,000 points and expiry at three calendar months, per PRD.
-- Fixture coupons have three-month validity. Rp25,000 is kept as a demo amount to match F1; its face value is not specified by the PRD.
+- feature 2 defines referral award grants at 10,000 points and expiry at three calendar months, per PRD.
+- Fixture coupons have three-month validity. Rp25,000 is kept as a demo amount to match feature 1; its face value is not specified by the PRD.
 - UTC storage and Asia/Jakarta display are the current proposal. Month-end dates clamp to the final date of the target month; tests cover this. Confirm calendar/timezone semantics together before production.
-- Discount combination/order, free/zero-total flow, three-day clock start, login handoff and attendance confirmation are unimplemented pending the UX ballot.
+- The shared UX reference supplies working defaults for discount combination/order, free/zero-total flow, decision deadlines, login handoff and attendance. This read-only preview does not yet implement the corresponding purchase/decision operations.
 - Returning redeemed rewards with their original expiry, including rewards that expire while held, needs a shared rule before real redemption/restoration is added.
 - Schema names and IDs are proposed. The mock string IDs are not a mandate for the production primary-key type.
 
 ## Integration boundary
 
-F1 owns purchase creation, payment-proof handling, timeouts and its purchase consistency rules. F2 owns account/reward issuance and the organizer decision UI/API. A proposed shared purchase transition/restoration service lets the F2 decision API use the same logic as F1's expiry jobs. Final service ownership/interface is not yet agreed.
+feature 1 owns purchase creation, payment-proof handling, timeouts and its purchase consistency rules. feature 2 owns account/reward issuance and the organizer decision UI/API. A proposed shared purchase transition/restoration service lets the feature 2 decision API use the same logic as feature 1's expiry jobs. Final service ownership/interface is not yet agreed.
 
 For real checkout, purchase/item writes, inventory reservations and reward redemption must be coordinated atomically according to the PRD. Restore resources once when an action is retried or overlaps a timeout. Independent submissions can use separate databases/seed partner records, but the combined application needs one consistent authority for purchase/reward changes. The prototype makes no database writes and does not claim to satisfy production SQL transactions yet.
 
 ## Database planning only
 
-Proposed F2 entities: users/profiles, referral registrations, point-grant batches, reward coupons, password-reset/session records, and redemption allocations linking to F1 purchase IDs. Event/purchase/review entities remain F1's domain. Agree cross-feature IDs, relations and migration ownership together. No Prisma provider or hosted database has been provisioned or selected by this push.
+Proposed feature 2 entities: users/profiles, referral registrations, point-grant batches, reward coupons, password-reset/session records, and redemption allocations linking to feature 1 purchase IDs. Event/purchase/review entities remain feature 1's domain. Agree cross-feature IDs, relations and migration ownership together. No Prisma provider or hosted database has been provisioned or selected by this push.
