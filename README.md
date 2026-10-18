@@ -1,4 +1,4 @@
-![TemuEvent](docs/branding/temuevent-logo.svg)
+<img src="docs/branding/temuevent-logo.svg" alt="TemuEvent" width="180" />
 
 # TemuEvent — Event Management Platform
 
