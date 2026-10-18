@@ -3,11 +3,13 @@ import { z } from 'zod'
 import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
+import type { DatabaseUserView } from './database'
 
 export interface AppOptions {
   now?: () => Date
   data?: DemoData
   allowedOrigins?: string[]
+  databaseProbe?: () => Promise<DatabaseUserView | null>
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -70,6 +72,21 @@ export function createApp(options: AppOptions = {}) {
     const user = demoUser(req, res)
     if (user) ok(res, user, 'Demo identity; not a real login session')
   })
+  const databaseProbe = options.databaseProbe
+  if (databaseProbe) {
+    app.get('/api/demo/database-check', async (_req, res) => {
+      try {
+        const user = await databaseProbe()
+        if (!user) {
+          fail(res, 404, 'SEED_USER_NOT_FOUND', 'Run the development identity seed first')
+          return
+        }
+        ok(res, { database: 'PostgreSQL', seededUser: user }, 'Seeded development identity from the database')
+      } catch {
+        fail(res, 503, 'DATABASE_UNAVAILABLE', 'Database connection is unavailable')
+      }
+    })
+  }
   app.get('/api/demo/me/rewards', (req, res) => {
     const user = demoUser(req, res)
     if (!user) return

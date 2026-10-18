@@ -2,7 +2,7 @@
   "name": "temuevent-feature-2-preview",
   "version": "0.1.0",
   "private": true,
-  "description": "Standalone F2 account/rewards prototype and read-only demo API",
+  "description": "Standalone feature 2 account/rewards prototype, demo API and initial database connection",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -14,11 +14,24 @@
     "start:web": "next start --hostname 127.0.0.1 --port 3001",
     "start:api": "node --import tsx server/index.ts",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "node --import tsx --test tests/*.test.ts"
+    "test": "node --import tsx --test tests/*.test.ts",
+    "db:generate": "prisma generate",
+    "db:validate": "prisma validate",
+    "db:seed": "prisma db seed",
+    "db:check": "node --import tsx server/check-database.ts",
+    "predev": "npm run db:generate",
+    "pretypecheck": "npm run db:generate",
+    "prebuild": "npm run db:generate",
+    "predev:api": "npm run db:generate",
+    "prestart:api": "npm run db:generate"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "dotenv": "18.0.8",
     "express": "5.3.0",
     "next": "16.4.0",
+    "pg": "8.23.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "zod": "^4.0.0"
@@ -27,9 +40,11 @@
     "@tailwindcss/postcss": "4.3.3",
     "@types/express": "^5.0.0",
     "@types/node": "^24.0.0",
+    "@types/pg": "8.20.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "concurrently": "^9.2.0",
+    "prisma": "7.10.1",
     "tailwindcss": "4.3.3",
     "tsx": "^4.20.0",
     "typescript": "^5.7.3"

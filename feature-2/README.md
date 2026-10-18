@@ -19,7 +19,7 @@ npm run dev
 - Run the existing feature 1 app separately on port 3000 if you want its discovery link to work.
 - No database, service account, password, or API key is required for this preview.
 
-The defaults run without an environment file. `.env.example` documents optional overrides. Export those variables in your terminal if needed; the demo Express process does not automatically read `.env`.
+The defaults run without an environment file. `.env.example` documents optional overrides. The Express API now loads optional backend settings from `.env`. Database credentials are kept there and excluded from Git.
 
 ## What works in this preview
 
@@ -33,6 +33,19 @@ The defaults run without an environment file. `.env.example` documents optional 
 
 The fixtures match feature 1's example of 20,000 points and `WELCOME25`. **The Rp25,000 coupon amount is a demonstration value, not a settled product rule.** Expired samples are shown for empty/error-state work.
 
+## Initial database foundation
+
+The [shared database setup](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/database-setup.md) records the active Supabase project, initial schema, applied SQL and connection status. A customer and organizer are seeded; the account/reward screens still use their existing fixtures.
+
+- [Prisma schema](prisma/schema.prisma) and [SQL baseline](prisma/migrations/0_user_foundation/migration.sql).
+- `npm run db:generate` generates the typed client; no credentials are needed.
+- `npm run db:validate` validates the schema.
+- `npm run db:check` reads the seeded customer when `DATABASE_URL` is configured and reachable.
+- `npm run db:seed` inserts missing development identities without changing existing ones.
+- The optional `/api/demo/database-check` diagnostic requires `F2_DATABASE_CHECK_ENABLED=true` and is disabled by the entry point in production.
+
+Managed SQL access and the seeded rows are verified. Live Express → Prisma → Supabase connectivity is pending because the current workspace cannot resolve the database endpoint. The API returns a sanitized 503 when that connection is unavailable. The hosted baseline was applied through the Supabase connection; Prisma's baseline-recording step is documented in the shared setup before future migrations.
+
 ## Validation
 
 ```sh
@@ -45,7 +58,7 @@ Next.js type errors are not suppressed. The tests cover expiry boundaries, leap/
 
 ## What remains before a graded submission
 
-Actual registration/login, password hashing and sessions, real backend authorization, database persistence/Prisma migrations, atomic referral issuance, avatar uploads, password change/reset emails, organizer management/statistics/attendee APIs, and purchase decisions are not implemented by this preview. PRD-required SQL transactions will be needed for real multi-record writes.
+Registration/login, password hashing and sessions, backend authorization, reward/purchase persistence, atomic referral issuance, avatar uploads, password change/reset emails, organizer management/statistics/attendee APIs, and purchase decisions remain to be implemented. The initial user table and development seed are implemented. PRD-required SQL transactions will be needed for real multi-record writes.
 
 The `x-demo-persona` header is deliberately only a demo selector. Production identity must come from the agreed authenticated session, never from a caller-supplied user ID or role.
 

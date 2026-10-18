@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { createApp } from './app'
 
 const port = Number(process.env.F2_API_PORT || 4002)
@@ -11,7 +12,26 @@ const allowedOrigins = (
 
 if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invalid F2_API_PORT')
 
-createApp({ allowedOrigins }).listen(port, host, () => {
-  console.log(`F2 read-only DEMO API: http://${host}:${port}`)
-  console.log('x-demo-persona is a demo selector, NOT authentication. No database writes occur.')
+async function start() {
+  const database = process.env.F2_DATABASE_CHECK_ENABLED === 'true' && process.env.NODE_ENV !== 'production'
+    ? await import('./database')
+    : undefined
+  const server = createApp({ allowedOrigins, databaseProbe: database?.readSeededDatabaseUser })
+    .listen(port, host, () => {
+      console.log(`Feature 2 read-only demo API: http://${host}:${port}`)
+      console.log('Demo identities are selectors, not authentication. API routes make no database writes.')
+    })
+  for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+    process.once(signal, () => {
+      server.close(() => {
+        void database?.disconnectDatabase().finally(() => process.exit(0))
+        if (!database) process.exit(0)
+      })
+    })
+  }
+}
+
+start().catch(() => {
+  console.error('Unable to start the demo API. Check the backend configuration.')
+  process.exitCode = 1
 })
