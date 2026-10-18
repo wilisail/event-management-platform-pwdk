@@ -1,6 +1,6 @@
 # Proposed feature 1 ↔ feature 2 data contract
 
-Status: proposed data contract. Shared UX working defaults and change impacts are recorded in the [canonical UX reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/ux-reference.md).
+Status: proposed data contract. Read the shared [technical reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/technical-reference.md) for database/backend defaults and the [UX reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/ux-reference.md) for customer/organizer behavior. Defaults remain open to changes following input.
 
 ## Try the read-only feature 2 data
 
@@ -58,7 +58,7 @@ These routes use a demo selector and fake `.test` accounts. **They are not real 
 - Fixture coupons have three-month validity. Rp25,000 is kept as a demo amount to match feature 1; its face value is not specified by the PRD.
 - UTC storage and Asia/Jakarta display are the current proposal. Month-end dates clamp to the final date of the target month; tests cover this. Confirm calendar/timezone semantics together before production.
 - The shared UX reference supplies working defaults for discount combination/order, free/zero-total flow, decision deadlines, login handoff and attendance. This read-only preview does not yet implement the corresponding purchase/decision operations.
-- Returning redeemed rewards with their original expiry, including rewards that expire while held, needs a shared rule before real redemption/restoration is added.
+- Working default: restore rewards to their original grant/coupon with their original expiry; expired rewards remain unspendable. A reward valid at reservation can remain applied while awaiting review. The shared technical reference records this proposed rule and its effects on both features; real reservation/restoration is not implemented here.
 - Schema names and IDs are proposed. The mock string IDs are not a mandate for the production primary-key type.
 
 ## Integration boundary
