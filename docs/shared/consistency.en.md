@@ -14,9 +14,9 @@ Updated: 18 October 2026.
 | Colors/font | Source-derived background `#fcf9ff`, text `#11103d`, primary `#5148df` / `#4f46e5`, accent `#e539a7`, border `#ebe7f5`, Arial/Helvetica/sans-serif, heading weight 900, 24px panels and 12px actions. Shared gradient/hero treatments follow the feature 1 stylesheet. |
 | Frontend | Current prototypes: Next.js + React + TypeScript. The earlier proposal mentioned Vite; final project setup remains to be confirmed. |
 | Backend/API | feature 2 preview: Express + TypeScript, REST/JSON, read-only fixture data. feature 1 business backend is pending. |
-| Database | Proposal: Prisma ORM 7.x + PostgreSQL on Supabase, aligned with the course. MySQL with another compatible host remains an alternative. No database provisioned through this work. |
-| Seed data | Wili plans hosting setup and approximately 30 sample transactions with related users/events/tickets once the schema is agreed. |
-| feature 2 preview | [Draft PR #2](https://github.com/wilisail/event-management-platform-pwdk/pull/2): separately runnable account/reward UI and demo API. Authentication, persistence, redemption, approval and email are pending. |
+| Database | PostgreSQL development project `temuevent` is active on Supabase in Singapore. Initial user table, two development identities and Prisma 7.10.1 connection code are prepared. Live app connectivity and authentication are pending; see [database setup](database-setup.md). |
+| Seed data | One customer and one organizer are seeded. Approximately 30 sample transactions with related events/tickets/rewards follow once the purchase schema aligns with feature 1. |
+| feature 2 preview | [Draft PR #2](https://github.com/wilisail/event-management-platform-pwdk/pull/2): separately runnable account/reward UI and demo API, plus initial database connection code. Authentication, reward/purchase persistence, redemption, approval and email are pending. |
 
 ## Feature ownership
 
@@ -47,7 +47,7 @@ Working assumption: separately runnable demonstrations with identifiable feature
 | Event management | Event data/forms | Organizer dashboard entry | Shared edit form/API boundary |
 | Database | Event/purchase/voucher/review entities | User/referral/reward/session/attendance entities | IDs, relationships, migration sequence/ownership |
 
-The [feature 2 contract](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/contracts/README.md) is a proposal. Demo balances, IDs, `x-demo-persona` and the Rp25,000 coupon are fixture data. Coupon value, production authentication, date/time semantics, database/hosting and deployment remain open.
+The [feature 2 contract](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/contracts/README.md) is a proposal. Demo balances, IDs, `x-demo-persona` and the Rp25,000 coupon are fixture data. Coupon value, production authentication, date/time semantics and application deployment remain open. The development database is provisioned; its current setup is recorded separately.
 
 The five UX working defaults and alternatives are in the [UX reference](ux-reference.md). They are open to changes following input; the reference records how a change affects both features. Proposed defaults for authentication, reward reservation/expiry, data formats and the integrated backend are recorded in the [technical reference](technical-reference.md). Coupon value and final infrastructure provisioning remain open; shared defaults can change following input.
 

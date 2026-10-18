@@ -10,7 +10,7 @@ Updated: **18 October 2026**. Status: proposed implementation defaults, open to 
 | --- | --- |
 | Frontend | Both previews use Next.js, React, TypeScript and the TemuEvent styling. Each preview runs separately. |
 | Feature 2 backend | Express + TypeScript with read-only fixture routes. [Implementation](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/server/app.ts) and [current response types](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/contracts/types.ts). |
-| Database/authentication | No hosted database, Prisma schema/migrations or production login/session is implemented in this preview. |
+| Database/authentication | [TemuEvent database](database-setup.md) is active on Supabase in Singapore. The initial user schema and two development identities are applied. Prisma 7.10.1 connection code is prepared; live API connectivity and production authentication remain pending. |
 | Purchases and decisions | Purchase writes, reward reservation/restoration, organizer decisions and email delivery are pending. The proposed interfaces below are not implemented routes. |
 
 ## 2. Technical choices and change impacts
@@ -18,18 +18,18 @@ Updated: **18 October 2026**. Status: proposed implementation defaults, open to 
 | Area | Working default | Alternative and impact on both features |
 | --- | --- | --- |
 | API | **Node.js + Express + TypeScript; REST/JSON.** Common validation/error format. | Another backend requires adapters for both clients and shared authorization/transaction services. |
-| ORM | **One pinned Prisma ORM 7.x version**, matching the classic client/transaction API used in the course examples. Exact patch is pinned when persistence is added. | Prisma ORM 8 uses a different API; moving to it changes both features' database code. The current version 8 docs do not support MySQL. |
-| Database/hosting | **PostgreSQL hosted on Supabase**, with Express/Prisma accessing the database. Wili helps with provisioning and seed data. This is a proposal, not a provisioned service. | MySQL with another host is possible with a compatible Prisma version. Both features need a consistent provider, migrations and database-specific query changes. The supplied PRD mandates neither host nor ORM. |
+| ORM | **Prisma ORM 7.10.1**, pinned with its client and PostgreSQL adapter in feature 2. | Prisma ORM 8 uses a different API; moving to it changes both features' database code. The current version 8 docs do not support MySQL. |
+| Database/hosting | **PostgreSQL hosted on Supabase**. The `temuevent` development project is provisioned in Singapore, with an initial user schema. Express/Prisma connection verification is pending; see [database setup](database-setup.md). | MySQL with another host is possible with a compatible Prisma version. Both features need a consistent provider, migrations and database-specific query changes. The supplied PRD mandates neither host nor ORM. |
 | Integrated backend | **One Express runtime with separate feature modules and one database/transaction authority** for the combined demonstration. Each feature retains a standalone entry point for individual demonstration. | Two independent deployed APIs/databases require distributed consistency work for checkout and reward changes. Separate development databases do not synchronize automatically. |
 | Authentication | **Short-lived JWT access cookie plus rotating refresh cookie and server-side session records**, following the course's JWT/refresh-token material. | An opaque server session cookie is also possible. Keeping the identity response and shared auth middleware stable limits changes needed in feature 1. |
 | Background work | **Persisted deadlines and a lightweight scheduled worker; SQL outbox for decision emails.** Deployment must provide an executor that runs the scheduled work. | Redis/BullMQ is optional and adds another hosted dependency. Both features must still use the same persisted deadlines and state-transition rules. |
 | Common fields | **UUID production IDs serialized as strings; camelCase API fields; integer IDR amounts; UTC timestamps with Asia/Jakarta display.** | Numeric IDs or other formats require coordinated types, seed data and adapters. Feature 1's numeric demo IDs remain valid fixtures; adopting UUIDs requires replacing numeric-only ID parsing when connecting the real API. |
 
-Supabase is proposed for PostgreSQL hosting. It does not select Supabase Auth automatically. Provider credentials belong in backend environment settings. Shared Prisma schema/migrations have one ordered history; both builders review changes to shared IDs/relations. Wili coordinates applying migrations and seeds, while each builder implements their own feature queries.
+Supabase hosts the development PostgreSQL database. Authentication remains a separate feature 2 implementation; provisioning does not select Supabase Auth. Provider credentials belong in backend environment settings. Shared Prisma schema/migrations have one ordered history; both builders review changes to shared IDs/relations. Wili coordinates applying migrations and seeds, while each builder implements their own feature queries.
 
 ## 3. Database outline
 
-Proposed table/field names describe the shared contract; no database has been created by this document. Tables use primary/foreign keys and appropriate indexes. Feature 1's complete event/purchase schema remains its builder's design.
+The initial `temuevent.users` table is implemented; the remaining entities below are proposed. See the [database setup and status](database-setup.md) for applied files, seed data and connection limitations. Tables use primary/foreign keys and appropriate indexes. Feature 1's complete event/purchase schema remains its builder's design.
 
 | Entity / owner | Minimum fields or relationships | Cross-feature use |
 | --- | --- | --- |
@@ -131,7 +131,7 @@ These proposed API enum names map to the six PRD statuses. Zero-payable behavior
 
 ## 8. Integration, migrations and checks
 
-- Wili helps provision the proposed database and prepares approximately 30 seeded transactions spanning all six statuses, plus related users/events/tickets/rewards. Each builder still implements their own frontend/backend functionality against the data.
+- Wili has provisioned the development database and seeded a customer and organizer. Approximately 30 seeded transactions spanning all six statuses follow once the event/purchase schema aligns with feature 1, with related users/events/tickets/rewards. Each builder implements their own frontend/backend functionality against the data.
 - Seeds use stable linked IDs and consistent capacity/reward allocations. Standalone demonstrations can use separate copies of the same fixtures; the integrated application uses one authoritative dataset.
 - Shared schema changes use versioned migrations. Wili coordinates migration order; both builders review changed shared IDs, constraints and payloads. Provider/ORM-major changes are recorded here before dependent code changes.
 - Integration checks cover: authenticated identity; forbidden cross-organizer access; valid referral registration; valid/expired/reserved rewards; duplicate purchase retry; last-seat concurrency; proof/deadline boundaries; accept/reject racing cancellation; restoration once; zero-payable registration; attendance-gated review; decision email retry.
@@ -147,4 +147,4 @@ These proposed API enum names map to the six PRD statuses. Zero-payable behavior
 - [OWASP session management](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
 - [OWASP CSRF protection](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
 
-Checked 18 October 2026. Library/provider versions and credentials are not installed or provisioned by this documentation update.
+Checked 18 October 2026. The development database is provisioned and the feature 2 Prisma client is pinned at 7.10.1. Live application connectivity, production login and real purchase operations remain pending; see the database setup record.

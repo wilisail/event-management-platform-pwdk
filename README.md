@@ -5,6 +5,7 @@
 - [Shared project record](docs/shared/README.md)
 - [TemuEvent UI reference](docs/ui/README.md) · [Social-preview image](docs/ui/temuevent-social-preview.png)
 - [Shared database/backend technical reference](docs/shared/technical-reference.md)
+- [Database setup and current status](docs/shared/database-setup.md)
 - [Shared UX reference and working defaults](docs/shared/ux-reference.md)
 - [Feature 1 source](https://github.com/wilisail/event-management-platform-pwdk/tree/feature-1) · [Feature 2 source and run instructions](https://github.com/wilisail/event-management-platform-pwdk/tree/feature-2/feature-2)
 
