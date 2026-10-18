@@ -1,8 +1,65 @@
 # Shared UX reference
 
-[Project record](consistency.en.md) · [UI previews](../previews/README.md)
+[Project record](consistency.en.md) · [Technical reference](technical-reference.md) · [UI previews](../previews/README.md)
 
 Updated: **18 October 2026**. Status: working defaults supplied by Wili, open to changes following input. The bold options are the current defaults; the alternatives describe the resulting changes to feature 1 and feature 2. This reference records planned behavior; implementation status is in the project record.
+
+## Journey and stack map
+
+Read each matrix **left to right for the UX journey** and **top to bottom for frontend, backend and database work**. Ownership labels identify the builder of that part of the flow. Both features include all three layers.
+
+This is a planned responsibility map, not an implementation-completion checklist. Current previews use React/Next.js + TypeScript and the shared TemuEvent styling. The proposed backend is Express + TypeScript with REST/JSON; persistence is Prisma + PostgreSQL hosted on Supabase. Implementation status, field formats and service boundaries are in the [technical reference](technical-reference.md).
+
+| Owner | Full-stack subfeatures |
+| --- | --- |
+| Feature 1 — Rizky | Event discovery/details/creation; purchasing and event promotions; payment-proof and transaction lifecycle; reviews and ratings. |
+| Feature 2 — Wili | Authentication and authorization; referrals, points, platform coupons and profiles; organizer dashboard, decisions, statistics, attendee list and attendance. |
+
+### Customer journey: discovery to checkout
+
+| Stack layer ↓ / UX journey → | 1. Discover and choose tickets | 2. Sign in / register when needed | 3. Review discounts and confirm checkout |
+| --- | --- | --- | --- |
+| **Frontend — React + TypeScript** | **Feature 1:** responsive landing/list/detail pages, category/location filters, debounced search, ticket type/quantity selection and empty states. | **Feature 2:** login/register, optional referral code and return to retained ticket selection. **Feature 1:** preserves the selection and resumes checkout. See [choice 1](#1-login-before-completing-a-purchase). | **Feature 1:** voucher, coupon and point controls; IDR breakdown and purchase confirmation. **Feature 2:** supplies wallet/identity data. See [choice 2](#2-event-voucher-referral-coupon-and-points). |
+| **Backend — Express + TypeScript** | **Feature 1:** event search/filter/detail queries and current availability. Public discovery does not require a session. | **Feature 2:** account/session verification, role middleware, immutable referral code and referral issuance. **Feature 1:** uses verified identity for purchases. | **Feature 1:** recalculates totals, checks capacity, creates purchase/items and reserves seats/event voucher. **Feature 2 reward service:** reserves eligible coupon/point batches inside the same SQL transaction. A zero-payable registration goes directly to confirmed; see [choice 3](#3-free-events-and-a-final-payable-amount-of-zero). |
+| **Database — PostgreSQL through Prisma** | **Feature 1:** events and ticket types; organizer IDs link to feature 2 users. | **Feature 2:** users, sessions, referrals, point grants and platform coupons. Registration and referral awards commit together. | **Feature 1:** transactions/items, historical prices and actual deductions, capacity/voucher reservations. **Feature 2:** reward redemptions and point allocations linked to that transaction. |
+
+The two-hour payment-proof clock starts after authenticated purchase creation, not while browsing or signing in. A zero-payable registration skips the payment-proof and payment-review stages below and still needs attendance before reviewing.
+
+### Customer journey: payment to review
+
+| Stack layer ↓ / UX journey → | 4. Upload proof and track payment | 5. Receive organizer decision | 6. Attend the event | 7. Review and view organizer ratings |
+| --- | --- | --- | --- | --- |
+| **Frontend — React + TypeScript** | **Feature 1:** payment instructions, protected proof upload, two-hour countdown, confirmation-stage deadline and transaction status. | **Feature 2:** organizer proof viewer and accept/reject confirmation. **Feature 1:** customer sees the resulting status. **Feature 2:** wallet reflects applicable reward changes. | **Feature 2:** organizer attendee list with name, ticket quantity, total paid and manual attendance action. | **Feature 1:** eligible review/rating form and review data. **Feature 2:** organizer profile displays the supplied ratings/reviews. |
+| **Backend — Express + TypeScript** | **Feature 1:** authorizes proof upload, stores its reference and advances the purchase to waiting for confirmation. Server timestamps drive both countdowns; see [choice 4](#4-three-day-organizer-decision-window). | **Feature 2:** verifies organizer ownership and calls the **feature 1 purchase-transition service**. The shared SQL operation confirms or rejects the purchase and consumes/restores applicable resources. **Feature 2:** records an email notification for delivery after commit. | **Feature 2:** reads confirmed purchases and records attendance through an organizer-authorized action. Confirmed registration alone does not mark attendance. | **Feature 1:** checks the feature 2 attendance record before accepting a review and calculates rating aggregates. See [choice 5](#5-attendance-before-reviewing). |
+| **Database — PostgreSQL through Prisma** | **Feature 1:** payment-proof metadata, purchase status, payment deadline and decision deadline. The private file is in file storage, outside SQL. | **Feature 1:** purchase state and capacity/event-voucher changes. **Feature 2:** coupon/point reservation state and email-outbox event. Related writes use one database transaction. | **Feature 1:** completed purchases/items supply the confirmed attendee list. **Feature 2:** attendance links customer, event and qualifying purchase. | **Feature 1:** review records link event/customer; aggregates feed the public organizer profile. **Feature 2:** supplies organizer identity/profile and attendance eligibility. |
+
+### Organizer and account journeys around the main path
+
+These flows can happen before or alongside a purchase; they are not extra sequential checkout steps.
+
+| UX journey / owner | Frontend | Backend | Database / external service |
+| --- | --- | --- | --- |
+| **Create events and promotions — feature 1** | Event form: description, dates, location/category, image, free/paid pricing, capacity and applicable ticket types; event voucher validity. | Feature 1 validates and writes event/ticket/voucher data using feature 2 organizer identity and permissions. | Feature 1 events, ticket types and event vouchers; organizer foreign key to feature 2 users; image storage if used. |
+| **Manage own events — feature 2 dashboard; feature 1 event operations** | Feature 2 lists the organizer's events and provides management/edit entry points. Feature 1 supplies the event form/operations; form placement or reuse remains open to input. | Feature 2 restricts dashboard access to the organizer's records; event changes use the agreed feature 1 operation rather than a second conflicting event model. | Feature 1 event records, linked to feature 2 organizer identity. |
+| **Manage account and profile — feature 2** | Profile editing/photo upload, password change, forgotten-password and reset screens. | Feature 2 validates account changes, authorizes uploads, hashes passwords and verifies expiring reset tokens. | Feature 2 users, sessions/reset-token records; image storage and password-reset email service. |
+| **View referral rewards and expiry — feature 2** | Immutable referral-code display; point batches, available/reserved coupons and expiry explanations. Checkout displays this data in feature 1. | Feature 2 awards the referred user a coupon and the referrer 10,000 points; calculates spendable rewards with three-month expiry. Feature 1 spends/restores through the shared reward service. | Feature 2 referrals, point grants, coupons, redemptions and allocations. Restored rewards retain their original expiry under the technical working default. |
+| **View statistics — feature 2** | Organizer charts/reports by day, month and year. | Feature 2 aggregates owned-event/purchase data. Default revenue uses completed purchases' final paid amounts and completion time. | Feature 1 events, purchase items, totals and completion timestamps. Free registrations contribute attendance, with Rp0 revenue. |
+| **See expiry/cancellation and restored resources — feature 1 lifecycle; feature 2 rewards/dashboard** | Feature 1 shows expired/canceled status; feature 2 shows the same status and eligible reward availability. | Feature 1 scheduled processing applies the two-hour/three-day rules and shared transitions. Feature 2 reward service restores recorded allocations once. Persisted deadlines and request-time guards enforce the same rules if a job is delayed. | One SQL transaction updates purchase, capacity, event-voucher and reward records. A restart must not lose deadlines or cause duplicate restoration. |
+
+### Cross-feature contracts
+
+| Shared information / operation | Supplied by | Used by |
+| --- | --- | --- |
+| Verified customer/organizer identity and ownership checks | Feature 2 authentication and authorization | Feature 1 event creation, checkout, proof access and reviews; feature 2 organizer operations |
+| Available coupons/points and reserve/consume/restore helpers | Feature 2 reward service | Feature 1 purchase creation and lifecycle, within the caller's SQL transaction |
+| Owned events, purchases/items, proofs, totals, statuses and deadlines | Feature 1 event/purchase services | Feature 2 event management, decision queue, attendee queries, statistics and emails |
+| Accept/reject action | Feature 2 organizer endpoint calls feature 1 transition service | Feature 1 customer transaction status; feature 2 dashboard, rewards and notifications |
+| Attendance eligibility | Feature 2 attendance records | Feature 1 review authorization |
+| Reviews and rating aggregates | Feature 1 review service | Feature 2 public organizer profile |
+
+Database ownership follows these subfeatures. Wili's hosting, seed-data and migration coordination does not transfer feature 1's database queries or business logic to feature 2. Visual direction follows feature 1; each builder implements their own screens using that shared direction. Standalone demonstrations and the integrated application's authoritative dataset are described in the [technical reference](technical-reference.md#8-integration-migrations-and-checks).
+
+The map follows the supplied PRD and the working defaults below. Website references explain those defaults where applicable; they do not specify our frontend/backend ownership. Changes to a shared boundary update this map and the technical reference; implementation choices inside one feature remain with its builder.
 
 ## 1. Login before completing a purchase
 
@@ -89,6 +146,7 @@ Updated: **18 October 2026**. Status: working defaults supplied by Wili, open to
 | Date | Record |
 | --- | --- |
 | 2026-10-18 | Options A recorded as working defaults, open to changes following input. PRD requirements and inferred behavior are identified above. |
+| 2026-10-18 | Added journey/stack matrices, organizer/account flows and cross-feature data/operation ownership; linked the technical reference. |
 
 For a revision, record the changed option, reason, date and affected customer/organizer flow. Update both features' interface expectations and relevant tests together. Decisions internal to one feature remain with its builder.
 
