@@ -1,6 +1,6 @@
 # Shared UX reference
 
-[![UX journey across frontend, backend and database, with purple for feature 1, teal for feature 2, and paired colours for shared work.](assets/ux-journey-stack-map.png)](assets/ux-journey-stack-map.png)
+[![UX journey across frontend, backend and database, with olive green for feature 1, azure blue for feature 2, and paired colours for shared work.](assets/ux-journey-stack-map.png)](assets/ux-journey-stack-map.png)
 
 [Full-size PNG](assets/ux-journey-stack-map.png) · [Editable SVG](assets/ux-journey-stack-map.svg)
 
@@ -152,6 +152,7 @@ The map follows the supplied PRD and the working defaults below. Website referen
 | 2026-10-18 | Options A recorded as working defaults, open to changes following input. PRD requirements and inferred behavior are identified above. |
 | 2026-10-18 | Added journey/stack matrices, organizer/account flows and cross-feature data/operation ownership; linked the technical reference. |
 | 2026-10-18 | Added a colour-coded journey/stack flow diagram at the top, with full-size PNG and editable SVG assets. Existing UX defaults are unchanged. |
+| 2026-10-18 | Updated the diagram to solid olive green for feature 1 and azure blue for feature 2, with white text and Nimbus Sans typography. Flow and ownership are unchanged. |
 
 For a revision, record the changed option, reason, date and affected customer/organizer flow. Update both features' interface expectations and relevant tests together. Decisions internal to one feature remain with its builder.
 
