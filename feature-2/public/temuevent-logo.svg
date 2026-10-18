@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="320" height="80" viewBox="0 0 320 80" role="img" aria-labelledby="title">
-<title id="title">TemuEvent</title>
-<!-- Preserves the feature 1 header mark, colours and proportions. -->
-<rect width="320" height="80" fill="#ffffff"/>
-<circle cx="60.55781250000001" cy="40.0" r="28.0" fill="#4f46e5"/>
-<polygon points="60.55781250000001,28.0 64.19781250000001,36.36 72.55781250000001,40.0 64.19781250000001,43.64 60.55781250000001,52.0 56.91781250000001,43.64 48.55781250000001,40.0 56.91781250000001,36.36" fill="#ffffff"/>
-<text x="104.55781250000001" y="50.56" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="900" letter-spacing="-0.8" fill="#11103d">Temu</text>
-<text x="203.5015625" y="50.56" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="900" letter-spacing="-0.8" fill="#e539a7">Event</text>
-</svg>

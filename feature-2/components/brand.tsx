@@ -1,10 +1,10 @@
 import Link from 'next/link'
 
-// Use the approved asset unchanged; see docs/branding/README.md on main.
+// Direct export of Rizky's original header; see docs/branding/README.md on main.
 export function Brand() {
   return (
     <Link href="/" className="brand">
-      <img src="/temuevent-logo.svg" alt="TemuEvent" width={180} height={45} />
+      <img src="/temuevent-logo.png" alt="TemuEvent" width={140} height={28} />
     </Link>
   )
 }
