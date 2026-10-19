@@ -18,6 +18,12 @@ Updated: 19 October 2026.
 
 The project is active. On 19 October 2026, a temporary cloud VM ran the repository's Node/Express backend and Prisma client against this database. Both `npm run db:check` and the Express HTTP diagnostic returned the seeded customer successfully. The connection verified Supabase's certificate chain and hostname. The initial Prisma migration baseline is recorded.
 
+## Shared connection check
+
+The [connection-check folder](database-check/README.md) contains the runnable checker, locked dependencies, public Supabase CA, `.env.example` and setup instructions. It can be used independently of either feature's application. These scripts passed an authenticated, certificate-verified cloud database read on 19 October 2026.
+
+The actual application `.env` is prepared separately for Rizky and contains the database password. Keep that file and the private handoff ZIP outside the public repository. Dashboard membership does not supply the application password. Once the supplied `.env` is in the checker folder, run `npm ci` and `npm run check`; neither feature needs to be submitted first.
+
 ## What each part does
 
 | Part | Purpose |
@@ -92,20 +98,20 @@ Continue with one shared, ordered Prisma migration history; Wili coordinates mig
 
 ## Feature 1 handoff
 
-Readiness check: **19 October 2026**. The live Express → Prisma → Supabase path passed in a cloud VM, and the initial Prisma baseline is recorded. Local DNS restrictions did not require a database-provider change. Backend connection settings still need to be shared privately with Rizky; feature 1's own backend connection and event/purchase integration are separate next checks.
+Readiness check: **19 October 2026**. The live Express → Prisma → Supabase path passed in a cloud VM, and the initial Prisma baseline is recorded. Local DNS restrictions did not require a database-provider change. The [independent connection checker](database-check/README.md), public CA and environment template are available on `main`. The actual application connection file is prepared for direct handoff to Rizky and excluded from GitHub. Feature 1's own backend connection and event/purchase integration remain its next checks.
 
 | Item | Available now | Remaining preparation |
 | --- | --- | --- |
 | Shared references | [UI](../ui/README.md), [UX](ux-reference.md), [technical reference](technical-reference.md) | Defaults remain open to input; changes affecting both features are recorded together. |
 | User data | Customer and organizer development records in `temuevent.users` | Share backend connection settings privately. The feature 2 backend read passed in the cloud VM; Rizky verifies the connection from feature 1's backend. These records have no working login yet. |
-| Database client | Prisma 7.10.1 schema, client setup and diagnostic commands on `feature-2` | The `feature-1` branch does not contain these commands. For a connection check, use a separate checkout of `feature-2` and its `feature-2/` folder; feature 1 keeps its own application code. |
+| Database client | Prisma 7.10.1 setup on `feature-2`; [independent connection checker](database-check/README.md) with the public CA and environment template on `main` | Use the independent checker with the supplied application `.env` in a separate checkout or temporary folder. Feature 1 keeps its own application code and configures its own backend connection. |
 | Migration history | Applied SQL and matching Prisma baseline are recorded; CLI status passed | Wili coordinates subsequent shared migrations with an authorized migration connection. Application credentials do not have permission to create tables. |
 | Identity and rewards API | [Read-only demo contract](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/contracts/README.md) and fixture routes | Real authentication and reward persistence are feature 2 work. Demo headers and balances are not production identity or spend authorization. |
 | Event and transaction data | PRD scope and cross-feature fields are in the technical reference | Rizky supplies his draft event/ticket/purchase schema or migration. Wili coordinates the user relationships, migration order and linked sample data. |
 
 ### Preparation owned by Wili
 
-1. Share the verified backend connection settings privately. The seeded-user read and Express HTTP diagnostic have passed in the cloud VM. Keep real connection values outside the public repository.
+1. The verified application connection file and TLS certificate are prepared for Rizky. Forward the actual `.env` outside the public repository; the [checker and instructions](database-check/README.md) are available on GitHub. The independent checker, seeded-user read and Express HTTP diagnostic have passed in cloud VMs.
 2. Coordinate the next shared migrations with changes from both features. The initial baseline is already recorded.
 3. Build feature 2 authentication and reward services against the shared contracts. Keep the current demo responses usable while the real services are added.
 4. Prepare the approximately 30 linked sample transactions after the event/ticket/purchase structure aligns with feature 1.
