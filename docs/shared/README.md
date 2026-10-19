@@ -1,9 +1,11 @@
 # Shared project record
 
-Updated: 18 October 2026.
+Updated: 19 October 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Database setup](database-setup.md) | Shared Supabase project, verified connection and migration record |
+| [Connection check](database-check/README.md) | Runnable backend connection check, public certificate, environment template and instructions |
 | [Technical reference](technical-reference.md) | Database/backend defaults, API contracts, ownership and change impacts |
 | [Project record](consistency.en.md) | Styling, current stack, ownership and interfaces |
 | [UX reference](ux-reference.md) | Working defaults, alternatives, PRD sources, website references and change impacts |
