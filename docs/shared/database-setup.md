@@ -2,6 +2,16 @@
 
 Updated: 19 October 2026.
 
+## Parallel development and handoff
+
+Feature 1 can continue its screens, backend handlers and business-rule tests using sample data while feature 2 continues authentication, rewards and dashboard work against the shared contracts. Each builder keeps their own feature implementation.
+
+The database connection is ready when either backend is ready to use it. The [standalone checker](database-check/README.md) is optional; a successful read through a feature's own backend is also a connection check. The actual application credentials are supplied outside this public repository.
+
+A draft event/ticket/purchase model is enough to coordinate shared user relationships and migrations before the whole feature is finished. Connecting the backend, applying the agreed migrations and inserting linked sample data are separate from building the screens; the connection file does not perform those steps automatically.
+
+For coding agents: inspect the builder's current work and the [technical reference](technical-reference.md), then explain which parts use sample data, which use the database, and the next integration step. The existing connection check does not require replacing either feature's application structure.
+
 ## Current project
 
 | Setting | Value |
