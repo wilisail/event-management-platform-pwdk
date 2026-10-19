@@ -7,7 +7,8 @@ Updated: 19 October 2026.
 | Setting | Value |
 | --- | --- |
 | Project | [temuevent](https://supabase.com/dashboard/project/rjjwjacihxepticquxxa) |
-| Organization | wilisail's Org |
+| Organization | [Pwdk's Org](https://supabase.com/dashboard/org/ypcxqntkrrelxfijcedb/general) |
+| Team members | [Organization members](https://supabase.com/dashboard/org/ypcxqntkrrelxfijcedb/team) |
 | Region | Singapore (`ap-southeast-1`) |
 | Plan / creation quote | Free organization; project quoted at $0 per month |
 | PostgreSQL | 17 |
