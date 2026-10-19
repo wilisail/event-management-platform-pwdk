@@ -4,6 +4,7 @@ Updated: 19 October 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Repository workflow](repository-workflow.md) | Feature branch freedom, owner-managed integration, review process and prepared branch rules |
 | [Database setup](database-setup.md) | Shared Supabase project, verified connection and migration record |
 | [Connection check](database-check/README.md) | Runnable backend connection check, public certificate, environment template and instructions |
 | [Technical reference](technical-reference.md) | Database/backend defaults, API contracts, ownership and change impacts |
