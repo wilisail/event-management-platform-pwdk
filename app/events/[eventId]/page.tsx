@@ -1,35 +1,368 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { use, useState } from 'react'
-import { ArrowLeft, CalendarDays, Check, Clock3, Copy, Heart, MapPin, Share2, Star, Ticket, Users } from 'lucide-react'
-import { events, formatPrice } from '@/lib/events'
+import Link from "next/link";
+import { use, useState } from "react";
+import {
+    ArrowLeft,
+    CalendarDays,
+    Check,
+    Clock3,
+    Copy,
+    Heart,
+    MapPin,
+    Share2,
+    Star,
+    Ticket,
+    Users,
+} from "lucide-react";
+import { events, formatPrice } from "@/lib/events";
 
-export default function EventDetailsPage({ params }: { params: Promise<{ eventId: string }> }) {
-  const [saved, setSaved] = useState(false)
-  const [shared, setShared] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const { eventId: rawEventId } = use(params)
-  const eventId = Number(rawEventId)
-  const event = events.find(item => item.id === eventId)
+export default function EventDetailsPage({
+    params,
+}: {
+    params: Promise<{ eventId: string }>;
+}) {
+    const [saved, setSaved] = useState(false);
+    const [shared, setShared] = useState(false);
+    const [copied, setCopied] = useState(false);
+    const { eventId: rawEventId } = use(params);
+    const eventId = Number(rawEventId);
+    const event = events.find((item) => item.id === eventId);
 
-  const shareEvent = async () => {
-    const url = window.location.href
-    if (navigator.share) await navigator.share({ title: event?.title, text: 'Lihat event ini di TemuEvent', url })
-    else { await navigator.clipboard?.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 1800) }
-    setShared(true)
-  }
+    const shareEvent = async () => {
+        const url = window.location.href;
+        if (navigator.share)
+            await navigator.share({
+                title: event?.title,
+                text: "Lihat event ini di TemuEvent",
+                url,
+            });
+        else {
+            await navigator.clipboard?.writeText(url);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1800);
+        }
+        setShared(true);
+    };
 
-  if (!event) return <div className="min-h-screen bg-[#fcf9ff] px-5 py-20 text-[#11103d]"><div className="mx-auto max-w-xl rounded-3xl bg-white p-10 text-center shadow-[0_15px_50px_rgba(64,45,120,.1)]"><div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[#eeeaff] text-[#5148d7]"><Ticket/></div><h1 className="mt-5 text-2xl font-black">Event tidak ditemukan</h1><p className="mt-2 text-sm text-[#77738b]">Event yang kamu cari mungkin sudah dipindahkan atau belum tersedia.</p><Link href="/#explore" className="mt-6 inline-flex rounded-full bg-[#4e46dc] px-5 py-3 text-sm font-bold text-white">Kembali ke Explore</Link></div></div>
+    if (!event)
+        return (
+            <div className="min-h-screen bg-[#fcf9ff] px-5 py-20 text-[#11103d]">
+                <div className="mx-auto max-w-xl rounded-3xl bg-white p-10 text-center shadow-[0_15px_50px_rgba(64,45,120,.1)]">
+                    <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-[#eeeaff] text-[#5148d7]">
+                        <Ticket />
+                    </div>
+                    <h1 className="mt-5 text-2xl font-black">
+                        Event tidak ditemukan
+                    </h1>
+                    <p className="mt-2 text-sm text-[#77738b]">
+                        Event yang kamu cari mungkin sudah dipindahkan atau
+                        belum tersedia.
+                    </p>
+                    <Link
+                        href="/#explore"
+                        className="mt-6 inline-flex rounded-full bg-[#4e46dc] px-5 py-3 text-sm font-bold text-white"
+                    >
+                        Kembali ke Explore
+                    </Link>
+                </div>
+            </div>
+        );
 
-  return <div className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
-    <header className="sticky top-0 z-20 border-b border-[#eee9fb] bg-white/90 backdrop-blur"><div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5"><Link href="/" className="font-black tracking-tight">✦ Temu<span className="text-[#e539a7]">Event</span></Link><Link href="/#explore" className="flex items-center gap-2 text-xs font-bold text-[#5148df]"><ArrowLeft size={15}/> Kembali ke event</Link></div></header>
-    <main className="mx-auto max-w-[1180px] px-5 pb-20">
-      <nav aria-label="Breadcrumb" className="flex gap-2 py-6 text-xs text-[#858196]"><Link href="/">Home</Link><span>/</span><Link href="/#categories">{event.category}</Link><span>/</span><span className="font-semibold text-[#5148df]">{event.title}</span></nav>
-      <section className="grid overflow-hidden rounded-3xl border border-[#ebe7f5] bg-white shadow-[0_12px_40px_rgba(64,45,120,.08)] lg:grid-cols-[1.05fr_.95fr]"><div className="relative min-h-[280px] lg:min-h-[390px]"><img src={event.image} alt={event.title} className="absolute inset-0 h-full w-full object-cover"/><div className="absolute inset-0 bg-gradient-to-t from-[#11103d]/70 via-transparent to-transparent"/><span className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-bold text-[#5148df]">{event.category}</span></div><div className="flex flex-col justify-center p-6 sm:p-10"><div className="flex items-center justify-between"><span className="text-xs font-bold text-[#e03c9b]">{event.featured || 'Event komunitas'}</span><div className="flex gap-2"><button aria-label="Simpan event" onClick={() => setSaved(!saved)} className={`rounded-full border p-2 ${saved ? 'border-pink-200 bg-pink-50 text-pink-500' : 'border-[#e8e3f2] text-[#77738b]'}`}><Heart size={16} fill={saved ? 'currentColor' : 'none'}/></button><button aria-label="Bagikan event" onClick={shareEvent} className="rounded-full border border-[#e8e3f2] p-2 text-[#77738b]"><Share2 size={16}/></button></div></div><h1 className="mt-4 text-3xl font-black leading-tight sm:text-4xl">{event.title}</h1><p className="mt-4 text-sm leading-6 text-[#77738b]">{event.description}</p><div className="mt-6 grid gap-3 text-sm text-[#48445e] sm:grid-cols-2"><Info icon={<CalendarDays size={17}/>} label={event.dateLabel} value={event.time}/><Info icon={<MapPin size={17}/>} label={event.venue} value={event.location}/><Info icon={<Users size={17}/>} label="Diselenggarakan oleh" value={event.organizer}/><Info icon={<Ticket size={17}/>} label="Harga tiket mulai" value={formatPrice(event.price)}/></div>{(shared || copied) && <p className="mt-4 text-xs font-semibold text-emerald-600">{copied ? 'Link event disalin.' : 'Link berbagi siap digunakan.'}</p>}</div></section>
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]"><div className="space-y-6"><section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8"><h2 className="text-xl font-black">Tentang event ini</h2><p className="mt-4 text-sm leading-7 text-[#69657c]">{event.description} Nikmati pengalaman yang dirancang untuk bertemu orang-orang baru, belajar dari praktisi, dan pulang membawa cerita serta inspirasi baru.</p><h3 className="mt-7 font-bold">Yang akan kamu dapatkan</h3><ul className="mt-4 space-y-3 text-sm text-[#69657c]"><li className="flex gap-3"><Check className="shrink-0 text-[#5148df]" size={18}/> Akses ke seluruh area dan sesi utama event</li><li className="flex gap-3"><Check className="shrink-0 text-[#5148df]" size={18}/> Kesempatan bertemu komunitas dan pelaku industri</li><li className="flex gap-3"><Check className="shrink-0 text-[#5148df]" size={18}/> Pengalaman seru dalam suasana yang ramah</li></ul></section><section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8"><h2 className="text-xl font-black">Tanggal & lokasi</h2><div className="mt-5 rounded-2xl bg-[#f5f1ff] p-5"><div className="flex gap-3"><CalendarDays className="text-[#5148df]"/><div><p className="font-bold">{event.dateLabel} · {event.time}</p><p className="mt-1 text-sm text-[#77738b]">{event.venue}<br/>{event.address}</p></div></div><div className="mt-5 flex h-24 items-center justify-center rounded-xl border border-dashed border-[#c9c0eb] text-xs text-[#817b99]">Lokasi event · peta tersedia saat datang</div></div></section><section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8"><h2 className="text-xl font-black">Penyelenggara</h2><div className="mt-5 flex items-center gap-4"><div className="grid h-14 w-14 place-items-center rounded-2xl bg-[#eeeaff] font-black text-[#5148df]">JC</div><div><p className="font-bold">{event.organizer}</p><p className="mt-1 text-sm text-[#77738b]">Komunitas yang membuat pengalaman lokal lebih dekat.</p></div></div><button className="mt-5 rounded-full border border-[#ddd6f7] px-4 py-2 text-xs font-bold text-[#5148df]">Lihat profil penyelenggara</button></section><section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8"><div className="flex items-center justify-between"><h2 className="text-xl font-black">Ulasan & rating</h2><span className="flex items-center gap-1 text-sm font-bold"><Star size={15} fill="#f59e0b" className="text-amber-500"/> {event.rating || 'Belum ada'}</span></div><p className="mt-4 text-sm text-[#77738b]">Belum ada ulasan tertulis untuk event ini. Jadilah yang pertama berbagi pengalaman setelah hadir.</p></section></div><aside className="lg:sticky lg:top-24 lg:h-fit"><div className="rounded-3xl bg-white p-6 shadow-[0_12px_40px_rgba(64,45,120,.1)]"><p className="text-xs font-bold text-[#858196]">TIKET EVENT</p><p className="mt-2 text-2xl font-black text-[#5148df]">{formatPrice(event.price)}</p><p className="mt-1 text-xs text-[#77738b]">per orang · {event.price ? 'harga belum termasuk biaya layanan' : 'gratis'}</p><div className="my-5 space-y-3 border-y border-[#f0edf7] py-5 text-xs text-[#69657c]"><p className="flex justify-between"><span>Tanggal</span><strong>{event.dateLabel}</strong></p><p className="flex justify-between"><span>Lokasi</span><strong>{event.location}</strong></p><p className="flex justify-between"><span>Ketersediaan</span><strong className={event.seats ? 'text-emerald-600' : 'text-red-500'}>{event.seats ? `${event.seats} kursi tersisa` : 'Sold out'}</strong></p></div>{event.seats ? <Link href={`/events/${event.id}/tickets`} className="block w-full rounded-xl bg-[#5148df] py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:bg-[#4039c9]">{event.price ? 'Pilih Tiket' : 'Daftar Gratis'}</Link> : <button disabled className="w-full cursor-not-allowed rounded-xl bg-[#cbc6df] py-3.5 text-sm font-bold text-white">Sold Out</button>}<p className="mt-3 flex items-center justify-center gap-1 text-center text-[10px] text-[#9490a3]"><Clock3 size={12}/> Checkout demo, tanpa pembayaran</p></div></aside></div>
-    </main>
-  </div>
+    return (
+        <div className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
+            <header className="sticky top-0 z-20 border-b border-[#eee9fb] bg-white/90 backdrop-blur">
+                <div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5">
+                    <Link href="/" className="font-black tracking-tight">
+                        ✦ Temu<span className="text-[#e539a7]">Event</span>
+                    </Link>
+                    <Link
+                        href="/#explore"
+                        className="flex items-center gap-2 text-xs font-bold text-[#5148df]"
+                    >
+                        <ArrowLeft size={15} /> Kembali ke event
+                    </Link>
+                </div>
+            </header>
+            <main className="mx-auto max-w-[1180px] px-5 pb-20">
+                <nav
+                    aria-label="Breadcrumb"
+                    className="flex gap-2 py-6 text-xs text-[#858196]"
+                >
+                    <Link href="/">Home</Link>
+                    <span>/</span>
+                    <Link href="/#categories">{event.category}</Link>
+                    <span>/</span>
+                    <span className="font-semibold text-[#5148df]">
+                        {event.title}
+                    </span>
+                </nav>
+                <section className="grid overflow-hidden rounded-3xl border border-[#ebe7f5] bg-white shadow-[0_12px_40px_rgba(64,45,120,.08)] lg:grid-cols-[1.05fr_.95fr]">
+                    <div className="relative min-h-[280px] lg:min-h-[390px]">
+                        <img
+                            src={event.image}
+                            alt={event.title}
+                            className="absolute inset-0 h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#11103d]/70 via-transparent to-transparent" />
+                        <span className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-bold text-[#5148df]">
+                            {event.category}
+                        </span>
+                    </div>
+                    <div className="flex flex-col justify-center p-6 sm:p-10">
+                        <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-[#e03c9b]">
+                                {event.featured || "Event komunitas"}
+                            </span>
+                            <div className="flex gap-2">
+                                <button
+                                    aria-label="Simpan event"
+                                    onClick={() => setSaved(!saved)}
+                                    className={`rounded-full border p-2 ${saved ? "border-pink-200 bg-pink-50 text-pink-500" : "border-[#e8e3f2] text-[#77738b]"}`}
+                                >
+                                    <Heart
+                                        size={16}
+                                        fill={saved ? "currentColor" : "none"}
+                                    />
+                                </button>
+                                <button
+                                    aria-label="Bagikan event"
+                                    onClick={shareEvent}
+                                    className="rounded-full border border-[#e8e3f2] p-2 text-[#77738b]"
+                                >
+                                    <Share2 size={16} />
+                                </button>
+                            </div>
+                        </div>
+                        <h1 className="mt-4 text-3xl font-black leading-tight sm:text-4xl">
+                            {event.title}
+                        </h1>
+                        <p className="mt-4 text-sm leading-6 text-[#77738b]">
+                            {event.description}
+                        </p>
+                        <div className="mt-6 grid gap-3 text-sm text-[#48445e] sm:grid-cols-2">
+                            <Info
+                                icon={<CalendarDays size={17} />}
+                                label={event.dateLabel}
+                                value={event.time}
+                            />
+                            <Info
+                                icon={<MapPin size={17} />}
+                                label={event.venue}
+                                value={event.location}
+                            />
+                            <Info
+                                icon={<Users size={17} />}
+                                label="Diselenggarakan oleh"
+                                value={event.organizer}
+                            />
+                            <Info
+                                icon={<Ticket size={17} />}
+                                label="Harga tiket mulai"
+                                value={formatPrice(event.price)}
+                            />
+                        </div>
+                        {(shared || copied) && (
+                            <p className="mt-4 text-xs font-semibold text-emerald-600">
+                                {copied
+                                    ? "Link event disalin."
+                                    : "Link berbagi siap digunakan."}
+                            </p>
+                        )}
+                    </div>
+                </section>
+                <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
+                    <div className="space-y-6">
+                        <section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8">
+                            <h2 className="text-xl font-black">
+                                Tentang event ini
+                            </h2>
+                            <p className="mt-4 text-sm leading-7 text-[#69657c]">
+                                {event.description} Nikmati pengalaman yang
+                                dirancang untuk bertemu orang-orang baru,
+                                belajar dari praktisi, dan pulang membawa cerita
+                                serta inspirasi baru.
+                            </p>
+                            <h3 className="mt-7 font-bold">
+                                Yang akan kamu dapatkan
+                            </h3>
+                            <ul className="mt-4 space-y-3 text-sm text-[#69657c]">
+                                <li className="flex gap-3">
+                                    <Check
+                                        className="shrink-0 text-[#5148df]"
+                                        size={18}
+                                    />{" "}
+                                    Akses ke seluruh area dan sesi utama event
+                                </li>
+                                <li className="flex gap-3">
+                                    <Check
+                                        className="shrink-0 text-[#5148df]"
+                                        size={18}
+                                    />{" "}
+                                    Kesempatan bertemu komunitas dan pelaku
+                                    industri
+                                </li>
+                                <li className="flex gap-3">
+                                    <Check
+                                        className="shrink-0 text-[#5148df]"
+                                        size={18}
+                                    />{" "}
+                                    Pengalaman seru dalam suasana yang ramah
+                                </li>
+                            </ul>
+                        </section>
+                        <section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8">
+                            <h2 className="text-xl font-black">
+                                Tanggal & lokasi
+                            </h2>
+                            <div className="mt-5 rounded-2xl bg-[#f5f1ff] p-5">
+                                <div className="flex gap-3">
+                                    <CalendarDays className="text-[#5148df]" />
+                                    <div>
+                                        <p className="font-bold">
+                                            {event.dateLabel} · {event.time}
+                                        </p>
+                                        <p className="mt-1 text-sm text-[#77738b]">
+                                            {event.venue}
+                                            <br />
+                                            {event.address}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="mt-5 flex h-24 items-center justify-center rounded-xl border border-dashed border-[#c9c0eb] text-xs text-[#817b99]">
+                                    Lokasi event · peta tersedia saat datang
+                                </div>
+                            </div>
+                        </section>
+                        <section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8">
+                            <h2 className="text-xl font-black">
+                                Penyelenggara
+                            </h2>
+                            <div className="mt-5 flex items-center gap-4">
+                                <div className="grid h-14 w-14 place-items-center rounded-2xl bg-[#eeeaff] font-black text-[#5148df]">
+                                    JC
+                                </div>
+                                <div>
+                                    <Link
+                                        href={`/organizers/${event.organizer === "Jakarta Coffee Collective" ? "jakarta-coffee-collective" : "jakarta-coffee-collective"}`}
+                                        className="font-bold text-[#5148df] hover:underline"
+                                    >
+                                        {event.organizer}
+                                    </Link>
+                                    <p className="mt-1 text-sm text-[#77738b]">
+                                        Komunitas yang membuat pengalaman lokal
+                                        lebih dekat.
+                                    </p>
+                                </div>
+                            </div>
+                            <button className="mt-5 rounded-full border border-[#ddd6f7] px-4 py-2 text-xs font-bold text-[#5148df]">
+                                Lihat profil penyelenggara
+                            </button>
+                        </section>
+                        <section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-xl font-black">
+                                    Ulasan & rating
+                                </h2>
+                                <span className="flex items-center gap-1 text-sm font-bold">
+                                    <Star
+                                        size={15}
+                                        fill="#f59e0b"
+                                        className="text-amber-500"
+                                    />{" "}
+                                    {event.rating || "Belum ada"}
+                                </span>
+                            </div>
+                            <p className="mt-4 text-sm text-[#77738b]">
+                                Belum ada ulasan tertulis untuk event ini.
+                                Jadilah yang pertama berbagi pengalaman setelah
+                                hadir.
+                            </p>
+                        </section>
+                    </div>
+                    <aside className="lg:sticky lg:top-24 lg:h-fit">
+                        <div className="rounded-3xl bg-white p-6 shadow-[0_12px_40px_rgba(64,45,120,.1)]">
+                            <p className="text-xs font-bold text-[#858196]">
+                                TIKET EVENT
+                            </p>
+                            <p className="mt-2 text-2xl font-black text-[#5148df]">
+                                {formatPrice(event.price)}
+                            </p>
+                            <p className="mt-1 text-xs text-[#77738b]">
+                                per orang ·{" "}
+                                {event.price
+                                    ? "harga belum termasuk biaya layanan"
+                                    : "gratis"}
+                            </p>
+                            <div className="my-5 space-y-3 border-y border-[#f0edf7] py-5 text-xs text-[#69657c]">
+                                <p className="flex justify-between">
+                                    <span>Tanggal</span>
+                                    <strong>{event.dateLabel}</strong>
+                                </p>
+                                <p className="flex justify-between">
+                                    <span>Lokasi</span>
+                                    <strong>{event.location}</strong>
+                                </p>
+                                <p className="flex justify-between">
+                                    <span>Ketersediaan</span>
+                                    <strong
+                                        className={
+                                            event.seats
+                                                ? "text-emerald-600"
+                                                : "text-red-500"
+                                        }
+                                    >
+                                        {event.seats
+                                            ? `${event.seats} kursi tersisa`
+                                            : "Sold out"}
+                                    </strong>
+                                </p>
+                            </div>
+                            {event.seats ? (
+                                <Link
+                                    href={`/events/${event.id}/tickets`}
+                                    className="block w-full rounded-xl bg-[#5148df] py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:bg-[#4039c9]"
+                                >
+                                    {event.price
+                                        ? "Pilih Tiket"
+                                        : "Daftar Gratis"}
+                                </Link>
+                            ) : (
+                                <button
+                                    disabled
+                                    className="w-full cursor-not-allowed rounded-xl bg-[#cbc6df] py-3.5 text-sm font-bold text-white"
+                                >
+                                    Sold Out
+                                </button>
+                            )}
+                            <p className="mt-3 flex items-center justify-center gap-1 text-center text-[10px] text-[#9490a3]">
+                                <Clock3 size={12} /> Checkout demo, tanpa
+                                pembayaran
+                            </p>
+                        </div>
+                    </aside>
+                </div>
+            </main>
+        </div>
+    );
 }
 
-function Info({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) { return <div className="flex gap-3"><span className="mt-0.5 text-[#5148df]">{icon}</span><div><p className="text-[10px] text-[#9893a8]">{label}</p><p className="mt-0.5 font-semibold">{value}</p></div></div> }
+function Info({
+    icon,
+    label,
+    value,
+}: {
+    icon: React.ReactNode;
+    label: string;
+    value: string;
+}) {
+    return (
+        <div className="flex gap-3">
+            <span className="mt-0.5 text-[#5148df]">{icon}</span>
+            <div>
+                <p className="text-[10px] text-[#9893a8]">{label}</p>
+                <p className="mt-0.5 font-semibold">{value}</p>
+            </div>
+        </div>
+    );
+}
