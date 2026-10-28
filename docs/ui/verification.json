@@ -1,0 +1,139 @@
+{
+  "checked": "2026-10-18",
+  "sourceCommit": "cd582753a480d68ce14e00021a52f8ec93d8372f",
+  "typecheck": "passed",
+  "browser": {
+    "story": "Account and organizer pages render the original feature 1 logo export and source-derived theme; profile and referral styling are also checked.",
+    "canonicalLogoSha256": "a45d9733417fc3fccd32e21a8f01500b395f953a158251bde4fce24181711cf2",
+    "metrics": [
+      {
+        "route": "/",
+        "src": "/temuevent-logo.png",
+        "width": 140,
+        "height": 28,
+        "loaded": true,
+        "pageWidth": 1280,
+        "contentWidth": 1280
+      },
+      {
+        "route": "/",
+        "src": "/temuevent-logo.png",
+        "width": 140,
+        "height": 28,
+        "loaded": true,
+        "pageWidth": 390,
+        "contentWidth": 390
+      },
+      {
+        "route": "/",
+        "src": "/temuevent-logo.png",
+        "width": 140,
+        "height": 28,
+        "loaded": true,
+        "pageWidth": 320,
+        "contentWidth": 320
+      },
+      {
+        "route": "/",
+        "theme": {
+          "tokens": {
+            "--background": "#fcf9ff",
+            "--foreground": "#11103d",
+            "--border": "#ebe7f5",
+            "--primary": "#5148df",
+            "--accent": "#e539a7",
+            "--ring": "#4f46e5",
+            "--event-gradient": "linear-gradient(90deg, #3f41db, #bd2b9e)",
+            "--card-radius": "24px",
+            "--control-radius": "12px"
+          },
+          "font": "Arial, Helvetica, sans-serif",
+          "background": "rgb(252, 249, 255)",
+          "text": "rgb(17, 16, 61)",
+          "headingWeight": "900",
+          "panelRadius": "24px",
+          "pinkAccent": "rgb(229, 57, 167)"
+        }
+      },
+      {
+        "route": "/",
+        "profileButton": {
+          "radius": "12px",
+          "background": "rgb(81, 72, 223)"
+        },
+        "referralBackground": "radial-gradient(circle at 15% 15%, rgb(241, 237, 255) 0px, rgba(0, 0, 0, 0) 34%), radial-gradient(circle at 83% 68%, rgb(255, 232, 247) 0px, rgba(0, 0, 0, 0) 33%), linear-gradient(rgb(247, 243, 255) 0%, rgb(255, 250, 254) 100%)"
+      },
+      {
+        "route": "/organizers/demo-organizer-001",
+        "src": "/temuevent-logo.png",
+        "width": 140,
+        "height": 28,
+        "loaded": true,
+        "pageWidth": 1280,
+        "contentWidth": 1280
+      },
+      {
+        "route": "/organizers/demo-organizer-001",
+        "src": "/temuevent-logo.png",
+        "width": 140,
+        "height": 28,
+        "loaded": true,
+        "pageWidth": 390,
+        "contentWidth": 390
+      },
+      {
+        "route": "/organizers/demo-organizer-001",
+        "src": "/temuevent-logo.png",
+        "width": 140,
+        "height": 28,
+        "loaded": true,
+        "pageWidth": 320,
+        "contentWidth": 320
+      },
+      {
+        "route": "/organizers/demo-organizer-001",
+        "theme": {
+          "tokens": {
+            "--background": "#fcf9ff",
+            "--foreground": "#11103d",
+            "--border": "#ebe7f5",
+            "--primary": "#5148df",
+            "--accent": "#e539a7",
+            "--ring": "#4f46e5",
+            "--event-gradient": "linear-gradient(90deg, #3f41db, #bd2b9e)",
+            "--card-radius": "24px",
+            "--control-radius": "12px"
+          },
+          "font": "Arial, Helvetica, sans-serif",
+          "background": "rgb(252, 249, 255)",
+          "text": "rgb(17, 16, 61)",
+          "headingWeight": "900",
+          "panelRadius": "24px",
+          "pinkAccent": "rgb(229, 57, 167)"
+        }
+      }
+    ],
+    "apiResponses": [
+      {
+        "url": "/api/demo/checkout-context",
+        "status": 200
+      },
+      {
+        "url": "/api/demo/organizers/demo-organizer-001",
+        "status": 200
+      }
+    ],
+    "pageErrors": []
+  },
+  "pixelMatch": true,
+  "comparedSize": [
+    560,
+    112
+  ],
+  "capturePaddingOffset": [
+    0,
+    4
+  ],
+  "sourceAndBothCopiesByteIdentical": true,
+  "logoSha256": "a45d9733417fc3fccd32e21a8f01500b395f953a158251bde4fce24181711cf2"
+}

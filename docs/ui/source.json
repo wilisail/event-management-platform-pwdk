@@ -1,0 +1,74 @@
+{
+  "sourceCommit": "cd582753a480d68ce14e00021a52f8ec93d8372f",
+  "sourcePath": "app/page.tsx",
+  "method": "Direct unchanged PNG export of the actual feature 1 header element; no redrawing, replacement font, custom star path or recomposed DOM.",
+  "original": {
+    "markup": "<a href=\"#top\" class=\"flex items-center gap-2 font-black tracking-tight text-[#11103d]\"><span class=\"grid h-7 w-7 place-items-center rounded-full bg-[#4f46e5] text-xs text-white\">✦</span> Temu<span class=\"text-[#e539a7]\">Event</span></a>",
+    "bounds": {
+      "width": 139.375,
+      "height": 28
+    },
+    "link": {
+      "fontFamily": "Arial, Helvetica, sans-serif",
+      "fontSize": "16px",
+      "fontWeight": "900",
+      "letterSpacing": "-0.4px",
+      "lineHeight": "24px",
+      "color": "rgb(17, 16, 61)",
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "gap": "8px"
+    },
+    "mark": {
+      "fontFamily": "Arial, Helvetica, sans-serif",
+      "fontSize": "12px",
+      "fontWeight": "900",
+      "letterSpacing": "-0.4px",
+      "lineHeight": "16px",
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(79, 70, 229)",
+      "borderRadius": "3.35544e+07px",
+      "gap": "normal"
+    },
+    "event": {
+      "fontFamily": "Arial, Helvetica, sans-serif",
+      "fontSize": "16px",
+      "fontWeight": "900",
+      "letterSpacing": "-0.4px",
+      "lineHeight": "24px",
+      "color": "rgb(229, 57, 167)",
+      "background": "rgba(0, 0, 0, 0)",
+      "borderRadius": "0px",
+      "gap": "normal"
+    },
+    "body": {
+      "fontFamily": "Arial, Helvetica, sans-serif",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "letterSpacing": "normal",
+      "lineHeight": "24px",
+      "color": "rgb(17, 16, 61)",
+      "background": "rgb(252, 249, 255)",
+      "borderRadius": "0px",
+      "gap": "normal"
+    },
+    "tokens": {
+      "background": "#fcf9ff",
+      "foreground": "#11103d",
+      "border": "#ebe7f5",
+      "ring": "#4f46e5"
+    }
+  },
+  "geometry": {
+    "width": 140,
+    "height": 28,
+    "pixelRatio": 4
+  },
+  "assetSha256": "a45d9733417fc3fccd32e21a8f01500b395f953a158251bde4fce24181711cf2",
+  "sourceGitBlobs": {
+    "app/page.tsx": "7dd06b42b45b8b696bfc003632bb1352127e45fb",
+    "app/globals.css": "b47a00d823852f24d6c82a1032c1d220b2fff7b9"
+  },
+  "originalExportByteMatch": true
+}
+

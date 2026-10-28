@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="2030" viewBox="0 0 3000 2030" role="img" aria-labelledby="title desc">
+<title id="title">Event management: UX journey, stack layers and feature ownership</title>
+<desc id="desc">Five UX stages run horizontally from discovery through account, checkout, payment decisions, and attendance and reviews. Frontend, backend and database layers run vertically. Olive green identifies feature 1, azure blue identifies feature 2, and paired colours identify a shared contract. Supporting flows include event setup, profiles, rewards, organizer statistics, emails and timeout processing.</desc>
+<rect width="3000" height="2030" fill="#f8fafc"/>
+<text x="58" y="99.84" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="64" font-weight="700" fill="#172033">Event management: journey × stack × ownership</text>
+<text x="60" y="153.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#526176">One journey across both features — each builder owns frontend and backend work.</text>
+<rect x="60" y="198" width="26" height="26" rx="6" fill="#637A1D"/>
+<text x="101" y="216.49" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="29" font-weight="700" fill="#172033">Feature 1 · Rizky</text>
+<rect x="574" y="198" width="26" height="26" rx="6" fill="#0072CE"/>
+<text x="615" y="216.49" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="29" font-weight="700" fill="#172033">Feature 2 · Wili</text>
+<rect x="1040" y="198" width="14" height="26" rx="4" fill="#637A1D"/>
+<rect x="1059" y="198" width="14" height="26" rx="4" fill="#0072CE"/>
+<text x="1090" y="216.49" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="29" font-weight="400" fill="#172033">Both colours = shared boundary</text>
+<text x="2346" y="216.63" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="23" font-weight="400" fill="#526176">Working defaults · 18 Oct 2026</text>
+<text x="300" y="285.63" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#526176">UX JOURNEY  →</text>
+<text x="60" y="285.63" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#526176">STACK  ↓</text>
+<rect x="300" y="306" width="508" height="104" rx="18" fill="#e9eef8"/>
+<text x="323" y="342.44" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#526176">1</text>
+<text x="366" y="347.11" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="31" font-weight="700" fill="#172033">Discover</text>
+<text x="323" y="388.44" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="24" font-weight="400" fill="#526176">Find event / choose tickets</text>
+<line x1="811" y1="356" x2="828" y2="356" stroke="#8997ad" stroke-width="3"/>
+<polygon points="828,356 818,350 818,362" fill="#8997ad"/>
+<rect x="832" y="306" width="508" height="104" rx="18" fill="#e9eef8"/>
+<text x="855" y="342.44" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#526176">2</text>
+<text x="898" y="347.11" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="31" font-weight="700" fill="#172033">Account</text>
+<text x="855" y="388.44" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="24" font-weight="400" fill="#526176">Sign in / register if needed</text>
+<line x1="1343" y1="356" x2="1360" y2="356" stroke="#8997ad" stroke-width="3"/>
+<polygon points="1360,356 1350,350 1350,362" fill="#8997ad"/>
+<rect x="1364" y="306" width="508" height="104" rx="18" fill="#e9eef8"/>
+<text x="1387" y="342.44" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#526176">3</text>
+<text x="1430" y="347.11" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="31" font-weight="700" fill="#172033">Checkout</text>
+<text x="1387" y="388.44" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="24" font-weight="400" fill="#526176">Apply rewards / confirm</text>
+<line x1="1875" y1="356" x2="1892" y2="356" stroke="#8997ad" stroke-width="3"/>
+<polygon points="1892,356 1882,350 1882,362" fill="#8997ad"/>
+<rect x="1896" y="306" width="508" height="104" rx="18" fill="#e9eef8"/>
+<text x="1919" y="342.44" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#526176">4</text>
+<text x="1962" y="347.11" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="31" font-weight="700" fill="#172033">Payment &amp; decision</text>
+<text x="1919" y="388.44" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="24" font-weight="400" fill="#526176">Proof / organizer approval</text>
+<line x1="2407" y1="356" x2="2424" y2="356" stroke="#8997ad" stroke-width="3"/>
+<polygon points="2424,356 2414,350 2414,362" fill="#8997ad"/>
+<rect x="2428" y="306" width="508" height="104" rx="18" fill="#e9eef8"/>
+<text x="2451" y="342.44" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#526176">5</text>
+<text x="2494" y="347.11" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="31" font-weight="700" fill="#172033">Attend &amp; review</text>
+<text x="2451" y="388.44" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="24" font-weight="400" fill="#526176">Check in / share feedback</text>
+<rect x="53" y="450" width="221" height="264" rx="18" fill="#edf1f7"/>
+<text x="76" y="510.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="700" fill="#172033">Frontend</text>
+<text x="76" y="560.82" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="22" font-weight="400" fill="#526176">React / Next.js</text>
+<text x="76" y="597.82" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="22" font-weight="400" fill="#526176">TypeScript</text>
+<rect x="53" y="756" width="221" height="296" rx="18" fill="#edf1f7"/>
+<text x="76" y="816.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="700" fill="#172033">Backend</text>
+<text x="76" y="866.82" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="22" font-weight="400" fill="#526176">Express + TS</text>
+<text x="76" y="903.82" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="22" font-weight="400" fill="#526176">REST / JSON</text>
+<rect x="53" y="1094" width="221" height="264" rx="18" fill="#edf1f7"/>
+<text x="76" y="1154.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="700" fill="#172033">Database</text>
+<text x="76" y="1204.82" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="22" font-weight="400" fill="#526176">PostgreSQL</text>
+<text x="76" y="1241.82" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="22" font-weight="400" fill="#526176">Prisma ORM</text>
+<rect x="300" y="450.0" width="508" height="264.0" rx="15" fill="#637A1D"/>
+<text x="324" y="500.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="324" y="539.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">Listing, filters, search;</text>
+<text x="324" y="581.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">event details and tickets</text>
+<rect x="300" y="756.0" width="508" height="296.0" rx="15" fill="#637A1D"/>
+<text x="324" y="806.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="324" y="845.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">Search and filter queries;</text>
+<text x="324" y="887.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">prices and availability</text>
+<rect x="300" y="1094.0" width="508" height="264.0" rx="15" fill="#637A1D"/>
+<text x="324" y="1144.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="324" y="1183.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">Events and ticket types;</text>
+<text x="324" y="1225.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">linked organizer user ID</text>
+<line x1="554.0" y1="722" x2="554.0" y2="748" stroke="#8997ad" stroke-width="3"/>
+<polygon points="554.0,748 548.0,738 560.0,738" fill="#8997ad"/>
+<line x1="554.0" y1="1060" x2="554.0" y2="1086" stroke="#8997ad" stroke-width="3"/>
+<polygon points="554.0,1086 548.0,1076 560.0,1076" fill="#8997ad"/>
+<rect x="832" y="450.0" width="508" height="264.0" rx="15" fill="#0072CE"/>
+<text x="856" y="500.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="856" y="539.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">Login / register + referral;</text>
+<text x="856" y="581.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">return to ticket selection</text>
+<rect x="832" y="756.0" width="508" height="296.0" rx="15" fill="#0072CE"/>
+<text x="856" y="806.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="856" y="845.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">Verify session and roles;</text>
+<text x="856" y="887.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">issue referral rewards</text>
+<rect x="832" y="1094.0" width="508" height="264.0" rx="15" fill="#0072CE"/>
+<text x="856" y="1144.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="856" y="1183.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">Users, sessions, referrals;</text>
+<text x="856" y="1225.92" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="400" fill="#ffffff">point grants and coupons</text>
+<line x1="1086.0" y1="722" x2="1086.0" y2="748" stroke="#8997ad" stroke-width="3"/>
+<polygon points="1086.0,748 1080.0,738 1092.0,738" fill="#8997ad"/>
+<line x1="1086.0" y1="1060" x2="1086.0" y2="1086" stroke="#8997ad" stroke-width="3"/>
+<polygon points="1086.0,1086 1080.0,1076 1092.0,1076" fill="#8997ad"/>
+<rect x="1364" y="450.0" width="508" height="127.0" rx="15" fill="#637A1D"/>
+<text x="1388" y="492.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="1388" y="530.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Ticket, voucher and total</text>
+<rect x="1364" y="582.0" width="508" height="127.0" rx="15" fill="#0072CE"/>
+<text x="1388" y="624.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="1388" y="662.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Point and coupon choices</text>
+<rect x="1364" y="756.0" width="508" height="143.0" rx="15" fill="#637A1D"/>
+<text x="1388" y="798.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="1388" y="836.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Reprice; reserve capacity</text>
+<rect x="1364" y="904.0" width="508" height="143.0" rx="15" fill="#0072CE"/>
+<text x="1388" y="946.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="1388" y="984.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Reserve coupon / points</text>
+<text x="1388" y="1020.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">in the same SQL transaction</text>
+<rect x="1364" y="1094.0" width="508" height="127.0" rx="15" fill="#637A1D"/>
+<text x="1388" y="1136.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="1388" y="1174.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Purchase, items and voucher</text>
+<rect x="1364" y="1226.0" width="508" height="127.0" rx="15" fill="#0072CE"/>
+<text x="1388" y="1268.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="1388" y="1306.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Reward / point allocations</text>
+<line x1="1618.0" y1="722" x2="1618.0" y2="748" stroke="#8997ad" stroke-width="3"/>
+<polygon points="1618.0,748 1612.0,738 1624.0,738" fill="#8997ad"/>
+<line x1="1618.0" y1="1060" x2="1618.0" y2="1086" stroke="#8997ad" stroke-width="3"/>
+<polygon points="1618.0,1086 1612.0,1076 1624.0,1076" fill="#8997ad"/>
+<rect x="1896" y="450.0" width="508" height="127.0" rx="15" fill="#637A1D"/>
+<text x="1920" y="492.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="1920" y="530.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Proof upload and status</text>
+<rect x="1896" y="582.0" width="508" height="127.0" rx="15" fill="#0072CE"/>
+<text x="1920" y="624.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="1920" y="662.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Organizer accept / reject</text>
+<rect x="1896" y="756.0" width="508" height="143.0" rx="15" fill="#637A1D"/>
+<text x="1920" y="798.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="1920" y="836.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Proof and status transitions</text>
+<rect x="1896" y="904.0" width="508" height="143.0" rx="15" fill="#0072CE"/>
+<text x="1920" y="946.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="1920" y="984.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Decision permissions;</text>
+<text x="1920" y="1020.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">queue notification email</text>
+<rect x="1896" y="1094.0" width="508" height="127.0" rx="15" fill="#637A1D"/>
+<text x="1920" y="1136.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="1920" y="1174.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Proof metadata / deadlines</text>
+<rect x="1896" y="1226.0" width="508" height="127.0" rx="15" fill="#0072CE"/>
+<text x="1920" y="1268.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="1920" y="1306.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Reward state / email outbox</text>
+<line x1="2150.0" y1="722" x2="2150.0" y2="748" stroke="#8997ad" stroke-width="3"/>
+<polygon points="2150.0,748 2144.0,738 2156.0,738" fill="#8997ad"/>
+<line x1="2150.0" y1="1060" x2="2150.0" y2="1086" stroke="#8997ad" stroke-width="3"/>
+<polygon points="2150.0,1086 2144.0,1076 2156.0,1076" fill="#8997ad"/>
+<rect x="2428" y="450.0" width="508" height="127.0" rx="15" fill="#0072CE"/>
+<text x="2452" y="492.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="2452" y="530.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Attendee list / profile</text>
+<rect x="2428" y="582.0" width="508" height="127.0" rx="15" fill="#637A1D"/>
+<text x="2452" y="624.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="2452" y="662.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Review and rating form</text>
+<rect x="2428" y="756.0" width="508" height="143.0" rx="15" fill="#0072CE"/>
+<text x="2452" y="798.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="2452" y="836.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Record attendance</text>
+<rect x="2428" y="904.0" width="508" height="143.0" rx="15" fill="#637A1D"/>
+<text x="2452" y="946.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="2452" y="984.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Check attendance; save</text>
+<text x="2452" y="1020.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">review and rating aggregate</text>
+<rect x="2428" y="1094.0" width="508" height="127.0" rx="15" fill="#0072CE"/>
+<text x="2452" y="1136.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 2</text>
+<text x="2452" y="1174.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Attendance / organizer user</text>
+<rect x="2428" y="1226.0" width="508" height="127.0" rx="15" fill="#637A1D"/>
+<text x="2452" y="1268.06" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Feature 1</text>
+<text x="2452" y="1306.30" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" fill="#ffffff">Reviews / rating data</text>
+<line x1="2682.0" y1="722" x2="2682.0" y2="748" stroke="#8997ad" stroke-width="3"/>
+<polygon points="2682.0,748 2676.0,738 2688.0,738" fill="#8997ad"/>
+<line x1="2682.0" y1="1060" x2="2682.0" y2="1086" stroke="#8997ad" stroke-width="3"/>
+<polygon points="2682.0,1086 2676.0,1076 2688.0,1076" fill="#8997ad"/>
+<rect x="54" y="1397" width="2882" height="82" rx="15" fill="#e8edf5"/>
+<text x="79" y="1441.87" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="27" font-weight="700" fill="#172033">Shared handoffs</text>
+<text x="385" y="1444.49" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="29" font-weight="400" fill="#172033">Identity → checkout     Rewards ↔ purchase     Decisions → status     Attendance → review</text>
+<text x="58" y="1536.11" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="31" font-weight="700" fill="#172033">Supporting journeys</text>
+<text x="489" y="1537.25" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="25" font-weight="400" fill="#526176">Outside the sequential checkout path</text>
+<rect x="54" y="1570" width="944" height="178" rx="18" fill="#ffffff" stroke="#dce3ee" stroke-width="2"/>
+<rect x="74" y="1587" width="447" height="6" rx="3" fill="#637A1D"/>
+<rect x="531" y="1587" width="447" height="6" rx="3" fill="#0072CE"/>
+<text x="78" y="1628.49" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="29" font-weight="700" fill="#172033">Event setup</text>
+<text x="78" y="1666.63" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#526176">Feature 1: creation · Feature 2: management</text>
+<text x="78" y="1703.25" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="25" font-weight="400" fill="#172033">Events, ticket types and vouchers; dashboard entry</text>
+<text x="78" y="1735.25" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="25" font-weight="400" fill="#172033">uses the agreed event operations.</text>
+<rect x="1023" y="1570" width="944" height="178" rx="18" fill="#ffffff" stroke="#dce3ee" stroke-width="2"/>
+<rect x="1043" y="1587" width="904" height="6" rx="3" fill="#0072CE"/>
+<text x="1047" y="1628.49" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="29" font-weight="700" fill="#172033">Account and rewards</text>
+<text x="1047" y="1666.63" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#526176">Feature 2</text>
+<text x="1047" y="1703.25" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="25" font-weight="400" fill="#172033">Profile/photo, password/reset, referral code;</text>
+<text x="1047" y="1735.25" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="25" font-weight="400" fill="#172033">point and coupon expiry.</text>
+<rect x="1992" y="1570" width="944" height="178" rx="18" fill="#ffffff" stroke="#dce3ee" stroke-width="2"/>
+<rect x="2012" y="1587" width="904" height="6" rx="3" fill="#0072CE"/>
+<text x="2016" y="1628.49" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="29" font-weight="700" fill="#172033">Organizer operations</text>
+<text x="2016" y="1666.63" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="23" font-weight="700" fill="#526176">Feature 2</text>
+<text x="2016" y="1703.25" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="25" font-weight="400" fill="#172033">Day/month/year charts, decision emails,</text>
+<text x="2016" y="1735.25" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="25" font-weight="400" fill="#172033">attendee list and attendance actions.</text>
+<rect x="54" y="1780" width="2882" height="136" rx="18" fill="#e8edf5"/>
+<text x="79" y="1823.87" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="27" font-weight="700" fill="#172033">Lifecycle: one shared outcome</text>
+<text x="79" y="1864.87" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="27" font-weight="400" fill="#172033">Feature 1: two-hour proof expiry / three-day decision cancellation.  Feature 2: reward service and decision emails.</text>
+<text x="79" y="1901.87" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="27" font-weight="400" fill="#172033">One SQL transaction updates status, capacity and rewards; retries restore applicable resources once.</text>
+<text x="60" y="1965.25" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="25" font-weight="400" fill="#172033">Rp0 checkout: confirm without proof or payment review. Registration is separate from attendance.</text>
+<text x="60" y="2004.63" font-family="Nimbus Sans, Helvetica, Arial, sans-serif" font-size="23" font-weight="400" fill="#526176">Planned map · some APIs/data remain fixtures · detailed UX defaults and technical contracts stay open to input.</text>
+</svg>

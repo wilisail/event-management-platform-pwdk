@@ -1,0 +1,16 @@
+{
+  "name": "temuevent-backend-connection-check",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "check": "node --env-file=.env check-db.mjs",
+    "setup:ca": "node setup-ca.mjs"
+  },
+  "dependencies": {
+    "pg": "8.23.1"
+  }
+}
