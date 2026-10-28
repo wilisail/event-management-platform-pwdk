@@ -1,0 +1,150 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../generated/prisma"
+  moduleFormat        = "cjs"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["temuevent"]
+}
+
+enum UserRole {
+  CUSTOMER
+  ORGANIZER
+
+  @@schema("temuevent")
+}
+
+// Shared starter. Authentication/rewards and feature business rules are implemented separately.
+model User {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email             String   @unique
+  name              String
+  role              UserRole @default(CUSTOMER)
+  passwordHash      String?  @map("password_hash")
+  referralCode      String   @unique @map("referral_code") @db.VarChar(16)
+  profilePictureKey String?  @map("profile_picture_key")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  events    Event[]
+  purchases Purchase[]
+
+  @@map("users")
+  @@schema("temuevent")
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELED
+
+  @@schema("temuevent")
+}
+
+enum PurchaseStatus {
+  WAITING_FOR_PAYMENT
+  WAITING_FOR_ADMIN_CONFIRMATION
+  DONE
+  REJECTED
+  EXPIRED
+  CANCELED
+
+  @@schema("temuevent")
+}
+
+model Event {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizerId String      @map("organizer_id") @db.Uuid
+  slug        String      @unique
+  name        String
+  category    String
+  location    String
+  venue       String      @default("")
+  address     String      @default("")
+  description String      @default("")
+  imageUrl    String?     @map("image_url")
+  startAt     DateTime    @map("start_at") @db.Timestamptz(3)
+  endAt       DateTime    @map("end_at") @db.Timestamptz(3)
+  status      EventStatus @default(DRAFT)
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  organizer   User        @relation(fields: [organizerId], references: [id], onDelete: Restrict)
+  ticketTypes TicketType[]
+  purchases   Purchase[]
+
+  @@index([organizerId, startAt])
+  @@index([category, location, startAt])
+  @@map("events")
+  @@schema("temuevent")
+}
+
+model TicketType {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId        String   @map("event_id") @db.Uuid
+  name           String
+  description    String   @default("")
+  price          BigInt
+  quota          Int
+  availableSeats Int      @map("available_seats")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  event          Event    @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  purchaseItems  PurchaseItem[]
+
+  @@unique([eventId, name])
+  @@unique([eventId, id])
+  @@map("ticket_types")
+  @@schema("temuevent")
+}
+
+model Purchase {
+  id                    String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reference             String         @unique
+  customerId            String         @map("customer_id") @db.Uuid
+  eventId               String         @map("event_id") @db.Uuid
+  status                PurchaseStatus @default(WAITING_FOR_PAYMENT)
+  subtotal              BigInt
+  voucherDiscount       BigInt         @default(0) @map("voucher_discount")
+  couponDiscount        BigInt         @default(0) @map("coupon_discount")
+  pointsUsed            BigInt         @default(0) @map("points_used")
+  totalPrice            BigInt         @map("total_price")
+  paymentDueAt          DateTime?      @map("payment_due_at") @db.Timestamptz(3)
+  proofUploadedAt       DateTime?      @map("proof_uploaded_at") @db.Timestamptz(3)
+  decisionDueAt         DateTime?      @map("decision_due_at") @db.Timestamptz(3)
+  paymentProofKey       String?        @map("payment_proof_key")
+  completedAt           DateTime?      @map("completed_at") @db.Timestamptz(3)
+  createdAt             DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  customer              User           @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  event                 Event          @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  items                 PurchaseItem[]
+
+  @@unique([eventId, id])
+  @@index([customerId, createdAt])
+  @@index([eventId, status])
+  @@index([status, paymentDueAt])
+  @@index([status, decisionDueAt])
+  @@map("purchases")
+  @@schema("temuevent")
+}
+
+model PurchaseItem {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId     String     @map("event_id") @db.Uuid
+  purchaseId  String     @map("purchase_id") @db.Uuid
+  ticketTypeId String    @map("ticket_type_id") @db.Uuid
+  quantity    Int
+  unitPrice   BigInt     @map("unit_price")
+  lineTotal   BigInt     @map("line_total")
+  purchase    Purchase   @relation(fields: [eventId, purchaseId], references: [eventId, id], onDelete: Restrict)
+  ticketType  TicketType @relation(fields: [eventId, ticketTypeId], references: [eventId, id], onDelete: Restrict)
+
+  @@unique([purchaseId, ticketTypeId])
+  @@index([eventId, purchaseId])
+  @@index([eventId, ticketTypeId])
+  @@map("purchase_items")
+  @@schema("temuevent")
+}
