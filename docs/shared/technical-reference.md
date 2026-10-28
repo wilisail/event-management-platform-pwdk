@@ -2,7 +2,7 @@
 
 [Project record](consistency.en.md) · [UX reference](ux-reference.md)
 
-Updated: **18 October 2026**. Status: proposed implementation defaults, open to changes following input. This record covers the database and backend boundaries connecting feature 1 and feature 2. Feature 1's internal implementation remains with Rizky; feature 2's remains with Wili.
+Updated: **28 October 2026**. Status: proposed implementation defaults, open to changes following input. This record covers the database and backend boundaries connecting feature 1 and feature 2. Feature 1's internal implementation remains with Rizky; feature 2's remains with Wili.
 
 ## 1. Implementation status
 
@@ -10,7 +10,7 @@ Updated: **18 October 2026**. Status: proposed implementation defaults, open to 
 | --- | --- |
 | Frontend | Both previews use Next.js, React, TypeScript and the TemuEvent styling. Each preview runs separately. |
 | Feature 2 backend | Express + TypeScript with read-only fixture routes. [Implementation](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/server/app.ts) and [current response types](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/contracts/types.ts). |
-| Database/authentication | [TemuEvent database](database-setup.md) is active on Supabase in Singapore. The initial user schema and two development identities are applied. Prisma 7.10.1 connection code is prepared; live API connectivity and production authentication remain pending. |
+| Database/authentication | [TemuEvent database](database-setup.md) is active on Supabase in Singapore. The initial user schema and two development identities are applied. Prisma 7.10.1 live connectivity passed. The event/ticket/purchase starter and 30 demo purchases are applied; production authentication remains pending. |
 | Purchases and decisions | Purchase writes, reward reservation/restoration, organizer decisions and email delivery are pending. The proposed interfaces below are not implemented routes. |
 
 ## 2. Technical choices and change impacts
@@ -19,7 +19,7 @@ Updated: **18 October 2026**. Status: proposed implementation defaults, open to 
 | --- | --- | --- |
 | API | **Node.js + Express + TypeScript; REST/JSON.** Common validation/error format. | Another backend requires adapters for both clients and shared authorization/transaction services. |
 | ORM | **Prisma ORM 7.10.1**, pinned with its client and PostgreSQL adapter in feature 2. | Prisma ORM 8 uses a different API; moving to it changes both features' database code. The current version 8 docs do not support MySQL. |
-| Database/hosting | **PostgreSQL hosted on Supabase**. The `temuevent` development project is provisioned in Singapore, with an initial user schema. Express/Prisma connection verification is pending; see [database setup](database-setup.md). | MySQL with another host is possible with a compatible Prisma version. Both features need a consistent provider, migrations and database-specific query changes. The supplied PRD mandates neither host nor ORM. |
+| Database/hosting | **PostgreSQL hosted on Supabase**. The `temuevent` development project is provisioned in Singapore, with an initial user schema. Express/Prisma connection verification has passed; see [database setup](database-setup.md). | MySQL with another host is possible with a compatible Prisma version. Both features need a consistent provider, migrations and database-specific query changes. The supplied PRD mandates neither host nor ORM. |
 | Integrated backend | **One Express runtime with separate feature modules and one database/transaction authority** for the combined demonstration. Each feature retains a standalone entry point for individual demonstration. | Two independent deployed APIs/databases require distributed consistency work for checkout and reward changes. Separate development databases do not synchronize automatically. |
 | Authentication | **Short-lived JWT access cookie plus rotating refresh cookie and server-side session records**, following the course's JWT/refresh-token material. | An opaque server session cookie is also possible. Keeping the identity response and shared auth middleware stable limits changes needed in feature 1. |
 | Background work | **Persisted deadlines and a lightweight scheduled worker; SQL outbox for decision emails.** Deployment must provide an executor that runs the scheduled work. | Redis/BullMQ is optional and adds another hosted dependency. Both features must still use the same persisted deadlines and state-transition rules. |
@@ -29,7 +29,7 @@ Supabase hosts the development PostgreSQL database. Authentication remains a sep
 
 ## 3. Database outline
 
-The initial `temuevent.users` table is implemented; the remaining entities below are proposed. See the [database setup and status](database-setup.md) for applied files, seed data and connection limitations. Tables use primary/foreign keys and appropriate indexes. Feature 1's complete event/purchase schema remains its builder's design.
+The user foundation and [shared event/ticket/purchase starter](../../database/README.md) are implemented; the remaining reward/session/attendance entities below are proposed. See the [database setup and status](database-setup.md) for applied files, seed data and connection limitations. Tables use primary/foreign keys and appropriate indexes. Feature 1's complete event/purchase schema remains its builder's design.
 
 | Entity / owner | Minimum fields or relationships | Cross-feature use |
 | --- | --- | --- |
@@ -131,7 +131,7 @@ These proposed API enum names map to the six PRD statuses. Zero-payable behavior
 
 ## 8. Integration, migrations and checks
 
-- Wili has provisioned the development database and seeded a customer and organizer. Approximately 30 seeded transactions spanning all six statuses follow once the event/purchase schema aligns with feature 1, with related users/events/tickets/rewards. Each builder implements their own frontend/backend functionality against the data.
+- Wili has provisioned the development database and seeded a customer and organizer. Thirty demo purchases spanning all six statuses are now seeded with related users/events/ticket items. Reward allocations remain a separate implementation step. Each builder implements their own frontend/backend functionality against the data.
 - Seeds use stable linked IDs and consistent capacity/reward allocations. Standalone demonstrations can use separate copies of the same fixtures; the integrated application uses one authoritative dataset.
 - Shared schema changes use versioned migrations. Wili coordinates migration order; both builders review changed shared IDs, constraints and payloads. Provider/ORM-major changes are recorded here before dependent code changes.
 - Integration checks cover: authenticated identity; forbidden cross-organizer access; valid referral registration; valid/expired/reserved rewards; duplicate purchase retry; last-seat concurrency; proof/deadline boundaries; accept/reject racing cancellation; restoration once; zero-payable registration; attendance-gated review; decision email retry.
