@@ -36,6 +36,20 @@ The check loads the supplied .env, then starts Node with the included CA trusted
 
 Use prisma/schema.prisma as the shared model reference when wiring feature 1's own Prisma client. src/client.ts and scripts/check.ts show a working PostgreSQL adapter and joined query. Keep the generator output/import paths appropriate for the app. SQL tables are in temuevent, not public.
 
+## Mapping the current feature 1 prototype
+
+| Current UI fixture | Database projection |
+| --- | --- |
+| Numeric event ID | UUID string; keep it as a string in API routes |
+| title | Event.name |
+| date / dateLabel / time | Format startAt and endAt for Asia/Jakarta |
+| image | Event.imageUrl |
+| organizer text | Event.organizer.name |
+| price | Lowest ticket-type price; zero represents free registration |
+| seats | Sum ticketTypes.availableSeats |
+
+These are data mappings; Rizky retains the UI and endpoint implementation. The connection example selects safe organizer fields instead of returning a full User record.
+
 ## Sample data
 
 Development seed: three events, four ticket types and thirty purchases, five in each required status. A zero-payment DONE purchase is included. Purchases reference the existing organizer/customer and contain item rows. Active/confirmed purchases reserve inventory; rejected/expired/canceled samples release it.
