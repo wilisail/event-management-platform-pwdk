@@ -30,6 +30,8 @@ npm run db:generate
 npm run db:check
 ```
 
+Keep this standalone package out of the frontend TypeScript compilation: add `"database"` to the frontend tsconfig.json `exclude` array while preserving the builder's other settings. This is already configured on main. Feature 1's own backend can keep its separate TypeScript configuration.
+
 The supplied backend password and certificate remain valid for this package; no new database account or Supabase project is needed. The included certs directory contains the public CA. The actual .env and credential ZIP stay outside Git. The example env has placeholders only.
 
 The check loads the supplied .env, then starts Node with the included CA trusted before TLS initializes. No extra certificate setting is needed for this package's check. When wiring the app's own backend, preserve the TLS settings described in the shared setup note.
