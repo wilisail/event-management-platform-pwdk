@@ -1,25 +1,46 @@
 {
-  "name": "my-project",
+  "name": "temuevent-feature-1",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@12.3.4",
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently --kill-others -n web,api \"npm:dev:web\" \"npm:dev:api\"",
+    "dev:web": "next dev --hostname 127.0.0.1 --port 3001",
+    "dev:api": "node --import tsx --watch server/index.ts",
     "build": "next build",
-    "start": "next start"
+    "start:web": "next start --hostname 127.0.0.1 --port 3001",
+    "start:api": "node --import tsx server/index.ts",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "db:generate": "prisma generate",
+    "db:validate": "prisma validate",
+    "db:seed": "prisma db seed",
+    "db:check": "node --import tsx server/check-database.ts",
+    "predev": "npm run db:generate",
+    "pretypecheck": "npm run db:generate",
+    "prebuild": "npm run db:generate",
+    "predev:api": "npm run db:generate",
+    "prestart:api": "npm run db:generate"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
     "@vercel/analytics": "1.6.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "express": "^5.3.0",
     "lucide-react": "^1.16.0",
     "next": "16.4.0",
     "react": "^19",
     "react-dom": "^19",
     "shadcn": "^4.11.0",
     "tailwind-merge": "^3.3.1",
-    "tw-animate-css": "^1.4.0"
+    "tw-animate-css": "^1.4.0",
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "dotenv": "18.0.8",
+    "pg": "8.23.1",
+    "zod": "^4.0.0"
+
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
@@ -28,6 +49,13 @@
     "@types/react-dom": "^19",
     "postcss": "^8.5",
     "tailwindcss": "^4.3.3",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "@types/express": "^5.0.0",
+    "@types/pg": "8.20.0",
+    "concurrently": "^9.2.0",
+    "prisma": "7.10.1",
+    "tsx": "^4.20.0"
+    
+
   }
 }

@@ -353,7 +353,7 @@ export default function Page() {
                             ↻ Reset Filter
                         </button>
                     </div>
-                    <div className="flex gap-2 overflow-x-auto pb-1">
+                    <div className="category-scrollbar flex gap-2 overflow-x-auto pb-1">
                         {categories.map((item, i) => (
                             <button
                                 key={item}

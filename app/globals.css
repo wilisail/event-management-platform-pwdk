@@ -17,3 +17,27 @@ button { cursor: pointer; }
 .hero-bg { background: radial-gradient(circle at 15% 15%, #f1edff 0, transparent 34%), radial-gradient(circle at 83% 68%, #ffe8f7 0, transparent 33%), linear-gradient(180deg, #f7f3ff 0%, #fffafe 100%); }
 .gradient-text { background: linear-gradient(90deg, #3f41db, #bd2b9e); -webkit-background-clip: text; background-clip: text; color: transparent; }
 ::selection { background: #ded9ff; color: #211d3b; }
+
+/* Subtle scrollbar for the category filter row */
+.category-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d6d2e5 transparent;
+}
+
+/* Chrome, Edge, Safari */
+.category-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.category-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.category-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d6d2e5;
+  border-radius: 999px;
+}
+
+.category-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #b8b2d0;
+}
