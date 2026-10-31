@@ -109,3 +109,29 @@ export interface LoginSuccess {
   }
 }
 
+export interface PageView<T> {
+  items: T[]
+  pagination: { page: number; pageSize: number; total: number; totalPages: number }
+}
+
+export interface EventSummaryView {
+  id: string
+  name: string
+  category: string
+  location: string
+  venue: string
+  startAt: string
+  endAt: string
+  status: 'DRAFT' | 'PUBLISHED' | 'CANCELED'
+}
+
+/** One confirmed purchase, not an attendance/check-in record. */
+export interface AttendeePurchaseView {
+  purchaseId: string
+  purchaseReference: string
+  customerId: string
+  name: string
+  ticketQuantity: number
+  totalPaid: number
+}
+

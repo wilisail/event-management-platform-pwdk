@@ -33,9 +33,15 @@ The existing private DATABASE_URL enables the route; without it, registration re
 
 The backend implements `/api/auth/login`, `/refresh`, `/logout`, `/csrf` and `/session`. Password login creates a database session; HttpOnly cookies carry signed access and random refresh credentials. Refresh rotates once and detects reuse; logout revokes the session. Working defaults: fifteen-minute access and a seven-day absolute session.
 
-Add the private `AUTH_JWT_SECRET` from the backend handoff alongside DATABASE_URL in the ignored `.env`. Without that key, session routes return 503 while registration and the fixture preview remain available. See [login/session mechanics, request headers and CSRF contract](../docs/shared/login-session-reference.md). UI form wiring and reusable role/ownership middleware are separate next steps.
+Add the private `AUTH_JWT_SECRET` from the backend handoff alongside DATABASE_URL in the ignored `.env`. Without that key, session routes return 503 while registration and the fixture preview remain available. See [login/session mechanics, request headers and CSRF contract](../docs/shared/login-session-reference.md). Reusable guards and protected organizer reads are implemented; UI form wiring is next.
 
 `npm run db:verify:sessions` exercises the real HTTP/database flow and rolls back temporary accounts/sessions/tokens. TypeScript, 57 unit/API tests, live verification, the actual backend bootstrap and a clean install/client generation passed on 31 October. No migration or permission change was needed.
+
+## Protected identity and organizer reads
+
+`GET /api/me` uses the real authenticated identity. Organizer-only `/api/organizer/events` and `/api/organizer/events/:eventId/attendees` read only the caller's owned events and confirmed purchase rows. Reusable authentication/role/CSRF guards are available for future protected operations. The attendee projection is registration data, not check-in proof.
+
+See the [authorization companion note](../docs/shared/authorization-reference.md) for middleware order, ownership filters, 401/403/404 behavior, pagination and the effect on both features. TypeScript, all 66 unit/API tests and real HTTP/database authorization verification passed. `npm run db:verify:authorization` checks the flow with a customer and two organizers and rolls back its temporary data. No new dependency, schema, grant or secret is required.
 
 ## What works in the fixture preview
 
@@ -74,7 +80,7 @@ Next.js type errors are not suppressed. The tests cover expiry boundaries, leap/
 
 ## What remains before a graded submission
 
-Frontend signup/login wiring, reusable backend role/ownership middleware, incoming referral registration with atomic rewards, reward/purchase persistence, avatar uploads, password change/reset emails, organizer management/statistics/attendee APIs and purchase decisions remain to be implemented. Users, event/purchase starter, account/session tables and development seeds are implemented, together with backend registration/login/refresh/logout. SQL transactions already protect session/refresh writes and will also be needed for purchase/reward writes.
+Frontend signup/login wiring, incoming referral registration with atomic rewards, reward/purchase persistence, avatar uploads, password change/reset emails, organizer decisions/statistics, actual attendance and email operations remain to be implemented. Users, event/purchase starter, sessions and development seeds are implemented, together with backend registration/login/refresh/logout, reusable guards and protected identity/organizer reads. SQL transactions already protect session/refresh writes and will also be needed for purchase/reward writes.
 
 The `x-demo-persona` header is deliberately only a demo selector. Production identity must come from the agreed authenticated session, never from a caller-supplied user ID or role.
 

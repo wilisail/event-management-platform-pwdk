@@ -12,7 +12,9 @@ Incoming `referralCode` is currently accepted only when empty/absent; nonempty i
 
 Login, refresh, logout, CSRF retrieval and session inspection are implemented on feature-2. New auth POST requests use JSON and `X-TemuEvent-Client: web`; refresh/logout with a refresh cookie also require `X-CSRF-Token`. Login/refresh return UserView plus CSRF/expiry fields and set HttpOnly cookies; raw access/refresh credentials are not JSON. JWT verification also checks the persisted session and current user data.
 
-See the [login/session reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/login-session-reference.md) for exact routes, cookies, lifetimes, strict refresh-reuse policy and verification. Reusable role middleware and browser form/client wiring are next steps. The fixture API below remains separate from these real auth routes.
+See the [login/session reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/login-session-reference.md) for routes, cookies, lifetimes and refresh policy. Reusable authentication/role/CSRF guards and protected identity/organizer reads are now implemented; browser form/client wiring is next. The fixture API below remains separate from real auth/protected routes.
+
+`GET /api/me` returns safe UserView in data. Organizer-only `GET /api/organizer/events` returns owned summaries, and `GET /api/organizer/events/:eventId/attendees` returns owned DONE-purchase rows. Lists use data.items plus data.pagination (page/pageSize/total/totalPages), defaulting to page 1/pageSize 10 with size capped at 50. Attendee rows include purchase ID/reference, customer ID/name, ticket quantity and totalPaid in IDR. Confirmed registration is not check-in proof. See the [authorization reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/authorization-reference.md) for errors, safe fields and ownership boundaries.
 
 ## Try the read-only feature 2 data
 

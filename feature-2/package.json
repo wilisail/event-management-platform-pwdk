@@ -27,7 +27,9 @@
     "db:verify:registration": "node --import tsx scripts/verify-registration.ts",
     "predb:verify:registration": "npm run db:generate",
     "db:verify:sessions": "node --import tsx scripts/verify-sessions.ts",
-    "predb:verify:sessions": "npm run db:generate"
+    "predb:verify:sessions": "npm run db:generate",
+    "db:verify:authorization": "node --import tsx scripts/verify-authorization.ts",
+    "predb:verify:authorization": "npm run db:generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

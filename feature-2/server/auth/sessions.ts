@@ -18,6 +18,7 @@ export interface SessionRepository {
   rotateRefresh(input: { tokenHash: string; nextTokenHash: string; now: Date }): Promise<RotationResult>
   revokeByRefreshHash(tokenHash: string, now: Date): Promise<void>
   findActiveSession(sessionId: string, userId: string, now: Date): Promise<SessionRecord | null>
+  isCurrentRefreshForSession(tokenHash: string, sessionId: string, now: Date): Promise<boolean>
 }
 export interface SessionCredentials {
   user: UserView
@@ -113,6 +114,10 @@ export function createSessionService(options: {
     },
     verifyCsrf(refreshToken: string | null, csrfToken: unknown): boolean {
       return validRefreshToken(refreshToken) && tokens.verifyCsrf(refreshToken, csrfToken)
+    },
+    async verifySessionCsrf(sessionId: string, refreshToken: string | null, csrfToken: unknown): Promise<boolean> {
+      if (!validRefreshToken(refreshToken) || !tokens.verifyCsrf(refreshToken, csrfToken)) return false
+      return repository.isCurrentRefreshForSession(hashRefreshToken(refreshToken), sessionId, now())
     },
   }
 }

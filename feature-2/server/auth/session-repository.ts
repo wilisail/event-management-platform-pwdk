@@ -64,5 +64,12 @@ export function prismaSessionRepository(database: SessionDatabase, transaction: 
       const session = await database.authSession.findUnique({ where: { id: sessionId }, include: sessionInclude })
       return session && session.userId === userId && active(session, now) ? view(session) : null
     },
+    async isCurrentRefreshForSession(tokenHash, sessionId, now) {
+      const token = await database.authRefreshToken.findFirst({ where: {
+        tokenHash, sessionId, consumedAt: null, expiresAt: { gt: now },
+        session: { revokedAt: null, expiresAt: { gt: now } },
+      }, select: { id: true } })
+      return Boolean(token)
+    },
   }
 }

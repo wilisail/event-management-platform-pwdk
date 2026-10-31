@@ -4,6 +4,8 @@ import { rateLimit } from 'express-rate-limit'
 import { RegistrationError, type RegistrationService } from './auth/registration'
 import { sessionRouter } from './auth/session-http'
 import type { SessionService } from './auth/sessions'
+import { protectedRouter } from './protected-http'
+import type { OrganizerReadRepository } from './organizer/reads'
 import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
@@ -19,6 +21,7 @@ export interface AppOptions {
   sessionService?: SessionService
   secureCookies?: boolean
   loginRateLimit?: { limit: number; windowMs: number }
+  organizerRepository?: OrganizerReadRepository
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -134,6 +137,10 @@ export function createApp(options: AppOptions = {}) {
     service: options.sessionService, now,
     secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production',
     loginLimit: options.loginRateLimit,
+  }))
+  app.use('/api', protectedRouter({
+    sessionService: options.sessionService, organizerRepository: options.organizerRepository,
+    secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production',
   }))
 
   app.get('/api/demo/me', (req, res) => {
