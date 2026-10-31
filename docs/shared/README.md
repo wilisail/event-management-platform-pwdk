@@ -4,6 +4,7 @@ Updated: 1 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Wallet and referral reads](wallet-reference.md) | Authenticated balances/coupons/referral counts, expiry, owner filters, read snapshots and learning notes |
 | [Referral signup](referral-registration-reference.md) | Atomic account/referral/reward issuance, configurable coupon, rollback/retry tests and learning notes |
 | [Referral/reward database](referral-reward-schema-reference.md) | Five reward tables, ownership/duplicate-use constraints, migration, live checks and learning notes |
 | [Frontend authentication](frontend-authentication-reference.md) | Connected signup/login, account and organizer pages; cookies, client coordination and verification limits |
