@@ -1,6 +1,14 @@
 # Shared database starter
 
-Updated: 31 October 2026. Live starter for both feature builders; field changes remain open to discussion.
+Updated: 1 November 2026. Live starter for both feature builders; field changes remain open to discussion.
+
+## Referral/reward storage
+
+Five reward models and their owner/expiry/duplicate-use constraints are applied: `Referral`, `PointGrant`, `RewardCoupon`, `RewardRedemption`, `PointAllocation`. The [companion note](../docs/shared/referral-reward-schema-reference.md) explains the relationships and remaining services. The shared model is mirrored in feature 2's Prisma schema; regenerate your client after adopting it.
+
+Migration `20261031212002_referral_rewards` adds those tables plus a purchase/customer unique key, enables RLS and grants only the required operations to the existing backend role. The original sample users, events, tickets and 30 purchases are preserved. No database reset or credential change is required. Reward tables start empty; sample purchase discounts do not imply a persisted real reward ledger.
+
+Live ownership/constraint/permission checks passed through Prisma with all fixtures rolled back. On the `feature-2` branch, `cd feature-2` then `npm run db:verify:rewards-schema` reruns the check using the ignored backend environment. This development verifier is not signup or checkout business logic. Incoming-referral issuance, wallet and shared reservation/restoration services follow separately.
 
 ## Tables
 
@@ -13,6 +21,11 @@ Updated: 31 October 2026. Live starter for both feature builders; field changes 
 | TicketType | temuevent.ticket_types | Regular/Workshop/free categories, prices and inventory |
 | Purchase | temuevent.purchases | One event per purchase; customer, totals and six PRD statuses |
 | PurchaseItem | temuevent.purchase_items | Ticket quantities and historical prices within a purchase |
+| Referral | temuevent.referrals | One incoming referral per newcomer |
+| PointGrant | temuevent.point_grants | Referrer's separate point awards and original expiry |
+| RewardCoupon | temuevent.reward_coupons | Newcomer's platform coupon and original expiry |
+| RewardRedemption | temuevent.reward_redemptions | Owner-bound purchase claim and reward state |
+| PointAllocation | temuevent.point_allocations | Exact earning batch and amount used by a claim |
 
 TicketType is a ticket category, not a numbered seat or issued QR ticket. Event availability is the sum of its ticket types' availableSeats. Free events use a zero-price ticket type.
 
@@ -91,3 +104,4 @@ db:verify performs temporary writes inside transactions that are rolled back, ch
 See [shared setup](../docs/shared/database-setup.md) and [technical reference](../docs/shared/technical-reference.md).
 
 Account/session verification passed on 31 October 2026: both schema clients validate/generate, the new script passes TypeScript and live constraint/relationship checks, and the original purchase/inventory checks still pass. Auth test records are rolled back.
+

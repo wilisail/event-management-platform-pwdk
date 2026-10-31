@@ -85,6 +85,8 @@ Next.js type errors are not suppressed. All 74 tests, TypeScript and a productio
 
 ## What remains before a graded submission
 
+The referral/reward database foundation is applied and verified: five models, independent point/coupon expiry, ownership constraints and purchase-linked claims/allocations. See the [schema companion note](../docs/shared/referral-reward-schema-reference.md). `npm run db:verify:rewards-schema` tests the real constraints and permissions and rolls back its temporary data. This storage foundation does not yet enable incoming-referral signup, issue rewards or replace the fixture wallet; those are the next subparts.
+
 Incoming referral registration with atomic rewards, real wallet/redemption persistence, profile edits/avatar uploads, password change/reset emails, organizer decisions/statistics, actual attendance, notification delivery, public organizer integration and evaluator deployment remain to be implemented. Users, the event/purchase starter, sessions and seeds are implemented, together with backend registration/login/refresh/logout, reusable guards, protected identity/organizer reads and connected frontend auth. SQL transactions already protect session/refresh writes and will also protect coupled purchase/reward writes. See the [dated completion plan](../docs/shared/feature-2-completion-plan.md) for daily subtasks and time ranges.
 
 The `x-demo-persona` header is deliberately only a demo selector. Production identity must come from the agreed authenticated session, never from a caller-supplied user ID or role.
