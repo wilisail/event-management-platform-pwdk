@@ -1,6 +1,6 @@
 # Authentication, roles and ownership
 
-Updated: 31 October 2026. Sub-batch 3 is implemented on `feature-2`: reusable backend guards, authenticated identity and organizer reads. Frontend signup/login wiring is the next sub-batch. The account/reward preview screens still use fixtures.
+Updated: 31 October 2026. Sub-batch 3 is implemented on `feature-2`: reusable backend guards, authenticated identity and organizer reads. [Sub-batch 4](frontend-authentication-reference.md) now connects signup/login, account navigation and the organizer event/attendee pages. Fixture rewards remain separate under `/preview`.
 
 ## Three separate checks
 
@@ -74,7 +74,7 @@ Feature 1 keeps event creation, checkout and purchase rules. Feature 2 can now r
 
 On 31 October, TypeScript and all **66 unit/API tests** passed. Real HTTP/database verification registered a customer and two organizers, logged them in, created temporary event/ticket/purchase fixtures and checked identity, wrong-role access, cross-organizer protection, pagination, confirmed quantities/IDR totals, free confirmations, current role changes, CSRF/session binding, access expiry, refresh and logout.
 
-All temporary accounts, events, tickets, purchases and session history rolled back together. Unit HTTP tests also exercise a test-only multipart write with mixed-session cookies; no test mutation endpoint is installed in the application. Browser form behavior remains the next checkpoint.
+All temporary accounts, events, tickets, purchases and session history rolled back together. Unit HTTP tests also exercise a test-only multipart write with mixed-session cookies; no test mutation endpoint is installed in the application. The [frontend checkpoint](frontend-authentication-reference.md) records subsequent client/HTTPS verification and the remaining manual browser checks.
 
 Run from `feature-2` with the existing private environment:
 
@@ -86,6 +86,6 @@ npm run db:verify:authorization
 
 No new dependency, provider account, migration, grant or secret is required. Course connections: Express middleware order, role-based authorization, Prisma relations/filtering, Zod validation, JSON serialization and backend testing. Be ready to explain why 401, 403 and ownership-denied 404 differ, why a hidden button cannot enforce permission, and why a database role is different from an application role.
 
-Next: connect browser forms, authenticated navigation and the API client, then verify the browser journey. Decisions, emails, statistics charts, reward issuance and actual attendance remain later work.
+Browser forms, authenticated navigation and the API client are now implemented. Next: real referral/reward persistence, followed by profiles/password recovery and the remaining dashboard flows. See the [dated completion plan](feature-2-completion-plan.md).
 
 References: [Express middleware](https://expressjs.com/en/guide/using-middleware/), [OWASP authorization](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html), [Prisma 7 pagination](https://www.prisma.io/docs/orm/v7/prisma-client/queries/pagination), [login/session mechanics](login-session-reference.md).

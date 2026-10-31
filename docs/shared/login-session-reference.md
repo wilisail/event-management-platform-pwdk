@@ -1,6 +1,6 @@
 # Login and session reference
 
-Updated: 31 October 2026. Implemented on `feature-2`. This second authentication sub-batch covers login, persisted sessions, refresh rotation, CSRF and logout. Reusable guards and organizer reads are now implemented in [sub-batch 3](authorization-reference.md). Frontend form wiring is next; account/reward preview screens still use fixtures.
+Updated: 31 October 2026. Implemented on `feature-2`. This second authentication sub-batch covers login, persisted sessions, refresh rotation, CSRF and logout. Reusable guards and organizer reads are implemented in [sub-batch 3](authorization-reference.md); connected forms, account pages and the session client follow in [sub-batch 4](frontend-authentication-reference.md). Fixture rewards remain under `/preview`.
 
 ## Account, session and credentials
 
@@ -63,7 +63,7 @@ Login commits the session and initial refresh-digest record together. Refresh lo
 
 Reusing a consumed refresh credential revokes that session, including its newer credentials. The repository returns that outcome so revocation commits; throwing inside the SQL transaction would roll it back. The service then returns a generic 401. Refresh history is retained; runtime code does not delete it.
 
-This strict reuse policy means the frontend must coordinate refresh requests, including between tabs, and must not automatically replay a refresh after an uncertain network result. The client helper is a later sub-batch. Purchase/proof mutations likewise must not be blindly retried after login refresh.
+This strict reuse policy means the frontend must coordinate refresh requests, including between tabs, and must not automatically replay a refresh after an uncertain network result. The [implemented client helper](frontend-authentication-reference.md) uses an in-tab promise, Web Locks, a current-session recheck and an uncertain-result stop. Purchase/proof mutations likewise must not be blindly retried after login refresh.
 
 ## Browser and API contract
 
@@ -112,7 +112,7 @@ The live database checks run sequentially inside an outer transaction and roll b
 | Secure coding | Private keys, safe responses, HttpOnly/Secure cookies, CSRF and verified TLS |
 | Testing | Dependency-injected rules, real HTTP, persisted reads and rollback cleanup |
 
-The [third checkpoint](authorization-reference.md) has added reusable authentication/role/CSRF guards and protected identity/organizer reads. The next checkpoint connects signup/login forms and verifies the browser flow. Incoming-referral rewards, password reset, remaining reward/dashboard operations and deployment remain later work.
+The [third checkpoint](authorization-reference.md) added reusable authentication/role/CSRF guards and protected identity/organizer reads. The [fourth checkpoint](frontend-authentication-reference.md) connects signup/login and verifies the real HTTPS client/service path, with manual password-form and multiple-tab checks still pending. Incoming-referral rewards, profile/password lifecycle, remaining dashboard operations and deployment follow the [completion plan](feature-2-completion-plan.md).
 
 Feature 1 can continue its event/purchase implementation. Shared user UUIDs/roles and Rizky's visual direction are unchanged. When wiring checkout authentication, both features will use the agreed session/API helper; feature 1 should not treat a registration response, caller-supplied ID or demo persona as an authenticated user.
 
