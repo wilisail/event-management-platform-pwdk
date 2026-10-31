@@ -9,8 +9,8 @@ Updated: **31 October 2026**. Status: proposed implementation defaults, open to 
 | Area | Current repository state |
 | --- | --- |
 | Frontend | Both previews use Next.js, React, TypeScript and the TemuEvent styling. Each preview runs separately. |
-| Feature 2 backend | Express + TypeScript with read-only fixture routes. [Implementation](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/server/app.ts) and [current response types](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/contracts/types.ts). |
-| Database/authentication | [TemuEvent database](database-setup.md) is active on Supabase in Singapore. The initial user schema and two development identities are applied. Prisma 7.10.1 live connectivity passed. The event/ticket/purchase starter and 30 demo purchases are applied; account/session tables are applied and verified. HTTP authentication remains pending; see [account/session foundation](account-session-foundation.md). |
+| Feature 2 backend | Express + TypeScript with read-only fixture routes and a database-backed `POST /api/auth/register` on feature-2. Login/session issuance remain pending; see [registration reference](registration-reference.md). [Implementation](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/server/app.ts) and [current response types](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/contracts/types.ts). |
+| Database/authentication | [TemuEvent database](database-setup.md) is active on Supabase in Singapore. The initial user schema and two development identities are applied. Prisma 7.10.1 live connectivity passed. The event/ticket/purchase starter and 30 demo purchases are applied; account/session tables are applied and verified. Password-backed registration is implemented on feature-2; login/session issuance remain pending. See [account/session foundation](account-session-foundation.md) and [registration reference](registration-reference.md). |
 | Purchases and decisions | Purchase writes, reward reservation/restoration, organizer decisions and email delivery are pending. The proposed interfaces below are not implemented routes. |
 
 ## 2. Technical choices and change impacts
@@ -73,11 +73,12 @@ These currently use fixture identities selected by `x-demo-persona: customer` or
 
 Full demo payloads are in the [feature 2 contract](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/contracts/README.md). Demo IDs and values, including the Rp25,000 coupon, do not fix production values.
 
-### Proposed production routes owned by feature 2
+### Account and organizer routes owned by feature 2
 
 | Route | Request / response boundary | Effect on feature 1 |
 | --- | --- | --- |
-| `POST /api/auth/register`, `/login`, `/refresh`, `/logout` | Account/session operations; login/refresh set cookies. Registration accepts an optional referral code. | Use the shared API client/session flow and preserve the chosen tickets across login. |
+| `POST /api/auth/register` — implemented on feature-2 | Validated name/email/password and optional CUSTOMER/ORGANIZER role; returns a safe account with a generated referral code. Incoming referral registration is explicitly rejected until atomic reward issuance is added. No session cookie yet. | Creates the account; checkout authentication still needs the login/session endpoints. See [registration reference](registration-reference.md). |
+| `POST /api/auth/login`, `/refresh`, `/logout` — proposed | Session operations; login/refresh will set protected cookies and use the applied session tables. | Use the shared API client/session flow and preserve chosen tickets across login. |
 | `GET /api/auth/csrf` | CSRF token for cookie-authenticated writes | Shared request helper adds `X-CSRF-Token` to mutations, including proof upload. |
 | `GET /api/me` | Safe authenticated identity; 401 when no valid session | Identifies the purchase customer; frontend-supplied user IDs/roles do not authorize a purchase. |
 | `GET /api/me/rewards`, `GET /api/checkout-context` | Wallet, or identity + wallet; balances/eligibility calculated at server `asOf` | Supplies points/coupon choices. Future coupon state adds `RESERVED` to the demo's `AVAILABLE`, `USED`, `EXPIRED` states. Feature 1 permits only `AVAILABLE` selections; feature 2 can show the reservation state. |

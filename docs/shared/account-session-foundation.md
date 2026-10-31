@@ -1,6 +1,6 @@
 # Account and session foundation
 
-Updated: 31 October 2026. Status: database foundation applied and verified. Registration/login endpoints, password hashing, browser cookies and JWT handling are the next implementation batch.
+Updated: 31 October 2026. Status: database foundation applied and verified. Basic registration/password hashing are now implemented on feature-2; see [registration reference](registration-reference.md). Login/session issuance, browser cookies and JWT handling remain pending.
 
 ## Records and relationships
 
@@ -98,7 +98,7 @@ Both new tables are in the private `temuevent` schema with RLS enabled. The exis
 
 The ordered migration lives in `database/prisma/migrations`. It was applied through the authorized Supabase migration connection and registered as applied in Prisma history with the exact SQL checksum. It was not executed by Prisma migrate deploy. No shared database reset was run.
 
-The shared Prisma schema and feature 2's local schema mirror contain the same models. Feature 1's current database queries and frontend remain its builder's implementation; existing user/event/purchase columns are unchanged. Shared login APIs will be supplied in the next batch.
+The shared Prisma schema and feature 2's local schema mirror contain the same models. Feature 1's current database queries and frontend remain its builder's implementation; existing user/event/purchase columns are unchanged. Registration now creates accounts without issuing a session; shared login APIs will follow in the next batch.
 
 ## Verification on 31 October 2026
 
