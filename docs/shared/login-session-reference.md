@@ -1,6 +1,6 @@
 # Login and session reference
 
-Updated: 31 October 2026. Implemented on `feature-2`. This is the second authentication sub-batch: password login, persisted sessions, refresh rotation, CSRF handling and logout. Reusable role/ownership middleware and frontend form wiring are separate next steps. The current account/reward preview still uses fixtures.
+Updated: 31 October 2026. Implemented on `feature-2`. This second authentication sub-batch covers login, persisted sessions, refresh rotation, CSRF and logout. Reusable guards and organizer reads are now implemented in [sub-batch 3](authorization-reference.md). Frontend form wiring is next; account/reward preview screens still use fixtures.
 
 ## Account, session and credentials
 
@@ -112,7 +112,7 @@ The live database checks run sequentially inside an outer transaction and roll b
 | Secure coding | Private keys, safe responses, HttpOnly/Secure cookies, CSRF and verified TLS |
 | Testing | Dependency-injected rules, real HTTP, persisted reads and rollback cleanup |
 
-The next checkpoint adds reusable authenticated-user/role middleware and protected endpoints. The following checkpoint connects signup/login forms and verifies the flow in the browser. Incoming-referral rewards, password reset, real reward/dashboard operations and deployment remain later work.
+The [third checkpoint](authorization-reference.md) has added reusable authentication/role/CSRF guards and protected identity/organizer reads. The next checkpoint connects signup/login forms and verifies the browser flow. Incoming-referral rewards, password reset, remaining reward/dashboard operations and deployment remain later work.
 
 Feature 1 can continue its event/purchase implementation. Shared user UUIDs/roles and Rizky's visual direction are unchanged. When wiring checkout authentication, both features will use the agreed session/API helper; feature 1 should not treat a registration response, caller-supplied ID or demo persona as an authenticated user.
 
