@@ -1,6 +1,6 @@
 # Referral and reward database — companion note
 
-Updated: 1 November 2026, Asia/Jakarta. Day 2, subpart 1: database foundation. Storage and integrity rules are applied. Atomic incoming-referral signup/issuance is implemented in [subpart 2](referral-registration-reference.md), and real authenticated wallet/referral reads in [subpart 3](wallet-reference.md). Purchase reward operations remain next.
+Updated: 1 November 2026, Asia/Jakarta. Day 2, subpart 1: database foundation. Storage and integrity rules are applied. Atomic incoming-referral signup/issuance is implemented in [subpart 2](referral-registration-reference.md), and real authenticated wallet/referral reads in [subpart 3](wallet-reference.md). The [reserve/consume/restore core](reward-operations-reference.md) is now implemented; production purchase/decision wiring remains.
 
 ## Relationships
 
@@ -43,7 +43,7 @@ Ayu's points and Budi's coupon are different rewards owned by different people. 
 
 If Ayu later spends 3,000 points from that grant, the purchase's reward redemption records 3,000 points and an allocation links it to that grant. The reservation service must atomically reduce its remaining amount from 10,000 to 7,000. If rejected or expired, the shared restoration service must return the same 3,000 points once. The original expiry remains unchanged; already-expired points do not become newly spendable.
 
-Those service operations are not implemented by creating these tables. The example explains why the fields and relationships are needed.
+Creating the tables alone did not implement these operations. The [reward core](reward-operations-reference.md) now implements reservation/consumption/restoration; production purchase/decision adapters remain separate.
 
 ## What PostgreSQL enforces now
 
@@ -80,7 +80,7 @@ The extra owner/ID unique pairs support composite foreign keys. The owner appear
 | PostgreSQL on Supabase | Stores rows; checks relationships, uniqueness, amounts and permissions. |
 | SQL migration | Applies this additive schema change to an existing database and records its history. It does not create new application screens. |
 | Prisma schema/client | Maps SQL names/types to typed TypeScript models such as `pointGrant`. Both app mappings must match the shared schema. |
-| Express services | Atomic signup/issuance and authenticated wallet/referral reads are implemented. Purchase reserve/consume/restore remains next. |
+| Express services | Atomic signup/issuance and authenticated wallet/referral reads are implemented. The transaction-aware reserve/consume/restore core is implemented; production purchase/transition wiring remains. |
 | React/Next.js | Displays the real wallet/referral results through authenticated APIs; receives no database password and does not directly create reward rows. |
 
 These remain private tables in `temuevent`, with RLS enabled and explicit permissions for the existing `temuevent_app` backend role. `anon`, `authenticated` and `service_role` Data API access is not granted. Express must still enforce the actual customer's identity/ownership; the database backend role is shared by trusted server requests and is not a separate role for each customer.
@@ -110,4 +110,4 @@ Explain these in your own words:
 
 Course connections: normalization, one-to-many relations, composite keys, joins/indexes, PostgreSQL constraints, Prisma models/migrations, SQL transactions, secure coding and database integration tests.
 
-Primary references: [PostgreSQL constraints](https://www.postgresql.org/docs/17/ddl-constraints.html), [partial unique indexes](https://www.postgresql.org/docs/17/indexes-partial.html), [Supabase row-level security](https://supabase.com/docs/guides/database/postgres/row-level-security). [Atomic signup/issuance](referral-registration-reference.md) and [wallet/referral reads](wallet-reference.md) are implemented; the shared reservation/restoration service remains next.
+Primary references: [PostgreSQL constraints](https://www.postgresql.org/docs/17/ddl-constraints.html), [partial unique indexes](https://www.postgresql.org/docs/17/indexes-partial.html), [Supabase row-level security](https://supabase.com/docs/guides/database/postgres/row-level-security). [Atomic signup/issuance](referral-registration-reference.md) and [wallet/referral reads](wallet-reference.md) are implemented; the [shared reward core](reward-operations-reference.md) is implemented; checkout/transition wiring remains.
