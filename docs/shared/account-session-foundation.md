@@ -1,6 +1,6 @@
 # Account and session foundation
 
-Updated: 31 October 2026. Status: database foundation applied and verified. Basic registration/password hashing are now implemented on feature-2; see [registration reference](registration-reference.md). Login/session issuance, browser cookies and JWT handling remain pending.
+Updated: 31 October 2026. Status: database foundation applied and verified. Registration/password hashing and login/session issuance, cookies, JWT verification, refresh rotation and logout are implemented on feature-2. See [registration](registration-reference.md) and [login/session reference](login-session-reference.md). Reusable role middleware and frontend authentication wiring remain next steps.
 
 ## Records and relationships
 
@@ -53,15 +53,15 @@ The existing user columns, IDs, roles and referral codes are unchanged. The two 
 
 There are three different identities: the human Supabase dashboard member; the backend database login `temuevent_app`; and application users whose role is `CUSTOMER` or `ORGANIZER`. Sharing the backend connection between builders does not sign a customer into the application.
 
-## Planned credential flow
+## Credential flow
 
-After successful password verification, the server will create an AuthSession and an initial AuthRefreshToken together. The browser will receive a short-lived signed access JWT and a refresh secret in protected cookies. The access JWT will identify the user and session, using the existing shared authentication contract.
+After password verification, the server creates an AuthSession and initial AuthRefreshToken together. Login returns a fifteen-minute signed access JWT and a refresh secret in HttpOnly cookies. The access JWT identifies the user and session; the session has a seven-day absolute expiry. These working defaults are implemented in the service, not hardcoded by the migration.
 
-The database will store only a SHA-256 hash of the high-entropy random refresh secret. A refresh secret is not a password; password hashing requires a suitable password-hashing algorithm rather than plain SHA-256. JWT signing keys and raw credentials stay outside public Git and API profile responses.
+The database stores only a SHA-256 hash of the high-entropy random refresh secret. A refresh secret is not a password; passwords use salted scrypt. JWT signing keys and raw credentials stay outside public Git and API profile responses.
 
 For a protected request, Express must verify the JWT and check that the referenced session is unrevoked and unexpired. It must obtain the authoritative role/ownership from backend data. A session ID alone is not proof of authentication.
 
-A representative Prisma query for the planned session check is:
+A representative Prisma query for a session check is:
 
 ```ts
 const session = await prisma.authSession.findFirst({
@@ -78,15 +78,15 @@ const session = await prisma.authSession.findFirst({
 })
 ```
 
-This query is a usage example, not a live route. Claims must already have passed cryptographic JWT verification. Password and token hashes are deliberately absent from the selected response.
+This query illustrates the check; the implemented repository uses an equivalent session lookup and expiry/revocation checks. Claims first pass cryptographic JWT verification. Password and token hashes are absent from the identity response.
 
-Logout will set `revokedAt`; expiry is checked against server time. Storing an expiry timestamp does not create a timer or enforce an HTTP response by itself. The access/refresh lifetimes and cookie settings will be configured in the next batch; no lifetime is hardcoded by this migration.
+Logout sets `revokedAt`; expiry is enforced by the service against server time. Storing an expiry timestamp alone does not create a timer or enforce an HTTP response. Cookie settings and implemented lifetimes are documented in the session reference.
 
 ## Rotation and SQL transactions
 
-A refresh operation will check both the token and its parent session. An unexpired token does not make an expired or revoked session valid. Consuming the old token and inserting its replacement must commit in the same SQL transaction.
+A refresh operation checks both the token and parent session. An unexpired token does not make an expired or revoked session valid. Consuming the old token and inserting its replacement commit in the same SQL transaction.
 
-A conditional update with `consumedAt: null` lets only one use consume the old token. The next batch must implement the complete refresh endpoint, replay handling and client refresh coordination; this foundation does not claim that those services already exist.
+Refresh locks the parent session, then re-reads the token before consuming it. Logout locks the same row. Reusing a consumed token commits session revocation and returns 401. Backend endpoints are implemented; frontend coordination between simultaneous refreshes/tabs remains part of the client wiring batch.
 
 Foreign keys prevent orphan sessions/tokens. Unique token hashes prevent storing the same credential twice. SQL checks enforce expiry after creation, revocation/consumption at or after creation, and the expected 64-character lowercase hexadecimal hash format. Cross-record expiry eligibility remains a backend check.
 
@@ -112,7 +112,7 @@ npm run db:verify:auth
 
 The cloud VM verification used the actual backend role and verified TLS connection. It checked multiple sessions per user, joined token-to-user relationships, one-time conditional consumption, independent session revocation, expired-session rejection in active queries, foreign-key/unique/date/hash constraints, and rollback cleanup. TypeScript checked the new verification script. The original purchase/inventory verification also passed.
 
-All test writes were rolled back. The live database retains two sample users, three events and thirty purchases; both new auth tables are empty until real sign-in is implemented. Security checks found no new warnings/errors.
+All foundation and later HTTP/session verification writes were rolled back. The live database retains two sample users, three events and thirty purchases; both auth tables are empty until a real, non-test login is performed. The [session reference](login-session-reference.md) records the subsequent login/refresh/logout HTTP tests. Security checks found no new warnings/errors.
 
 ## Course connections
 
@@ -121,8 +121,9 @@ All test writes were rolled back. The live database retains two sample users, th
 | Relational design / normalization | Account identity is stored once; sessions and token history reference it through foreign keys. |
 | SQL keys, indexes and constraints | UUID primary keys, unique hashes, indexed foreign keys and timestamp checks. |
 | Prisma ORM and migrations | Typed relation models/client generation plus one ordered SQL history. |
-| Authentication / authorization | Session storage prepares authentication; customer/organizer permission middleware is still pending. |
+| Authentication / authorization | Session services now implement authentication; reusable customer/organizer permission middleware is the next step. |
 | Transactions / reliability | Consume-and-replace writes must succeed together; verification writes roll back. |
 | Secure coding / testing | Private backend access, token hashes rather than raw secrets, and tests against real database constraints. |
 
 References: [OWASP session management](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html), [PostgreSQL constraints](https://www.postgresql.org/docs/17/ddl-constraints.html), [Prisma 7 migration customization](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/customizing-migrations), [Supabase API security](https://supabase.com/docs/guides/api/securing-your-api).
+
