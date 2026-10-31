@@ -6,7 +6,7 @@ Updated: 31 October 2026.
 
 The shared schema now also includes `auth_sessions` and `auth_refresh_tokens`. These store per-login expiry/revocation and hashed refresh-token history. [Account/session notes](account-session-foundation.md) describe the fields, relationships, course mapping and verification.
 
-Both tables are private, RLS-enabled and accessible to the existing backend role through SELECT/INSERT/UPDATE only. The additive `20261031041038_account_sessions` migration is applied and registered in Prisma history with its exact SQL checksum. Registration, login/session/cookie handling, refresh and logout are implemented on feature-2. [Reusable guards, protected identity and owned organizer reads](authorization-reference.md) also passed real HTTP/database tests. All temporary accounts/events/purchases/sessions rolled back; existing sample data is unchanged. Frontend form wiring is next. See [registration](registration-reference.md) and [session mechanics](login-session-reference.md).
+Both tables are private, RLS-enabled and accessible to the existing backend role through SELECT/INSERT/UPDATE only. The additive `20261031041038_account_sessions` migration is applied and registered in Prisma history with its exact SQL checksum. Registration, login/session/cookie handling, refresh and logout are implemented on feature-2. [Reusable guards, protected identity and owned organizer reads](authorization-reference.md) passed real HTTP/database tests; [connected frontend authentication](frontend-authentication-reference.md) also passed the real HTTPS client/service flow. QA writes roll back; existing sample data is unchanged. No migration, grant or connection-secret change is needed for this frontend checkpoint.
 
 The ignored backend environment now uses the existing DATABASE_URL plus AUTH_JWT_SECRET for login sessions. A development signing key is prepared in the private handoff; the database connection/password is unchanged. Never copy either value into Git or frontend public variables. This batch requires no new migration, database account or permission grants.
 
@@ -16,7 +16,7 @@ The shared database now has `users`, `events`, `ticket_types`, `purchases` and `
 
 The [shared Prisma starter](../../database/README.md) contains the models, pinned dependencies, public TLS certificate, connection example, ordered migrations and repeatable sample-data SQL. Rizky can bring the `database` folder into feature-1, place the already supplied .env there, and run the documented check. Prisma reads and rolled-back writes with those existing credentials passed in a cloud VM on 28 October.
 
-Event fields follow Rizky's current creation form. The starter is available immediately, and its fields remain open to changes from either builder. Feature 1's frontend/backend implementation remains with Rizky. Payment-proof keys in the demo data are placeholders; rewards, uploads, authorization and purchase-transition services still need implementation.
+Event fields follow Rizky's current creation form. The starter is available immediately, and its fields remain open to changes from either builder. Feature 1's frontend/backend implementation remains with Rizky. Payment-proof keys in the demo data are placeholders; real rewards/uploads/purchase-transition services and their authorization still need implementation. Account/organizer read guards are already implemented separately.
 
 ## Parallel development and handoff
 
@@ -64,7 +64,7 @@ The actual application `.env` is prepared separately for Rizky and contains the 
 
 [Prisma schema](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/prisma/schema.prisma) · [SQL baseline](https://github.com/wilisail/event-management-platform-pwdk/blob/main/database/prisma/migrations/0_user_foundation/migration.sql) · [seed](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/prisma/seed.ts)
 
-Users have a UUID, normalized unique email, name, customer/organizer role, immutable unique referral code, optional password hash/profile-picture key and timestamps. The seed identities have no login credentials. Register a new account to test the implemented password login; reusable permissions and frontend wiring follow separately.
+Users have a UUID, normalized unique email, name, customer/organizer role, immutable unique referral code, optional password hash/profile-picture key and timestamps. The seed identities have no login credentials. Register a new account to test the implemented password login and connected pages; a new organizer will initially have no owned events. Evaluator/demo account setup is a separate release task.
 
 | Development identity | Email | Role | Referral code |
 | --- | --- | --- | --- |
@@ -164,7 +164,7 @@ Feature 1 can continue its pages, API handlers and business-rule tests using the
 | Prisma migration baseline | Passed; `0_user_foundation` recorded and CLI migration status up to date |
 | Temporary baseline login | Disabled; password and temporary privileges removed |
 
-Feature 2 continues with real registration, password hashing, sessions and referral/reward issuance. Feature 1 retains the design of its event/ticket/purchase/review tables. Shared foreign keys, reward allocations and the purchase transition service are coordinated before wiring the two features together. Thirty linked sample purchases are now present in the shared database.
+Feature 2 registration, password hashing, sessions, protected reads and frontend auth are implemented. Next are real referral/reward issuance and the remaining [completion-plan](feature-2-completion-plan.md) flows. Feature 1 retains the design of its event/ticket/purchase/review tables. Shared foreign keys, reward allocations and the purchase transition service are coordinated before wiring the two features together. Thirty linked sample purchases remain present in the shared database.
 
 Sources: [Supabase connection modes](https://supabase.com/docs/guides/database/connecting-to-postgres), [Supabase SSL verification](https://supabase.com/docs/guides/platform/ssl-enforcement), [node-postgres SSL configuration](https://node-postgres.com/features/ssl), [Prisma baseline workflow](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/baselining), [Prisma PostgreSQL connection options](https://www.prisma.io/docs/orm/overview/databases/postgresql).
 
