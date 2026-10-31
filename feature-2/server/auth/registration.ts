@@ -1,0 +1,107 @@
+import { randomBytes } from 'node:crypto'
+import { z } from 'zod'
+import type { Role, UserView } from '../../contracts/types'
+import { hashPassword, PasswordWorkLimitError } from './passwords'
+
+const password = z.string()
+  .refine(value => Array.from(value).length >= 15, 'Use at least 15 characters')
+  .refine(value => Array.from(value).length <= 128, 'Use at most 128 characters')
+  .refine(value => value.trim().length > 0, 'A password cannot contain only spaces')
+
+export const registrationSchema = z.object({
+  name: z.string().trim().min(2, 'Enter at least 2 characters').max(100),
+  email: z.string().trim().toLowerCase().max(254).email('Enter a valid email address'),
+  password,
+  role: z.enum(['CUSTOMER', 'ORGANIZER']).default('CUSTOMER'),
+  referralCode: z.string().trim().max(16).optional(),
+}).strict()
+
+export interface NewAccount {
+  name: string
+  email: string
+  role: Role
+  passwordHash: string
+  referralCode: string
+}
+
+export interface RegistrationRepository {
+  findUserIdByEmail(email: string): Promise<{ id: string } | null>
+  createUser(data: NewAccount): Promise<UserView>
+}
+
+export class RegistrationError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly code: string,
+    message: string,
+    public readonly issues?: Array<{ field: string; message: string }>,
+  ) {
+    super(message)
+    this.name = 'RegistrationError'
+  }
+}
+
+export interface RegistrationService {
+  register(input: unknown): Promise<UserView>
+}
+
+export function createRegistrationService(options: {
+  repository: RegistrationRepository
+  passwordHasher?: (password: string) => Promise<string>
+  referralCodeGenerator?: () => string
+}): RegistrationService {
+  const repository = options.repository
+  const passwordHasher = options.passwordHasher ?? hashPassword
+  const referralCodeGenerator = options.referralCodeGenerator ??
+    (() => randomBytes(6).toString('hex').toUpperCase())
+  const duplicateEmail = () => new RegistrationError(
+    409, 'EMAIL_IN_USE', 'An account with this email already exists',
+  )
+
+  return {
+    async register(input) {
+      const parsed = registrationSchema.safeParse(input)
+      if (!parsed.success) {
+        throw new RegistrationError(400, 'INVALID_REGISTRATION', 'Check the registration fields',
+          parsed.error.issues.map(issue => ({
+            field: issue.path.map(String).join('.'), message: issue.message,
+          })))
+      }
+      const data = parsed.data
+      // Do not create a partially fulfilled referral registration before rewards are atomic.
+      if (data.referralCode) {
+        throw new RegistrationError(400, 'REFERRAL_REGISTRATION_NOT_READY',
+          'Referral registration is not available yet. No account was created.')
+      }
+      if (await repository.findUserIdByEmail(data.email)) throw duplicateEmail()
+
+      let passwordHash: string
+      try {
+        passwordHash = await passwordHasher(data.password)
+      } catch (error) {
+        if (error instanceof PasswordWorkLimitError) {
+          throw new RegistrationError(503, 'REGISTRATION_BUSY', 'Please try registering again shortly')
+        }
+        throw error
+      }
+
+      // A single INSERT is atomic. The unique email index resolves concurrent signups.
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          return await repository.createUser({
+            name: data.name, email: data.email, role: data.role,
+            passwordHash, referralCode: referralCodeGenerator(),
+          })
+        } catch (error) {
+          if (!error || typeof error !== 'object' || !('code' in error) || error.code !== 'P2002') {
+            throw error
+          }
+          if (await repository.findUserIdByEmail(data.email)) throw duplicateEmail()
+          // An unrelated unique collision (the generated referral code) gets a fresh code.
+        }
+      }
+      throw new RegistrationError(503, 'REFERRAL_CODE_UNAVAILABLE',
+        'Account creation is temporarily unavailable. Please try again.')
+    },
+  }
+}
