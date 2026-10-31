@@ -8,7 +8,7 @@ Five private tables are now applied: `referrals`, `point_grants`, `reward_coupon
 
 The [companion note](referral-reward-schema-reference.md) explains owner-bound relationships, earning batches, expiry, coupon exclusivity and remaining services. Live Prisma checks through the existing backend role passed; all QA writes rolled back. The original 2 users, 3 events, 4 ticket types and 30 purchases are preserved. Reward tables start empty; existing sample purchase discounts are illustrative and are not backfilled as real reward spending. Connection credentials and Data API exposure are unchanged.
 
-Atomic incoming-referral signup is now implemented on `feature-2`, using these existing tables and credentials. The account, referral, 10,000-point award and newcomer coupon commit together; see the [signup companion note](referral-registration-reference.md). Authenticated wallet reading and purchase reward operations remain the next subparts. Temporary verification rewards roll back; real successful signups will persist their rewards.
+Atomic incoming-referral signup is now implemented on `feature-2`, using these existing tables and credentials. The account, referral, 10,000-point award and newcomer coupon commit together; see the [signup companion note](referral-registration-reference.md). Authenticated wallet/referral reading is also implemented; see the [wallet companion note](wallet-reference.md). Purchase reward reservation/consumption/restoration remains the next subpart. Temporary verification rewards roll back; real successful signups will persist their rewards.
 
 ## Account/session foundation
 
@@ -80,7 +80,7 @@ Users have a UUID, normalized unique email, name, customer/organizer role, immut
 | Ayu Pratiwi | `ayu@example.test` | `CUSTOMER` | `AYU7K2P` |
 | Jakarta Coffee Collective | `organizer@example.test` | `ORGANIZER` | `JCCDEMO` |
 
-The schema is backend-only. The Data API roles have no access to it; RLS is enabled. `temuevent_app` has schema/type usage and SELECT/INSERT/UPDATE on users. It also has SELECT/INSERT/UPDATE/DELETE on events and ticket types, and SELECT/INSERT/UPDATE on purchases and purchase items, with matching backend-role policies. Purchase history cannot be deleted through this application role. It has no RLS-bypass or schema-creation privilege. A separate backend login password is configured privately, outside Git. The account/reward UI still uses its existing fixtures.
+The schema is backend-only. The Data API roles have no access to it; RLS is enabled. `temuevent_app` has schema/type usage and SELECT/INSERT/UPDATE on users. It also has SELECT/INSERT/UPDATE/DELETE on events and ticket types, and SELECT/INSERT/UPDATE on purchases and purchase items, with matching backend-role policies. Purchase history cannot be deleted through this application role. It has no RLS-bypass or schema-creation privilege. A separate backend login password is configured privately, outside Git. Only the separate /preview and /api/demo routes use the old account/reward fixtures; authenticated account/reward reads use the database.
 
 ## Verified connection
 
@@ -173,7 +173,7 @@ Feature 1 can continue its pages, API handlers and business-rule tests using the
 | Prisma migration baseline | Passed; `0_user_foundation` recorded and CLI migration status up to date |
 | Temporary baseline login | Disabled; password and temporary privileges removed |
 
-Feature 2 registration, optional atomic referral/reward issuance, password hashing, sessions, protected reads and frontend auth are implemented. Next are the authenticated wallet and remaining [completion-plan](feature-2-completion-plan.md) flows. Feature 1 retains the design of its event/ticket/purchase/review implementation. Reward allocations and the purchase transition service are coordinated before checkout integration. Thirty linked sample purchases remain present in the shared database.
+Feature 2 registration, optional atomic referral/reward issuance, password hashing, sessions, protected reads and frontend auth are implemented. Authenticated wallet/referral reads are implemented too. Next are purchase reward operations and the remaining [completion-plan](feature-2-completion-plan.md) flows. Feature 1 retains the design of its event/ticket/purchase/review implementation. Reward allocations and the purchase transition service are coordinated before checkout integration. Thirty linked sample purchases remain present in the shared database.
 
 Sources: [Supabase connection modes](https://supabase.com/docs/guides/database/connecting-to-postgres), [Supabase SSL verification](https://supabase.com/docs/guides/platform/ssl-enforcement), [node-postgres SSL configuration](https://node-postgres.com/features/ssl), [Prisma baseline workflow](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/baselining), [Prisma PostgreSQL connection options](https://www.prisma.io/docs/orm/overview/databases/postgresql).
 

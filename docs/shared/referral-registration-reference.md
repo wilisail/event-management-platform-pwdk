@@ -1,6 +1,6 @@
 # Referral signup and reward issuance — companion note
 
-Updated: 1 November 2026, Asia/Jakarta. Day 2, subpart 2. Implemented on `feature-2`: an optional incoming referral code now creates the account, referral-use record and both rewards atomically. The real wallet and checkout reservation/restoration services remain the next subparts.
+Updated: 1 November 2026, Asia/Jakarta. Day 2, subpart 2. Implemented on `feature-2`: an optional incoming referral code now creates the account, referral-use record and both rewards atomically. The [real wallet/referral reads](wallet-reference.md) are now implemented in subpart 3; checkout reservation/restoration remains next.
 
 ## Request to database
 
@@ -69,7 +69,7 @@ Password hashing happens beforehand. Scrypt consumes CPU and memory; keeping it 
 | PostgreSQL constraints | Enforce email/code uniqueness, one incoming referral per account, correct recipients and valid amounts/dates. |
 | Frontend | Sends the optional code and displays success/errors; it does not create reward rows or choose their value. |
 
-An early email lookup improves duplicate feedback. PostgreSQL's unique email index remains the guarantee when requests overlap. Each referral points to one newcomer, and the point grant/coupon each have a unique referral link. Separate point awards are inserted rather than updating a shared user balance; later wallet queries can sum the valid grants.
+An early email lookup improves duplicate feedback. PostgreSQL's unique email index remains the guarantee when requests overlap. Each referral points to one newcomer, and the point grant/coupon each have a unique referral link. Separate point awards are inserted rather than updating a shared user balance; the wallet queries sum the valid grants.
 
 The repository fails closed if referral signup is requested without a transaction boundary. A test also checks that referral writes never escape to the root client outside the supplied transaction.
 
@@ -86,7 +86,7 @@ Unknown errors and uncertain network outcomes are not automatically replayed. If
 | Area | Effect |
 | --- | --- |
 | Feature 2 signup | Optional referral input now works against the real database; the existing TemuEvent form styling is reused. |
-| Feature 2 wallet | Issued rewards exist in the database. Authenticated wallet APIs/UI are the next subpart; `/preview` remains sample data. |
+| Feature 2 wallet | Issued rewards exist in the database. Authenticated wallet APIs/UI are implemented in [subpart 3](wallet-reference.md); `/preview` remains sample data. |
 | Feature 1 checkout | Customer IDs and the signup response shape are unchanged. Checkout should later read the actual issued coupon value/expiry through the agreed wallet service, then reserve through the shared transaction-aware service. |
 | Event vouchers | Remain feature 1's organizer-created promotions, separate from these platform referral coupons. |
 | Shared database | Uses the five reward tables applied in subpart 1. This batch changes behavior without another migration, provider, credential or access grant. |
