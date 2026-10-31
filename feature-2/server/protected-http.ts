@@ -4,12 +4,19 @@ import { authentication, requireAuthentication, requireRoles } from './auth/auth
 import type { SessionService } from './auth/sessions'
 import type { OrganizerReadRepository } from './organizer/reads'
 import type { UserView } from '../contracts/types'
+import type { RewardReadRepository } from './rewards/reads'
+import { REFERRAL_AWARD_POINTS, REWARD_VALIDITY_MONTHS } from '../domain/rewards'
 
 const pageInput = z.strictObject({
   page: z.coerce.number().int().min(1).max(10000).default(1),
   pageSize: z.coerce.number().int().min(1).max(50).default(10),
 })
 const eventIdInput = z.uuid()
+const walletInput = z.strictObject({
+  pointPage: z.coerce.number().int().min(1).max(1000).default(1),
+  couponPage: z.coerce.number().int().min(1).max(1000).default(1),
+  pageSize: z.coerce.number().int().min(1).max(50).default(10),
+})
 const publicUser = (user: Readonly<UserView>): UserView => ({
   id: user.id, name: user.name, email: user.email, role: user.role,
   referralCode: user.referralCode, profilePictureUrl: user.profilePictureUrl,
@@ -20,6 +27,8 @@ const fail = (res: Response, status: number, code: string, message: string) =>
 export function protectedRouter(options: {
   sessionService?: SessionService
   organizerRepository?: OrganizerReadRepository
+  rewardRepository?: RewardReadRepository
+  now?: () => Date
   secureCookies: boolean
 }) {
   const router = Router()
@@ -27,6 +36,29 @@ export function protectedRouter(options: {
   const organizer = requireRoles('ORGANIZER')
   router.get('/me', signedIn, (_req, res) => {
     res.json({ success: true, message: 'Signed-in identity', data: publicUser(authentication(res)!.user) })
+  })
+  router.get('/me/referral', signedIn, async (req, res) => {
+    if (Object.keys(req.query).length) { fail(res, 400, 'INVALID_REFERRAL_QUERY', 'No query fields are supported'); return }
+    const repository = options.rewardRepository
+    if (!repository) { fail(res, 503, 'REWARDS_UNAVAILABLE', 'Rewards are not configured'); return }
+    try {
+      const user = authentication(res)!.user
+      const referredCount = await repository.countReferrals(user.id)
+      res.json({ success: true, message: 'Your referral summary', data: {
+        code: user.referralCode, referredCount,
+        referralAwardPoints: REFERRAL_AWARD_POINTS, validityCalendarMonths: REWARD_VALIDITY_MONTHS,
+      } })
+    } catch { fail(res, 503, 'REWARDS_UNAVAILABLE', 'Rewards are temporarily unavailable') }
+  })
+  router.get('/me/rewards', signedIn, requireRoles('CUSTOMER'), async (req, res) => {
+    const query = walletInput.safeParse(req.query)
+    if (!query.success) { fail(res, 400, 'INVALID_WALLET_QUERY', 'Use pointPage/couponPage 1–1000 and pageSize 1–50'); return }
+    const repository = options.rewardRepository
+    if (!repository) { fail(res, 503, 'REWARDS_UNAVAILABLE', 'Rewards are not configured'); return }
+    try {
+      const data = await repository.wallet(authentication(res)!.user.id, (options.now ?? (() => new Date()))(), query.data)
+      res.json({ success: true, message: 'Your reward wallet', data })
+    } catch { fail(res, 503, 'REWARDS_UNAVAILABLE', 'Rewards are temporarily unavailable') }
   })
   router.get('/organizer/events', signedIn, organizer, async (req, res) => {
     const query = pageInput.safeParse(req.query)

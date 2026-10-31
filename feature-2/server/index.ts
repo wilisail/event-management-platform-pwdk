@@ -6,6 +6,7 @@ import { createSessionTokens } from './auth/session-tokens'
 import { createSessionService } from './auth/sessions'
 import { prismaSessionRepository } from './auth/session-repository'
 import { prismaOrganizerReadRepository } from './organizer/read-repository'
+import { prismaRewardReadRepository } from './rewards/read-repository'
 
 const port = Number(process.env.F2_API_PORT || 4002)
 const host = process.env.F2_API_HOST || '127.0.0.1'
@@ -41,6 +42,8 @@ async function start() {
   const server = createApp({
     allowedOrigins, registrationService, sessionService,
     organizerRepository: client ? prismaOrganizerReadRepository(client) : undefined,
+    rewardRepository: client ? prismaRewardReadRepository(client, work => client.$transaction(work,
+      { isolationLevel: 'RepeatableRead', timeout: 10000 })) : undefined,
     databaseProbe: showDatabaseProbe ? database?.readSeededDatabaseUser : undefined,
   }).listen(port, host, () => {
     console.log('Feature 2 API: http://' + host + ':' + port)

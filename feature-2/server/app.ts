@@ -6,6 +6,7 @@ import { sessionRouter } from './auth/session-http'
 import type { SessionService } from './auth/sessions'
 import { protectedRouter } from './protected-http'
 import type { OrganizerReadRepository } from './organizer/reads'
+import type { RewardReadRepository } from './rewards/reads'
 import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
@@ -22,6 +23,7 @@ export interface AppOptions {
   secureCookies?: boolean
   loginRateLimit?: { limit: number; windowMs: number }
   organizerRepository?: OrganizerReadRepository
+  rewardRepository?: RewardReadRepository
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -140,6 +142,7 @@ export function createApp(options: AppOptions = {}) {
   }))
   app.use('/api', protectedRouter({
     sessionService: options.sessionService, organizerRepository: options.organizerRepository,
+    rewardRepository: options.rewardRepository, now,
     secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production',
   }))
 

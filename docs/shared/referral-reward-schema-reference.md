@@ -1,6 +1,6 @@
 # Referral and reward database — companion note
 
-Updated: 1 November 2026, Asia/Jakarta. Day 2, subpart 1: database foundation. Storage and integrity rules are applied. Atomic incoming-referral signup and issuance are now implemented in [subpart 2](referral-registration-reference.md); the real wallet and checkout operations remain subsequent work.
+Updated: 1 November 2026, Asia/Jakarta. Day 2, subpart 1: database foundation. Storage and integrity rules are applied. Atomic incoming-referral signup/issuance is implemented in [subpart 2](referral-registration-reference.md), and real authenticated wallet/referral reads in [subpart 3](wallet-reference.md). Purchase reward operations remain next.
 
 ## Relationships
 
@@ -80,8 +80,8 @@ The extra owner/ID unique pairs support composite foreign keys. The owner appear
 | PostgreSQL on Supabase | Stores rows; checks relationships, uniqueness, amounts and permissions. |
 | SQL migration | Applies this additive schema change to an existing database and records its history. It does not create new application screens. |
 | Prisma schema/client | Maps SQL names/types to typed TypeScript models such as `pointGrant`. Both app mappings must match the shared schema. |
-| Express service, next subparts | Reads the authenticated user, validates input and groups the coupled writes into one transaction. |
-| React/Next.js, later wallet subpart | Displays the result through authenticated APIs; receives no database password and does not directly create reward rows. |
+| Express services | Atomic signup/issuance and authenticated wallet/referral reads are implemented. Purchase reserve/consume/restore remains next. |
+| React/Next.js | Displays the real wallet/referral results through authenticated APIs; receives no database password and does not directly create reward rows. |
 
 These remain private tables in `temuevent`, with RLS enabled and explicit permissions for the existing `temuevent_app` backend role. `anon`, `authenticated` and `service_role` Data API access is not granted. Express must still enforce the actual customer's identity/ownership; the database backend role is shared by trusted server requests and is not a separate role for each customer.
 
@@ -110,4 +110,4 @@ Explain these in your own words:
 
 Course connections: normalization, one-to-many relations, composite keys, joins/indexes, PostgreSQL constraints, Prisma models/migrations, SQL transactions, secure coding and database integration tests.
 
-Primary references: [PostgreSQL constraints](https://www.postgresql.org/docs/17/ddl-constraints.html), [partial unique indexes](https://www.postgresql.org/docs/17/indexes-partial.html), [Supabase row-level security](https://supabase.com/docs/guides/database/postgres/row-level-security). [Atomic signup/issuance](referral-registration-reference.md) is implemented; next are the real wallet and shared reservation/restoration service.
+Primary references: [PostgreSQL constraints](https://www.postgresql.org/docs/17/ddl-constraints.html), [partial unique indexes](https://www.postgresql.org/docs/17/indexes-partial.html), [Supabase row-level security](https://supabase.com/docs/guides/database/postgres/row-level-security). [Atomic signup/issuance](referral-registration-reference.md) and [wallet/referral reads](wallet-reference.md) are implemented; the shared reservation/restoration service remains next.

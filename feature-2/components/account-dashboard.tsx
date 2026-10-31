@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { useAuth } from './auth-provider'
 import { AccountFrame, ProtectedPage } from './account-shell'
+import { ReferralSummary, RewardWallet } from './reward-panels'
 
 type Tab = 'profile' | 'referral' | 'rewards'
 function AccountContent() {
@@ -37,9 +38,8 @@ function AccountContent() {
       {tab === 'referral' && <><div className="referral-hero"><p className="eyebrow">LEBIH SERU BERSAMA</p>
         <h2>Kode untuk komunitasmu.</h2><p>Kode referral akunmu bersifat tetap dan dapat disalin.</p>
         <div className="copy"><code>{user.referralCode}</code><button onClick={copy}>Salin kode</button></div></div>
-        <div className="panel"><h3>Rewards segera hadir.</h3><p>Penggunaan kode saat pendaftaran dan penerbitan poin/kupon akan aktif pada pembaruan berikutnya.</p></div></>}
-      {tab === 'rewards' && <div className="panel"><p className="eyebrow">POIN & KUPON</p><h2>Rewards berikutnya menantimu.</h2>
-        <p>Wallet akunmu akan tersedia setelah fitur referral aktif.</p></div>}
+        <ReferralSummary key={user.id} /></>}
+      {tab === 'rewards' && user.role === 'CUSTOMER' && <RewardWallet key={user.id} />}
     </section></div></main>
 }
 export function AccountDashboard() {

@@ -20,6 +20,8 @@ Feature 2 requests use relative same-origin `/api` paths and credential cookies.
 
 ## Try the read-only feature 2 data
 
+The real endpoints are implemented separately: customer-only `GET /api/me/rewards` returns `AccountWalletView`, and `GET /api/me/referral` returns `ReferralSummaryView` for either signed-in role. Both derive ownership from the verified session. Wallet query defaults: `pointPage=1`, `couponPage=1`, `pageSize=10`; pages are capped at 1000 and size at 50. Unknown owner/time fields are rejected. Balances include all eligible grants, while `pointGrants`/`coupons` are paginated objects. Coupon states include AVAILABLE, RESERVED, USED, EXPIRED and PENDING. See the [wallet reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/wallet-reference.md). A real combined `/api/checkout-context` and reward reservation/restoration service remain pending; a wallet read does not reserve its contents.
+
 Run `npm run dev` from `feature-2`. feature 2 web runs on 3001, Express on 4002. feature 1 can remain on 3000.
 
 ```sh
@@ -85,6 +87,6 @@ For real checkout, purchase/item writes, inventory reservations and reward redem
 
 ## Database state and remaining entities
 
-PostgreSQL on Supabase and Prisma 7.10.1 are in use. User/session/token models, shared event/ticket/purchase records and five reward tables are applied. Atomic referral signup/issuance is implemented. Authenticated wallet reading, purchase reward reservation/restoration, password-reset records and other account/dashboard flows remain subsequent work. Event/purchase/review business rules remain feature 1's domain; shared IDs, relations and migration ownership follow the shared reference.
+PostgreSQL on Supabase and Prisma 7.10.1 are in use. User/session/token models, shared event/ticket/purchase records and five reward tables are applied. Atomic referral signup/issuance is implemented. Authenticated wallet/referral reading is implemented. Purchase reward reservation/restoration, password-reset records and other account/dashboard flows remain subsequent work. Event/purchase/review business rules remain feature 1's domain; shared IDs, relations and migration ownership follow the shared reference.
 
 

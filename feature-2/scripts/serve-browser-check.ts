@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
+import { writeFile } from 'node:fs/promises'
 import { createApp } from '../server/app'
 import { databaseClient, disconnectDatabase } from '../server/database'
 import { createRegistrationService } from '../server/auth/registration'
@@ -9,6 +10,7 @@ import { prismaSessionRepository } from '../server/auth/session-repository'
 import { createSessionTokens, ACCESS_SECONDS } from '../server/auth/session-tokens'
 import { prismaOrganizerReadRepository } from '../server/organizer/read-repository'
 import { registrationSavepoints } from './helpers/registration-transaction'
+import { prismaRewardReadRepository } from '../server/rewards/read-repository'
 
 // QA-only runner, bound to loopback. No control endpoints are exposed to the browser.
 const origin = process.env.BROWSER_QA_ORIGIN
@@ -19,6 +21,7 @@ if (process.env.BROWSER_QA_ENABLE !== 'true' || !origin || !email || !password |
   throw new Error('Explicit browser QA settings are required')
 }
 const db = databaseClient(), rollback = new Error('ROLLBACK_BROWSER_CHECK')
+const qaEmails = [email!, 'wallet-' + email!, 'invitee-' + email!]
 let stop: () => void = () => {}
 let offset = 0
 process.once('SIGTERM', () => stop())
@@ -32,6 +35,16 @@ async function main() {
     const registration = createRegistrationService({ repository: prismaRegistrationRepository(tx, registrationSavepoints(tx)) })
     const organizer = await registration.register({ name: 'Browser Check Organizer', email, password, role: 'ORGANIZER' })
     const customer = await tx.user.findUniqueOrThrow({ where: { email: 'ayu@example.test' } })
+    const walletOwner = await registration.register({ name: 'Wallet Check Customer', email: qaEmails[1], password,
+      referralCode: customer.referralCode })
+    await registration.register({ name: 'Wallet Check Friend', email: qaEmails[2], password,
+      referralCode: walletOwner.referralCode })
+    const rewards = prismaRewardReadRepository(tx, work => work(tx))
+    // Optional QA-only render fixture; contains safe account/reward fields, never credentials.
+    if (process.env.BROWSER_QA_WALLET_EXPORT) await writeFile(process.env.BROWSER_QA_WALLET_EXPORT, JSON.stringify({
+      user: walletOwner, wallet: await rewards.wallet(walletOwner.id, now(), { pointPage: 1, couponPage: 1, pageSize: 10 }),
+      referredCount: await rewards.countReferrals(walletOwner.id),
+    }))
     const event = await tx.event.create({ data: {
       organizerId: organizer.id, slug: 'browser-check-' + randomUUID(), name: 'TemuEvent Browser Check',
       category: 'Learning', location: 'Jakarta', startAt: new Date(Date.now() + 86400000), endAt: new Date(Date.now() + 90000000), status: 'PUBLISHED',
@@ -47,13 +60,14 @@ async function main() {
       tokens: createSessionTokens(signingKey!), now })
     const server = createApp({ registrationService: registration, sessionService: sessions,
       organizerRepository: prismaOrganizerReadRepository(tx), now, secureCookies: true,
+      rewardRepository: rewards,
       allowedOrigins: [origin!],
     }).listen(4002, '127.0.0.1', () => console.log('BROWSER_QA_READY: loopback API; all writes roll back on shutdown'))
     try { await new Promise<void>(resolve => { stop = resolve }) }
     finally { await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())) }
     throw rollback
   }, { timeout: 20 * 60 * 1000 }), error => error === rollback)
-  assert.equal(await db.user.count({ where: { email } }), 0)
+  assert.equal(await db.user.count({ where: { email: { in: qaEmails } } }), 0)
   console.log('BROWSER_QA_ROLLED_BACK')
 }
 main().catch(() => { console.error('Browser QA transaction ended unexpectedly'); process.exitCode = 1 }).finally(disconnectDatabase)

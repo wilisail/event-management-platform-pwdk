@@ -114,6 +114,44 @@ export interface PageView<T> {
   pagination: { page: number; pageSize: number; total: number; totalPages: number }
 }
 
+/** Database-backed wallet reads. Demo WalletView stays separate at /api/demo. */
+export interface WalletPointGrantView {
+  id: string
+  amount: number
+  remainingAmount: number
+  creditedAt: string
+  expiresAt: string
+  status: 'AVAILABLE' | 'EXPIRED' | 'EMPTY' | 'PENDING'
+}
+
+export interface WalletCouponView {
+  id: string
+  code: string
+  discountType: 'FIXED_AMOUNT'
+  discountValue: number
+  issuedAt: string
+  expiresAt: string
+  status: 'AVAILABLE' | 'RESERVED' | 'USED' | 'EXPIRED' | 'PENDING'
+}
+
+export interface AccountWalletView {
+  userId: string
+  asOf: string
+  currency: 'IDR'
+  availablePoints: number
+  availableCouponCount: number
+  pointValueIdr: 1
+  pointGrants: PageView<WalletPointGrantView>
+  coupons: PageView<WalletCouponView>
+}
+
+export interface ReferralSummaryView {
+  code: string
+  referredCount: number
+  referralAwardPoints: 10000
+  validityCalendarMonths: 3
+}
+
 export interface EventSummaryView {
   id: string
   name: string

@@ -127,7 +127,8 @@ export function accountError(error: unknown): string {
     INVALID_REFERRAL_CODE: 'Kode referral tidak ditemukan. Periksa kembali kodenya; akun belum dibuat.',
     REFERRAL_REGISTRATION_UNAVAILABLE: 'Pendaftaran dengan referral sedang terkendala. Coba lagi sebentar.',
     SESSION_REFRESH_UNCERTAIN: 'Silakan masuk ulang untuk menyambungkan sesi.',
-    ROLE_FORBIDDEN: 'Halaman ini khusus untuk organizer.',
+    ROLE_FORBIDDEN: 'Peran akunmu tidak memiliki akses ke halaman ini.',
+    REWARDS_UNAVAILABLE: 'Poin dan kupon sedang tidak dapat dimuat. Coba lagi sebentar.',
     SESSION_REQUIRED: 'Silakan masuk untuk melanjutkan.',
     NETWORK_UNAVAILABLE: 'Koneksi ke layanan akun belum tersedia. Coba lagi sebentar.',
   }
