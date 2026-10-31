@@ -35,7 +35,11 @@
     "db:verify:referrals": "node --import tsx scripts/verify-referral-registration.ts",
     "predb:verify:referrals": "npm run db:generate",
     "db:verify:wallet": "node --import tsx scripts/verify-wallet.ts",
-    "predb:verify:wallet": "npm run db:generate"
+    "predb:verify:wallet": "npm run db:generate",
+    "db:verify:reward-operations": "node --import tsx scripts/verify-reward-operations.ts",
+    "predb:verify:reward-operations": "npm run db:generate",
+    "db:verify:reward-races": "node --import tsx scripts/verify-reward-races.ts",
+    "predb:verify:reward-races": "npm run db:generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

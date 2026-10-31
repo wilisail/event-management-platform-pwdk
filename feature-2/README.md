@@ -52,7 +52,7 @@ For the real account, customer-only `GET /api/me/rewards` returns all-row availa
 
 ## What works in the fixture preview
 
-The original fixture application is now at `/preview`. The real `/account` page uses `/api/me` and does not show the example points/coupons as actual rewards. Real wallet/referral reads are implemented; profile edits and purchase reward writes remain pending.
+The original fixture application is now at `/preview`. The real `/account` page uses `/api/me` and does not show the example points/coupons as actual rewards. Real wallet/referral reads are implemented; profile edits and production purchase/reward adapter wiring remain pending; the internal reward core is implemented.
 
 - Customer and organizer **demo persona** selection; this is not authentication.
 - Account profile UI, immutable referral-code display/copy, and a local profile-edit confirmation dialog.
@@ -85,15 +85,19 @@ npm test
 npm run build
 ```
 
-Next.js type errors are not suppressed. All 91 tests, TypeScript and a production build passed at the 1 November wallet checkpoint. The tests cover reward/date boundaries, authentication/session rules, real permission middleware, ownership/pagination, CSRF and the new client refresh/error/return-path behavior. The real HTTPS client → Next rewrite → Express → Prisma → Supabase path passed with rolled-back QA data; login/signup pages were visually inspected. Password-form submission and multiple-tab UI behavior remain manual release checks.
+Next.js type errors are not suppressed. All 96 tests, TypeScript and a production build passed at the 1 November reward-operation checkpoint. The tests cover reward/date boundaries, authentication/session rules, real permission middleware, ownership/pagination, CSRF and the new client refresh/error/return-path behavior. The real HTTPS client → Next rewrite → Express → Prisma → Supabase path passed with rolled-back QA data; login/signup pages were visually inspected. Password-form submission and multiple-tab UI behavior remain manual release checks.
 
 `scripts/serve-browser-check.ts` is an explicitly enabled loopback QA server that places temporary accounts/events/purchases/sessions in one rollback transaction. `scripts/verify-frontend-client.ts` tests the real client against that server via an HTTPS preview, with disposable credentials supplied through process environment settings. These QA runners are not the normal application entry point or public control endpoints; never run the verifier against the ordinary persistent server. The normal development command remains `npm run dev`.
 
 ## What remains before a graded submission
 
-The referral/reward database foundation and atomic signup issuance are applied and verified. See the [schema companion note](../docs/shared/referral-reward-schema-reference.md). `npm run db:verify:rewards-schema` checks constraints/permissions, while `npm run db:verify:referrals` checks signup and rollback. Both roll back their fixtures. Authenticated wallet/referral APIs/UI are implemented; checkout reservation/restoration is the next subpart.
+The [internal reward core](../docs/shared/reward-operations-reference.md) is implemented at `server/rewards/operations.ts`. Call `customerRewards(tx, verifiedCustomerId)` inside the caller's SQL transaction, before purchase/inventory locks; it exposes quote, new/existing purchase reservation, consumption and restoration. Feature 1's purchase/items/seats/voucher callbacks and the organizer/expiry adapters still need production wiring. No public write route or duplicate checkout implementation is added here.
 
-Purchase reward reservation/restoration, profile edits/avatar uploads, password change/reset emails, organizer decisions/statistics, actual attendance, notification delivery, public organizer integration and evaluator deployment remain. Users, the event/purchase starter, sessions/seeds, atomic referral issuance, backend auth, guards, protected reads and connected frontend auth and authenticated wallet/referral reads are implemented. SQL transactions already protect sessions and referral signup; shared purchase/reward operations follow separately. See the [dated completion plan](../docs/shared/feature-2-completion-plan.md).
+`npm run db:verify:reward-operations` checks the real Supabase role with fully rolled-back fixtures. `npm run db:verify:reward-races` requires an explicitly enabled, separately provisioned loopback PostgreSQL database named `temuevent_reward_test`; it never uses the shared DATABASE_URL. The companion records the six independent-session races and the original migration/policy setup. Run verification/build commands sequentially because their Prisma-generation hooks write the same generated directory.
+
+The referral/reward database foundation and atomic signup issuance are applied and verified. See the [schema companion note](../docs/shared/referral-reward-schema-reference.md). `npm run db:verify:rewards-schema` checks constraints/permissions, while `npm run db:verify:referrals` checks signup and rollback. Both roll back their fixtures. Authenticated wallet/referral APIs/UI are implemented; the internal reserve/consume/restore core is implemented, while production checkout/transition adapter wiring remains.
+
+Production purchase/transition wiring to the reward core, profile edits/avatar uploads, password change/reset emails, organizer decisions/statistics, actual attendance, notification delivery, public organizer integration and evaluator deployment remain. Users, the event/purchase starter, sessions/seeds, atomic referral issuance, backend auth, guards, protected reads and connected frontend auth and authenticated wallet/referral reads are implemented. SQL transactions already protect sessions and referral signup; shared purchase/reward operations follow separately. See the [dated completion plan](../docs/shared/feature-2-completion-plan.md).
 
 The `x-demo-persona` header is deliberately only a demo selector. Production identity must come from the agreed authenticated session, never from a caller-supplied user ID or role.
 

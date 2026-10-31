@@ -20,7 +20,7 @@ Feature 2 requests use relative same-origin `/api` paths and credential cookies.
 
 ## Try the read-only feature 2 data
 
-The real endpoints are implemented separately: customer-only `GET /api/me/rewards` returns `AccountWalletView`, and `GET /api/me/referral` returns `ReferralSummaryView` for either signed-in role. Both derive ownership from the verified session. Wallet query defaults: `pointPage=1`, `couponPage=1`, `pageSize=10`; pages are capped at 1000 and size at 50. Unknown owner/time fields are rejected. Balances include all eligible grants, while `pointGrants`/`coupons` are paginated objects. Coupon states include AVAILABLE, RESERVED, USED, EXPIRED and PENDING. See the [wallet reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/wallet-reference.md). A real combined `/api/checkout-context` and reward reservation/restoration service remain pending; a wallet read does not reserve its contents.
+The real endpoints are implemented separately: customer-only `GET /api/me/rewards` returns `AccountWalletView`, and `GET /api/me/referral` returns `ReferralSummaryView` for either signed-in role. Both derive ownership from the verified session. Wallet query defaults: `pointPage=1`, `couponPage=1`, `pageSize=10`; pages are capped at 1000 and size at 50. Unknown owner/time fields are rejected. Balances include all eligible grants, while `pointGrants`/`coupons` are paginated objects. Coupon states include AVAILABLE, RESERVED, USED, EXPIRED and PENDING. See the [wallet reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/wallet-reference.md). The [internal reward core](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/reward-operations-reference.md) implements reserve/consume/restore in a shared Prisma transaction. A real combined `/api/checkout-context` and checkout/transition adapters remain pending; a wallet read does not reserve its contents.
 
 Run `npm run dev` from `feature-2`. feature 2 web runs on 3001, Express on 4002. feature 1 can remain on 3000.
 
@@ -76,10 +76,12 @@ These routes use a demo selector and fake `.test` accounts. **They are not real 
 - Coupons have three-month validity. Rp25,000 is the initial working default matching the prototype, configurable through backend REFERRAL_COUPON_IDR for future issuance. The PRD does not specify the face value; wallet/checkout must use each actual coupon's recorded value and expiry.
 - UTC storage and Asia/Jakarta display are the current proposal. Month-end dates clamp to the final date of the target month; tests cover this. Confirm calendar/timezone semantics together before production.
 - The shared UX reference supplies working defaults for discount combination/order, free/zero-total flow, decision deadlines, login handoff and attendance. This read-only preview does not yet implement the corresponding purchase/decision operations.
-- Working default: restore rewards to their original grant/coupon with their original expiry; expired rewards remain unspendable. A reward valid at reservation can remain applied while awaiting review. The shared technical reference records this proposed rule and its effects on both features; real reservation/restoration is not implemented here.
+- Working default: restore rewards to their original grant/coupon with their original expiry; expired rewards remain unspendable. A reward valid at reservation can remain applied while awaiting review. The shared technical reference records this proposed rule and its effects on both features; the internal reward core now implements those operations; production checkout/transition wiring remains.
 - Schema names and IDs are proposed. The mock string IDs are not a mandate for the production primary-key type.
 
 ## Integration boundary
+
+Internal reward entry point: `customerRewards(tx, customerId)` from `server/rewards/operations.ts`. It accepts the caller's Prisma 7 transaction context and locks the customer first. `quote` calculates server-side deductions, `reserveNewPurchase(input, callback)` invokes feature 1's creation callback and records actual reward allocations, `reserve` supports an existing eligible pending purchase, and `consume`/`restore` follow the stored purchase state idempotently. See the [full method/error/transaction contract](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/reward-operations-reference.md). This is a direct shared-backend call, not an HTTP operation across separately committed APIs.
 
 feature 1 owns purchase creation, payment-proof handling, timeouts and its purchase consistency rules. feature 2 owns account/reward issuance and the organizer decision UI/API. A proposed shared purchase transition/restoration service lets the feature 2 decision API use the same logic as feature 1's expiry jobs. Final service ownership/interface is not yet agreed.
 
@@ -87,6 +89,6 @@ For real checkout, purchase/item writes, inventory reservations and reward redem
 
 ## Database state and remaining entities
 
-PostgreSQL on Supabase and Prisma 7.10.1 are in use. User/session/token models, shared event/ticket/purchase records and five reward tables are applied. Atomic referral signup/issuance is implemented. Authenticated wallet/referral reading is implemented. Purchase reward reservation/restoration, password-reset records and other account/dashboard flows remain subsequent work. Event/purchase/review business rules remain feature 1's domain; shared IDs, relations and migration ownership follow the shared reference.
+PostgreSQL on Supabase and Prisma 7.10.1 are in use. User/session/token models, shared event/ticket/purchase records and five reward tables are applied. Atomic referral signup/issuance is implemented. Authenticated wallet/referral reading is implemented. The internal reward-operation core is implemented. Production checkout/transition wiring, password-reset records and other account/dashboard flows remain subsequent work. Event/purchase/review business rules remain feature 1's domain; shared IDs, relations and migration ownership follow the shared reference.
 
 
