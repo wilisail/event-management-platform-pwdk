@@ -23,13 +23,15 @@ async function start() {
   const showDatabaseProbe = process.env.F2_DATABASE_CHECK_ENABLED === 'true' &&
     process.env.NODE_ENV !== 'production'
   const database = hasDatabase || showDatabaseProbe ? await import('./database') : undefined
-  const registrationService = hasDatabase && database
+  const client = hasDatabase ? database?.databaseClient() : undefined
+  const registrationService = client
     ? createRegistrationService({
-        repository: prismaRegistrationRepository(database.databaseClient()),
+        repository: prismaRegistrationRepository(client, work => client.$transaction(work, { timeout: 10000 })),
+        referralCouponIdr: process.env.REFERRAL_COUPON_IDR === undefined
+          ? undefined : Number(process.env.REFERRAL_COUPON_IDR),
       })
     : undefined
   const signingSecret = process.env.AUTH_JWT_SECRET
-  const client = hasDatabase ? database?.databaseClient() : undefined
   const sessionService = client && signingSecret
     ? createSessionService({
         tokens: createSessionTokens(signingSecret),
@@ -62,4 +64,5 @@ start().catch(() => {
   console.error('Unable to start the API. Check the backend configuration.')
   process.exitCode = 1
 })
+
 

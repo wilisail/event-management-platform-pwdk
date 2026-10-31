@@ -6,7 +6,7 @@ Status: proposed data contract. Read the shared [technical reference](https://gi
 
 `POST /api/auth/register` on feature-2 accepts name, normalized email, password and an optional CUSTOMER/ORGANIZER role. It returns HTTP 201 with `data.user` using UserView fields and a generated referral code. Duplicate normalized emails return 409. Registration does not issue a session; the x-demo-persona header is not authentication.
 
-Incoming `referralCode` is currently accepted only when empty/absent; nonempty input returns `REFERRAL_REGISTRATION_NOT_READY` without creating an account until rewards can commit atomically. See the [registration reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/registration-reference.md) for exact validation, response codes and verification.
+Incoming `referralCode` is optional, trimmed and normalized uppercase. A valid code creates the account/referral, referrer's 10,000-point grant and newcomer's coupon in one transaction. Unknown code returns 400 `INVALID_REFERRAL_CODE`; malformed fields return `INVALID_REGISTRATION`; duplicate email returns 409 without another award. The success response remains data.user with no automatic login. See the [signup companion note](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/referral-registration-reference.md).
 
 ## Implemented login/session backend
 
@@ -71,7 +71,7 @@ These routes use a demo selector and fake `.test` accounts. **They are not real 
 ## Fixed rules and open decisions
 
 - feature 2 defines referral award grants at 10,000 points and expiry at three calendar months, per PRD.
-- Fixture coupons have three-month validity. Rp25,000 is kept as a demo amount to match feature 1; its face value is not specified by the PRD.
+- Coupons have three-month validity. Rp25,000 is the initial working default matching the prototype, configurable through backend REFERRAL_COUPON_IDR for future issuance. The PRD does not specify the face value; wallet/checkout must use each actual coupon's recorded value and expiry.
 - UTC storage and Asia/Jakarta display are the current proposal. Month-end dates clamp to the final date of the target month; tests cover this. Confirm calendar/timezone semantics together before production.
 - The shared UX reference supplies working defaults for discount combination/order, free/zero-total flow, decision deadlines, login handoff and attendance. This read-only preview does not yet implement the corresponding purchase/decision operations.
 - Working default: restore rewards to their original grant/coupon with their original expiry; expired rewards remain unspendable. A reward valid at reservation can remain applied while awaiting review. The shared technical reference records this proposed rule and its effects on both features; real reservation/restoration is not implemented here.
@@ -85,5 +85,6 @@ For real checkout, purchase/item writes, inventory reservations and reward redem
 
 ## Database state and remaining entities
 
-PostgreSQL on Supabase and Prisma 7.10.1 are in use. User/session/token models and the shared event/ticket/purchase starter are applied. Referral registrations, point-grant batches, reward coupons, password-reset records and redemption allocations remain subsequent work. Event/purchase/review business rules remain feature 1's domain. Cross-feature IDs, relations and migration ownership follow the shared reference and remain open to coordinated changes.
+PostgreSQL on Supabase and Prisma 7.10.1 are in use. User/session/token models, shared event/ticket/purchase records and five reward tables are applied. Atomic referral signup/issuance is implemented. Authenticated wallet reading, purchase reward reservation/restoration, password-reset records and other account/dashboard flows remain subsequent work. Event/purchase/review business rules remain feature 1's domain; shared IDs, relations and migration ownership follow the shared reference.
+
 

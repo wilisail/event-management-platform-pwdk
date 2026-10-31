@@ -46,6 +46,8 @@ test('invalid, oversized or unexpected fields are rejected before hashing or ins
     { ...registrationInput, password: 'x'.repeat(129) },
     { ...registrationInput, id: randomUUID() },
     { ...registrationInput, passwordHash: 'caller-chosen' },
+    { ...registrationInput, rewardPoints: 999999 },
+    { ...registrationInput, referralCode: 'INVALID CODE' },
   ]) await assert.rejects(service.register(input), hasError('INVALID_REGISTRATION'))
   assert.equal(memory.calls.hashes, 0)
   assert.equal(memory.calls.inserts, 0)
@@ -113,12 +115,81 @@ test('referral-code retries are bounded and unrelated failures are not retried',
   await assert.rejects(failing.register(registrationInput), error => error === failure)
 })
 
-test('incoming referrals do not create accounts before their rewards can be committed atomically', async () => {
+test('unknown referrals create no account/rewards, while an empty referral remains optional', async () => {
   const memory = memoryRegistration()
   const service = createRegistrationService(memory)
-  await assert.rejects(service.register({ ...registrationInput, referralCode: 'AYU7K2P' }), hasError('REFERRAL_REGISTRATION_NOT_READY'))
-  assert.equal(memory.calls.inserts, 0)
-  assert.equal(memory.calls.hashes, 0)
+  await assert.rejects(service.register({ ...registrationInput, referralCode: 'UNKNOWN123' }), hasError('INVALID_REFERRAL_CODE'))
+  assert.equal(memory.users.size, 0)
+  assert.equal(memory.grants.length, 0)
+  assert.equal(memory.coupons.length, 0)
   await service.register({ ...registrationInput, referralCode: '  ' })
   assert.equal(memory.users.size, 1)
 })
+
+const inviter = () => ({ id: randomUUID(), name: 'Inviter', email: 'inviter@example.test',
+  role: 'CUSTOMER' as const, referralCode: 'INVITE123456', profilePictureUrl: null })
+
+test('valid referral is normalized and awards the correct two recipients without exposing rewards/private fields', async () => {
+  const owner = inviter(), memory = memoryRegistration([owner])
+  const service = createRegistrationService(memory)
+  const user = await service.register({ ...registrationInput, referralCode: '  invite123456  ' })
+  assert.equal(memory.referrals[0].referrerId, owner.id)
+  assert.equal(memory.referrals[0].referredUserId, user.id)
+  assert.equal(memory.grants[0].userId, owner.id)
+  assert.equal(memory.grants[0].amount, 10000)
+  assert.equal(memory.grants[0].remainingAmount, 10000)
+  assert.equal(memory.coupons[0].userId, user.id)
+  assert.equal(memory.coupons[0].discountValue, 25000)
+  assert.notEqual(user.referralCode, owner.referralCode)
+  assert.equal('passwordHash' in user, false)
+  assert.equal('rewards' in user, false)
+})
+
+test('three-month expiry clamps month ends and coupon configuration applies only to new issuance', async () => {
+  const memory = memoryRegistration([inviter()]), at = new Date('2026-01-31T12:00:00.000Z')
+  const first = createRegistrationService({ ...memory, now: () => at, referralCouponIdr: 7500 })
+  await first.register({ ...registrationInput, referralCode: 'INVITE123456' })
+  assert.equal(memory.grants[0].creditedAt.toISOString(), at.toISOString())
+  assert.equal(memory.grants[0].expiresAt.toISOString(), '2026-04-30T12:00:00.000Z')
+  assert.equal(memory.coupons[0].expiresAt.toISOString(), '2026-04-30T12:00:00.000Z')
+  await createRegistrationService({ ...memory, referralCouponIdr: 12000 }).register({
+    ...registrationInput, email: 'second@example.test', referralCode: 'INVITE123456',
+  })
+  assert.deepEqual(memory.coupons.map(coupon => coupon.discountValue), [7500, 12000])
+})
+
+test('parallel duplicate signup attempts issue one referral and one pair of rewards', async () => {
+  const memory = memoryRegistration([inviter()]), service = createRegistrationService(memory)
+  const input = { ...registrationInput, referralCode: 'INVITE123456' }
+  const results = await Promise.allSettled([service.register(input), service.register(input)])
+  assert.equal(results.filter(result => result.status === 'fulfilled').length, 1)
+  const rejected = results.find(result => result.status === 'rejected') as PromiseRejectedResult
+  assert.equal(rejected.reason.code, 'EMAIL_IN_USE')
+  assert.equal(memory.users.size, 2)
+  assert.equal(memory.referrals.length, 1)
+  assert.equal(memory.grants.length, 1)
+  assert.equal(memory.coupons.length, 1)
+})
+
+test('coupon code collisions retry a fresh bundle without another hash or duplicate award', async () => {
+  const memory = memoryRegistration([inviter()])
+  await createRegistrationService({ ...memory, couponCodeGenerator: () => 'REF-EXISTING' }).register({
+    ...registrationInput, referralCode: 'INVITE123456',
+  })
+  let tries = 0
+  await createRegistrationService({ ...memory, couponCodeGenerator: () => ++tries === 1 ? 'REF-EXISTING' : 'REF-FRESH' }).register({
+    ...registrationInput, email: 'next@example.test', referralCode: 'INVITE123456',
+  })
+  assert.equal(tries, 2)
+  assert.equal(memory.calls.hashes, 2)
+  assert.equal(memory.users.size, 3)
+  assert.equal(memory.grants.length, 2)
+  assert.deepEqual(memory.coupons.map(coupon => coupon.code), ['REF-EXISTING', 'REF-FRESH'])
+})
+
+test('coupon value rejects invalid configuration rather than silently issuing an unusable reward', () => {
+  for (const referralCouponIdr of [0, -1, 1.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
+    assert.throws(() => createRegistrationService({ ...memoryRegistration(), referralCouponIdr }), RangeError)
+  }
+})
+

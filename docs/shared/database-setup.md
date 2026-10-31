@@ -8,7 +8,7 @@ Five private tables are now applied: `referrals`, `point_grants`, `reward_coupon
 
 The [companion note](referral-reward-schema-reference.md) explains owner-bound relationships, earning batches, expiry, coupon exclusivity and remaining services. Live Prisma checks through the existing backend role passed; all QA writes rolled back. The original 2 users, 3 events, 4 ticket types and 30 purchases are preserved. Reward tables start empty; existing sample purchase discounts are illustrative and are not backfilled as real reward spending. Connection credentials and Data API exposure are unchanged.
 
-Atomic incoming-referral signup and real rewards remain the next subpart. Registration continues to reject a nonempty incoming referral until the coupled writes can commit together.
+Atomic incoming-referral signup is now implemented on `feature-2`, using these existing tables and credentials. The account, referral, 10,000-point award and newcomer coupon commit together; see the [signup companion note](referral-registration-reference.md). Authenticated wallet reading and purchase reward operations remain the next subparts. Temporary verification rewards roll back; real successful signups will persist their rewards.
 
 ## Account/session foundation
 
@@ -173,7 +173,7 @@ Feature 1 can continue its pages, API handlers and business-rule tests using the
 | Prisma migration baseline | Passed; `0_user_foundation` recorded and CLI migration status up to date |
 | Temporary baseline login | Disabled; password and temporary privileges removed |
 
-Feature 2 registration, password hashing, sessions, protected reads and frontend auth are implemented. Next are real referral/reward issuance and the remaining [completion-plan](feature-2-completion-plan.md) flows. Feature 1 retains the design of its event/ticket/purchase/review tables. Shared foreign keys, reward allocations and the purchase transition service are coordinated before wiring the two features together. Thirty linked sample purchases remain present in the shared database.
+Feature 2 registration, optional atomic referral/reward issuance, password hashing, sessions, protected reads and frontend auth are implemented. Next are the authenticated wallet and remaining [completion-plan](feature-2-completion-plan.md) flows. Feature 1 retains the design of its event/ticket/purchase/review implementation. Reward allocations and the purchase transition service are coordinated before checkout integration. Thirty linked sample purchases remain present in the shared database.
 
 Sources: [Supabase connection modes](https://supabase.com/docs/guides/database/connecting-to-postgres), [Supabase SSL verification](https://supabase.com/docs/guides/platform/ssl-enforcement), [node-postgres SSL configuration](https://node-postgres.com/features/ssl), [Prisma baseline workflow](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/baselining), [Prisma PostgreSQL connection options](https://www.prisma.io/docs/orm/overview/databases/postgresql).
 

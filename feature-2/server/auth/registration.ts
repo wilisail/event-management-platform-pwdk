@@ -2,6 +2,10 @@ import { randomBytes } from 'node:crypto'
 import { z } from 'zod'
 import type { Role, UserView } from '../../contracts/types'
 import { hashPassword, PasswordWorkLimitError } from './passwords'
+import { addCalendarMonths, REFERRAL_AWARD_POINTS, REWARD_VALIDITY_MONTHS } from '../../domain/rewards'
+
+// Project default from the accepted prototype; the PRD leaves the coupon value unspecified.
+export const DEFAULT_REFERRAL_COUPON_IDR = 25_000
 
 const password = z.string()
   .refine(value => Array.from(value).length >= 15, 'Use at least 15 characters')
@@ -13,7 +17,8 @@ export const registrationSchema = z.object({
   email: z.string().trim().toLowerCase().max(254).email('Enter a valid email address'),
   password,
   role: z.enum(['CUSTOMER', 'ORGANIZER']).default('CUSTOMER'),
-  referralCode: z.string().trim().max(16).optional(),
+  referralCode: z.string().trim().toUpperCase().max(16)
+    .refine(value => value === '' || /^[A-Z0-9]+$/.test(value), 'Use the referral code as supplied').optional(),
 }).strict()
 
 export interface NewAccount {
@@ -26,7 +31,17 @@ export interface NewAccount {
 
 export interface RegistrationRepository {
   findUserIdByEmail(email: string): Promise<{ id: string } | null>
-  createUser(data: NewAccount): Promise<UserView>
+  /** With rewards, this entire operation must commit or roll back as one transaction. */
+  createUser(data: NewAccount, rewards?: NewReferralRewards): Promise<UserView>
+}
+
+export interface NewReferralRewards {
+  incomingCode: string
+  couponCode: string
+  points: number
+  couponValue: number
+  issuedAt: Date
+  expiresAt: Date
 }
 
 export class RegistrationError extends Error {
@@ -49,11 +64,21 @@ export function createRegistrationService(options: {
   repository: RegistrationRepository
   passwordHasher?: (password: string) => Promise<string>
   referralCodeGenerator?: () => string
+  couponCodeGenerator?: () => string
+  referralCouponIdr?: number
+  now?: () => Date
 }): RegistrationService {
   const repository = options.repository
   const passwordHasher = options.passwordHasher ?? hashPassword
   const referralCodeGenerator = options.referralCodeGenerator ??
     (() => randomBytes(6).toString('hex').toUpperCase())
+  const couponCodeGenerator = options.couponCodeGenerator ??
+    (() => 'REF-' + randomBytes(10).toString('hex').toUpperCase())
+  const couponValue = options.referralCouponIdr ?? DEFAULT_REFERRAL_COUPON_IDR
+  if (!Number.isSafeInteger(couponValue) || couponValue <= 0) {
+    throw new RangeError('REFERRAL_COUPON_IDR must be a positive safe integer')
+  }
+  const now = options.now ?? (() => new Date())
   const duplicateEmail = () => new RegistrationError(
     409, 'EMAIL_IN_USE', 'An account with this email already exists',
   )
@@ -68,11 +93,6 @@ export function createRegistrationService(options: {
           })))
       }
       const data = parsed.data
-      // Do not create a partially fulfilled referral registration before rewards are atomic.
-      if (data.referralCode) {
-        throw new RegistrationError(400, 'REFERRAL_REGISTRATION_NOT_READY',
-          'Referral registration is not available yet. No account was created.')
-      }
       if (await repository.findUserIdByEmail(data.email)) throw duplicateEmail()
 
       let passwordHash: string
@@ -85,19 +105,25 @@ export function createRegistrationService(options: {
         throw error
       }
 
-      // A single INSERT is atomic. The unique email index resolves concurrent signups.
+      // Hashing stays outside the transaction so database locks do not cover expensive CPU work.
+      const issuedAt = new Date(now().getTime())
+      const expiresAt = addCalendarMonths(issuedAt, REWARD_VALIDITY_MONTHS)
+      // Only known unique collisions retry. Each referral attempt is a fresh atomic bundle.
       for (let attempt = 0; attempt < 3; attempt++) {
         try {
           return await repository.createUser({
             name: data.name, email: data.email, role: data.role,
             passwordHash, referralCode: referralCodeGenerator(),
-          })
+          }, data.referralCode ? {
+            incomingCode: data.referralCode, couponCode: couponCodeGenerator(),
+            points: REFERRAL_AWARD_POINTS, couponValue, issuedAt, expiresAt,
+          } : undefined)
         } catch (error) {
           if (!error || typeof error !== 'object' || !('code' in error) || error.code !== 'P2002') {
             throw error
           }
           if (await repository.findUserIdByEmail(data.email)) throw duplicateEmail()
-          // An unrelated unique collision (the generated referral code) gets a fresh code.
+          // Generated referral/coupon code collisions get fresh codes after full rollback.
         }
       }
       throw new RegistrationError(503, 'REFERRAL_CODE_UNAVAILABLE',
@@ -105,3 +131,4 @@ export function createRegistrationService(options: {
     },
   }
 }
+

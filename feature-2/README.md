@@ -24,7 +24,9 @@ The fixture preview runs without an environment file; real account pages show a 
 
 ## Database-backed registration
 
-`POST /api/auth/register` validates JSON, normalizes email, hashes passwords with Node scrypt, generates an immutable referral code and creates an account. The `/register` form is connected. It returns a safe identity without issuing a login cookie; the success screen offers separate login. A nonempty incoming referral is explicitly rejected until reward issuance is atomic.
+`POST /api/auth/register` validates JSON, normalizes email, hashes passwords with Node scrypt and generates the new account's immutable referral code. The `/register` form accepts an optional inviter code. A valid referral atomically creates the account/referral, credits the inviter 10,000 points and issues the newcomer a three-month coupon. Unknown codes return 400; duplicate email returns 409 without another award. The safe response remains data.user, with separate login and no session cookie.
+
+See the [referral signup companion note](../docs/shared/referral-registration-reference.md) for transaction boundaries, rollback/retries and reward ownership. `REFERRAL_COUPON_IDR` defaults to the prototype's Rp25,000 for future issuance; the PRD leaves the amount unspecified. Existing coupon values remain unchanged. `npm run db:verify:referrals` checks real HTTP/database behavior, injected failure rollback and coupon collision retries; all fixtures roll back.
 
 The existing private DATABASE_URL enables the route; without it, registration returns 503 and the fixture preview remains available. The backend trusts the included public Supabase CA by default. See [registration reference](../docs/shared/registration-reference.md) for inputs, status codes, layering and learning notes.
 
@@ -56,7 +58,7 @@ The original fixture application is now at `/preview`. The real `/account` page 
 - Referral-grant and calendar-expiry functions with tests; no rewards are actually issued or redeemed.
 - Read-only checkout-context response that feature 1 can inspect without changing its current prototype.
 
-The fixtures match feature 1's example of 20,000 points and `WELCOME25`. **The Rp25,000 coupon amount is a demonstration value, not a settled product rule.** Expired samples are shown for empty/error-state work.
+The fixtures match feature 1's example of 20,000 points and `WELCOME25`. Rp25,000 is also the configurable initial signup coupon default, open to input; it is not a PRD-prescribed amount. Expired samples remain available for empty/error-state work.
 
 ## Initial database foundation
 
@@ -85,9 +87,9 @@ Next.js type errors are not suppressed. All 74 tests, TypeScript and a productio
 
 ## What remains before a graded submission
 
-The referral/reward database foundation is applied and verified: five models, independent point/coupon expiry, ownership constraints and purchase-linked claims/allocations. See the [schema companion note](../docs/shared/referral-reward-schema-reference.md). `npm run db:verify:rewards-schema` tests the real constraints and permissions and rolls back its temporary data. This storage foundation does not yet enable incoming-referral signup, issue rewards or replace the fixture wallet; those are the next subparts.
+The referral/reward database foundation and atomic signup issuance are applied and verified. See the [schema companion note](../docs/shared/referral-reward-schema-reference.md). `npm run db:verify:rewards-schema` checks constraints/permissions, while `npm run db:verify:referrals` checks signup and rollback. Both roll back their fixtures. Authenticated wallet APIs/UI and checkout reservation/restoration are the next subparts.
 
-Incoming referral registration with atomic rewards, real wallet/redemption persistence, profile edits/avatar uploads, password change/reset emails, organizer decisions/statistics, actual attendance, notification delivery, public organizer integration and evaluator deployment remain to be implemented. Users, the event/purchase starter, sessions and seeds are implemented, together with backend registration/login/refresh/logout, reusable guards, protected identity/organizer reads and connected frontend auth. SQL transactions already protect session/refresh writes and will also protect coupled purchase/reward writes. See the [dated completion plan](../docs/shared/feature-2-completion-plan.md) for daily subtasks and time ranges.
+Authenticated wallet APIs/UI, purchase reward reservation/restoration, profile edits/avatar uploads, password change/reset emails, organizer decisions/statistics, actual attendance, notification delivery, public organizer integration and evaluator deployment remain. Users, the event/purchase starter, sessions/seeds, atomic referral issuance, backend auth, guards, protected reads and connected frontend auth are implemented. SQL transactions already protect sessions and referral signup; shared purchase/reward operations follow separately. See the [dated completion plan](../docs/shared/feature-2-completion-plan.md).
 
 The `x-demo-persona` header is deliberately only a demo selector. Production identity must come from the agreed authenticated session, never from a caller-supplied user ID or role.
 
@@ -99,4 +101,5 @@ Shared UX working defaults, alternatives and their effect on both features are r
 - feature 2 author: Wili; accounts/rewards/profiles/dashboard. This initial feature 2 implementation is agent-assisted.
 - Theme and product name: adopted from Rizky's feature 1 prototype, commit `cd582753a480d68ce14e00021a52f8ec93d8372f`.
 - This folder contains feature 2's own frontend, demo backend, contracts, tests, and run instructions. Reusing the theme does not transfer feature 1 authorship.
+
 

@@ -80,7 +80,7 @@ export interface ApiFailure {
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiFailure
 
-/** Current registration supports no incoming referral rewards until that atomic flow is added. */
+/** Incoming referral codes are optional; the account, referral and rewards commit together. */
 export interface RegistrationRequest {
   name: string
   email: string
@@ -134,4 +134,5 @@ export interface AttendeePurchaseView {
   ticketQuantity: number
   totalPaid: number
 }
+
 

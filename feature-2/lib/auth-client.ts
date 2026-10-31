@@ -122,9 +122,10 @@ export function accountError(error: unknown): string {
   const messages: Record<string, string> = {
     EMAIL_IN_USE: 'Email ini sudah terdaftar. Silakan masuk.',
     INVALID_CREDENTIALS: 'Email atau kata sandi tidak sesuai.',
-    INVALID_REGISTRATION: 'Periksa nama, email, dan kata sandi yang diisi.',
+    INVALID_REGISTRATION: 'Periksa kembali data pendaftaran dan kode referral yang diisi.',
     INVALID_LOGIN: 'Masukkan email dan kata sandi yang valid.',
-    REFERRAL_REGISTRATION_NOT_READY: 'Pendaftaran dengan referral belum tersedia. Daftar tanpa kode terlebih dahulu.',
+    INVALID_REFERRAL_CODE: 'Kode referral tidak ditemukan. Periksa kembali kodenya; akun belum dibuat.',
+    REFERRAL_REGISTRATION_UNAVAILABLE: 'Pendaftaran dengan referral sedang terkendala. Coba lagi sebentar.',
     SESSION_REFRESH_UNCERTAIN: 'Silakan masuk ulang untuk menyambungkan sesi.',
     ROLE_FORBIDDEN: 'Halaman ini khusus untuk organizer.',
     SESSION_REQUIRED: 'Silakan masuk untuk melanjutkan.',
@@ -133,3 +134,4 @@ export function accountError(error: unknown): string {
   if (error.status === 429) return 'Terlalu banyak percobaan. Tunggu beberapa saat sebelum mencoba lagi.'
   return messages[error.code] ?? 'Layanan akun sedang tidak tersedia. Silakan coba lagi.'
 }
+

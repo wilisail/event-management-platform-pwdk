@@ -18,7 +18,7 @@ The frontend is the interface; Express decides whether the request is allowed. P
 
 | Page | Data and behavior |
 | --- | --- |
-| `/register` | Real account creation with name/email/password and customer/organizer role. Shows success, then offers a separate login. Incoming referrals and reward issuance are the next batch. |
+| `/register` | Real account creation with name/email/password, customer/organizer role and optional referral. A valid referral issues both rewards atomically. Shows success, then offers a separate login. See [referral signup](referral-registration-reference.md). |
 | `/login` | Real password login; updates the account context and navigates to the permitted destination. |
 | `/account` | Protected identity, role and immutable referral code from `/api/me`. Profile editing, uploaded pictures and the real reward wallet are pending; no example reward balance is presented as real. |
 | `/organizer` | Organizer-only owned event list and confirmed participant rows from the protected APIs. Loading, retry, empty states, pagination and a customer access-denied view are included. |
@@ -63,7 +63,7 @@ Writes are never automatically replayed. A purchase/proof mutation will need its
 | Account identity | Real `/api/me` supplies UUID, role and safe user fields. A feature 1 customer/organizer ID from a form or demo selector is not authentication. |
 | Return after login | Only feature 2's own `/account` and `/organizer` destinations are currently allowed. Restoring feature 1 ticket selection requires an agreed trusted checkout route/intent; arbitrary external return URLs are rejected. |
 | Shared deployment | Combined browser traffic should use one origin and one session/transaction authority. Feature 1 is not automatically connected or protected by this feature 2 implementation. |
-| Reward picker | Real reward issuance/wallet/reservation comes next. The example wallet remains under `/preview` and demo APIs. |
+| Reward picker | Real referral reward issuance is implemented. Authenticated wallet reading and reservation come next. The example wallet remains under `/preview` and demo APIs. |
 | Organizer decisions | Only owned event/confirmed-attendee reads are connected today. Proof viewing, accept/reject, restoration, emails and charts are subsequent work. |
 
 The existing standalone entry point remains useful for independent grading. The integrated application must exercise the actual shared purchase/reward services, not fixtures.

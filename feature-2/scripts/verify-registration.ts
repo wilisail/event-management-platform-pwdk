@@ -6,6 +6,7 @@ import { databaseClient, disconnectDatabase } from '../server/database'
 import { createRegistrationService } from '../server/auth/registration'
 import { prismaRegistrationRepository } from '../server/auth/registration-repository'
 import { verifyPassword } from '../server/auth/passwords'
+import { registrationSavepoints } from './helpers/registration-transaction'
 
 const db = databaseClient()
 const rollback = new Error('ROLLBACK_REGISTRATION_CHECK')
@@ -14,7 +15,7 @@ let currentCheck = 'connection'
 
 async function main() {
   await assert.rejects(db.$transaction(async tx => {
-    const service = createRegistrationService({ repository: prismaRegistrationRepository(tx) })
+    const service = createRegistrationService({ repository: prismaRegistrationRepository(tx, registrationSavepoints(tx)) })
     const server = createApp({ registrationService: service }).listen(0, '127.0.0.1')
     await once(server, 'listening')
     const address = server.address()
@@ -64,9 +65,9 @@ async function main() {
       const refusedEmail = 'registration-check-' + randomUUID() + '@example.test'
       emails.push(refusedEmail)
       assert.equal((await post({ name: 'Invalid', email: refusedEmail, password: 'short' })).status, 400)
-      const referral = await post({ name: 'Referral', email: refusedEmail, password, referralCode: 'AYU7K2P' })
+      const referral = await post({ name: 'Referral', email: refusedEmail, password, referralCode: 'UNKNOWN123' })
       assert.equal(referral.status, 400)
-      assert.equal((await referral.json()).code, 'REFERRAL_REGISTRATION_NOT_READY')
+      assert.equal((await referral.json()).code, 'INVALID_REFERRAL_CODE')
       assert.equal(await tx.user.count({ where: { email: refusedEmail } }), 0)
     } finally {
       await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()))
@@ -79,12 +80,13 @@ async function main() {
     'HTTP POST -> validation -> real password hashing -> Prisma -> Supabase PostgreSQL',
     'Customer/default and organizer accounts use database UUIDs and generated referral codes',
     'Stored password hash verifies the original secret; public response excludes it',
-    'Normalized duplicate emails return 409; invalid/referral requests create no account',
+    'Normalized duplicate emails return 409; invalid input/unknown referrals create no account',
     'Registration creates no session/cookie; all temporary test accounts roll back',
-  ], scope: 'Registration backend; login/session issuance and frontend wiring remain separate batches' }, null, 2))
+  ], scope: 'Registration backend; successful referral bundles have a separate live verifier; registration does not auto-login' }, null, 2))
 }
 
 main().catch(() => {
   console.error('Registration verification failed at: ' + currentCheck)
   process.exitCode = 1
 }).finally(disconnectDatabase)
+

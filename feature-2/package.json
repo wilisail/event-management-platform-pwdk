@@ -31,7 +31,9 @@
     "db:verify:authorization": "node --import tsx scripts/verify-authorization.ts",
     "predb:verify:authorization": "npm run db:generate",
     "db:verify:rewards-schema": "node --import tsx scripts/verify-reward-schema.ts",
-    "predb:verify:rewards-schema": "npm run db:generate"
+    "predb:verify:rewards-schema": "npm run db:generate",
+    "db:verify:referrals": "node --import tsx scripts/verify-referral-registration.ts",
+    "predb:verify:referrals": "npm run db:generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
@@ -60,4 +62,5 @@
     "typescript": "^5.7.3"
   }
 }
+
 

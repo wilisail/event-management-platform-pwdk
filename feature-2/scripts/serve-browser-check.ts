@@ -8,6 +8,7 @@ import { createSessionService } from '../server/auth/sessions'
 import { prismaSessionRepository } from '../server/auth/session-repository'
 import { createSessionTokens, ACCESS_SECONDS } from '../server/auth/session-tokens'
 import { prismaOrganizerReadRepository } from '../server/organizer/read-repository'
+import { registrationSavepoints } from './helpers/registration-transaction'
 
 // QA-only runner, bound to loopback. No control endpoints are exposed to the browser.
 const origin = process.env.BROWSER_QA_ORIGIN
@@ -28,7 +29,7 @@ process.on('SIGUSR1', () => { offset += (ACCESS_SECONDS + 60) * 1000; console.lo
 async function main() {
   await assert.rejects(db.$transaction(async tx => {
     const now = () => new Date(Date.now() + offset)
-    const registration = createRegistrationService({ repository: prismaRegistrationRepository(tx) })
+    const registration = createRegistrationService({ repository: prismaRegistrationRepository(tx, registrationSavepoints(tx)) })
     const organizer = await registration.register({ name: 'Browser Check Organizer', email, password, role: 'ORGANIZER' })
     const customer = await tx.user.findUniqueOrThrow({ where: { email: 'ayu@example.test' } })
     const event = await tx.event.create({ data: {
@@ -56,3 +57,4 @@ async function main() {
   console.log('BROWSER_QA_ROLLED_BACK')
 }
 main().catch(() => { console.error('Browser QA transaction ended unexpectedly'); process.exitCode = 1 }).finally(disconnectDatabase)
+

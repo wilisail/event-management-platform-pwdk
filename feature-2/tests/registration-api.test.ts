@@ -65,7 +65,7 @@ test('normalized duplicate emails return JSON 409', async () => {
   })
 })
 
-test('invalid input and incoming referrals create no account and return useful codes', async () => {
+test('invalid input and unknown referral codes create no account and return useful codes', async () => {
   const memory = memoryRegistration()
   await withServer({ registrationService: createRegistrationService(memory) }, async base => {
     for (const input of [{ ...registrationInput, role: 'ADMIN' }, { ...registrationInput, password: 'short' }]) {
@@ -75,8 +75,25 @@ test('invalid input and incoming referrals create no account and return useful c
     }
     const response = await post(base, { ...registrationInput, referralCode: 'AYU7K2P' })
     assert.equal(response.status, 400)
-    assert.equal((await response.json()).code, 'REFERRAL_REGISTRATION_NOT_READY')
+    assert.equal((await response.json()).code, 'INVALID_REFERRAL_CODE')
     assert.equal(memory.users.size, 0)
+  })
+})
+
+test('referral signup returns the same safe 201 shape and does not reward a duplicate retry', async () => {
+  const memory = memoryRegistration([{ id: 'inviter-id', name: 'Inviter', email: 'inviter@example.test',
+    role: 'CUSTOMER', referralCode: 'INVITE123456', profilePictureUrl: null }])
+  await withServer({ registrationService: createRegistrationService(memory) }, async base => {
+    const input = { ...registrationInput, referralCode: ' invite123456 ' }
+    const response = await post(base, input), body = await response.json()
+    assert.equal(response.status, 201)
+    assert.equal(response.headers.get('set-cookie'), null)
+    assert.deepEqual(Object.keys(body.data.user).sort(), ['id', 'name', 'email', 'role', 'referralCode', 'profilePictureUrl'].sort())
+    assert.equal(memory.coupons[0].userId, body.data.user.id)
+    assert.equal((await post(base, input)).status, 409)
+    assert.equal(memory.referrals.length, 1)
+    assert.equal(memory.grants.length, 1)
+    assert.equal(memory.coupons.length, 1)
   })
 })
 
@@ -132,3 +149,4 @@ test('unexpected database errors never expose connection details', async () => {
     assert.equal(JSON.stringify(await response.json()).includes('private database connection'), false)
   })
 })
+

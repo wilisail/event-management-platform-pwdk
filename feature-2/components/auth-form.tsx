@@ -27,7 +27,11 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     setBusy(true)
     try {
       if (isRegister) {
-        await auth.client.register({ name, email, password, role: data.get('role') === 'ORGANIZER' ? 'ORGANIZER' as Role : 'CUSTOMER' })
+        const referralCode = String(data.get('referralCode') ?? '').trim()
+        await auth.client.register({ name, email, password,
+          role: data.get('role') === 'ORGANIZER' ? 'ORGANIZER' as Role : 'CUSTOMER',
+          ...(referralCode ? { referralCode } : {}),
+        })
         setCreated(true)
       } else {
         const user = await auth.signIn({ email, password })
@@ -62,7 +66,10 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
               <label><input type="radio" name="role" value="CUSTOMER" defaultChecked disabled={busy} /> Customer</label>
               <label><input type="radio" name="role" value="ORGANIZER" disabled={busy} /> Organizer</label>
             </div></fieldset>
-            <p className="help">Pendaftaran dengan kode referral akan tersedia pada pembaruan berikutnya.</p>
+            <label htmlFor="auth-referral">Kode referral (opsional)<input id="auth-referral" name="referralCode"
+              maxLength={16} autoComplete="off" autoCapitalize="characters" spellCheck={false}
+              aria-describedby="referral-help" disabled={busy} /></label>
+            <p id="referral-help" className="help">Dengan kode yang valid, kamu mendapat kupon dan pengundang mendapat 10.000 poin. Reward berlaku tiga bulan.</p>
           </>}
           <button className="primary auth-submit" disabled={busy} type="submit">{busy ? 'Memproses…' : isRegister ? 'Buat akun' : 'Masuk'}</button>
         </form>
@@ -73,3 +80,4 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     </section>
   </main></AccountFrame>
 }
+
