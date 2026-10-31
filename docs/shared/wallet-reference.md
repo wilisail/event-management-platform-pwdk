@@ -37,7 +37,7 @@ For each point grant, include `remainingAmount` only when:
 - `creditedAt <= asOf`;
 - `expiresAt > asOf`.
 
-The stored `remainingAmount` already excludes points reserved by purchases. Do not subtract allocations a second time. The next subpart implements the service that changes this amount together with purchase allocations.
+The stored `remainingAmount` already excludes points reserved by purchases. Do not subtract allocations a second time. The [reward core](reward-operations-reference.md) now changes this amount together with purchase allocations inside the caller's transaction.
 
 Example at the API's recorded time:
 
@@ -99,7 +99,7 @@ The visible tab refreshes every 60 seconds and when returning to it; a manual re
 | --- | --- |
 | Feature 2 account | Real wallet and referral counts are implemented. Profile writes, picture/password lifecycle and other dashboard operations remain on the completion plan. |
 | Feature 1 checkout | Can consume the authenticated wallet contract after the agreed session/routing handoff is connected. Use `AVAILABLE` coupons, recorded values/expiry and the summary balance. A combined production `/api/checkout-context` is not implemented in this batch. |
-| Purchase reward operations | Reserve/consume/restore with original allocations and once-only restoration are the next subpart. Displaying a `RESERVED` state here does not mean that write service is finished. |
+| Purchase reward operations | Reserve/consume/restore with original allocations and once-only restoration is implemented in the [internal reward core](reward-operations-reference.md). Real checkout/decision adapter wiring remains; wallet reads alone do not invoke those writes. |
 | Organizer role | Own referral summary remains accessible; spending/customer-wallet access remains customer-only, matching the existing split. |
 | Event vouchers | Remain feature 1's event-specific promotions, separate from these platform coupons. |
 
@@ -127,6 +127,6 @@ Explain without cue notes:
 6. Why is a database failure different from an empty wallet?
 7. Why can a restored coupon still be expired, and why do we preserve its original expiry?
 
-Course connections: React hooks/network state; REST/JSON and Zod; authenticated ownership; Prisma filtering, aggregation and relations; SQL isolation; UTC/date boundaries; safe numeric serialization; API/database tests; error handling. The next subpart adds the shared write-side transaction and concurrency mechanics.
+Course connections: React hooks/network state; REST/JSON and Zod; authenticated ownership; Prisma filtering, aggregation and relations; SQL isolation; UTC/date boundaries; safe numeric serialization; API/database tests; error handling. The [reward-operation companion](reward-operations-reference.md) now covers the shared write-side transaction and concurrency mechanics.
 
 Primary references: [PostgreSQL transaction isolation](https://www.postgresql.org/docs/17/transaction-iso.html#XACT-REPEATABLE-READ), [Supabase with Prisma](https://supabase.com/docs/guides/database/prisma). The repository keeps its existing pinned Prisma 7.10.1 client and verified TLS connection.

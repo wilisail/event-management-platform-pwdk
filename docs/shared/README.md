@@ -4,6 +4,7 @@ Updated: 1 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Reward operations](reward-operations-reference.md) | Shared transaction-aware reserve/consume/restore core, integration contract, allocation and race tests |
 | [Wallet and referral reads](wallet-reference.md) | Authenticated balances/coupons/referral counts, expiry, owner filters, read snapshots and learning notes |
 | [Referral signup](referral-registration-reference.md) | Atomic account/referral/reward issuance, configurable coupon, rollback/retry tests and learning notes |
 | [Referral/reward database](referral-reward-schema-reference.md) | Five reward tables, ownership/duplicate-use constraints, migration, live checks and learning notes |
