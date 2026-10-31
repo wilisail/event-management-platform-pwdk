@@ -2,6 +2,8 @@ import express, { type ErrorRequestHandler, type Request, type Response } from '
 import { z } from 'zod'
 import { rateLimit } from 'express-rate-limit'
 import { RegistrationError, type RegistrationService } from './auth/registration'
+import { sessionRouter } from './auth/session-http'
+import type { SessionService } from './auth/sessions'
 import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
@@ -14,6 +16,9 @@ export interface AppOptions {
   databaseProbe?: () => Promise<DatabaseUserView | null>
   registrationService?: RegistrationService
   registrationRateLimit?: { limit: number; windowMs: number }
+  sessionService?: SessionService
+  secureCookies?: boolean
+  loginRateLimit?: { limit: number; windowMs: number }
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -48,7 +53,8 @@ export function createApp(options: AppOptions = {}) {
     if (origin) {
       res.set('Access-Control-Allow-Origin', origin)
       res.vary('Origin')
-      res.set('Access-Control-Allow-Headers', 'content-type,x-demo-persona')
+      res.set('Access-Control-Allow-Headers', 'content-type,x-demo-persona,x-temuevent-client,x-csrf-token')
+      res.set('Access-Control-Allow-Credentials', 'true')
       res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
     }
     if (req.method === 'OPTIONS') {
@@ -71,8 +77,9 @@ export function createApp(options: AppOptions = {}) {
 
   app.get('/health', (_req, res) =>
     ok(res, {
-      service: 'feature-2-api', readOnly: !options.registrationService,
+      service: 'feature-2-api', readOnly: !options.registrationService && !options.sessionService,
       registrationConfigured: Boolean(options.registrationService),
+      sessionsConfigured: Boolean(options.sessionService),
     }, 'Feature 2 API ready'),
   )
 
@@ -122,6 +129,12 @@ export function createApp(options: AppOptions = {}) {
       }
     },
   )
+
+  app.use('/api/auth', sessionRouter({
+    service: options.sessionService, now,
+    secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production',
+    loginLimit: options.loginRateLimit,
+  }))
 
   app.get('/api/demo/me', (req, res) => {
     const user = demoUser(req, res)
@@ -177,11 +190,11 @@ export function createApp(options: AppOptions = {}) {
   app.use((_req, res) => fail(res, 404, 'NOT_FOUND', 'Endpoint not found'))
   const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     if (error?.type === 'entity.too.large') {
-      fail(res, 413, 'REQUEST_TOO_LARGE', 'The registration request is too large')
+      fail(res, 413, 'REQUEST_TOO_LARGE', 'The API request is too large')
       return
     }
     if (error?.type === 'entity.parse.failed') {
-      fail(res, 400, 'INVALID_JSON', 'Send valid JSON registration fields')
+      fail(res, 400, 'INVALID_JSON', 'Send valid JSON fields')
       return
     }
     fail(res, 500, 'INTERNAL_ERROR', 'Unexpected API error')

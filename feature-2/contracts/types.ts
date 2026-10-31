@@ -95,3 +95,17 @@ export interface RegistrationSuccess {
   data: { user: UserView }
 }
 
+export interface LoginRequest { email: string; password: string }
+
+/** Access/refresh secrets are Set-Cookie headers, never JSON or browser storage. */
+export interface LoginSuccess {
+  success: true
+  message: string
+  data: {
+    user: UserView
+    csrfToken: string
+    accessExpiresAt: string
+    sessionExpiresAt: string
+  }
+}
+

@@ -8,6 +8,12 @@ Status: proposed data contract. Read the shared [technical reference](https://gi
 
 Incoming `referralCode` is currently accepted only when empty/absent; nonempty input returns `REFERRAL_REGISTRATION_NOT_READY` without creating an account until rewards can commit atomically. See the [registration reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/registration-reference.md) for exact validation, response codes and verification.
 
+## Implemented login/session backend
+
+Login, refresh, logout, CSRF retrieval and session inspection are implemented on feature-2. New auth POST requests use JSON and `X-TemuEvent-Client: web`; refresh/logout with a refresh cookie also require `X-CSRF-Token`. Login/refresh return UserView plus CSRF/expiry fields and set HttpOnly cookies; raw access/refresh credentials are not JSON. JWT verification also checks the persisted session and current user data.
+
+See the [login/session reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/login-session-reference.md) for exact routes, cookies, lifetimes, strict refresh-reuse policy and verification. Reusable role middleware and browser form/client wiring are next steps. The fixture API below remains separate from these real auth routes.
+
 ## Try the read-only feature 2 data
 
 Run `npm run dev` from `feature-2`. feature 2 web runs on 3001, Express on 4002. feature 1 can remain on 3000.
@@ -71,8 +77,9 @@ These routes use a demo selector and fake `.test` accounts. **They are not real 
 
 feature 1 owns purchase creation, payment-proof handling, timeouts and its purchase consistency rules. feature 2 owns account/reward issuance and the organizer decision UI/API. A proposed shared purchase transition/restoration service lets the feature 2 decision API use the same logic as feature 1's expiry jobs. Final service ownership/interface is not yet agreed.
 
-For real checkout, purchase/item writes, inventory reservations and reward redemption must be coordinated atomically according to the PRD. Restore resources once when an action is retried or overlaps a timeout. Independent submissions can use separate databases/seed partner records, but the combined application needs one consistent authority for purchase/reward changes. The prototype makes no database writes and does not claim to satisfy production SQL transactions yet.
+For real checkout, purchase/item writes, inventory reservations and reward redemption must be coordinated atomically according to the PRD. Restore resources once when an action is retried or overlaps a timeout. Independent submissions can use separate databases/seed partner records, but the combined application needs one consistent authority for purchase/reward changes. The fixture routes do not make purchase/reward writes. Actual auth routes separately use PostgreSQL, including SQL transactions for session creation/refresh rotation.
 
-## Database planning only
+## Database state and remaining entities
 
-Proposed feature 2 entities: users/profiles, referral registrations, point-grant batches, reward coupons, password-reset/session records, and redemption allocations linking to feature 1 purchase IDs. Event/purchase/review entities remain feature 1's domain. Agree cross-feature IDs, relations and migration ownership together. No Prisma provider or hosted database has been provisioned or selected by this push.
+PostgreSQL on Supabase and Prisma 7.10.1 are in use. User/session/token models and the shared event/ticket/purchase starter are applied. Referral registrations, point-grant batches, reward coupons, password-reset records and redemption allocations remain subsequent work. Event/purchase/review business rules remain feature 1's domain. Cross-feature IDs, relations and migration ownership follow the shared reference and remain open to coordinated changes.
+

@@ -6,7 +6,9 @@ Updated: 31 October 2026.
 
 The shared schema now also includes `auth_sessions` and `auth_refresh_tokens`. These store per-login expiry/revocation and hashed refresh-token history. [Account/session notes](account-session-foundation.md) describe the fields, relationships, course mapping and verification.
 
-Both tables are private, RLS-enabled and accessible to the existing backend role through SELECT/INSERT/UPDATE only. The additive `20261031041038_account_sessions` migration is applied and registered in Prisma history with its exact SQL checksum. No existing user, event or purchase records were changed. Tests through the existing application connection passed and rolled back their temporary rows. Both auth tables are empty; basic registration/password hashing is implemented on feature-2; login, cookie/JWT handling and permission middleware remain pending. See [registration reference](registration-reference.md) for the current input/response contract and live HTTP/database test.
+Both tables are private, RLS-enabled and accessible to the existing backend role through SELECT/INSERT/UPDATE only. The additive `20261031041038_account_sessions` migration is applied and registered in Prisma history with its exact SQL checksum. No existing user, event or purchase records were changed. Basic registration and login/session/JWT/cookie/refresh/logout services are implemented on feature-2 and passed real HTTP/database tests. All verification writes rolled back, leaving both auth tables empty. See [registration](registration-reference.md) and [login/session reference](login-session-reference.md). Reusable role middleware and frontend form wiring are next steps.
+
+The ignored backend environment now uses the existing DATABASE_URL plus AUTH_JWT_SECRET for login sessions. A development signing key is prepared in the private handoff; the database connection/password is unchanged. Never copy either value into Git or frontend public variables. This batch requires no new migration, database account or permission grants.
 
 ## Ready-to-use event and purchase starter
 
@@ -62,7 +64,7 @@ The actual application `.env` is prepared separately for Rizky and contains the 
 
 [Prisma schema](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/prisma/schema.prisma) · [SQL baseline](https://github.com/wilisail/event-management-platform-pwdk/blob/main/database/prisma/migrations/0_user_foundation/migration.sql) · [seed](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/prisma/seed.ts)
 
-Users have a UUID, normalized unique email, name, customer/organizer role, immutable unique referral code, optional password hash/profile-picture key and timestamps. The seed identities have no login credentials; authentication is a subsequent feature 2 step.
+Users have a UUID, normalized unique email, name, customer/organizer role, immutable unique referral code, optional password hash/profile-picture key and timestamps. The seed identities have no login credentials. Register a new account to test the implemented password login; reusable permissions and frontend wiring follow separately.
 
 | Development identity | Email | Role | Referral code |
 | --- | --- | --- | --- |
@@ -97,7 +99,7 @@ These are connection identifiers, not a password. The application password stays
    This command returned the seeded customer in the cloud VM. Set `NODE_EXTRA_CA_CERTS` in the process/hosting environment; putting it only in a file loaded later by `dotenv` does not configure Node's startup trust store. Certificate verification remains enabled.
 5. For the HTTP check, set `F2_DATABASE_CHECK_ENABLED=true`, start `npm run dev:api` with the same CA environment setting, and request `http://127.0.0.1:4002/api/demo/database-check`. It returned HTTP 200 with the seeded customer in the cloud VM. This diagnostic is disabled by the entry point in production.
 
-The alternative `DATABASE_CA_CERT_PATH` setting configures an explicit `pg` SSL object. Do not combine it with URL parameters `sslmode`, `sslcert`, `sslkey`, or `sslrootcert`, which can replace that SSL object. Prefer the verified startup-CA method above for the current runtime.
+The current feature 2 backend now defaults to an explicit verified `pg` SSL object using the included public CA and system roots. It removes URI SSL options before supplying that object so they cannot replace it. DATABASE_URL alone therefore enables its database access; NODE_EXTRA_CA_CERTS is not additionally required by that helper. DATABASE_CA_CERT_PATH remains an optional CA override. The startup-CA instructions above remain useful for a separate backend that does not adopt this helper.
 
 WSL and a laptop are optional execution environments. The cloud VM performed these checks without either. The temporary VM has stopped; it was a verification run, not a deployed website or running shared API.
 
@@ -165,3 +167,4 @@ Feature 1 can continue its pages, API handlers and business-rule tests using the
 Feature 2 continues with real registration, password hashing, sessions and referral/reward issuance. Feature 1 retains the design of its event/ticket/purchase/review tables. Shared foreign keys, reward allocations and the purchase transition service are coordinated before wiring the two features together. Thirty linked sample purchases are now present in the shared database.
 
 Sources: [Supabase connection modes](https://supabase.com/docs/guides/database/connecting-to-postgres), [Supabase SSL verification](https://supabase.com/docs/guides/platform/ssl-enforcement), [node-postgres SSL configuration](https://node-postgres.com/features/ssl), [Prisma baseline workflow](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/baselining), [Prisma PostgreSQL connection options](https://www.prisma.io/docs/orm/overview/databases/postgresql).
+
