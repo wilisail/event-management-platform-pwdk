@@ -37,14 +37,14 @@ The fixtures match feature 1's example of 20,000 points and `WELCOME25`. **The R
 
 The [shared database setup](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/database-setup.md) records the active Supabase project, initial schema, applied SQL and connection status. A customer and organizer are seeded; the account/reward screens still use their existing fixtures.
 
-- [Prisma schema](prisma/schema.prisma) and [SQL baseline](prisma/migrations/0_user_foundation/migration.sql).
+- [Prisma schema](prisma/schema.prisma) and [SQL baseline](../database/prisma/migrations/0_user_foundation/migration.sql).
 - `npm run db:generate` generates the typed client; no credentials are needed.
 - `npm run db:validate` validates the schema.
 - `npm run db:check` reads the seeded customer when `DATABASE_URL` is configured and reachable.
 - `npm run db:seed` inserts missing development identities without changing existing ones.
 - The optional `/api/demo/database-check` diagnostic requires `F2_DATABASE_CHECK_ENABLED=true` and is disabled by the entry point in production.
 
-Managed SQL access and the seeded rows are verified. Live Express → Prisma → Supabase connectivity is pending because the current workspace cannot resolve the database endpoint. The API returns a sanitized 503 when that connection is unavailable. The hosted baseline was applied through the Supabase connection; Prisma's baseline-recording step is documented in the shared setup before future migrations.
+Managed SQL access and the seeded rows are verified. Live Express → Prisma → Supabase connectivity passed on 19 October 2026; shared event/purchase verification passed on 28 October. On 31 October, the account/session database foundation was applied and tested through the existing backend role. See [account/session foundation](../docs/shared/account-session-foundation.md) for the models, relationship tests and remaining HTTP authentication work. The API returns a sanitized 503 when its optional database diagnostic is unavailable. Shared migrations have one recorded history under ../database/prisma/migrations.
 
 ## Validation
 
@@ -58,7 +58,7 @@ Next.js type errors are not suppressed. The tests cover expiry boundaries, leap/
 
 ## What remains before a graded submission
 
-Registration/login, password hashing and sessions, backend authorization, reward/purchase persistence, atomic referral issuance, avatar uploads, password change/reset emails, organizer management/statistics/attendee APIs, and purchase decisions remain to be implemented. The initial user table and development seed are implemented. PRD-required SQL transactions will be needed for real multi-record writes.
+Registration/login, password hashing and sessions, backend authorization, reward/purchase persistence, atomic referral issuance, avatar uploads, password change/reset emails, organizer management/statistics/attendee APIs, and purchase decisions remain to be implemented. The user table, shared event/purchase starter, account/session tables and development seed are implemented. The session tables prepare real sign-in; registration/login endpoints, cookie/JWT handling and backend permission middleware are still pending. PRD-required SQL transactions will be needed for real multi-record writes.
 
 The `x-demo-persona` header is deliberately only a demo selector. Production identity must come from the agreed authenticated session, never from a caller-supplied user ID or role.
 
