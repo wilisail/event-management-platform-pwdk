@@ -1,6 +1,6 @@
 # Registration backend reference
 
-Updated: 31 October 2026. Implemented on the feature-2 branch. This batch creates accounts without an incoming referral; login/session issuance and frontend registration screens remain separate batches.
+Updated: 31 October 2026. Implemented on the feature-2 branch. This first batch creates accounts without an incoming referral. Login/session services are now implemented in the [second sub-batch](login-session-reference.md); frontend registration screens remain a separate next step.
 
 ## Request to database flow
 
@@ -117,3 +117,4 @@ On 31 October, TypeScript, all unit/API tests, the live HTTP/database verifier, 
 Feature 1's user IDs and role names remain the same. Checkout can adopt the shared login/session flow when those endpoints are implemented; registration alone is not the authentication integration. Feature 1's event/checkout implementation and visual direction remain with its builder.
 
 References: [OWASP password storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html), [Node 22 crypto](https://nodejs.org/docs/latest-v22.x/api/crypto.html), [Zod](https://zod.dev/api), [express-rate-limit configuration](https://express-rate-limit.mintlify.app/reference/configuration).
+
