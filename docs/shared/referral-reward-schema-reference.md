@@ -1,6 +1,6 @@
 # Referral and reward database — companion note
 
-Updated: 1 November 2026, Asia/Jakarta. Day 2, subpart 1: database foundation. This batch adds storage and integrity rules; registration with an incoming referral, reward issuance, the real wallet and checkout operations remain subsequent subparts.
+Updated: 1 November 2026, Asia/Jakarta. Day 2, subpart 1: database foundation. Storage and integrity rules are applied. Atomic incoming-referral signup and issuance are now implemented in [subpart 2](referral-registration-reference.md); the real wallet and checkout operations remain subsequent work.
 
 ## Relationships
 
@@ -33,7 +33,7 @@ The credit policy remains 10,000 points to the referrer and a three-month coupon
 
 ## Example: earning, spending and returning
 
-If Ayu refers Budi, the next signup subpart will create the following together:
+If Ayu refers Budi, the signup service creates the following together:
 
 - Budi's account and one referral linking Ayu to Budi.
 - A 10,000-point grant owned by Ayu, expiring three calendar months after credit.
@@ -66,7 +66,7 @@ The extra owner/ID unique pairs support composite foreign keys. The owner appear
 
 ## What still belongs in the service
 
-- Create account, referral and both rewards in one SQL transaction. A database foreign key does not guarantee all four records are issued together.
+- Create account, referral and both rewards in one SQL transaction: now implemented in the [signup service](referral-registration-reference.md). A foreign key alone does not guarantee all records are issued together.
 - Apply exactly 10,000 points and the configured coupon value; calculate three calendar months using the agreed UTC/month-end rules. The database validates dates, not this business duration.
 - Reserve available, unexpired points using concurrency-safe updates or locks. Nonnegative-balance checks alone do not implement checkout or make stale read/modify/write safe.
 - Ensure allocations sum to `pointsUsed`, remaining points agree with claims and purchase discount totals agree with the final price. A row check cannot sum other rows.
@@ -110,4 +110,4 @@ Explain these in your own words:
 
 Course connections: normalization, one-to-many relations, composite keys, joins/indexes, PostgreSQL constraints, Prisma models/migrations, SQL transactions, secure coding and database integration tests.
 
-Primary references: [PostgreSQL constraints](https://www.postgresql.org/docs/17/ddl-constraints.html), [partial unique indexes](https://www.postgresql.org/docs/17/indexes-partial.html), [Supabase row-level security](https://supabase.com/docs/guides/database/postgres/row-level-security). Next: atomic referral signup and reward issuance, then the real wallet and shared reservation/restoration service.
+Primary references: [PostgreSQL constraints](https://www.postgresql.org/docs/17/ddl-constraints.html), [partial unique indexes](https://www.postgresql.org/docs/17/indexes-partial.html), [Supabase row-level security](https://supabase.com/docs/guides/database/postgres/row-level-security). [Atomic signup/issuance](referral-registration-reference.md) is implemented; next are the real wallet and shared reservation/restoration service.

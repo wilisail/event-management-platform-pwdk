@@ -2,13 +2,13 @@
 
 Prepared: 31 October 2026, Asia/Jakarta. These are focused working-time estimates including implementation, relevant checks and companion explanations. They are planning ranges, not scheduled automations or promises of elapsed delivery time. Adjust the pace when a foundation needs more explanation.
 
-Progress, 1 November: day 2 subpart 1 is complete. The five referral/reward tables and additive migration are applied; both Prisma schemas validate, TypeScript and the existing 74 tests pass, and live constraints/ownership/permissions checks roll back their fixtures. See the [companion note](referral-reward-schema-reference.md). Next is atomic referral signup and reward issuance, estimated 60–90 minutes. The wallet and reservation/restoration service remain later subparts today.
+Progress, 1 November: day 2 subparts 1 and 2 are complete. The five reward tables/migration are applied, and optional referral signup now creates the account, referral, referrer's 10,000-point grant and newcomer's coupon atomically. TypeScript, all 82 tests, the production build and live rollback/retry checks pass. See the [schema note](referral-reward-schema-reference.md) and [signup note](referral-registration-reference.md). Next: authenticated wallet/referral UI and expiry reading, estimated 45–60 minutes; then the shared reservation/restoration interface and tests, estimated 60–90 minutes.
 
 ## Starting point after today
 
 Implemented on `feature-2`: real registration, password hashing, persisted sessions/refresh rotation/logout, role/ownership guards, protected identity/event/confirmed-attendee APIs, and their connected account/login/organizer frontend. The shared PostgreSQL/Prisma starter and 30 sample purchases already exist. See the [frontend authentication checkpoint](frontend-authentication-reference.md).
 
-Not complete: incoming referrals/rewards and persistence; profile changes/uploads; password change/reset; organizer decisions/notification emails/statistics; attendance recording; real public organizer profile integration; final combined testing/deployment. Fixture pages and sample rows do not count as finished business flows.
+Not complete: authenticated wallet APIs/UI and purchase reward reservation/restoration; profile changes/uploads; password change/reset; organizer decisions/notification emails/statistics; attendance recording; real public organizer profile integration; final combined testing/deployment. Incoming referral signup/issuance is implemented. Fixture pages and sample rows do not count as finished business flows.
 
 The latest scoring is authentication/authorization **4**, referrals/profile/rewards **4**, organizer dashboard **2**. Completion means satisfying every required behavior, not merely obtaining the largest scoring items.
 

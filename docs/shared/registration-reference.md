@@ -1,6 +1,6 @@
 # Registration backend reference
 
-Updated: 31 October 2026. Implemented on the feature-2 branch. This first batch creates accounts without an incoming referral. Login/session services are now implemented in the [second sub-batch](login-session-reference.md); frontend registration screens remain a separate next step.
+Updated: 1 November 2026. Implemented on the feature-2 branch. Ordinary registration and optional incoming-referral signup are connected to the frontend. Referral signup atomically creates the account, referral and both rewards; see the [referral companion note](referral-registration-reference.md). Login/session services remain a separate operation described in the [session reference](login-session-reference.md).
 
 ## Request to database flow
 
@@ -47,7 +47,7 @@ This is illustrative input, not an existing account or credential.
 | email | Trim and lowercase; require a valid email up to 254 characters. Provider-specific aliases/dots are not rewritten. |
 | password | Require 15–128 Unicode code points; reject all-whitespace passwords. Do not trim, lowercase or otherwise change the supplied secret. |
 | role | CUSTOMER by default; ORGANIZER is also allowed at new-account creation. Other roles are rejected. This does not authorize later requests to supply their own role. |
-| referralCode | Empty/absent is accepted. A nonempty incoming referral returns REFERRAL_REGISTRATION_NOT_READY and creates no account until referral rewards can be committed atomically. |
+| referralCode | Optional; trim and uppercase; at most 16 alphanumeric characters. A valid code issues the referrer's 10,000-point grant and newcomer's coupon with the account. A well-formed unknown code returns INVALID_REFERRAL_CODE and creates nothing. |
 | Other fields | Rejected. Callers cannot supply the account ID or passwordHash. |
 
 The server generates the user's own 12-character hexadecimal referral code using random bytes. This public referral identifier is separate from an incoming referrer's code and from authentication secrets. Its database unique index prevents collisions; creation retries a code collision up to three times. The existing database trigger prevents later code changes.
@@ -66,7 +66,7 @@ At most two hashing/verification jobs run at once per process. Registration also
 
 The initial email lookup gives prompt duplicate feedback before hashing. It is not the final concurrency guarantee: two requests can both find no account. PostgreSQL's unique email index decides which insert can succeed. A Prisma P2002 conflict is mapped to EMAIL_IN_USE if the normalized email now exists.
 
-A single INSERT is already atomic, so this batch does not add an unnecessary multi-statement transaction. Referral registration will need account creation, referral recording and both rewards to succeed together. The current guard prevents a successful-looking signup that omits those rewards.
+Ordinary registration remains one atomic INSERT. With an incoming referral, one Prisma transaction validates the inviter, creates the account/referral and inserts both rewards. Failure at any write rolls back the whole bundle. Hashing stays outside the transaction. Known generated-code collisions retry at most three fresh bundles; duplicate email returns 409, and unknown failures are not automatically replayed.
 
 ## Output and status codes
 
@@ -75,7 +75,7 @@ A successful response is success=true with data.user containing only id, name, e
 | HTTP status | Meaning |
 | --- | --- |
 | 201 | Account created; no session issued. |
-| 400 | Invalid fields/JSON, unknown fields, or incoming referral registration not yet supported. |
+| 400 | Invalid fields/JSON, unknown fields, malformed or unknown incoming referral. |
 | 409 | Normalized email is already registered. |
 | 413 / 415 | Request exceeds 8 KiB / content type is not JSON. |
 | 429 | Registration rate limit reached. |
@@ -98,7 +98,7 @@ npm test
 npm run db:verify:registration
 ```
 
-The live verifier requires the existing private backend environment. It starts a real Express HTTP server and uses Prisma against the shared Supabase database inside a transaction. It creates customer/organizer accounts, reads back and verifies stored hashes, checks duplicate/invalid/referral behavior, then rolls back its temporary accounts. Unit tests separately cover collision retries, simulated concurrent-conflict handling, HTTP boundaries, rate limits and hash behavior.
+The live verifier requires the existing private backend environment. It starts a real Express HTTP server and uses Prisma against the shared Supabase database inside a transaction. It creates customer/organizer accounts, verifies stored hashes, checks duplicate/invalid/unknown-referral behavior, then rolls back its temporary accounts. `npm run db:verify:referrals` additionally checks valid rewards, correct recipients/expiry, injected failures and coupon-collision rollback/retry. Unit tests cover policy, duplicate/conflict handling, transaction connection use, HTTP boundaries, rate limits and hashing.
 
 On 31 October, TypeScript, all unit/API tests, the live HTTP/database verifier, and a clean npm ci passed. Test cleanup left two existing sample users, three events, thirty purchases and no temporary registration rows. No schema migration or permission change was needed.
 
@@ -117,4 +117,5 @@ On 31 October, TypeScript, all unit/API tests, the live HTTP/database verifier, 
 Feature 1's user IDs and role names remain the same. Checkout can adopt the shared login/session flow when those endpoints are implemented; registration alone is not the authentication integration. Feature 1's event/checkout implementation and visual direction remain with its builder.
 
 References: [OWASP password storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html), [Node 22 crypto](https://nodejs.org/docs/latest-v22.x/api/crypto.html), [Zod](https://zod.dev/api), [express-rate-limit configuration](https://express-rate-limit.mintlify.app/reference/configuration).
+
 
