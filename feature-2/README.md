@@ -1,6 +1,6 @@
-# Feature 2 — account/reward preview and authentication backend
+# Feature 2 — accounts, authentication and organizer pages
 
-A separately runnable feature 2 application with an account/reward preview and database-backed registration/login/sessions, matching Rizky's accepted TemuEvent visual direction. The existing feature 1 application at the repository root is not edited by this module.
+A separately runnable feature 2 application with connected registration/login, protected account and organizer pages, plus a separate account/reward fixture preview. It follows Rizky's accepted TemuEvent visual direction. The existing feature 1 application at the repository root is not edited by this module.
 
 Logo and theme values follow [Rizky's feature 1 push](https://github.com/wilisail/event-management-platform-pwdk/commit/cd582753a480d68ce14e00021a52f8ec93d8372f). The [shared UI reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/ui/README.md) records the original logo, colours, typography and reuse details.
 
@@ -14,16 +14,17 @@ npm ci
 npm run dev
 ```
 
-- feature 2 UI: http://localhost:3001
+- feature 2 UI: http://localhost:3001 redirects to the protected account page; `/register`, `/login` and `/organizer` are real account/session screens.
+- Fixture UI: http://localhost:3001/preview works without database credentials and is labelled as sample data.
 - Express API: http://127.0.0.1:4002/health. Demo routes remain read-only; registration writes with DATABASE_URL, and login/sessions also require AUTH_JWT_SECRET.
 - Run the existing feature 1 app separately on port 3000 if you want its discovery link to work.
-- No database, service account, password, or API key is required for this preview.
+- Real authentication requires the private backend DATABASE_URL and AUTH_JWT_SECRET. The browser does not receive these values.
 
-The defaults run without an environment file. `.env.example` documents optional overrides. The Express API now loads optional backend settings from `.env`. Database credentials are kept there and excluded from Git.
+The fixture preview runs without an environment file; real account pages show a controlled service error until backend authentication is configured. `.env.example` documents settings. The Express API loads backend settings from the ignored `.env`. Relative browser `/api` requests are rewritten to `F2_API_ORIGIN` (the older F2_DEMO_API_ORIGIN remains a fallback), defaulting to http://127.0.0.1:4002. Configure the exact allowed browser origin for deployment and use HTTPS; cookies are Secure in production.
 
 ## Database-backed registration
 
-`POST /api/auth/register` validates JSON, normalizes email, hashes passwords with Node scrypt, generates an immutable referral code and creates an account. It returns a safe identity without issuing a login cookie. A nonempty incoming referral is explicitly rejected until reward issuance is atomic. Frontend signup wiring remains a subsequent batch.
+`POST /api/auth/register` validates JSON, normalizes email, hashes passwords with Node scrypt, generates an immutable referral code and creates an account. The `/register` form is connected. It returns a safe identity without issuing a login cookie; the success screen offers separate login. A nonempty incoming referral is explicitly rejected until reward issuance is atomic.
 
 The existing private DATABASE_URL enables the route; without it, registration returns 503 and the fixture preview remains available. The backend trusts the included public Supabase CA by default. See [registration reference](../docs/shared/registration-reference.md) for inputs, status codes, layering and learning notes.
 
@@ -33,7 +34,7 @@ The existing private DATABASE_URL enables the route; without it, registration re
 
 The backend implements `/api/auth/login`, `/refresh`, `/logout`, `/csrf` and `/session`. Password login creates a database session; HttpOnly cookies carry signed access and random refresh credentials. Refresh rotates once and detects reuse; logout revokes the session. Working defaults: fifteen-minute access and a seven-day absolute session.
 
-Add the private `AUTH_JWT_SECRET` from the backend handoff alongside DATABASE_URL in the ignored `.env`. Without that key, session routes return 503 while registration and the fixture preview remain available. See [login/session mechanics, request headers and CSRF contract](../docs/shared/login-session-reference.md). Reusable guards and protected organizer reads are implemented; UI form wiring is next.
+Add the private `AUTH_JWT_SECRET` from the backend handoff alongside DATABASE_URL in the ignored `.env`. Without that key, session routes return 503 while registration and the fixture preview remain available. See [login/session mechanics, request headers and CSRF contract](../docs/shared/login-session-reference.md). Connected forms, account navigation, guarded pages and refresh/logout coordination are explained in the [frontend companion note](../docs/shared/frontend-authentication-reference.md).
 
 `npm run db:verify:sessions` exercises the real HTTP/database flow and rolls back temporary accounts/sessions/tokens. TypeScript, 57 unit/API tests, live verification, the actual backend bootstrap and a clean install/client generation passed on 31 October. No migration or permission change was needed.
 
@@ -44,6 +45,8 @@ Add the private `AUTH_JWT_SECRET` from the backend handoff alongside DATABASE_UR
 See the [authorization companion note](../docs/shared/authorization-reference.md) for middleware order, ownership filters, 401/403/404 behavior, pagination and the effect on both features. TypeScript, all 66 unit/API tests and real HTTP/database authorization verification passed. `npm run db:verify:authorization` checks the flow with a customer and two organizers and rolls back its temporary data. No new dependency, schema, grant or secret is required.
 
 ## What works in the fixture preview
+
+The original fixture application is now at `/preview`. The real `/account` page uses `/api/me` and does not show the example points/coupons as actual rewards. Profile edits and real wallet operations are pending.
 
 - Customer and organizer **demo persona** selection; this is not authentication.
 - Account profile UI, immutable referral-code display/copy, and a local profile-edit confirmation dialog.
@@ -57,7 +60,7 @@ The fixtures match feature 1's example of 20,000 points and `WELCOME25`. **The R
 
 ## Initial database foundation
 
-The [shared database setup](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/database-setup.md) records the active Supabase project, initial schema, applied SQL and connection status. A customer and organizer are seeded; the account/reward screens still use their existing fixtures.
+The [shared database setup](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/database-setup.md) records the active Supabase project, initial schema, applied SQL and connection status. A customer and organizer are seeded with no password credentials. Register a new account for real login; a new organizer has no owned events until linked event data is created. Only `/preview` and demo APIs use the old account/reward fixtures.
 
 - [Prisma schema](prisma/schema.prisma) and [SQL baseline](../database/prisma/migrations/0_user_foundation/migration.sql).
 - `npm run db:generate` generates the typed client; no credentials are needed.
@@ -76,11 +79,13 @@ npm test
 npm run build
 ```
 
-Next.js type errors are not suppressed. The tests cover expiry boundaries, leap/month-end dates, user-data isolation, role restrictions in demo routes, CORS, and the checkout data shape.
+Next.js type errors are not suppressed. All 74 tests, TypeScript and a production build passed on 31 October. The tests cover reward/date boundaries, authentication/session rules, real permission middleware, ownership/pagination, CSRF and the new client refresh/error/return-path behavior. The real HTTPS client → Next rewrite → Express → Prisma → Supabase path passed with rolled-back QA data; login/signup pages were visually inspected. Password-form submission and multiple-tab UI behavior remain manual release checks.
+
+`scripts/serve-browser-check.ts` is an explicitly enabled loopback QA server that places temporary accounts/events/purchases/sessions in one rollback transaction. `scripts/verify-frontend-client.ts` tests the real client against that server via an HTTPS preview, with disposable credentials supplied through process environment settings. These QA runners are not the normal application entry point or public control endpoints; never run the verifier against the ordinary persistent server. The normal development command remains `npm run dev`.
 
 ## What remains before a graded submission
 
-Frontend signup/login wiring, incoming referral registration with atomic rewards, reward/purchase persistence, avatar uploads, password change/reset emails, organizer decisions/statistics, actual attendance and email operations remain to be implemented. Users, event/purchase starter, sessions and development seeds are implemented, together with backend registration/login/refresh/logout, reusable guards and protected identity/organizer reads. SQL transactions already protect session/refresh writes and will also be needed for purchase/reward writes.
+Incoming referral registration with atomic rewards, real wallet/redemption persistence, profile edits/avatar uploads, password change/reset emails, organizer decisions/statistics, actual attendance, notification delivery, public organizer integration and evaluator deployment remain to be implemented. Users, the event/purchase starter, sessions and seeds are implemented, together with backend registration/login/refresh/logout, reusable guards, protected identity/organizer reads and connected frontend auth. SQL transactions already protect session/refresh writes and will also protect coupled purchase/reward writes. See the [dated completion plan](../docs/shared/feature-2-completion-plan.md) for daily subtasks and time ranges.
 
 The `x-demo-persona` header is deliberately only a demo selector. Production identity must come from the agreed authenticated session, never from a caller-supplied user ID or role.
 

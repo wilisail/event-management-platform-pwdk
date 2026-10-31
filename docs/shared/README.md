@@ -4,6 +4,8 @@ Updated: 31 October 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Frontend authentication](frontend-authentication-reference.md) | Connected signup/login, account and organizer pages; cookies, client coordination and verification limits |
+| [Feature 2 completion plan](feature-2-completion-plan.md) | Dated remaining subtasks, time ranges, feature 1 dependencies and full submission checklist |
 | [Repository workflow](repository-workflow.md) | Feature branch freedom, owner-managed integration, review process and active branch rules |
 | [Shared Prisma starter](../../database/README.md) | Live event/ticket/purchase tables, 30 sample purchases and runnable Prisma connection |
 | [Registration reference](registration-reference.md) | Implemented backend signup, input rules, password hashing, safe responses and live verification |

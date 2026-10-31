@@ -1,5 +1,5 @@
-import { AccountPreview } from '../components/account-preview'
+import { redirect } from 'next/navigation'
 
 export default function Page() {
-  return <AccountPreview />
+  redirect('/account')
 }

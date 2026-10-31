@@ -1,15 +1,16 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { AuthProvider } from '../components/auth-provider'
 
 export const metadata: Metadata = {
   title: 'TemuEvent · Akun & Rewards',
-  description: 'Prototype fitur 2: profil, referral, poin, kupon, dan data penghubung checkout.',
+  description: 'Akun TemuEvent, login aman, profil dan dashboard organizer.',
 }
 
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id">
-      <body>{children}</body>
+      <body><AuthProvider>{children}</AuthProvider></body>
     </html>
   )
 }

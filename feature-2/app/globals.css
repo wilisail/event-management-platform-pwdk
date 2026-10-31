@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+/* Additional account layouts reuse Rizky's existing UI variables and original logo. */
 :root {
   --background: #fcf9ff;
   --foreground: #11103d;
@@ -13,6 +14,48 @@
   --event-gradient: linear-gradient(90deg, #3f41db, #bd2b9e);
   --event-hero: radial-gradient(circle at 15% 15%, #f1edff 0, transparent 34%), radial-gradient(circle at 83% 68%, #ffe8f7 0, transparent 33%), linear-gradient(180deg, #f7f3ff 0%, #fffafe 100%);
   color-scheme: light;
+}
+.account-nav, .auth-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.account-nav .compact { padding: 7px 12px; min-height: 36px; }
+.main.auth-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); gap: 36px; align-items: start; padding-top: 56px; min-height: calc(100vh - 140px); }
+.auth-story { background: var(--event-hero); border-radius: var(--card-radius); padding: 42px; min-height: 480px; overflow: hidden; }
+.auth-story h1 { max-width: 420px; }
+.auth-story > p:not(.eyebrow) { color: var(--muted); max-width: 400px; }
+.auth-story-mark { color: var(--primary); font-size: 115px; line-height: 1.3; margin: 22px 0; opacity: .75; }
+.auth-story-caption { font-size: 12px; }
+.panel.auth-card { padding: 32px; }
+.auth-intro, .auth-switch { color: var(--muted); font-size: 13px; }
+.auth-switch { margin: 23px 0 0; }
+.auth-error { border: 1px solid #f2cbd5; background: #fff4f6; color: #922b47; padding: 14px; border-radius: var(--control-radius); }
+.auth-error > p { margin: 0 0 12px; }
+.profile-form .auth-submit { width: 100%; }
+.role-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+.role-fields legend { color: var(--muted); font-weight: 700; font-size: 12px; margin-bottom: 8px; }
+.role-options { display: flex; flex-wrap: wrap; gap: 12px; }
+.profile-form .role-options label { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--control-radius); color: var(--foreground); }
+.profile-form .role-options input { width: auto; accent-color: var(--primary); }
+button:disabled, input:disabled { cursor: wait; opacity: .65; }
+.owned-events { display: grid; gap: 14px; }
+.owned-event { display: flex; gap: 20px; align-items: center; justify-content: space-between; border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+.owned-event h3 { margin: 12px 0 6px; }
+.owned-event p { color: var(--muted); margin: 0; font-size: 12px; }
+.owned-event button { flex-shrink: 0; }
+.organizer-attendees { margin-top: 22px; }
+.table-scroll { overflow-x: auto; margin-top: 20px; }
+.attendee-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+.attendee-table th { color: var(--muted); font-size: 11px; font-weight: 700; }
+.attendee-table th, .attendee-table td { padding: 14px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.attendee-table th:first-child, .attendee-table td:first-child { padding-left: 0; }
+.pager { justify-content: flex-end; margin-top: 20px; font-size: 12px; color: var(--muted); }
+.empty-state { padding: 18px 0; }
+@media (max-width: 760px) {
+  .main.auth-layout { grid-template-columns: 1fr; gap: 20px; padding-top: 24px; }
+  .auth-story { min-height: 0; padding: 26px; }
+  .auth-story-mark, .auth-story-caption { display: none; }
+  .panel.auth-card { padding: 24px; }
+  .account-nav { gap: 10px; }
+  .discovery-link { display: none; }
+  .owned-event { flex-direction: column; align-items: stretch; gap: 15px; }
 }
 * {
   box-sizing: border-box;

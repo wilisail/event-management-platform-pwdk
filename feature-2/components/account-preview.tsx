@@ -67,8 +67,7 @@ export function AccountPreview() {
       <div className="demo">
         <div className="width flex flex-wrap items-center justify-between gap-3">
           <p>
-            <strong>Prototype F2</strong> · Data demo dari API. Belum ada login, pembelian, atau
-            perubahan database nyata.
+            <strong>Pratinjau UI</strong> · Identitas dan rewards di halaman ini menggunakan data contoh.
           </p>
           <div className="persona" role="group" aria-label="Pilih akun demo">
             <button onClick={() => selectPersona('customer')} aria-pressed={persona === 'customer'}>
