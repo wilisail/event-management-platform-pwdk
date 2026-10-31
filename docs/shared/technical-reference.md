@@ -2,7 +2,7 @@
 
 [Project record](consistency.en.md) · [UX reference](ux-reference.md)
 
-Updated: **28 October 2026**. Status: proposed implementation defaults, open to changes following input. This record covers the database and backend boundaries connecting feature 1 and feature 2. Feature 1's internal implementation remains with Rizky; feature 2's remains with Wili.
+Updated: **31 October 2026**. Status: proposed implementation defaults, open to changes following input. This record covers the database and backend boundaries connecting feature 1 and feature 2. Feature 1's internal implementation remains with Rizky; feature 2's remains with Wili.
 
 ## 1. Implementation status
 
@@ -10,7 +10,7 @@ Updated: **28 October 2026**. Status: proposed implementation defaults, open to 
 | --- | --- |
 | Frontend | Both previews use Next.js, React, TypeScript and the TemuEvent styling. Each preview runs separately. |
 | Feature 2 backend | Express + TypeScript with read-only fixture routes. [Implementation](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/server/app.ts) and [current response types](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/contracts/types.ts). |
-| Database/authentication | [TemuEvent database](database-setup.md) is active on Supabase in Singapore. The initial user schema and two development identities are applied. Prisma 7.10.1 live connectivity passed. The event/ticket/purchase starter and 30 demo purchases are applied; production authentication remains pending. |
+| Database/authentication | [TemuEvent database](database-setup.md) is active on Supabase in Singapore. The initial user schema and two development identities are applied. Prisma 7.10.1 live connectivity passed. The event/ticket/purchase starter and 30 demo purchases are applied; account/session tables are applied and verified. HTTP authentication remains pending; see [account/session foundation](account-session-foundation.md). |
 | Purchases and decisions | Purchase writes, reward reservation/restoration, organizer decisions and email delivery are pending. The proposed interfaces below are not implemented routes. |
 
 ## 2. Technical choices and change impacts
@@ -29,7 +29,7 @@ Supabase hosts the development PostgreSQL database. Authentication remains a sep
 
 ## 3. Database outline
 
-The user foundation and [shared event/ticket/purchase starter](../../database/README.md) are implemented; the remaining reward/session/attendance entities below are proposed. See the [database setup and status](database-setup.md) for applied files, seed data and connection limitations. Tables use primary/foreign keys and appropriate indexes. Feature 1's complete event/purchase schema remains its builder's design.
+The user foundation, [shared event/ticket/purchase starter](../../database/README.md) and [account/session tables](account-session-foundation.md) are implemented; reward, reset-token and attendance entities below remain proposed. See the [database setup and status](database-setup.md) for applied files, seed data and connection limitations. Tables use primary/foreign keys and appropriate indexes. Feature 1's complete event/purchase schema remains its builder's design.
 
 | Entity / owner | Minimum fields or relationships | Cross-feature use |
 | --- | --- | --- |
@@ -40,7 +40,8 @@ The user foundation and [shared event/ticket/purchase starter](../../database/RE
 | `reward_coupons` / feature 2 | `id`, `userId`, `code`, `discountType`, `discountValue`, `issuedAt`, `expiresAt`, reservation/use state | Customer-owned platform coupons, distinct from feature 1's event vouchers. Coupon amount is still open. |
 | `reward_redemptions` / shared; feature 2 reward service | `id`, unique `transactionId`, `userId`, optional `couponId`, `status`, timestamps | Links one purchase to reserved/consumed/restored rewards. Prevent multiple active claims on the same coupon. |
 | `point_allocations` / shared; feature 2 reward service | `redemptionId`, `pointGrantId`, positive `amount`; unique pair | Records exactly which earning batches a purchase used, so rejection/expiry restores the correct batches once. |
-| `auth_sessions`, `password_reset_tokens` / feature 2 | User links, hashed refresh/reset tokens, expiry, revocation/consumption timestamps | Shared authentication middleware supplies identity to feature 1; password reset can revoke sessions. Raw tokens are not API profile data. |
+| `auth_sessions`, `auth_refresh_tokens` / feature 2, applied | User/session foreign keys; session expiry/revocation; unique refresh-secret hashes with expiry and consumption history | Database foundation is verified. Planned auth middleware supplies identity to feature 1 and checks the active persisted session. HTTP login/refresh/logout and raw browser credentials are not implemented by these tables. |
+| `password_reset_tokens` / feature 2, planned | User link, hashed one-time reset token, expiry and consumption | Password reset and session revocation remain a later account-flow batch. |
 | `attendance` / feature 2 | `eventId`, `customerId`, qualifying `transactionId`, `markedByOrganizerId`, `attendedAt`; unique customer/event | Feature 1 checks attendance before accepting a review. Confirmed registration alone is not attendance. |
 | `email_outbox` / feature 2 | Unique event key, `transactionId`, notification type, payload, delivery status and retry fields | Organizer decision commits before delivery; failed email delivery does not reverse a valid purchase decision. |
 | Events/tickets/purchases/proofs/event vouchers/reviews / feature 1 | Shared references listed below; full schema stays with feature 1 | Feature 2 joins these records for organizer decisions, attendance and statistics. |
