@@ -2,7 +2,7 @@
 
 [Project record](consistency.en.md) · [UX reference](ux-reference.md)
 
-Updated: **31 October 2026**. Status: proposed implementation defaults, open to changes following input. This record covers the database and backend boundaries connecting feature 1 and feature 2. Feature 1's internal implementation remains with Rizky; feature 2's remains with Wili.
+Updated: **1 November 2026**. Status: implemented foundations plus proposed behavior where marked; defaults remain open to changes following input. This record covers the database and backend boundaries connecting feature 1 and feature 2. Feature 1's internal implementation remains with Rizky; feature 2's remains with Wili.
 
 ## 1. Implementation status
 
@@ -11,7 +11,8 @@ Updated: **31 October 2026**. Status: proposed implementation defaults, open to 
 | Frontend | Both applications use Next.js, React, TypeScript and Rizky's TemuEvent styling, and run separately. Feature 2 now has connected registration/login, protected account and owned organizer pages; the earlier fixtures remain at `/preview`. See [frontend authentication](frontend-authentication-reference.md). |
 | Feature 2 backend | Express + TypeScript with database-backed registration/login/refresh/logout, reusable authentication/role/CSRF guards, `/api/me` and owned organizer event/attendee reads. Frontend auth is connected through a same-origin `/api` rewrite and session client. [Implementation](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/server/app.ts) and [response types](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/contracts/types.ts). |
 | Database/authentication | [TemuEvent database](database-setup.md) is active on Supabase in Singapore. Users, event/ticket/purchase starter, 30 demo purchases and account/session tables are applied. Prisma 7.10.1 live connectivity and real HTTP registration/login/refresh/logout passed. See [account/session foundation](account-session-foundation.md) and [login/session reference](login-session-reference.md). |
-| Purchases and decisions | Purchase writes, reward reservation/restoration, organizer decisions and email delivery are pending. The proposed interfaces below are not implemented routes. |
+| Rewards | Five referral/reward tables, owner/duplicate-use checks, active-coupon uniqueness and backend-only access are applied and live-tested. See the [schema companion note](referral-reward-schema-reference.md). Incoming-referral issuance, real wallet and spending/restoration services remain subsequent subparts. |
+| Purchases and decisions | Purchase writes, reward reservation/restoration, organizer decisions and email delivery are pending. Reward storage does not implement those operations. The proposed interfaces below are not implemented routes. |
 
 ## 2. Technical choices and change impacts
 
@@ -29,17 +30,17 @@ Supabase hosts the development PostgreSQL database. Authentication remains a sep
 
 ## 3. Database outline
 
-The user foundation, [shared event/ticket/purchase starter](../../database/README.md) and [account/session tables](account-session-foundation.md) are implemented; reward, reset-token and attendance entities below remain proposed. See the [database setup and status](database-setup.md) for applied files, seed data and connection limitations. Tables use primary/foreign keys and appropriate indexes. Feature 1's complete event/purchase schema remains its builder's design.
+The user foundation, [shared event/ticket/purchase starter](../../database/README.md), [account/session tables](account-session-foundation.md) and [five referral/reward tables](referral-reward-schema-reference.md) are applied. Reward services, reset-token and attendance entities remain subsequent work. See the [database setup and status](database-setup.md) for applied files and seeds. Tables use primary/foreign keys and appropriate indexes. Feature 1's complete event/purchase implementation remains its builder's design.
 
 | Entity / owner | Minimum fields or relationships | Cross-feature use |
 | --- | --- | --- |
 | `users` / feature 2 | `id`, unique normalized `email`, `passwordHash`, `name`, `role`, unique immutable `referralCode`, `profilePictureKey`, timestamps | Feature 1 purchase customer, event organizer and review author all reference `users.id`. Password hashes stay backend-only. |
 | `organizer_profiles` / feature 2, optional | `userId`, `bio`; name/photo can remain on `users` | Public organizer information for event details. Ratings come from feature 1 reviews. |
-| `referrals` / feature 2 | `id`, `referrerId`, unique `referredUserId`, `createdAt` | Registration, referral coupon and 10,000-point award commit together; one referral issuance per new account. |
-| `point_grants` / feature 2 | `id`, `userId`, `amount`, `remainingAmount`, `creditedAt`, `expiresAt`, optional referral link | Separate earning batches preserve their three-month expiry. Feature 1 reserves points from these batches through a shared service. |
-| `reward_coupons` / feature 2 | `id`, `userId`, `code`, `discountType`, `discountValue`, `issuedAt`, `expiresAt`, reservation/use state | Customer-owned platform coupons, distinct from feature 1's event vouchers. Coupon amount is still open. |
-| `reward_redemptions` / shared; feature 2 reward service | `id`, unique `transactionId`, `userId`, optional `couponId`, `status`, timestamps | Links one purchase to reserved/consumed/restored rewards. Prevent multiple active claims on the same coupon. |
-| `point_allocations` / shared; feature 2 reward service | `redemptionId`, `pointGrantId`, positive `amount`; unique pair | Records exactly which earning batches a purchase used, so rejection/expiry restores the correct batches once. |
+| `referrals` / feature 2, applied | `id`, `referrerId`, unique `referredUserId`, `createdAt` | One incoming referral per account; self-referral rejected. Atomic signup and both rewards are the next service subpart. |
+| `point_grants` / feature 2, applied | `id`, `userId`, unique required `referralId`, `amount`, `remainingAmount`, `creditedAt`, `expiresAt`, `updatedAt` | Separate earning batches preserve expiry. A composite foreign key makes the owner the referral's referrer. Reservation/restoration service is pending. |
+| `reward_coupons` / feature 2, applied | `id`, `userId`, unique required `referralId`, unique `code`, `discountValue`, `issuedAt`, `expiresAt` | Fixed whole-IDR platform coupon owned by the referred newcomer. Value remains open; availability will derive from expiry and redemption claims. Event vouchers remain separate. |
+| `reward_redemptions` / shared; feature 2 reward service, applied | `id`, unique `purchaseId`, `userId`, optional `couponId`, `pointsUsed`, `couponDiscount`, `status`, timestamps | Owner must match purchase/customer/coupon. `RESERVED`/`CONSUMED`/`RESTORED` track reward claims; partial uniqueness prevents two active coupon claims. State-transition service is pending. |
+| `point_allocations` / shared; feature 2 reward service, applied | `redemptionId`, `pointGrantId`, `userId`, positive `amount`, `createdAt`; composite primary key | Owner-bound links preserve exact earning batches. Service must later ensure sums/balances agree and restoration occurs once. |
 | `auth_sessions`, `auth_refresh_tokens` / feature 2, applied | User/session foreign keys; session expiry/revocation; unique refresh-secret hashes with expiry and consumption history | Connected feature 2 login, refresh and logout use these records. Reusable guards verify the JWT, active session, current user role and CSRF/session binding. Organizer read queries enforce ownership; feature 1 wiring remains separate. |
 | `password_reset_tokens` / feature 2, planned | User link, hashed one-time reset token, expiry and consumption | Password reset and session revocation remain a later account-flow batch. |
 | `attendance` / feature 2 | `eventId`, `customerId`, qualifying `transactionId`, `markedByOrganizerId`, `attendedAt`; unique customer/event | Feature 1 checks attendance before accepting a review. Confirmed registration alone is not attendance. |

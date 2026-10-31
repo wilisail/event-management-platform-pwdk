@@ -2,6 +2,8 @@
 
 Prepared: 31 October 2026, Asia/Jakarta. These are focused working-time estimates including implementation, relevant checks and companion explanations. They are planning ranges, not scheduled automations or promises of elapsed delivery time. Adjust the pace when a foundation needs more explanation.
 
+Progress, 1 November: day 2 subpart 1 is complete. The five referral/reward tables and additive migration are applied; both Prisma schemas validate, TypeScript and the existing 74 tests pass, and live constraints/ownership/permissions checks roll back their fixtures. See the [companion note](referral-reward-schema-reference.md). Next is atomic referral signup and reward issuance, estimated 60–90 minutes. The wallet and reservation/restoration service remain later subparts today.
+
 ## Starting point after today
 
 Implemented on `feature-2`: real registration, password hashing, persisted sessions/refresh rotation/logout, role/ownership guards, protected identity/event/confirmed-attendee APIs, and their connected account/login/organizer frontend. The shared PostgreSQL/Prisma starter and 30 sample purchases already exist. See the [frontend authentication checkpoint](frontend-authentication-reference.md).

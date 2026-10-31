@@ -32,6 +32,11 @@ model User {
   events    Event[]
   purchases Purchase[]
   sessions  AuthSession[]
+  referralsGiven Referral[] @relation("ReferralsGiven")
+  referralUsed   Referral?  @relation("ReferralUsed")
+  pointGrants    PointGrant[]
+  rewardCoupons  RewardCoupon[]
+  rewardRedemptions RewardRedemption[]
 
   @@map("users")
   @@schema("temuevent")
@@ -122,8 +127,10 @@ model Purchase {
   customer              User           @relation(fields: [customerId], references: [id], onDelete: Restrict)
   event                 Event          @relation(fields: [eventId], references: [id], onDelete: Restrict)
   items                 PurchaseItem[]
+  rewardRedemption      RewardRedemption?
 
   @@unique([eventId, id])
+  @@unique([customerId, id])
   @@index([customerId, createdAt])
   @@index([eventId, status])
   @@index([status, paymentDueAt])
@@ -180,4 +187,115 @@ model AuthRefreshToken {
   @@map("auth_refresh_tokens")
   @@schema("temuevent")
 }
+
+enum RewardRedemptionStatus {
+  RESERVED
+  CONSUMED
+  RESTORED
+
+  @@schema("temuevent")
+}
+
+// One optional incoming referral per registered account. Issuance is atomic in the service.
+model Referral {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  referrerId     String   @map("referrer_id") @db.Uuid
+  referredUserId String   @unique @map("referred_user_id") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  referrer       User     @relation("ReferralsGiven", fields: [referrerId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  referredUser   User     @relation("ReferralUsed", fields: [referredUserId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  pointGrant     PointGrant?
+  rewardCoupon   RewardCoupon?
+
+  @@unique([id, referrerId])
+  @@unique([id, referredUserId])
+  @@index([referrerId, createdAt])
+  @@map("referrals")
+  @@schema("temuevent")
+}
+
+// Each award has its own expiry. remainingAmount excludes amounts reserved by purchases.
+model PointGrant {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  referralId      String   @unique @map("referral_id") @db.Uuid
+  amount          BigInt
+  remainingAmount BigInt   @map("remaining_amount")
+  creditedAt      DateTime @default(now()) @map("credited_at") @db.Timestamptz(3)
+  expiresAt       DateTime @map("expires_at") @db.Timestamptz(3)
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  referral        Referral @relation(fields: [referralId, userId], references: [id, referrerId], onDelete: Restrict, onUpdate: Restrict)
+  allocations     PointAllocation[]
+
+  @@unique([userId, id])
+  @@unique([referralId, userId])
+  @@index([userId, expiresAt])
+  @@map("point_grants")
+  @@schema("temuevent")
+}
+
+// Platform referral coupon; event vouchers remain feature 1's separate entity.
+model RewardCoupon {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  referralId    String   @unique @map("referral_id") @db.Uuid
+  code          String   @unique @db.VarChar(32)
+  discountValue BigInt   @map("discount_value")
+  issuedAt      DateTime @default(now()) @map("issued_at") @db.Timestamptz(3)
+  expiresAt     DateTime @map("expires_at") @db.Timestamptz(3)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  referral      Referral @relation(fields: [referralId, userId], references: [id, referredUserId], onDelete: Restrict, onUpdate: Restrict)
+  redemptions   RewardRedemption[]
+
+  @@unique([userId, id])
+  @@unique([referralId, userId])
+  @@index([userId, expiresAt])
+  @@map("reward_coupons")
+  @@schema("temuevent")
+}
+
+// One reward claim per purchase. A SQL partial unique index prevents concurrent coupon claims.
+model RewardRedemption {
+  id             String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  purchaseId     String                 @unique @map("purchase_id") @db.Uuid
+  userId         String                 @map("user_id") @db.Uuid
+  couponId       String?                @map("coupon_id") @db.Uuid
+  pointsUsed     BigInt                 @default(0) @map("points_used")
+  couponDiscount BigInt                 @default(0) @map("coupon_discount")
+  status         RewardRedemptionStatus @default(RESERVED)
+  reservedAt     DateTime               @default(now()) @map("reserved_at") @db.Timestamptz(3)
+  consumedAt     DateTime?              @map("consumed_at") @db.Timestamptz(3)
+  restoredAt     DateTime?              @map("restored_at") @db.Timestamptz(3)
+  updatedAt      DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user           User                   @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  purchase       Purchase               @relation(fields: [userId, purchaseId], references: [customerId, id], onDelete: Restrict, onUpdate: Restrict)
+  coupon         RewardCoupon?          @relation(fields: [userId, couponId], references: [userId, id], onDelete: Restrict, onUpdate: Restrict)
+  allocations    PointAllocation[]
+
+  @@unique([userId, id])
+  @@unique([userId, purchaseId])
+  @@index([userId, reservedAt])
+  @@index([userId, couponId])
+  @@map("reward_redemptions")
+  @@schema("temuevent")
+}
+
+// Exact earning batches used by a purchase; never infer restoration from a total balance.
+model PointAllocation {
+  redemptionId String   @map("redemption_id") @db.Uuid
+  pointGrantId String   @map("point_grant_id") @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  amount       BigInt
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  redemption   RewardRedemption @relation(fields: [userId, redemptionId], references: [userId, id], onDelete: Restrict, onUpdate: Restrict)
+  pointGrant   PointGrant @relation(fields: [userId, pointGrantId], references: [userId, id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@id([redemptionId, pointGrantId])
+  @@index([userId, redemptionId])
+  @@index([userId, pointGrantId])
+  @@map("point_allocations")
+  @@schema("temuevent")
+}
+
 
