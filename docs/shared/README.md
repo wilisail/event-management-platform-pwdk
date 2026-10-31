@@ -1,9 +1,10 @@
 # Shared project record
 
-Updated: 31 October 2026.
+Updated: 1 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Referral/reward database](referral-reward-schema-reference.md) | Five reward tables, ownership/duplicate-use constraints, migration, live checks and learning notes |
 | [Frontend authentication](frontend-authentication-reference.md) | Connected signup/login, account and organizer pages; cookies, client coordination and verification limits |
 | [Feature 2 completion plan](feature-2-completion-plan.md) | Dated remaining subtasks, time ranges, feature 1 dependencies and full submission checklist |
 | [Repository workflow](repository-workflow.md) | Feature branch freedom, owner-managed integration, review process and active branch rules |

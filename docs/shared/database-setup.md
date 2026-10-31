@@ -1,6 +1,14 @@
 # Database setup
 
-Updated: 31 October 2026.
+Updated: 1 November 2026.
+
+## Referral/reward foundation
+
+Five private tables are now applied: `referrals`, `point_grants`, `reward_coupons`, `reward_redemptions` and `point_allocations`, plus `RewardRedemptionStatus`. The shared and feature 2 Prisma models match. Migration `20261031212002_referral_rewards` is applied and recorded in the existing Prisma history with SHA-256 `95704ab3d474e68763438fcb14a69e54bc525e62e1ca1605adf1530d96470ea7`.
+
+The [companion note](referral-reward-schema-reference.md) explains owner-bound relationships, earning batches, expiry, coupon exclusivity and remaining services. Live Prisma checks through the existing backend role passed; all QA writes rolled back. The original 2 users, 3 events, 4 ticket types and 30 purchases are preserved. Reward tables start empty; existing sample purchase discounts are illustrative and are not backfilled as real reward spending. Connection credentials and Data API exposure are unchanged.
+
+Atomic incoming-referral signup and real rewards remain the next subpart. Registration continues to reject a nonempty incoming referral until the coupled writes can commit together.
 
 ## Account/session foundation
 
@@ -40,6 +48,7 @@ For coding agents: inspect the builder's current work and the [technical referen
 | PostgreSQL | 17 |
 | Application schema | `temuevent` |
 | Application tables | `users`, `events`, `ticket_types`, `purchases`, `purchase_items`, `auth_sessions`, `auth_refresh_tokens` in `temuevent` |
+| Reward tables | `referrals`, `point_grants`, `reward_coupons`, `reward_redemptions`, `point_allocations` in `temuevent` |
 | Database client | Prisma/client/adapter 7.10.1, pinned in the shared `database` package and feature 2 |
 
 The project is active. On 19 October 2026, a temporary cloud VM ran the repository's Node/Express backend and Prisma client against this database. Both `npm run db:check` and the Express HTTP diagnostic returned the seeded customer successfully. The connection verified Supabase's certificate chain and hostname. The initial Prisma migration baseline is recorded.
