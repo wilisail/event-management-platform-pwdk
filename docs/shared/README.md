@@ -8,6 +8,7 @@ Updated: 31 October 2026.
 | [Shared Prisma starter](../../database/README.md) | Live event/ticket/purchase tables, 30 sample purchases and runnable Prisma connection |
 | [Registration reference](registration-reference.md) | Implemented backend signup, input rules, password hashing, safe responses and live verification |
 | [Login/session reference](login-session-reference.md) | Password login, cookies/JWTs, rotating refresh, CSRF, logout and learning checkpoint |
+| [Authorization reference](authorization-reference.md) | Session/role/CSRF guards, ownership checks, protected identity and organizer reads |
 | [Account/session foundation](account-session-foundation.md) | Applied session/token models, relationships, full-stack mechanics and course mapping |
 | [Database setup](database-setup.md) | Shared Supabase project, verified connection and migration record |
 | [Connection check](database-check/README.md) | Runnable backend connection check, public certificate, environment template and instructions |

@@ -1,6 +1,6 @@
 # Account and session foundation
 
-Updated: 31 October 2026. Status: database foundation applied and verified. Registration/password hashing and login/session issuance, cookies, JWT verification, refresh rotation and logout are implemented on feature-2. See [registration](registration-reference.md) and [login/session reference](login-session-reference.md). Reusable role middleware and frontend authentication wiring remain next steps.
+Updated: 31 October 2026. Database foundation, registration, login/session/JWT/cookie handling, refresh and logout are implemented on feature-2. [Reusable authentication/role/CSRF guards and protected organizer reads](authorization-reference.md) are also implemented. Frontend authentication wiring is next. See [registration](registration-reference.md) and [session mechanics](login-session-reference.md).
 
 ## Records and relationships
 
@@ -121,7 +121,7 @@ All foundation and later HTTP/session verification writes were rolled back. The 
 | Relational design / normalization | Account identity is stored once; sessions and token history reference it through foreign keys. |
 | SQL keys, indexes and constraints | UUID primary keys, unique hashes, indexed foreign keys and timestamp checks. |
 | Prisma ORM and migrations | Typed relation models/client generation plus one ordered SQL history. |
-| Authentication / authorization | Session services now implement authentication; reusable customer/organizer permission middleware is the next step. |
+| Authentication / authorization | Session verification, reusable role/CSRF guards and organizer ownership filters are implemented; browser wiring is next. |
 | Transactions / reliability | Consume-and-replace writes must succeed together; verification writes roll back. |
 | Secure coding / testing | Private backend access, token hashes rather than raw secrets, and tests against real database constraints. |
 
