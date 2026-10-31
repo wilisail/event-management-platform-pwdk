@@ -2,6 +2,12 @@
 
 Status: proposed data contract. Read the shared [technical reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/technical-reference.md) for database/backend defaults and the [UX reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/ux-reference.md) for customer/organizer behavior. Defaults remain open to changes following input.
 
+## Implemented registration backend
+
+`POST /api/auth/register` on feature-2 accepts name, normalized email, password and an optional CUSTOMER/ORGANIZER role. It returns HTTP 201 with `data.user` using UserView fields and a generated referral code. Duplicate normalized emails return 409. Registration does not issue a session; the x-demo-persona header is not authentication.
+
+Incoming `referralCode` is currently accepted only when empty/absent; nonempty input returns `REFERRAL_REGISTRATION_NOT_READY` without creating an account until rewards can commit atomically. See the [registration reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/shared/registration-reference.md) for exact validation, response codes and verification.
+
 ## Try the read-only feature 2 data
 
 Run `npm run dev` from `feature-2`. feature 2 web runs on 3001, Express on 4002. feature 1 can remain on 3000.

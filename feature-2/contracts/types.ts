@@ -1,4 +1,4 @@
-/** Proposed shared shape. Real authentication and write APIs are not implemented here. */
+/** Shared account shapes. Registration writes are implemented; demo routes remain fixtures. */
 export type Role = 'CUSTOMER' | 'ORGANIZER'
 export type DemoPersona = 'customer' | 'organizer'
 
@@ -79,3 +79,19 @@ export interface ApiFailure {
 }
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiFailure
+
+/** Current registration supports no incoming referral rewards until that atomic flow is added. */
+export interface RegistrationRequest {
+  name: string
+  email: string
+  password: string
+  role?: Role
+  referralCode?: string
+}
+
+export interface RegistrationSuccess {
+  success: true
+  message: string
+  data: { user: UserView }
+}
+

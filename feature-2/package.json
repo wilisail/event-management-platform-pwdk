@@ -2,7 +2,7 @@
   "name": "temuevent-feature-2-preview",
   "version": "0.1.0",
   "private": true,
-  "description": "Standalone feature 2 account/rewards prototype, demo API and initial database connection",
+  "description": "Standalone feature 2 preview, database-backed registration and demo reward API",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -23,13 +23,16 @@
     "pretypecheck": "npm run db:generate",
     "prebuild": "npm run db:generate",
     "predev:api": "npm run db:generate",
-    "prestart:api": "npm run db:generate"
+    "prestart:api": "npm run db:generate",
+    "db:verify:registration": "node --import tsx scripts/verify-registration.ts",
+    "predb:verify:registration": "npm run db:generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
     "dotenv": "18.0.8",
     "express": "5.3.0",
+    "express-rate-limit": "8.7.2",
     "next": "16.4.0",
     "pg": "8.23.1",
     "react": "19.3.1",

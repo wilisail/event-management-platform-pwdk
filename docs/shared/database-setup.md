@@ -6,7 +6,7 @@ Updated: 31 October 2026.
 
 The shared schema now also includes `auth_sessions` and `auth_refresh_tokens`. These store per-login expiry/revocation and hashed refresh-token history. [Account/session notes](account-session-foundation.md) describe the fields, relationships, course mapping and verification.
 
-Both tables are private, RLS-enabled and accessible to the existing backend role through SELECT/INSERT/UPDATE only. The additive `20261031041038_account_sessions` migration is applied and registered in Prisma history with its exact SQL checksum. No existing user, event or purchase records were changed. Tests through the existing application connection passed and rolled back their temporary rows. Both auth tables are empty; real login/registration, cookie/JWT handling and permission middleware remain the next implementation batch.
+Both tables are private, RLS-enabled and accessible to the existing backend role through SELECT/INSERT/UPDATE only. The additive `20261031041038_account_sessions` migration is applied and registered in Prisma history with its exact SQL checksum. No existing user, event or purchase records were changed. Tests through the existing application connection passed and rolled back their temporary rows. Both auth tables are empty; basic registration/password hashing is implemented on feature-2; login, cookie/JWT handling and permission middleware remain pending. See [registration reference](registration-reference.md) for the current input/response contract and live HTTP/database test.
 
 ## Ready-to-use event and purchase starter
 

@@ -1,6 +1,6 @@
-# Feature 2 — account and reward prototype
+# Feature 2 — account/reward preview and registration backend
 
-A separately runnable feature 2 prototype matching Rizky's accepted TemuEvent visual direction. The existing feature 1 application at the repository root is not edited by this module.
+A separately runnable feature 2 application with an account/reward preview and database-backed registration, matching Rizky's accepted TemuEvent visual direction. The existing feature 1 application at the repository root is not edited by this module.
 
 Logo and theme values follow [Rizky's feature 1 push](https://github.com/wilisail/event-management-platform-pwdk/commit/cd582753a480d68ce14e00021a52f8ec93d8372f). The [shared UI reference](https://github.com/wilisail/event-management-platform-pwdk/blob/main/docs/ui/README.md) records the original logo, colours, typography and reuse details.
 
@@ -15,13 +15,21 @@ npm run dev
 ```
 
 - feature 2 UI: http://localhost:3001
-- Read-only Express demo API: http://127.0.0.1:4002/health
+- Express API: http://127.0.0.1:4002/health. Demo routes remain read-only; registration writes when DATABASE_URL is configured.
 - Run the existing feature 1 app separately on port 3000 if you want its discovery link to work.
 - No database, service account, password, or API key is required for this preview.
 
 The defaults run without an environment file. `.env.example` documents optional overrides. The Express API now loads optional backend settings from `.env`. Database credentials are kept there and excluded from Git.
 
-## What works in this preview
+## Database-backed registration
+
+`POST /api/auth/register` validates JSON, normalizes email, hashes passwords with Node scrypt, generates an immutable referral code and creates an account. It returns a safe identity without issuing a login cookie. A nonempty incoming referral is explicitly rejected until reward issuance is atomic. Login/session endpoints and frontend signup wiring remain subsequent batches.
+
+The existing private DATABASE_URL enables the route; without it, registration returns 503 and the fixture preview remains available. The backend trusts the included public Supabase CA by default. See [registration reference](../docs/shared/registration-reference.md) for inputs, status codes, layering and learning notes.
+
+`npm run db:verify:registration` starts a real HTTP server, writes/reads accounts through Prisma against Supabase, verifies hashes and duplicate handling, then rolls back test accounts. TypeScript, unit/API tests, live verification and a clean npm ci passed on 31 October 2026.
+
+## What works in the fixture preview
 
 - Customer and organizer **demo persona** selection; this is not authentication.
 - Account profile UI, immutable referral-code display/copy, and a local profile-edit confirmation dialog.
@@ -58,7 +66,7 @@ Next.js type errors are not suppressed. The tests cover expiry boundaries, leap/
 
 ## What remains before a graded submission
 
-Registration/login, password hashing and sessions, backend authorization, reward/purchase persistence, atomic referral issuance, avatar uploads, password change/reset emails, organizer management/statistics/attendee APIs, and purchase decisions remain to be implemented. The user table, shared event/purchase starter, account/session tables and development seed are implemented. The session tables prepare real sign-in; registration/login endpoints, cookie/JWT handling and backend permission middleware are still pending. PRD-required SQL transactions will be needed for real multi-record writes.
+Login/session issuance, backend authorization, incoming referral registration with atomic rewards, reward/purchase persistence, avatar uploads, password change/reset emails, organizer management/statistics/attendee APIs, and purchase decisions remain to be implemented. The user table, shared event/purchase starter, account/session tables and development seed are implemented. The session tables prepare real sign-in; registration/login endpoints, cookie/JWT handling and backend permission middleware are still pending. PRD-required SQL transactions will be needed for real multi-record writes.
 
 The `x-demo-persona` header is deliberately only a demo selector. Production identity must come from the agreed authenticated session, never from a caller-supplied user ID or role.
 
