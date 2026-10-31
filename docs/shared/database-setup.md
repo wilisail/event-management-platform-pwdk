@@ -1,6 +1,12 @@
 # Database setup
 
-Updated: 28 October 2026.
+Updated: 31 October 2026.
+
+## Account/session foundation
+
+The shared schema now also includes `auth_sessions` and `auth_refresh_tokens`. These store per-login expiry/revocation and hashed refresh-token history. [Account/session notes](account-session-foundation.md) describe the fields, relationships, course mapping and verification.
+
+Both tables are private, RLS-enabled and accessible to the existing backend role through SELECT/INSERT/UPDATE only. The additive `20261031041038_account_sessions` migration is applied and registered in Prisma history with its exact SQL checksum. No existing user, event or purchase records were changed. Tests through the existing application connection passed and rolled back their temporary rows. Both auth tables are empty; real login/registration, cookie/JWT handling and permission middleware remain the next implementation batch.
 
 ## Ready-to-use event and purchase starter
 
@@ -31,7 +37,7 @@ For coding agents: inspect the builder's current work and the [technical referen
 | Plan / creation quote | Free organization; project quoted at $0 per month |
 | PostgreSQL | 17 |
 | Application schema | `temuevent` |
-| Application tables | `users`, `events`, `ticket_types`, `purchases`, `purchase_items` in `temuevent` |
+| Application tables | `users`, `events`, `ticket_types`, `purchases`, `purchase_items`, `auth_sessions`, `auth_refresh_tokens` in `temuevent` |
 | Database client | Prisma/client/adapter 7.10.1, pinned in the shared `database` package and feature 2 |
 
 The project is active. On 19 October 2026, a temporary cloud VM ran the repository's Node/Express backend and Prisma client against this database. Both `npm run db:check` and the Express HTTP diagnostic returned the seeded customer successfully. The connection verified Supabase's certificate chain and hostname. The initial Prisma migration baseline is recorded.
@@ -54,7 +60,7 @@ The actual application `.env` is prepared separately for Rizky and contains the 
 
 ## Initial user schema and sample data
 
-[Prisma schema](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/prisma/schema.prisma) · [SQL baseline](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/prisma/migrations/0_user_foundation/migration.sql) · [seed](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/prisma/seed.ts)
+[Prisma schema](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/prisma/schema.prisma) · [SQL baseline](https://github.com/wilisail/event-management-platform-pwdk/blob/main/database/prisma/migrations/0_user_foundation/migration.sql) · [seed](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/prisma/seed.ts)
 
 Users have a UUID, normalized unique email, name, customer/organizer role, immutable unique referral code, optional password hash/profile-picture key and timestamps. The seed identities have no login credentials; authentication is a subsequent feature 2 step.
 

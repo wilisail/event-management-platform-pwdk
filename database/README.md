@@ -1,12 +1,14 @@
 # Shared database starter
 
-Updated: 28 October 2026. Live starter for both feature builders; field changes remain open to discussion.
+Updated: 31 October 2026. Live starter for both feature builders; field changes remain open to discussion.
 
 ## Tables
 
 | Prisma model | PostgreSQL table | Purpose |
 | --- | --- | --- |
 | User | temuevent.users | Existing customer/organizer identities; UUID IDs |
+| AuthSession | temuevent.auth_sessions | One sign-in; user link, expiry and revocation |
+| AuthRefreshToken | temuevent.auth_refresh_tokens | Refresh-secret hashes and consumption history per session |
 | Event | temuevent.events | Event fields from Rizky's current form |
 | TicketType | temuevent.ticket_types | Regular/Workshop/free categories, prices and inventory |
 | Purchase | temuevent.purchases | One event per purchase; customer, totals and six PRD statuses |
@@ -58,9 +60,15 @@ Development seed: three events, four ticket types and thirty purchases, five in 
 
 seeds/demo.sql inserts missing demo records only and reserves inventory only for newly inserted purchases. Re-running does not replace existing events or double-reserve seats. Demo payment proof keys start with DEMO_ONLY_NO_FILE; no real proof files are attached. These users still have no working login.
 
+## Account/session foundation
+
+The two auth tables are applied and verified. [Account/session notes](../docs/shared/account-session-foundation.md) explain their relationships and full-stack use. The seeded identities still have no passwords; HTTP registration/login and cookies/JWTs are the next batch.
+
+`npm run db:verify:auth` verifies session/token relationships, one-time conditional consumption, revocation/expiry query behavior, database constraints and backend-role limits. Its writes are rolled back.
+
 ## Shared migrations
 
-database/prisma/migrations is the shared ordered migration history. The original 0_user_foundation file is copied byte-for-byte and was already applied. The new event/purchase migration is additive. It was applied through Supabase SQL, then registered as applied in Prisma's history using the matching SQL checksum. The original baseline record was preserved. There is no reset of the shared database.
+database/prisma/migrations is the shared ordered migration history. The original 0_user_foundation file is copied byte-for-byte and was already applied. The event/purchase and account/session migrations are additive. It was applied through Supabase SQL, then registered as applied in Prisma's history using the matching SQL checksum. The original baseline record was preserved. There is no reset of the shared database.
 
 The application DATABASE_URL provides table operations, not schema ownership. Wili coordinates schema migration execution using a separate authorized connection. New changes can be supplied as draft Prisma models/SQL in feature-1; the starter is available immediately while those changes are discussed.
 
@@ -81,3 +89,5 @@ Passed on 28 October 2026 in a cloud VM using the existing backend application c
 db:verify performs temporary writes inside transactions that are rolled back, checks related records and a cross-event foreign-key failure, and confirms all thirty demo purchases. It leaves no test records. Run only against the development database.
 
 See [shared setup](../docs/shared/database-setup.md) and [technical reference](../docs/shared/technical-reference.md).
+
+Account/session verification passed on 31 October 2026: both schema clients validate/generate, the new script passes TypeScript and live constraint/relationship checks, and the original purchase/inventory checks still pass. Auth test records are rolled back.
