@@ -16,6 +16,7 @@ Live ownership/constraint/permission checks passed through Prisma with all fixtu
 | --- | --- | --- |
 | User | temuevent.users | Existing customer/organizer identities; UUID IDs |
 | AuthSession | temuevent.auth_sessions | One sign-in; user link, expiry and revocation |
+| PasswordResetToken | temuevent.password_reset_tokens | Private recovery delivery request, digest, expiry and one-use status; F2-owned |
 | AuthRefreshToken | temuevent.auth_refresh_tokens | Refresh-secret hashes and consumption history per session |
 | Event | temuevent.events | Event fields from Rizky's current form |
 | TicketType | temuevent.ticket_types | Regular/Workshop/free categories, prices and inventory |
@@ -105,3 +106,9 @@ See [shared setup](../docs/shared/database-setup.md) and [technical reference](.
 
 Account/session verification passed on 31 October 2026: both schema clients validate/generate, the new script passes TypeScript and live constraint/relationship checks, and the original purchase/inventory checks still pass. Auth test records are rolled back.
 
+
+## Password recovery queue (Day 3 part 3)
+
+`20261101091039_password_reset_queue` is applied to Supabase, with RLS and backend-only access. The F2 implementation stores only reset digests and handles activation/delivery/redeem under the existing account authority; see the [companion](../docs/shared/password-reset-reference.md). F1 need not configure another email provider for recovery.
+
+Supabase migration history records this application. Before a future Prisma deploy, an owner/migration-role `DIRECT_URL` targeting `schema=temuevent` must run `prisma migrate resolve --applied 20261101091039_password_reset_queue` to reconcile Prisma's separate ledger. The runtime account is intentionally not a migration administrator. Do not rerun the CREATE TABLE SQL or reset the shared database. No direct ledger insert was made.
