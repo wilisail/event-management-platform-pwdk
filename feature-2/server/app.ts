@@ -11,6 +11,8 @@ import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
 import type { DatabaseUserView } from './database'
+import { profileRouter } from './profile/http'
+import type { ProfileService } from './profile/service'
 
 export interface AppOptions {
   now?: () => Date
@@ -24,6 +26,7 @@ export interface AppOptions {
   loginRateLimit?: { limit: number; windowMs: number }
   organizerRepository?: OrganizerReadRepository
   rewardRepository?: RewardReadRepository
+  profileService?: ProfileService
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -60,7 +63,7 @@ export function createApp(options: AppOptions = {}) {
       res.vary('Origin')
       res.set('Access-Control-Allow-Headers', 'content-type,x-demo-persona,x-temuevent-client,x-csrf-token')
       res.set('Access-Control-Allow-Credentials', 'true')
-      res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+      res.set('Access-Control-Allow-Methods', 'GET,POST,PATCH,OPTIONS')
     }
     if (req.method === 'OPTIONS') {
       res.sendStatus(204)
@@ -145,6 +148,8 @@ export function createApp(options: AppOptions = {}) {
     rewardRepository: options.rewardRepository, now,
     secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production',
   }))
+  app.use('/api', profileRouter({ service: options.profileService, sessions: options.sessionService,
+    secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production' }))
 
   app.get('/api/demo/me', (req, res) => {
     const user = demoUser(req, res)
@@ -205,6 +210,10 @@ export function createApp(options: AppOptions = {}) {
     }
     if (error?.type === 'entity.parse.failed') {
       fail(res, 400, 'INVALID_JSON', 'Send valid JSON fields')
+      return
+    }
+    if (error?.type === 'encoding.unsupported') {
+      fail(res, 415, 'ENCODING_UNSUPPORTED', 'Send an uncompressed image')
       return
     }
     fail(res, 500, 'INTERNAL_ERROR', 'Unexpected API error')

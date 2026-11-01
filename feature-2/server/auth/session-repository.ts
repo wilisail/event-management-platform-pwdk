@@ -1,16 +1,15 @@
 import type { PrismaClient } from '../../generated/prisma/client'
 import type { SessionRecord, SessionRepository } from './sessions'
+import { profileSelect, profileUser, type ProfileRecord } from '../profile/views'
 
 type SessionDatabase = Pick<PrismaClient, 'user' | 'authSession' | 'authRefreshToken' | '$queryRaw'>
 export type SessionTransaction = <T>(work: (tx: SessionDatabase) => Promise<T>) => Promise<T>
-const userSelect = { id: true, name: true, email: true, role: true, referralCode: true } as const
+const userSelect = profileSelect
 const sessionInclude = { user: { select: userSelect } } as const
-type StoredSession = { id: string; expiresAt: Date; revokedAt: Date | null; user: {
-  id: string; name: string; email: string; role: 'CUSTOMER' | 'ORGANIZER'; referralCode: string
-} }
+type StoredSession = { id: string; expiresAt: Date; revokedAt: Date | null; user: ProfileRecord }
 const view = (session: StoredSession): SessionRecord => ({
   id: session.id, expiresAt: session.expiresAt, revokedAt: session.revokedAt,
-  user: { ...session.user, profilePictureUrl: null },
+  user: profileUser(session.user),
 })
 const active = (session: StoredSession, now: Date) => !session.revokedAt && session.expiresAt > now
 
@@ -22,7 +21,7 @@ export function prismaSessionRepository(database: SessionDatabase, transaction: 
   return {
     async findLoginAccount(email) {
       const user = await database.user.findUnique({ where: { email }, select: { ...userSelect, passwordHash: true } })
-      return user ? { ...user, profilePictureUrl: null } : null
+      return user ? { ...profileUser(user), passwordHash: user.passwordHash } : null
     },
     createSession: input => transaction(async tx => {
       const session = await tx.authSession.create({

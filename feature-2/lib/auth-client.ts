@@ -95,10 +95,34 @@ export function createAuthClient(options: Options = {}) {
       throw error
     }
   }
+  async function authenticatedWrite<T>(path: string, init: RequestInit): Promise<T> {
+    // Refresh before taking the mutation lock; refresh itself uses this same cross-tab lock.
+    await get<UserView>('/api/me')
+    return coordinated(async () => {
+      const csrf = await request<{ csrfToken: string }>('/api/auth/csrf')
+      const headers = new Headers(init.headers)
+      headers.set('x-temuevent-client', 'web'); headers.set('x-csrf-token', csrf.csrfToken)
+      try { return await request<T>(path, { ...init, headers }) }
+      catch (error) {
+        if (error instanceof AuthApiError && error.status === 401) options.onUnauthorized?.()
+        // A network failure could follow a committed edit. Never automatically repeat a write.
+        if (error instanceof AuthApiError && error.code === 'NETWORK_UNAVAILABLE') {
+          throw new AuthApiError(0, 'PROFILE_SAVE_UNCERTAIN', 'Reload your profile before retrying')
+        }
+        throw error
+      }
+    })
+  }
   return {
     get,
     me: (signal?: AbortSignal) => get<UserView>('/api/me', signal),
     register: (input: RegistrationRequest) => post<RegistrationSuccess['data']>('/api/auth/register', input),
+    updateProfile: (name: string) => authenticatedWrite<UserView>('/api/me', {
+      method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ name }),
+    }),
+    uploadPicture: (file: File) => authenticatedWrite<UserView>('/api/me/picture', {
+      method: 'POST', headers: { 'content-type': file.type }, body: file,
+    }),
     login: (input: LoginRequest) => coordinated(async () => {
       const result = await post<LoginSuccess['data']>('/api/auth/login', input)
       refreshUncertain = false
@@ -125,6 +149,17 @@ export function accountError(error: unknown): string {
     INVALID_REGISTRATION: 'Periksa kembali data pendaftaran dan kode referral yang diisi.',
     INVALID_LOGIN: 'Masukkan email dan kata sandi yang valid.',
     INVALID_REFERRAL_CODE: 'Kode referral tidak ditemukan. Periksa kembali kodenya; akun belum dibuat.',
+    INVALID_PROFILE: 'Nama harus terdiri dari 2–100 karakter tanpa baris baru.',
+    INVALID_PICTURE: 'Foto tidak dapat dibaca. Gunakan JPEG, PNG atau WebP biasa hingga 16 megapiksel.',
+    INVALID_PICTURE_TYPE: 'Pilih foto JPEG, PNG atau WebP.',
+    PICTURE_NOT_CONFIGURED: 'Unggah foto belum tersedia. Silakan coba lagi nanti.',
+    PICTURE_UNAVAILABLE: 'Foto belum dapat disimpan atau dimuat. Silakan coba lagi nanti.',
+    PICTURE_BUSY: 'Pemrosesan foto sedang sibuk. Coba lagi sebentar.',
+    REQUEST_TOO_LARGE: 'Berkas terlalu besar. Batas foto adalah 5 MiB.',
+    PICTURE_TOO_LARGE: 'Berkas terlalu besar. Batas foto adalah 5 MiB.',
+    PROFILE_RATE_LIMITED: 'Terlalu banyak perubahan. Tunggu sebentar sebelum mencoba lagi.',
+    PROFILE_SAVE_UNCERTAIN: 'Sambungan terputus. Muat ulang profil untuk memeriksa hasil sebelum mengirim lagi.',
+    CSRF_INVALID: 'Sesi keamanan berubah. Muat ulang halaman sebelum mencoba lagi.',
     REFERRAL_REGISTRATION_UNAVAILABLE: 'Pendaftaran dengan referral sedang terkendala. Coba lagi sebentar.',
     SESSION_REFRESH_UNCERTAIN: 'Silakan masuk ulang untuk menyambungkan sesi.',
     ROLE_FORBIDDEN: 'Peran akunmu tidak memiliki akses ke halaman ini.',

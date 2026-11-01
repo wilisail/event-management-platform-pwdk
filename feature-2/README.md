@@ -50,9 +50,17 @@ See the [authorization companion note](../docs/shared/authorization-reference.md
 
 For the real account, customer-only `GET /api/me/rewards` returns all-row available points, available coupon count, and paginated grant/coupon history. `GET /api/me/referral` returns the signed-in account's code and referral count for either role. The `/account` tabs use these authenticated reads, with server-time expiry, claim status, refresh/error/empty states and the original theme. See the [wallet companion note](../docs/shared/wallet-reference.md) for request shapes, read snapshots and learning mechanics. `npm run db:verify:wallet` exercises real signup/login/reward reads and rolls back all QA accounts, sessions, rewards and purchases.
 
+## Own profile and pictures — Day 3 part 1
+
+The real account page now saves the current account's name and connects a confirmed photo selection to the protected upload route. The backend bounds input size/type/pixels, decodes and re-encodes still WebP, strips metadata and updates the existing profile key under a user-row lock. Current login/refresh/identity reads project the saved name/photo. Real public organizer pages show safe organizer identity/photo; the review aggregate remains Feature 1 integration work. The old organizer fixture moved to `/preview/organizers/demo-organizer-001`.
+
+**Hosted photo storage is pending configuration and live verification.** The existing handoff has no Storage secret and the project initially had no bucket. Name editing works with the existing configuration; uploads fail with controlled 503 until the private backend `SUPABASE_URL` / `SUPABASE_SECRET_KEY` settings are supplied and `npm run storage:setup` creates/verifies the private bucket. See the [companion note](../docs/shared/profile-upload-reference.md) for setup, contracts, failure cleanup and the Day 3–6 dependency map.
+
+TypeScript, 111 application tests and the production build pass. Real Supabase profile/session/metadata checks reported `PROFILE_DB_OK` with fully rolled-back fixtures and original user fingerprints. That verifier uses an explicit in-memory image transport; it does not validate hosted Storage. Desktop/phone browser checks passed using a separate disposable memory backend: confirmation/cancel/save, reloads, invalid-file feedback, anonymous organizer view and no horizontal overflow. Feature 2 is patched to Next.js 16.4.3, and its production dependency audit reports zero known vulnerabilities at this checkpoint.
+
 ## What works in the fixture preview
 
-The original fixture application is now at `/preview`. The real `/account` page uses `/api/me` and does not show the example points/coupons as actual rewards. Real wallet/referral reads are implemented; profile edits and production purchase/reward adapter wiring remain pending; the internal reward core is implemented.
+The original fixture application is now at `/preview`. The real `/account` page uses `/api/me` and does not show the example points/coupons as actual rewards. Real wallet/referral reads and own-name edits are implemented; hosted picture verification and production purchase/reward adapter wiring remain pending; the internal reward core is implemented.
 
 - Customer and organizer **demo persona** selection; this is not authentication.
 - Account profile UI, immutable referral-code display/copy, and a local profile-edit confirmation dialog.
@@ -97,7 +105,7 @@ The [internal reward core](../docs/shared/reward-operations-reference.md) is imp
 
 The referral/reward database foundation and atomic signup issuance are applied and verified. See the [schema companion note](../docs/shared/referral-reward-schema-reference.md). `npm run db:verify:rewards-schema` checks constraints/permissions, while `npm run db:verify:referrals` checks signup and rollback. Both roll back their fixtures. Authenticated wallet/referral APIs/UI are implemented; the internal reserve/consume/restore core is implemented, while production checkout/transition adapter wiring remains.
 
-Production purchase/transition wiring to the reward core, profile edits/avatar uploads, password change/reset emails, organizer decisions/statistics, actual attendance, notification delivery, public organizer integration and evaluator deployment remain. Users, the event/purchase starter, sessions/seeds, atomic referral issuance, backend auth, guards, protected reads and connected frontend auth and authenticated wallet/referral reads are implemented. SQL transactions already protect sessions and referral signup; shared purchase/reward operations follow separately. See the [dated completion plan](../docs/shared/feature-2-completion-plan.md).
+Production purchase/transition wiring to the reward core, hosted avatar configuration/verification, password change/reset emails, organizer decisions/statistics, actual attendance, notification delivery, Feature 1 organizer/rating links and evaluator deployment remain. Own-name edits and public organizer identity are implemented, alongside users, the event/purchase starter, sessions/seeds, atomic referral issuance, backend auth, guards, protected reads and connected frontend auth/wallet reads. SQL transactions protect sessions, signup and picture-key swaps. See the [dated completion plan](../docs/shared/feature-2-completion-plan.md).
 
 The `x-demo-persona` header is deliberately only a demo selector. Production identity must come from the agreed authenticated session, never from a caller-supplied user ID or role.
 

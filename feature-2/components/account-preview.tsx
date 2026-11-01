@@ -113,7 +113,7 @@ export function AccountPreview() {
                   </button>
                 ))}
             </nav>
-            <Link href="/organizers/demo-organizer-001" className="link organizer-link">
+            <Link href="/preview/organizers/demo-organizer-001" className="link organizer-link">
               Lihat profil organizer ↗
             </Link>
           </aside>

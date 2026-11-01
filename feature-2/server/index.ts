@@ -7,6 +7,10 @@ import { createSessionService } from './auth/sessions'
 import { prismaSessionRepository } from './auth/session-repository'
 import { prismaOrganizerReadRepository } from './organizer/read-repository'
 import { prismaRewardReadRepository } from './rewards/read-repository'
+import { prismaProfileRepository } from './profile/repository'
+import { createProfileService } from './profile/service'
+import { normalizePicture } from './profile/pictures'
+import { supabaseProfileStorage } from './profile/storage'
 
 const port = Number(process.env.F2_API_PORT || 4002)
 const host = process.env.F2_API_HOST || '127.0.0.1'
@@ -39,8 +43,14 @@ async function start() {
         repository: prismaSessionRepository(client, work => client.$transaction(work, { timeout: 10000 })),
       })
     : undefined
+  const pictureStorage = client ? supabaseProfileStorage() : undefined
+  const profileService = client ? createProfileService({
+    repository: prismaProfileRepository(client, work => client.$transaction(work, { timeout: 10000 })),
+    normalize: normalizePicture, storage: pictureStorage?.storage,
+    onCleanupFailure: () => console.warn('Profile storage cleanup needs attention; check orphaned uploads.'),
+  }) : undefined
   const server = createApp({
-    allowedOrigins, registrationService, sessionService,
+    allowedOrigins, registrationService, sessionService, profileService,
     organizerRepository: client ? prismaOrganizerReadRepository(client) : undefined,
     rewardRepository: client ? prismaRewardReadRepository(client, work => client.$transaction(work,
       { isolationLevel: 'RepeatableRead', timeout: 10000 })) : undefined,

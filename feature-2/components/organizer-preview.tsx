@@ -28,7 +28,7 @@ export function OrganizerPreview({ organizerId }: { organizerId: string }) {
         <div role="alert" className="panel">
           <h1>Profil tidak ditemukan</h1>
           <p>{error}</p>
-          <Link href="/" className="link">
+          <Link href="/preview" className="link">
             Kembali ke akun
           </Link>
         </div>
@@ -54,7 +54,7 @@ export function OrganizerPreview({ organizerId }: { organizerId: string }) {
               <p>Belum ada ulasan yang terhubung. Data rating akan berasal dari fitur review F1.</p>
             )}
           </section>
-          <Link href="/" className="link">
+          <Link href="/preview" className="link">
             ← Kembali ke akun
           </Link>
         </>

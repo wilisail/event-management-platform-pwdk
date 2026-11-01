@@ -10,6 +10,8 @@ interface AuthContextValue extends SessionState {
   reload: () => Promise<void>
   signIn: (input: LoginRequest) => Promise<UserView>
   signOut: () => Promise<void>
+  saveName: (name: string) => Promise<UserView>
+  uploadPicture: (file: File) => Promise<UserView>
 }
 const AuthContext = createContext<AuthContextValue | null>(null)
 
@@ -64,7 +66,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setState({ status: 'anonymous', user: null, error: '' })
     channel.current?.postMessage({ type: 'changed' })
   }
-  return <AuthContext.Provider value={{ ...state, client, reload, signIn, signOut }}>{children}</AuthContext.Provider>
+  const profileChanged = (user: UserView) => {
+    version.current++
+    setState(current => current.status === 'authenticated' && current.user?.id === user.id
+      ? { status: 'authenticated', user, error: '' } : current)
+    channel.current?.postMessage({ type: 'changed' })
+    return user
+  }
+  const saveName = async (name: string) => profileChanged(await client.updateProfile(name))
+  const uploadPicture = async (file: File) => profileChanged(await client.uploadPicture(file))
+  return <AuthContext.Provider value={{ ...state, client, reload, signIn, signOut, saveName, uploadPicture }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

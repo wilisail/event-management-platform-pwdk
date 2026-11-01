@@ -8,6 +8,37 @@ const denied = () => new Response(JSON.stringify({ success: false, code: 'SESSIO
 const transport = (work: (path: string, init: RequestInit) => Promise<Response> | Response) =>
   ((input: string | URL | Request, init: RequestInit = {}) => Promise.resolve(work(String(input), init))) as typeof fetch
 
+test('profile writes obtain session CSRF and do not send caller-owned identity fields', async () => {
+  const writes: RequestInit[] = []
+  const client = createAuthClient({ coordinate: async work => work(), fetcher: transport((path, init) => {
+    if (path === '/api/auth/csrf') return ok({ csrfToken: 'current-csrf' })
+    if (init.method) { writes.push(init); return ok(user) }
+    return ok(user)
+  }) })
+  await client.updateProfile('Updated Name')
+  const file = new File(['image bytes'], 'profile.png', { type: 'image/png' })
+  await client.uploadPicture(file)
+  assert.equal(writes.length, 2)
+  assert.deepEqual(JSON.parse(writes[0].body as string), { name: 'Updated Name' })
+  assert.equal(writes[0].method, 'PATCH'); assert.equal(writes[1].body, file)
+  for (const write of writes) {
+    const headers = new Headers(write.headers)
+    assert.equal(headers.get('x-csrf-token'), 'current-csrf')
+    assert.equal(headers.get('x-temuevent-client'), 'web'); assert.equal(write.credentials, 'include')
+  }
+})
+
+test('an uncertain profile write is never replayed automatically', async () => {
+  let writes = 0
+  const client = createAuthClient({ fetcher: transport((path, init) => {
+    if (path === '/api/auth/csrf') return ok({ csrfToken: 'csrf' })
+    if (init.method) { writes++; throw new Error('Lost response after save') }
+    return ok(user)
+  }) })
+  await assert.rejects(client.updateProfile('New Name'), { code: 'PROFILE_SAVE_UNCERTAIN' })
+  assert.equal(writes, 1)
+})
+
 test('return paths stay inside allowed account routes', () => {
   assert.equal(safeReturnPath('/organizer?page=2'), '/organizer?page=2')
   for (const path of ['https://evil.example', '//evil.example', '/\\evil.example', '/login', '/api/me', '/account\n', '/account/../login']) {

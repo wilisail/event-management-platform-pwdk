@@ -46,7 +46,8 @@ export function memorySessions() {
       const session = sessions.get(id)
       if (!session || session.user.id !== userId || session.revokedAt || session.expiresAt <= now) return null
       const account = [...users.values()].find(user => user.id === userId)!
-      return { ...session, user: { ...session.user, role: account.role } }
+      const { passwordHash: _passwordHash, ...user } = account
+      return { ...session, user }
     },
     async isCurrentRefreshForSession(hash, sessionId, now) {
       const token = tokens.get(hash), session = sessions.get(sessionId)
