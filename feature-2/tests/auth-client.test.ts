@@ -161,3 +161,17 @@ test('unsafe paths and HTML proxy errors remain controlled failures', async () =
   await assert.rejects(client.get('https://elsewhere.example/api/me'), error => error instanceof AuthApiError && error.code === 'INVALID_API_PATH')
   await assert.rejects(client.me(), error => error instanceof AuthApiError && error.status === 502)
 })
+
+test('password recovery is public and a lost reset reply is never replayed', async () => {
+  const calls: string[] = []
+  const client = createAuthClient({ fetcher: async (input, init) => {
+    calls.push(String(input))
+    assert.equal(new Headers(init?.headers).get('x-temuevent-client'), 'web')
+    assert.equal(new Headers(init?.headers).has('x-csrf-token'), false)
+    if (String(input).endsWith('forgot-password')) return Response.json({ success: true, data: null })
+    throw new Error('reply lost')
+  } })
+  await client.requestPasswordReset('person@example.test')
+  await assert.rejects(client.resetPassword('x'.repeat(43), 'a new long password'), { code: 'PASSWORD_RESET_UNCERTAIN' })
+  assert.deepEqual(calls, ['/api/auth/forgot-password', '/api/auth/reset-password'])
+})

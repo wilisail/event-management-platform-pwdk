@@ -115,6 +115,19 @@ export function createAuthClient(options: Options = {}) {
   }
   return {
     get,
+    requestPasswordReset: (email: string) => post<null>('/api/auth/forgot-password', { email }),
+    resetPassword: (token: string, newPassword: string) => coordinated(async () => {
+      try { await post('/api/auth/reset-password', { token, newPassword }) }
+      catch (error) {
+        if (error instanceof AuthApiError && (error.status === 0 ||
+          (error.status >= 500 && error.code !== 'AUTH_BUSY') || error.code === 'API_UNAVAILABLE')) {
+          refreshUncertain = true
+          throw new AuthApiError(0, 'PASSWORD_RESET_UNCERTAIN', 'Sign in to check the reset result')
+        }
+        throw error
+      }
+      refreshUncertain = true
+    }),
     me: (signal?: AbortSignal) => get<UserView>('/api/me', signal),
     register: (input: RegistrationRequest) => post<RegistrationSuccess['data']>('/api/auth/register', input),
     updateProfile: (name: string) => authenticatedWrite<UserView>('/api/me', {
@@ -180,6 +193,11 @@ export function accountError(error: unknown): string {
     ACCOUNT_CHANGED: 'Akun berubah dari tab lain. Muat ulang halaman sebelum mengubah kata sandi.',
     PASSWORD_CHANGE_UNCERTAIN: 'Hasil perubahan belum dapat dipastikan. Masuk dengan kata sandi baru; jika belum berhasil, coba kata sandi sebelumnya. Jangan kirim ulang perubahan otomatis.',
     PASSWORD_UNAVAILABLE: 'Kata sandi belum dapat diubah. Coba lagi sebentar.',
+    INVALID_RESET_EMAIL: 'Masukkan alamat email yang valid.',
+    INVALID_PASSWORD_RESET: 'Periksa tautan dan gunakan kata sandi baru dengan 15–128 karakter.',
+    INVALID_RESET_LINK: 'Tautan tidak valid atau sudah berakhir. Minta tautan baru.',
+    RESET_UNAVAILABLE: 'Pemulihan akun belum tersedia. Coba lagi sebentar.',
+    PASSWORD_RESET_UNCERTAIN: 'Hasil pemulihan belum dapat dipastikan. Coba masuk dengan kata sandi baru; jika belum berhasil, minta tautan baru.',
     AUTH_BUSY: 'Layanan kata sandi sedang sibuk. Coba lagi sebentar.',
     INVALID_REFERRAL_CODE: 'Kode referral tidak ditemukan. Periksa kembali kodenya; akun belum dibuat.',
     INVALID_PROFILE: 'Nama harus terdiri dari 2–100 karakter tanpa baris baru.',

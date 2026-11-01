@@ -13,6 +13,7 @@ interface AuthContextValue extends SessionState {
   signOut: () => Promise<void>
   saveName: (name: string) => Promise<UserView>
   uploadPicture: (file: File) => Promise<UserView>
+  resetPassword: (token: string, newPassword: string) => Promise<void>
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>
 }
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -102,7 +103,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error
     }
   }
-  return <AuthContext.Provider value={{ ...state, notice, client, reload, signIn, signOut, saveName, uploadPicture, changePassword }}>{children}</AuthContext.Provider>
+  const resetPassword = async (token: string, newPassword: string) => {
+    try { await client.resetPassword(token, newPassword); passwordSignedOut(false) }
+    catch (error) {
+      if (error instanceof AuthApiError && error.code === 'PASSWORD_RESET_UNCERTAIN') {
+        passwordSignedOut(true); setNotice(accountError(error))
+      }
+      throw error
+    }
+  }
+  return <AuthContext.Provider value={{ ...state, notice, client, reload, signIn, signOut, saveName, uploadPicture, changePassword, resetPassword }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

@@ -1,7 +1,7 @@
 import type { PrismaClient } from '../../generated/prisma/client'
 import type { PasswordRepository } from './change-password'
 
-type PasswordDatabase = Pick<PrismaClient, 'user' | 'authSession' | '$queryRaw'>
+type PasswordDatabase = Pick<PrismaClient, 'user' | 'authSession' | 'passwordResetToken' | '$queryRaw'>
 type PasswordTransaction = <T>(work: (tx: PasswordDatabase) => Promise<T>) => Promise<T>
 
 export function prismaPasswordRepository(database: PasswordDatabase, transaction: PasswordTransaction,
@@ -19,9 +19,11 @@ export function prismaPasswordRepository(database: PasswordDatabase, transaction
       const session = await tx.authSession.findFirst({ where: { id: input.sessionId, userId: input.userId,
         revokedAt: null, expiresAt: { gt: at } }, select: { id: true } })
       if (!session) return 'session-invalid'
-      const current = await tx.user.findUnique({ where: { id: input.userId }, select: { passwordHash: true } })
+      const current = await tx.user.findUnique({ where: { id: input.userId }, select: { passwordHash: true, email: true } })
       if (!current?.passwordHash || current.passwordHash !== input.expectedHash) return 'conflict'
       await tx.user.update({ where: { id: input.userId }, data: { passwordHash: input.nextHash } })
+      await tx.passwordResetToken.updateMany({ where: { OR: [{ userId: input.userId }, { recipientEmail: current.email }],
+        consumedAt: null }, data: { consumedAt: at } })
       await tx.authSession.updateMany({ where: { userId: input.userId, revokedAt: null }, data: { revokedAt: at } })
       return 'ok'
     }),

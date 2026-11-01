@@ -13,7 +13,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [created, setCreated] = useState(false)
   const errorRef = useRef<HTMLParagraphElement>(null)
   const isRegister = mode === 'register'
-  const next = safeReturnPath(search.get('next'))
+  const next = safeReturnPath(search?.get('next'))
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
@@ -35,7 +35,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         setCreated(true)
       } else {
         const user = await auth.signIn({ email, password })
-        router.replace(safeReturnPath(search.get('next'), user.role === 'ORGANIZER' ? '/organizer' : '/account'))
+        router.replace(safeReturnPath(search?.get('next'), user.role === 'ORGANIZER' ? '/organizer' : '/account'))
       }
     } catch (reason) { setError(accountError(reason)); queueMicrotask(() => errorRef.current?.focus()) }
     finally { setBusy(false) }
@@ -74,6 +74,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
           </>}
           <button className="primary auth-submit" disabled={busy} type="submit">{busy ? 'Memproses…' : isRegister ? 'Buat akun' : 'Masuk'}</button>
         </form>
+        {!isRegister && <p className="auth-switch"><Link className="link" href="/forgot-password">Lupa kata sandi?</Link></p>}
         <p className="auth-switch">{isRegister ? 'Sudah punya akun? ' : 'Belum punya akun? '}
           <Link className="link" href={(isRegister ? '/login' : '/register') + '?next=' + encodeURIComponent(next)}>{isRegister ? 'Masuk' : 'Daftar sekarang'}</Link>
         </p>

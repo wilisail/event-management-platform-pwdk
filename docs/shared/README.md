@@ -4,6 +4,7 @@ Updated: 1 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Forgotten-password recovery and email](password-reset-reference.md) | Day 3 part 3: reset flow, private token/delivery queue, Resend setup, verification and Feature 1 email ownership contract |
 | [Password change and session revocation](password-change-reference.md) | Day 3 part 2: current-password proof, atomic all-session revocation, login/refresh/logout races, browser behavior and learning notes |
 | [Profile editing and pictures](profile-upload-reference.md) | Day 3 part 1: own-name/photo flow, validation, storage versus SQL, provider setup/verification limits, and Day 3–6 Feature 1 dependency map |
 | [Reward operations](reward-operations-reference.md) | Shared transaction-aware reserve/consume/restore core, integration contract, allocation and race tests |

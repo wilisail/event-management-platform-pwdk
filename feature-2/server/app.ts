@@ -13,6 +13,8 @@ import { createDemoData, type DemoData } from './fixtures'
 import type { DatabaseUserView } from './database'
 import { profileRouter } from './profile/http'
 import { passwordRouter } from './auth/password-http'
+import { resetRouter } from './auth/reset-http'
+import type { PasswordResetService } from './auth/password-reset'
 import type { PasswordChangeService } from './auth/change-password'
 import type { ProfileService } from './profile/service'
 
@@ -30,6 +32,9 @@ export interface AppOptions {
   rewardRepository?: RewardReadRepository
   profileService?: ProfileService
   passwordChangeService?: PasswordChangeService
+  passwordResetService?: PasswordResetService
+  passwordResetLimit?: { limit: number; windowMs: number }
+  defer?: (work: Promise<void>) => void
   passwordChangeLimit?: { limit: number; windowMs: number }
 }
 
@@ -142,6 +147,9 @@ export function createApp(options: AppOptions = {}) {
     },
   )
 
+  app.use('/api/auth', resetRouter({ service: options.passwordResetService,
+    defer: options.defer,
+    secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production', limit: options.passwordResetLimit }))
   app.use('/api/auth', sessionRouter({
     service: options.sessionService, now,
     secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production',

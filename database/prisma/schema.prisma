@@ -31,6 +31,7 @@ model User {
 
   events    Event[]
   purchases Purchase[]
+  passwordResets PasswordResetToken[]
   sessions  AuthSession[]
   referralsGiven Referral[] @relation("ReferralsGiven")
   referralUsed   Referral?  @relation("ReferralUsed")
@@ -299,3 +300,28 @@ model PointAllocation {
 }
 
 
+
+// Backend-private durable delivery request and one-use password-recovery capability.
+model PasswordResetToken {
+  id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recipientEmail        String   @map("recipient_email") @db.VarChar(254)
+  userId                String?  @map("user_id") @db.Uuid
+  tokenHash             String   @unique @map("token_hash") @db.VarChar(64)
+  credentialFingerprint String?  @map("credential_fingerprint") @db.VarChar(64)
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  expiresAt             DateTime @map("expires_at") @db.Timestamptz(3)
+  consumedAt            DateTime? @map("consumed_at") @db.Timestamptz(3)
+  deliveryState         String   @default("PENDING") @map("delivery_state") @db.VarChar(16)
+  attemptCount          Int      @default(0) @map("attempt_count")
+  leaseId               String?  @map("lease_id") @db.Uuid
+  leasedUntil           DateTime? @map("leased_until") @db.Timestamptz(3)
+  nextAttemptAt         DateTime @default(now()) @map("next_attempt_at") @db.Timestamptz(3)
+  user                  User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([userId])
+  @@index([recipientEmail, createdAt])
+  @@index([createdAt])
+  @@index([deliveryState, nextAttemptAt])
+  @@map("password_reset_tokens")
+  @@schema("temuevent")
+}

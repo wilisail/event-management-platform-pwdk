@@ -48,7 +48,11 @@
     "db:verify:password-change": "node --import tsx scripts/verify-password-change.ts",
     "predb:verify:password-change": "npm run db:generate",
     "db:verify:password-races": "node --import tsx scripts/verify-password-races.ts",
-    "predb:verify:password-races": "npm run db:generate"
+    "predb:verify:password-races": "npm run db:generate",
+    "db:verify:password-reset": "node --import tsx scripts/verify-password-reset.ts",
+    "predb:verify:password-reset": "npm run db:generate",
+    "db:verify:reset-races": "node --import tsx scripts/verify-reset-races.ts",
+    "predb:verify:reset-races": "npm run db:generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
