@@ -97,8 +97,15 @@ export function createAuthClient(options: Options = {}) {
   }
   async function authenticatedWrite<T>(path: string, init: RequestInit): Promise<T> {
     // Refresh before taking the mutation lock; refresh itself uses this same cross-tab lock.
-    await get<UserView>('/api/me')
+    const expected = await get<UserView>('/api/me')
     return coordinated(async () => {
+      let current: UserView
+      try { current = await request<UserView>('/api/me') }
+      catch (error) {
+        if (error instanceof AuthApiError && error.status === 401) options.onUnauthorized?.()
+        throw error
+      }
+      if (current.id !== expected.id) throw new AuthApiError(409, 'ACCOUNT_CHANGED', 'Account changed while waiting; reload before submitting')
       const csrf = await request<{ csrfToken: string }>('/api/auth/csrf')
       const headers = new Headers(init.headers)
       headers.set('x-temuevent-client', 'web'); headers.set('x-csrf-token', csrf.csrfToken)
@@ -190,7 +197,7 @@ export function accountError(error: unknown): string {
     INVALID_CURRENT_PASSWORD: 'Kata sandi saat ini tidak sesuai. Perubahan belum disimpan.',
     PASSWORD_UNCHANGED: 'Pilih kata sandi baru yang berbeda dari kata sandi saat ini.',
     PASSWORD_CHANGE_CONFLICT: 'Kata sandi telah berubah dari sesi lain. Silakan masuk ulang.',
-    ACCOUNT_CHANGED: 'Akun berubah dari tab lain. Muat ulang halaman sebelum mengubah kata sandi.',
+    ACCOUNT_CHANGED: 'Akun berubah dari tab lain. Muat ulang halaman sebelum menyimpan perubahan.',
     PASSWORD_CHANGE_UNCERTAIN: 'Hasil perubahan belum dapat dipastikan. Masuk dengan kata sandi baru; jika belum berhasil, coba kata sandi sebelumnya. Jangan kirim ulang perubahan otomatis.',
     PASSWORD_UNAVAILABLE: 'Kata sandi belum dapat diubah. Coba lagi sebentar.',
     INVALID_RESET_EMAIL: 'Masukkan alamat email yang valid.',

@@ -64,6 +64,12 @@ Both roles use **Akun saya → Keamanan**. `POST /api/auth/password` accepts onl
 
 TypeScript, 125 tests and a clean production build pass. `npm run db:verify:password-change` checks real Supabase/HTTP/scrypt and rolls all fixtures back. `npm run db:verify:password-races` is restricted to an explicitly enabled, separately provisioned loopback `temuevent_password_test` database; six independent-connection races pass. Desktop/phone browser checks pass for both roles, including two tabs and a separate device. See the [companion note](../docs/shared/password-change-reference.md) for mechanics, race evidence and reproduction. Forgotten-password email/reset is Day 3 part 3.
 
+## Account regression — Day 3 part 4
+
+The account regression and learning review are complete. `npm run db:verify:accounts` runs both roles through referral signup, profile/photo edits, password change, recovery, exact new-password login and logout with real SQL/scrypt/normalization. Its entire database fixture transaction rolls back; image/mail transports are explicitly simulated. Browser regression covers both roles at 390/1365 px, loading/error/retry, confirmations, repeated clicks, rejected files and two-tab authentication changes.
+
+Queued name/photo writes now recheck account identity inside the browser lock and reject an account switch before obtaining CSRF or sending a mutation. Two regression cases reproduce the old behavior and pass after the fix. TypeScript, 138 application tests, clean build, real Supabase combined checks and browser checks pass. See the [companion and learning guide](../docs/shared/account-regression-reference.md). Actual Resend signup-inbox receipt/use remains a separate manual check; Day 4 has not started.
+
 ## Forgotten-password recovery — Day 3 part 3
 
 Login → **Lupa kata sandi?** requests a 15-minute, one-use email link. The request has the same response for known/unknown emails and enqueues delivery before returning; provider latency is outside that response. The reset page reads the URL fragment into memory and removes it from the address bar. A confirmation precedes saving; password, token consumption and all-account-session revocation commit together.
@@ -107,7 +113,7 @@ npm test
 npm run build
 ```
 
-Next.js type errors are not suppressed. At the Day 3 part 3 implementation checkpoint, all 136 tests, TypeScript and a clean production build pass. Tests cover reward/date boundaries, authentication/session rules, real permission middleware, ownership/pagination, CSRF and client refresh/write uncertainty. Real Supabase verification and isolated password races pass. Desktop/phone password-change checks include form submission, cancellation, errors, two-tab sign-out and new-password login; their account records are disposable memory fixtures. The prior real HTTPS client → Next rewrite → Express → Prisma → Supabase check used rolled-back QA data. Final deployment/combined journeys remain separate release checks.
+Next.js type errors are not suppressed. At the Day 3 part 4 checkpoint, all 138 tests, TypeScript and a clean production build pass. Tests cover reward/date boundaries, authentication/session rules, real permission middleware, ownership/pagination, CSRF and client refresh/write uncertainty. Real Supabase verification and isolated password races pass. Desktop/phone password-change checks include form submission, cancellation, errors, two-tab sign-out and new-password login; their account records are disposable memory fixtures. The prior real HTTPS client → Next rewrite → Express → Prisma → Supabase check used rolled-back QA data. Final deployment/combined journeys remain separate release checks.
 
 `scripts/serve-browser-check.ts` is an explicitly enabled loopback QA server that places temporary accounts/events/purchases/sessions in one rollback transaction. `scripts/verify-frontend-client.ts` tests the real client against that server via an HTTPS preview, with disposable credentials supplied through process environment settings. These QA runners are not the normal application entry point or public control endpoints; never run the verifier against the ordinary persistent server. The normal development command remains `npm run dev`.
 

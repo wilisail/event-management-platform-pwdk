@@ -175,3 +175,16 @@ test('password recovery is public and a lost reset reply is never replayed', asy
   await assert.rejects(client.resetPassword('x'.repeat(43), 'a new long password'), { code: 'PASSWORD_RESET_UNCERTAIN' })
   assert.deepEqual(calls, ['/api/auth/forgot-password', '/api/auth/reset-password'])
 })
+
+for (const kind of ['name', 'picture'] as const) test('queued ' + kind + ' edit cannot be applied after another tab switches accounts', async () => {
+  let switched = false, writes = 0, csrfReads = 0
+  const client = createAuthClient({ coordinate: async work => { switched = true; return work() }, fetcher: transport((path, init) => {
+    if (path.endsWith('/csrf')) { csrfReads++; return ok({ csrfToken: 'new-account-csrf' }) }
+    if (init.method) { writes++; return ok(user) }
+    return ok(switched ? { ...user, id: 'another-account' } : user)
+  }) })
+  const pending = kind === 'name' ? client.updateProfile('Old account form')
+    : client.uploadPicture(new File(['test image'], 'profile.png', { type: 'image/png' }))
+  await assert.rejects(pending, { code: 'ACCOUNT_CHANGED' })
+  assert.equal(writes, 0); assert.equal(csrfReads, 0)
+})

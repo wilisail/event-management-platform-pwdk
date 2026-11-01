@@ -52,7 +52,9 @@
     "db:verify:password-reset": "node --import tsx scripts/verify-password-reset.ts",
     "predb:verify:password-reset": "npm run db:generate",
     "db:verify:reset-races": "node --import tsx scripts/verify-reset-races.ts",
-    "predb:verify:reset-races": "npm run db:generate"
+    "predb:verify:reset-races": "npm run db:generate",
+    "db:verify:accounts": "node --import tsx scripts/verify-account-regression.ts",
+    "predb:verify:accounts": "npm run db:generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
