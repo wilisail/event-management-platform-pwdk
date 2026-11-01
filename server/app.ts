@@ -3,13 +3,14 @@ import { z } from 'zod'
 import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
-import type { DatabaseUserView } from './database'
+import type { DatabaseUserView, PublicEventView } from './database'
 
 export interface AppOptions {
   now?: () => Date
   data?: DemoData
   allowedOrigins?: string[]
   databaseProbe?: () => Promise<DatabaseUserView | null>
+  eventsReader?: () => Promise<PublicEventView[]>
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -18,6 +19,7 @@ export function createApp(options: AppOptions = {}) {
   const allowedOrigins = options.allowedOrigins ?? [
     'http://localhost:3000',
     'http://localhost:3001',
+    'http://127.0.0.1:3001',
   ]
   const app = express()
   app.disable('x-powered-by')
@@ -68,6 +70,25 @@ export function createApp(options: AppOptions = {}) {
   app.get('/health', (_req, res) =>
     ok(res, { service: 'feature-2-demo', readOnly: true }, 'Demo API ready'),
   )
+
+  app.get('/api/events', async (_req, res) => {
+    if (!options.eventsReader) {
+      fail(res, 503, 'DATABASE_NOT_CONFIGURED', 'Event database reader is not configured')
+      return
+    }
+    try {
+      const events = await options.eventsReader()
+      res.json({
+        success: true,
+        message: 'Published upcoming events',
+        data: events,
+        meta: { mode: 'database', contractVersion: '1.0', asOf: now().toISOString() },
+      })
+    } catch (error) {
+      console.error('GET /api/events failed:', error)
+      fail(res, 503, 'EVENTS_UNAVAILABLE', 'Unable to retrieve events from the database')
+    }
+  })
   app.get('/api/demo/me', (req, res) => {
     const user = demoUser(req, res)
     if (user) ok(res, user, 'Demo identity; not a real login session')

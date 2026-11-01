@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     CalendarDays,
     ChevronDown,
@@ -19,18 +19,36 @@ import {
 } from "lucide-react";
 
 type Event = {
-    id: number;
+    id: string;
     title: string;
     category: string;
     date: string;
     dateLabel: string;
     location: string;
     price: number | null;
-    image: string;
+    image: string | null;
+    organizer: string;
+    availableSeats: number;
     rating?: string;
     featured?: string;
-    organizer: string;
 };
+
+type EventsApiResponse = {
+    success: boolean;
+    data?: Omit<Event, "dateLabel">[];
+    message?: string;
+};
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:4002";
+
+const formatDateLabel = (date: string) =>
+    new Intl.DateTimeFormat("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        timeZone: "Asia/Jakarta",
+    }).format(new Date(date));
+
 
 const categories = [
     "Semua",
@@ -42,135 +60,6 @@ const categories = [
     "Seni & Budaya",
     "Edukasi",
     "Komunitas",
-];
-const events: Event[] = [
-    {
-        id: 1,
-        title: "Jakarta Coffee Festival 2025",
-        category: "Food & Beverage",
-        date: "2025-05-24",
-        dateLabel: "24 Mei 2025",
-        location: "Senayan Park, Jakarta",
-        price: 150000,
-        rating: "4.9 (420+)",
-        featured: "Pilihan Editor",
-        image: "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=85",
-        organizer: "Jakarta Coffee Club",
-    },
-    {
-        id: 2,
-        title: "Independent Music Night Vol. 4",
-        category: "Musik",
-        date: "2025-06-14",
-        dateLabel: "14 Jun 2025",
-        location: "Spasial Soda, Bandung",
-        price: 85000,
-        rating: "4.8 (50+)",
-        featured: "Hot Ticket",
-        image: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=900&q=85",
-        organizer: "Ruang Suara",
-    },
-    {
-        id: 3,
-        title: "Jakarta Tech Meetup: Scalable Node.js & Supabase",
-        category: "Teknologi",
-        date: "2025-05-30",
-        dateLabel: "30 Mei 2025",
-        location: "GoWork Pacific Place, Jakarta",
-        price: null,
-        rating: "4.9 (75+)",
-        featured: "Free RSVP",
-        image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=85",
-        organizer: "IndoJS & Cloud",
-    },
-    {
-        id: 4,
-        title: "UI/UX Design System Workshop",
-        category: "Workshops",
-        date: "2025-06-07",
-        dateLabel: "7 Jun 2025",
-        location: "Workshop With Figma, Jakarta",
-        price: 50000,
-        image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=85",
-        organizer: "Product Design ID",
-    },
-    {
-        id: 5,
-        title: "Creative Founders & Business Networking",
-        category: "Komunitas",
-        date: "2025-06-12",
-        dateLabel: "12 Jun 2025",
-        location: "Kolektif Founder, Jakarta",
-        price: 100000,
-        image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=900&q=85",
-        organizer: "Kolektif Founders",
-    },
-    {
-        id: 6,
-        title: "Independent Music Night Vol. 4",
-        category: "Musik",
-        date: "2025-06-14",
-        dateLabel: "14 Jun 2025",
-        location: "Spasial Soda, Bandung",
-        price: 85000,
-        image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&q=85",
-        organizer: "Ruang Suara",
-    },
-    {
-        id: 7,
-        title: "Intro to Modern Web Dev (React & TypeScript)",
-        category: "Edukasi",
-        date: "2025-06-18",
-        dateLabel: "18 Jun 2025",
-        location: "Digital Hub BSD, Tangerang Selatan",
-        price: null,
-        image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=85",
-        organizer: "TSG Tech Academy",
-    },
-    {
-        id: 8,
-        title: "Bandung Golden Hour Photography Walk",
-        category: "Seni & Budaya",
-        date: "2025-06-21",
-        dateLabel: "21 Jun 2025",
-        location: "Jalan Braga, Bandung",
-        price: 35000,
-        image: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=900&q=85",
-        organizer: "Bandung Street",
-    },
-    {
-        id: 9,
-        title: "Community Fun Run 5K: Sunrise Heritage",
-        category: "Olahraga",
-        date: "2025-06-22",
-        dateLabel: "22 Jun 2025",
-        location: "Taman Bungkul, Surabaya",
-        price: 75000,
-        image: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&q=85",
-        organizer: "Surabaya Runners",
-    },
-    {
-        id: 10,
-        title: "Pasar Seni & Kerajinan Lokal Nusantara",
-        category: "Seni & Budaya",
-        date: "2025-06-28",
-        dateLabel: "28-29 Jun 2025",
-        location: "Taman Budaya Yogyakarta",
-        price: null,
-        image: "https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&w=900&q=85",
-        organizer: "Paguyuban Perajin",
-    },
-    {
-        id: 11,
-        title: "Specialty Coffee Brewing & Latte Art Masterclass",
-        category: "Workshops",
-        date: "2025-07-05",
-        dateLabel: "5 Jul 2025",
-        location: "Rumah Seduh Bareng, Bogor",
-        price: 120000,
-        image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=85",
-        organizer: "Bogor Brewers",
-    },
 ];
 const formatPrice = (price: number | null) =>
     price
@@ -188,7 +77,46 @@ export default function Page() {
     const [category, setCategory] = useState("Semua");
     const [location, setLocation] = useState("Semua Kota");
     const [menu, setMenu] = useState(false);
-    const [liked, setLiked] = useState<number[]>([]);
+    const [liked, setLiked] = useState<string[]>([]);
+    const [events, setEvents] = useState<Event[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function loadEvents() {
+            try {
+                setLoading(true);
+                setError(null);
+                const response = await fetch(`${API_URL}/api/events`, {
+                    signal: controller.signal,
+                });
+                if (!response.ok) {
+                    throw new Error(`API request failed (${response.status})`);
+                }
+                const result = (await response.json()) as EventsApiResponse;
+                if (!result.success || !Array.isArray(result.data)) {
+                    throw new Error(result.message || "Invalid API response");
+                }
+                setEvents(
+                    result.data.map((event) => ({
+                        ...event,
+                        dateLabel: formatDateLabel(event.date),
+                    })),
+                );
+            } catch (fetchError) {
+                if (fetchError instanceof Error && fetchError.name === "AbortError") return;
+                setError("Gagal memuat event. Pastikan API dan koneksi database sedang berjalan.");
+            } finally {
+                if (!controller.signal.aborted) setLoading(false);
+            }
+        }
+
+        void loadEvents();
+        return () => controller.abort();
+    }, []);
+
     const filtered = useMemo(
         () =>
             events.filter((event) => {
@@ -197,11 +125,10 @@ export default function Page() {
                 return (
                     haystack.includes(query.toLowerCase()) &&
                     (category === "Semua" || event.category === category) &&
-                    (location === "Semua Kota" ||
-                        event.location.includes(location))
+                    (location === "Semua Kota" || event.location.includes(location))
                 );
             }),
-        [query, category, location],
+        [events, query, category, location],
     );
     const featured = events.slice(0, 3);
 
@@ -388,23 +315,25 @@ export default function Page() {
                             </button>
                         </div>
                     </div>
-                    <div className="grid gap-5 md:grid-cols-3">
-                        {featured.map((event) => (
-                            <EventCard
-                                key={event.id}
-                                event={event}
-                                featured
-                                liked={liked.includes(event.id)}
-                                onLike={() =>
-                                    setLiked((v) =>
-                                        v.includes(event.id)
-                                            ? v.filter((x) => x !== event.id)
-                                            : [...v, event.id],
-                                    )
-                                }
-                            />
-                        ))}
-                    </div>
+                    {loading ? (
+                        <p className="rounded-xl bg-white p-6 text-center text-sm text-[#858196]">Memuat event...</p>
+                    ) : error ? (
+                        <p role="alert" className="rounded-xl bg-white p-6 text-center text-sm text-red-600">{error}</p>
+                    ) : featured.length ? (
+                        <div className="grid gap-5 md:grid-cols-3">
+                            {featured.map((event) => (
+                                <EventCard
+                                    key={event.id}
+                                    event={event}
+                                    featured
+                                    liked={liked.includes(event.id)}
+                                    onLike={() => setLiked((v) => v.includes(event.id) ? v.filter((x) => x !== event.id) : [...v, event.id])}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="rounded-xl bg-white p-6 text-center text-sm text-[#858196]">Belum ada event mendatang yang dipublikasikan.</p>
+                    )}
                 </section>
                 <section
                     id="explore"
@@ -425,7 +354,11 @@ export default function Page() {
                             <option>Harga: Terendah</option>
                         </select>
                     </div>
-                    {filtered.length ? (
+                    {loading ? (
+                        <p className="rounded-xl bg-white p-6 text-center text-sm text-[#858196]">Memuat event...</p>
+                    ) : error ? (
+                        <p role="alert" className="rounded-xl bg-white p-6 text-center text-sm text-red-600">{error}</p>
+                    ) : filtered.length ? (
                         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                             {filtered.map((event) => (
                                 <EventCard
@@ -577,11 +510,15 @@ function EventCard({
             className={`group overflow-hidden rounded-2xl border border-[#ebe7f5] bg-white shadow-[0_5px_18px_rgba(64,45,120,.06)] transition hover:-translate-y-1 hover:shadow-lg ${featured ? "" : ""}`}
         >
             <div className="relative aspect-[1.58] overflow-hidden">
-                <img
-                    src={event.image}
-                    alt={event.title}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                />
+                {event.image ? (
+                    <img
+                        src={event.image}
+                        alt={event.title}
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                ) : (
+                    <div className="grid h-full w-full place-items-center bg-[#eeeaff] text-sm font-semibold text-[#5148d7]">TemuEvent</div>
+                )}
                 <div className="absolute inset-x-0 top-0 flex justify-between p-2">
                     <span className="rounded-md bg-white px-2 py-1 text-[9px] font-bold text-[#26213f]">
                         {event.featured || event.category}

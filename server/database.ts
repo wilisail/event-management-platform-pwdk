@@ -39,6 +39,55 @@ export function readSeededDatabaseUser(): Promise<DatabaseUserView | null> {
   })
 }
 
+export interface PublicEventView {
+  id: string
+  title: string
+  category: string
+  date: string
+  location: string
+  price: number | null
+  image: string | null
+  organizer: string
+  availableSeats: number
+}
+
+/** Public, read-only event listing for the Feature 1 homepage. */
+export async function readPublishedEvents(): Promise<PublicEventView[]> {
+  const events = await databaseClient().event.findMany({
+    where: {
+      status: 'PUBLISHED',
+      startAt: { gte: new Date() },
+    },
+    include: {
+      organizer: { select: { name: true } },
+      ticketTypes: { select: { price: true, availableSeats: true } },
+    },
+    orderBy: { startAt: 'asc' },
+  })
+
+  return events.map((event) => {
+    const prices = event.ticketTypes.map((ticket) => Number(ticket.price))
+    const availableSeats = event.ticketTypes.reduce(
+      (total, ticket) => total + ticket.availableSeats,
+      0,
+    )
+
+    return {
+      id: event.id,
+      title: event.name,
+      category: event.category,
+      date: event.startAt.toISOString(),
+      location: event.venue
+        ? `${event.venue}, ${event.location}`
+        : event.location,
+      price: prices.length ? Math.min(...prices) : null,
+      image: event.imageUrl,
+      organizer: event.organizer.name,
+      availableSeats,
+    }
+  })
+}
+
 export async function disconnectDatabase() {
   await client?.$disconnect()
   client = undefined
