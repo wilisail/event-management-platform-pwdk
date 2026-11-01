@@ -7,6 +7,14 @@ import { sessionFixture, memorySessions, loginFields, testAccount, testSecret } 
 
 const status = (expected: number) => (error: unknown) => error instanceof SessionError && error.status === expected
 
+test('a login whose password proof became stale cannot create a session after a password change', async () => {
+  const f = memorySessions()
+  const service = createSessionService({ repository: f.repository, tokens: createSessionTokens(testSecret),
+    verifyPassword: async () => { f.users.get(testAccount.email)!.passwordHash = 'test-only:a changed password'; return true } })
+  await assert.rejects(service.login(loginFields), { code: 'INVALID_CREDENTIALS' })
+  assert.equal(f.sessions.size, 0); assert.equal(f.tokens.size, 0)
+})
+
 test('login normalizes email, verifies a raw password and persists only a refresh digest', async () => {
   const f = sessionFixture()
   const result = await f.service.login({ ...loginFields, email: ' SESSION@EXAMPLE.TEST ' })

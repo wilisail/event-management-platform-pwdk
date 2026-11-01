@@ -123,6 +123,31 @@ export function createAuthClient(options: Options = {}) {
     uploadPicture: (file: File) => authenticatedWrite<UserView>('/api/me/picture', {
       method: 'POST', headers: { 'content-type': file.type }, body: file,
     }),
+    changePassword: async (currentPassword: string, newPassword: string) => {
+      const expected = await get<UserView>('/api/me')
+      return coordinated(async () => {
+        let current: UserView
+        try { current = await request<UserView>('/api/me') }
+        catch (error) {
+          if (error instanceof AuthApiError && error.status === 401) options.onUnauthorized?.()
+          throw error
+        }
+        if (current.id !== expected.id) throw new AuthApiError(409, 'ACCOUNT_CHANGED', 'Account changed while waiting; reload before submitting')
+        const csrf = await request<{ csrfToken: string }>('/api/auth/csrf')
+        try { await post('/api/auth/password', { currentPassword, newPassword }, csrf.csrfToken) }
+        catch (error) {
+          if (error instanceof AuthApiError && error.status === 401) options.onUnauthorized?.()
+          // A lost reply or unexpected server failure may follow a committed password change.
+          if (error instanceof AuthApiError && (error.status === 0 ||
+            (error.status >= 500 && error.code !== 'AUTH_BUSY') || error.code === 'API_UNAVAILABLE')) {
+            refreshUncertain = true
+            throw new AuthApiError(0, 'PASSWORD_CHANGE_UNCERTAIN', 'Sign in again to check which password is current')
+          }
+          throw error
+        }
+        refreshUncertain = true // The successful operation revoked this session too.
+      })
+    },
     login: (input: LoginRequest) => coordinated(async () => {
       const result = await post<LoginSuccess['data']>('/api/auth/login', input)
       refreshUncertain = false
@@ -148,6 +173,14 @@ export function accountError(error: unknown): string {
     INVALID_CREDENTIALS: 'Email atau kata sandi tidak sesuai.',
     INVALID_REGISTRATION: 'Periksa kembali data pendaftaran dan kode referral yang diisi.',
     INVALID_LOGIN: 'Masukkan email dan kata sandi yang valid.',
+    INVALID_PASSWORD_CHANGE: 'Gunakan kata sandi baru dengan 15–128 karakter, bukan hanya spasi.',
+    INVALID_CURRENT_PASSWORD: 'Kata sandi saat ini tidak sesuai. Perubahan belum disimpan.',
+    PASSWORD_UNCHANGED: 'Pilih kata sandi baru yang berbeda dari kata sandi saat ini.',
+    PASSWORD_CHANGE_CONFLICT: 'Kata sandi telah berubah dari sesi lain. Silakan masuk ulang.',
+    ACCOUNT_CHANGED: 'Akun berubah dari tab lain. Muat ulang halaman sebelum mengubah kata sandi.',
+    PASSWORD_CHANGE_UNCERTAIN: 'Hasil perubahan belum dapat dipastikan. Masuk dengan kata sandi baru; jika belum berhasil, coba kata sandi sebelumnya. Jangan kirim ulang perubahan otomatis.',
+    PASSWORD_UNAVAILABLE: 'Kata sandi belum dapat diubah. Coba lagi sebentar.',
+    AUTH_BUSY: 'Layanan kata sandi sedang sibuk. Coba lagi sebentar.',
     INVALID_REFERRAL_CODE: 'Kode referral tidak ditemukan. Periksa kembali kodenya; akun belum dibuat.',
     INVALID_PROFILE: 'Nama harus terdiri dari 2–100 karakter tanpa baris baru.',
     INVALID_PICTURE: 'Foto tidak dapat dibaca. Gunakan JPEG, PNG atau WebP biasa hingga 16 megapiksel.',

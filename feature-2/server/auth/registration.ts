@@ -1,21 +1,16 @@
 import { randomBytes } from 'node:crypto'
 import { z } from 'zod'
 import type { Role, UserView } from '../../contracts/types'
-import { hashPassword, PasswordWorkLimitError } from './passwords'
+import { hashPassword, newPasswordSchema, PasswordWorkLimitError } from './passwords'
 import { addCalendarMonths, REFERRAL_AWARD_POINTS, REWARD_VALIDITY_MONTHS } from '../../domain/rewards'
 
 // Project default from the accepted prototype; the PRD leaves the coupon value unspecified.
 export const DEFAULT_REFERRAL_COUPON_IDR = 25_000
 
-const password = z.string()
-  .refine(value => Array.from(value).length >= 15, 'Use at least 15 characters')
-  .refine(value => Array.from(value).length <= 128, 'Use at most 128 characters')
-  .refine(value => value.trim().length > 0, 'A password cannot contain only spaces')
-
 export const registrationSchema = z.object({
   name: z.string().trim().min(2, 'Enter at least 2 characters').max(100),
   email: z.string().trim().toLowerCase().max(254).email('Enter a valid email address'),
-  password,
+  password: newPasswordSchema,
   role: z.enum(['CUSTOMER', 'ORGANIZER']).default('CUSTOMER'),
   referralCode: z.string().trim().toUpperCase().max(16)
     .refine(value => value === '' || /^[A-Z0-9]+$/.test(value), 'Use the referral code as supplied').optional(),

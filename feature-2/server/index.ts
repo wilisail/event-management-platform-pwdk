@@ -5,6 +5,8 @@ import { prismaRegistrationRepository } from './auth/registration-repository'
 import { createSessionTokens } from './auth/session-tokens'
 import { createSessionService } from './auth/sessions'
 import { prismaSessionRepository } from './auth/session-repository'
+import { createPasswordChangeService } from './auth/change-password'
+import { prismaPasswordRepository } from './auth/password-repository'
 import { prismaOrganizerReadRepository } from './organizer/read-repository'
 import { prismaRewardReadRepository } from './rewards/read-repository'
 import { prismaProfileRepository } from './profile/repository'
@@ -51,6 +53,9 @@ async function start() {
   }) : undefined
   const server = createApp({
     allowedOrigins, registrationService, sessionService, profileService,
+    passwordChangeService: client && sessionService ? createPasswordChangeService({
+      repository: prismaPasswordRepository(client, work => client.$transaction(work, { timeout: 10000 })),
+    }) : undefined,
     organizerRepository: client ? prismaOrganizerReadRepository(client) : undefined,
     rewardRepository: client ? prismaRewardReadRepository(client, work => client.$transaction(work,
       { isolationLevel: 'RepeatableRead', timeout: 10000 })) : undefined,

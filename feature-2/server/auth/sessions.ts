@@ -14,7 +14,7 @@ export interface LoginAccount extends UserView { passwordHash: string | null }
 export type RotationResult = { kind: 'ok'; session: SessionRecord } | { kind: 'invalid' | 'reused' }
 export interface SessionRepository {
   findLoginAccount(email: string): Promise<LoginAccount | null>
-  createSession(input: { id: string; userId: string; tokenHash: string; now: Date; expiresAt: Date }): Promise<SessionRecord>
+  createSession(input: { id: string; userId: string; expectedPasswordHash: string; tokenHash: string; now: Date; expiresAt: Date }): Promise<SessionRecord | null>
   rotateRefresh(input: { tokenHash: string; nextTokenHash: string; now: Date }): Promise<RotationResult>
   revokeByRefreshHash(tokenHash: string, now: Date): Promise<void>
   findActiveSession(sessionId: string, userId: string, now: Date): Promise<SessionRecord | null>
@@ -68,22 +68,25 @@ export function createSessionService(options: {
       const parsed = loginInput.safeParse(input)
       if (!parsed.success) throw new SessionError(400, 'INVALID_LOGIN', 'Enter a valid email and password')
       const account = await repository.findLoginAccount(parsed.data.email)
+      const expectedPasswordHash = account?.passwordHash
       let valid: boolean
-      try { valid = await verify(parsed.data.password, account?.passwordHash ?? dummyHash) }
+      try { valid = await verify(parsed.data.password, expectedPasswordHash ?? dummyHash) }
       catch (error) {
         if (error instanceof PasswordWorkLimitError) throw new SessionError(503, 'AUTH_BUSY', 'Sign in is busy. Try again shortly')
         throw error
       }
-      if (!valid || !account?.passwordHash) {
+      if (!valid || !expectedPasswordHash || !account) {
         throw new SessionError(401, 'INVALID_CREDENTIALS', 'Email or password is incorrect')
       }
       const issuedAt = now()
       const refreshToken = tokens.newRefreshToken()
       const session = await repository.createSession({
         id: randomUUID(), userId: account.id, now: issuedAt,
+        expectedPasswordHash,
         tokenHash: hashRefreshToken(refreshToken),
         expiresAt: new Date(issuedAt.getTime() + SESSION_SECONDS * 1000),
       })
+      if (!session) throw new SessionError(401, 'INVALID_CREDENTIALS', 'Email or password is incorrect')
       return credentials(session, refreshToken, issuedAt)
     },
     async refresh(refreshToken: string | null): Promise<SessionCredentials> {

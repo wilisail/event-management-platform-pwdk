@@ -8,6 +8,44 @@ const denied = () => new Response(JSON.stringify({ success: false, code: 'SESSIO
 const transport = (work: (path: string, init: RequestInit) => Promise<Response> | Response) =>
   ((input: string | URL | Request, init: RequestInit = {}) => Promise.resolve(work(String(input), init))) as typeof fetch
 
+test('password changes use the mutation lock, current CSRF and exactly the two password fields', async () => {
+  let locks = 0, changes = 0
+  const client = createAuthClient({ coordinate: async work => { locks++; return work() }, fetcher: transport((path, init) => {
+    if (path === '/api/auth/csrf') return ok({ csrfToken: 'csrf' })
+    if (path === '/api/auth/password') {
+      changes++; assert.deepEqual(JSON.parse(String(init.body)), { currentPassword: 'previous password', newPassword: 'next long password' })
+      assert.equal(new Headers(init.headers).get('x-csrf-token'), 'csrf'); assert.equal(init.credentials, 'include')
+      return ok({ signInRequired: true })
+    }
+    return ok(user)
+  }) })
+  await client.changePassword('previous password', 'next long password')
+  assert.equal(changes, 1); assert.equal(locks, 1)
+})
+
+test('a lost password reply is never replayed and automatic refresh stays disabled until explicit sign-in', async () => {
+  let changes = 0, rotations = 0, active = true
+  const client = createAuthClient({ coordinate: async work => work(), fetcher: transport(path => {
+    if (path === '/api/auth/csrf') return ok({ csrfToken: 'csrf' })
+    if (path === '/api/auth/password') { changes++; active = false; throw new Error('lost after commit') }
+    if (path === '/api/auth/refresh') rotations++
+    return active ? ok(user) : denied()
+  }) })
+  await assert.rejects(client.changePassword('previous password', 'next long password'), { code: 'PASSWORD_CHANGE_UNCERTAIN' })
+  await assert.rejects(client.me(), { status: 401 })
+  assert.equal(changes, 1); assert.equal(rotations, 0)
+})
+
+test('an account switch while a password change waits cannot send the old form to the new account', async () => {
+  let switched = false, writes = 0
+  const client = createAuthClient({ coordinate: async work => { switched = true; return work() }, fetcher: transport((path, init) => {
+    if (init.method === 'POST') writes++
+    return ok(switched ? { ...user, id: 'another-account' } : user)
+  }) })
+  await assert.rejects(client.changePassword('previous password', 'next long password'), { code: 'ACCOUNT_CHANGED' })
+  assert.equal(writes, 0)
+})
+
 test('profile writes obtain session CSRF and do not send caller-owned identity fields', async () => {
   const writes: RequestInit[] = []
   const client = createAuthClient({ coordinate: async work => work(), fetcher: transport((path, init) => {

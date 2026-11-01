@@ -1,4 +1,10 @@
 import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto'
+import { z } from 'zod'
+
+export const newPasswordSchema = z.string()
+  .refine(value => [...value].length >= 15, 'Use at least 15 characters')
+  .refine(value => [...value].length <= 128, 'Use at most 128 characters')
+  .refine(value => value.trim().length > 0, 'A password cannot contain only spaces')
 
 // OWASP's 32 MiB scrypt profile. Keep encoded parameters with each stored hash.
 const parameters = { N: 32768, r: 8, p: 3, maxmem: 64 * 1024 * 1024 }

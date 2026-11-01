@@ -55,6 +55,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         <p className="eyebrow">{isRegister ? 'BUAT AKUN' : 'MASUK AKUN'}</p>
         <h2>{isRegister ? 'Kenalan dulu, yuk.' : 'Lanjutkan pengalamanmu.'}</h2>
         <p className="auth-intro">{isRegister ? 'Satu akun untuk pengalaman event yang lebih personal.' : 'Masukkan email dan kata sandimu.'}</p>
+        {!isRegister && auth.notice && <p className="notice" role="status">{auth.notice}</p>}
         {error && <p className="auth-error" role="alert" tabIndex={-1} ref={errorRef}>{error}</p>}
         <form className="profile-form" onSubmit={submit}>
           {isRegister && <label htmlFor="auth-name">Nama<input id="auth-name" name="name" required autoComplete="name" maxLength={100} disabled={busy} /></label>}

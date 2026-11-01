@@ -24,6 +24,10 @@ export function prismaSessionRepository(database: SessionDatabase, transaction: 
       return user ? { ...profileUser(user), passwordHash: user.passwordHash } : null
     },
     createSession: input => transaction(async tx => {
+      // Serialize with password changes. A proof checked against an old hash cannot create a new session afterward.
+      await tx.$queryRaw`SELECT id FROM temuevent.users WHERE id = ${input.userId}::uuid FOR UPDATE`
+      const current = await tx.user.findUnique({ where: { id: input.userId }, select: { passwordHash: true } })
+      if (!current?.passwordHash || current.passwordHash !== input.expectedPasswordHash) return null
       const session = await tx.authSession.create({
         data: {
           id: input.id, userId: input.userId, createdAt: input.now, expiresAt: input.expiresAt,

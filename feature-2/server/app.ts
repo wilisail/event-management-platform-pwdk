@@ -12,6 +12,8 @@ import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
 import type { DatabaseUserView } from './database'
 import { profileRouter } from './profile/http'
+import { passwordRouter } from './auth/password-http'
+import type { PasswordChangeService } from './auth/change-password'
 import type { ProfileService } from './profile/service'
 
 export interface AppOptions {
@@ -27,6 +29,8 @@ export interface AppOptions {
   organizerRepository?: OrganizerReadRepository
   rewardRepository?: RewardReadRepository
   profileService?: ProfileService
+  passwordChangeService?: PasswordChangeService
+  passwordChangeLimit?: { limit: number; windowMs: number }
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -143,6 +147,8 @@ export function createApp(options: AppOptions = {}) {
     secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production',
     loginLimit: options.loginRateLimit,
   }))
+  app.use('/api/auth', passwordRouter({ service: options.passwordChangeService, sessions: options.sessionService,
+    secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production', limit: options.passwordChangeLimit }))
   app.use('/api', protectedRouter({
     sessionService: options.sessionService, organizerRepository: options.organizerRepository,
     rewardRepository: options.rewardRepository, now,

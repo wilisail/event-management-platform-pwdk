@@ -19,6 +19,7 @@ export function memorySessions() {
     async findLoginAccount(email) { return users.get(email) ?? null },
     async createSession(input) {
       const account = [...users.values()].find(user => user.id === input.userId)!
+      if (!account?.passwordHash || account.passwordHash !== input.expectedPasswordHash) return null
       const { passwordHash: _passwordHash, ...user } = account
       const session = { id: input.id, user, expiresAt: input.expiresAt, revokedAt: null }
       sessions.set(input.id, session)

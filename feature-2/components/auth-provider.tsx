@@ -6,17 +6,20 @@ import { accountError, AuthApiError, createAuthClient, type AuthClient } from '.
 
 type SessionState = { status: 'loading' | 'authenticated' | 'anonymous' | 'error'; user: UserView | null; error: string }
 interface AuthContextValue extends SessionState {
+  notice: string
   client: AuthClient
   reload: () => Promise<void>
   signIn: (input: LoginRequest) => Promise<UserView>
   signOut: () => Promise<void>
   saveName: (name: string) => Promise<UserView>
   uploadPicture: (file: File) => Promise<UserView>
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>
 }
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<SessionState>({ status: 'loading', user: null, error: '' })
+  const [notice, setNotice] = useState('')
   const channel = useRef<BroadcastChannel | null>(null)
   const version = useRef(0)
   const [client] = useState(() => createAuthClient({
@@ -44,6 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const bus = new BroadcastChannel('temuevent-session')
       channel.current = bus
       bus.onmessage = event => {
+        if (event.data?.type === 'password-changed' || event.data?.type === 'password-uncertain') {
+          version.current++
+          client.disableRefresh()
+          setNotice(event.data.type === 'password-changed'
+            ? 'Kata sandi berubah. Semua sesi telah keluar. Silakan masuk kembali.'
+            : accountError(new AuthApiError(0, 'PASSWORD_CHANGE_UNCERTAIN', '')))
+          setState({ status: 'anonymous', user: null, error: '' })
+        }
         if (event.data?.type === 'changed') void reload()
         if (event.data?.type === 'uncertain') {
           client.disableRefresh()
@@ -55,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [client, reload])
   const signIn = async (input: LoginRequest) => {
     const user = await client.login(input)
+    setNotice('')
     version.current++
     setState({ status: 'authenticated', user, error: '' })
     channel.current?.postMessage({ type: 'changed' })
@@ -75,7 +87,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
   const saveName = async (name: string) => profileChanged(await client.updateProfile(name))
   const uploadPicture = async (file: File) => profileChanged(await client.uploadPicture(file))
-  return <AuthContext.Provider value={{ ...state, client, reload, signIn, signOut, saveName, uploadPicture }}>{children}</AuthContext.Provider>
+  const passwordSignedOut = (uncertain: boolean) => {
+    version.current++
+    client.disableRefresh()
+    setNotice(uncertain ? accountError(new AuthApiError(0, 'PASSWORD_CHANGE_UNCERTAIN', ''))
+      : 'Kata sandi berhasil diubah. Semua sesi telah keluar. Masuk kembali dengan kata sandi baru.')
+    setState({ status: 'anonymous', user: null, error: '' })
+    channel.current?.postMessage({ type: uncertain ? 'password-uncertain' : 'password-changed' })
+  }
+  const changePassword = async (currentPassword: string, newPassword: string) => {
+    try { await client.changePassword(currentPassword, newPassword); passwordSignedOut(false) }
+    catch (error) {
+      if (error instanceof AuthApiError && error.code === 'PASSWORD_CHANGE_UNCERTAIN') passwordSignedOut(true)
+      throw error
+    }
+  }
+  return <AuthContext.Provider value={{ ...state, notice, client, reload, signIn, signOut, saveName, uploadPicture, changePassword }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
