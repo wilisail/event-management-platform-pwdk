@@ -42,7 +42,9 @@
     "predb:verify:reward-races": "npm run db:generate",
     "storage:setup": "node --import tsx scripts/setup-profile-storage.ts",
     "db:verify:profiles": "node --import tsx scripts/verify-profiles.ts",
-    "predb:verify:profiles": "npm run db:generate"
+    "predb:verify:profiles": "npm run db:generate",
+    "db:verify:profile-storage": "node --import tsx scripts/verify-profiles.ts --hosted-storage",
+    "predb:verify:profile-storage": "npm run db:generate"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
