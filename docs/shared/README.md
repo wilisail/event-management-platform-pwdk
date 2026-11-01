@@ -4,6 +4,7 @@ Updated: 1 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Profile editing and pictures](profile-upload-reference.md) | Day 3 part 1: own-name/photo flow, validation, storage versus SQL, provider setup/verification limits, and Day 3–6 Feature 1 dependency map |
 | [Reward operations](reward-operations-reference.md) | Shared transaction-aware reserve/consume/restore core, integration contract, allocation and race tests |
 | [Wallet and referral reads](wallet-reference.md) | Authenticated balances/coupons/referral counts, expiry, owner filters, read snapshots and learning notes |
 | [Referral signup](referral-registration-reference.md) | Atomic account/referral/reward issuance, configurable coupon, rollback/retry tests and learning notes |
