@@ -77,9 +77,10 @@ export async function readPublishedEvents(): Promise<PublicEventView[]> {
       title: event.name,
       category: event.category,
       date: event.startAt.toISOString(),
-      location: event.venue
-        ? `${event.venue}, ${event.location}`
-        : event.location,
+      location: event.location, 
+        // event.venue,
+        // ? `${event.venue}, ${event.location}`
+        // : event.location,
       price: prices.length ? Math.min(...prices) : null,
       image: event.imageUrl,
       organizer: event.organizer.name,

@@ -49,18 +49,6 @@ const formatDateLabel = (date: string) =>
         timeZone: "Asia/Jakarta",
     }).format(new Date(date));
 
-
-const categories = [
-    "Semua",
-    "Musik",
-    "Food & Beverage",
-    "Workshops",
-    "Teknologi",
-    "Olahraga",
-    "Seni & Budaya",
-    "Edukasi",
-    "Komunitas",
-];
 const formatPrice = (price: number | null) =>
     price
         ? new Intl.NumberFormat("id-ID", {
@@ -74,6 +62,7 @@ const formatPrice = (price: number | null) =>
 
 export default function Page() {
     const [query, setQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
     const [category, setCategory] = useState("Semua");
     const [location, setLocation] = useState("Semua Kota");
     const [menu, setMenu] = useState(false);
@@ -117,20 +106,65 @@ export default function Page() {
         return () => controller.abort();
     }, []);
 
+    useEffect(() => {
+    const timer = setTimeout(() => {
+        setDebouncedQuery(query.trim());
+    }, 300);
+
+    return () => clearTimeout(timer);
+}, [query]);
+
+    const categories = useMemo(
+    () => [
+        "Semua",
+        ...Array.from(
+            new Set(
+                events
+                    .map((event) => event.category?.trim())
+                    .filter((value): value is string => Boolean(value)),
+            ),
+        ).sort((a, b) => a.localeCompare(b, "id")),
+    ],
+    [events],
+);
+
+const locations = useMemo(
+    () => [
+        "Semua Kota",
+        ...Array.from(
+            new Set(
+                events
+                    .map((event) => event.location?.trim())
+                    .filter((value): value is string => Boolean(value)),
+            ),
+        ).sort((a, b) => a.localeCompare(b, "id")),
+    ],
+    [events],
+);
+
     const filtered = useMemo(
-        () =>
-            events.filter((event) => {
-                const haystack =
-                    `${event.title} ${event.category} ${event.location} ${event.organizer}`.toLowerCase();
-                return (
-                    haystack.includes(query.toLowerCase()) &&
-                    (category === "Semua" || event.category === category) &&
-                    (location === "Semua Kota" || event.location.includes(location))
-                );
-            }),
-        [events, query, category, location],
+    () =>
+        events.filter((event) => {
+            const haystack = [
+                event.title,
+                event.category,
+                event.location,
+                event.organizer,
+            ]
+                .join(" ")
+                .toLowerCase();
+
+            return (
+                haystack.includes(debouncedQuery.toLowerCase()) &&
+                (category === "Semua" ||
+                event.category?.trim().toLowerCase() === category.trim().toLowerCase()) &&
+                (location === "Semua Kota" ||
+                    event.location === location)
+            );
+        }),
+    [events, debouncedQuery, category, location],
     );
-    const featured = events.slice(0, 3);
+    const featured = filtered.slice(0, 3);
 
     return (
         <div className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
@@ -208,24 +242,21 @@ export default function Page() {
                                             setQuery(e.target.value)
                                         }
                                         className="w-full bg-transparent outline-none placeholder:text-[#aaa7b9]"
-                                        placeholder="Cari konser, workshop atau meetup..."
+                                        placeholder="Cari nama event, kategori, kota, atau penyelenggara..."
                                     />
                                 </label>
-                                <select
-                                    aria-label="Pilih kota"
-                                    value={location}
-                                    onChange={(e) =>
-                                        setLocation(e.target.value)
-                                    }
-                                    className="rounded-xl bg-[#f6f3fc] px-4 py-3 text-sm outline-none"
-                                >
-                                    <option>Semua Kota</option>
-                                    <option>Jakarta</option>
-                                    <option>Bandung</option>
-                                    <option>Bogor</option>
-                                    <option>Surabaya</option>
-                                    <option>Tangerang Selatan</option>
-                                </select>
+                                    <select
+                                        aria-label="Pilih kota"
+                                        value={location}
+                                        onChange={(e) => setLocation(e.target.value)}
+                                        className="rounded-xl bg-[#f6f3fc] px-4 py-3 text-sm outline-none"
+                                    >
+                                        {locations.map((item) => (
+                                            <option key={item} value={item}>
+                                                {item}
+                                            </option>
+                                        ))}
+                                    </select>
                                 <button
                                     onClick={() =>
                                         document
