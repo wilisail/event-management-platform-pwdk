@@ -2,20 +2,21 @@
 
 Updated: 1 November 2026, Asia/Jakarta. Implementation: `feature-2`, with PR #2 still open. This is the companion learning note for the work brought forward from Monday, 2 November. Original focused-time estimate: 45–75 minutes; provider setup is additional when credentials are missing.
 
-## Checkpoint and remaining step
+## Completed checkpoint
 
-Own-name editing and the real public organizer profile are implemented. Photo selection, confirmation, validation, processing, storage adapter, metadata swap and protected/public image serving are implemented and tested. **Day 3 part 1 is not fully complete until hosted photo storage is configured and a real upload/replacement/read passes.**
+**Day 3 part 1 is complete.** Both roles can edit their own name and photo. Photo selection, confirmation, validation, processing, storage, metadata swaps and protected/public image serving are implemented. The real Supabase Storage upload/replacement/read checks passed on 1 November.
 
-The current handoff supplies database and application-session credentials. It does not supply a Supabase Storage backend credential. The TemuEvent project had no storage buckets at the start of this batch. Missing storage does not prevent name editing; the photo route returns a controlled 503 instead of claiming success.
+The backend Storage secret is saved in the TemuEvent Vercel project's Preview environment. The existing Supabase project now has the private `profile-pictures` bucket, restricted to WebP and a 1 MiB normalized-file limit. Hosting browser/API routes remains Day 6 work; verification used a guarded Preview build with Express bound to loopback. Missing storage configuration in another environment still returns a controlled 503 while name editing remains available.
 
 | Verification | Evidence / limit |
 | --- | --- |
-| Application checks | TypeScript, 111 tests and the production build pass. |
+| Application checks | TypeScript, 114 tests and the production build pass. Three regression tests cover fresh/repeated bucket setup, provider errors and conflicting/public configuration. |
 | Real database | Signup/login, both-role name edits, persisted photo keys, current-session identity, customer/organizer visibility, replacements and logout reported `PROFILE_DB_OK`. The temporary test environment reached Supabase when the local workspace could not resolve its database host. |
-| Database cleanup | All SQL fixtures rolled back; original user fingerprints matched. A follow-up read found 2 users, 3 events, 30 purchases, zero QA accounts and zero sessions. |
-| Photo transport in database tests | An explicit in-memory test transport was used. This is not evidence of a successful hosted Storage request. |
+| Database cleanup | All SQL fixtures rolled back; original user fingerprints matched. The final follow-up found 2 users, 3 events, 30 purchases, zero QA accounts and zero sessions. |
+| Photo transport in database tests | `db:verify:profiles` keeps an explicit in-memory transport. `db:verify:profile-storage` uses the real backend Storage adapter and returned `PROFILE_STORAGE_OK`. |
 | Browser checks | Desktop (1365 px) and phone (390 px): login, cancel/save/reload name and photo, decoded image, invalid-file feedback and anonymous organizer view passed. No page errors or horizontal overflow; screenshots inspected. These UI checks used disposable memory account records/storage, separately from the real SQL verification above. |
-| Hosted storage | Pending the private backend key, private bucket setup and real upload/replacement/read verification. |
+| Hosted storage | Both roles uploaded and read normalized WebP, replaced photos with new keys and removed old objects. Anonymous bucket URLs were refused; customer images required a session; organizer images were public only through their profile route. Missing CSRF, spoofed owner fields and disguised files were refused. Invalid uploads preserved the current database key. Logout revoked access. |
+| Storage cleanup | Every random test object was removed, including the last saved images after SQL rollback. A separate Supabase query confirmed zero objects and the intended private bucket limits. |
 
 No new table, migration or database grant was needed. `users.profile_picture_key` already existed. No shared seed account was reset.
 
@@ -81,7 +82,7 @@ Mutation headers: `X-TemuEvent-Client: web` and `X-CSRF-Token` obtained from `/a
 
 Relevant failures: 400 invalid fields/file, 401 missing/revoked session, 403 invalid CSRF/origin, 404 missing profile/photo, 413 oversized body, 415 unsupported image/encoding, 429 per-user editing/upload limit, and sanitized 503 for unavailable profile/storage processing. Image responses use `image/webp`, `no-store` and `nosniff`.
 
-## Finish the provider setup
+## Backend configuration and repeatable provider setup
 
 Use the existing TemuEvent Supabase project, not a new paid project. In the ignored backend `feature-2/.env`, preserve the existing database/session settings and add:
 
@@ -102,9 +103,9 @@ npm run storage:setup
 npm run dev
 ```
 
-`storage:setup` creates the bucket if absent, then verifies **private access, WebP only and a 1 MiB normalized-file limit**. It refuses a conflicting existing configuration instead of silently changing it. No anonymous upload policy is needed; all Storage operations originate on the backend after application authorization.
+`storage:setup` creates the bucket if absent, then verifies **private access, WebP only and a 1 MiB normalized-file limit**. It handles both current HTTP 404 and the legacy HTTP 400 `Bucket not found` response. Other errors fail closed with a sanitized stage/status diagnostic. It refuses a conflicting existing configuration instead of silently changing it. No anonymous upload policy is needed; all Storage operations originate on the backend after application authorization.
 
-Then test an actual customer and organizer: save a photo, reload, replace it, verify the old object was removed, confirm a logged-out customer image returns 401, and open the organizer profile anonymously. Also verify that an invalid image leaves the existing photo intact. Until these hosted checks pass, retain the pending status above.
+The hosted verifier automates both-role upload, reload/read, replacement, old-object deletion, logged-out customer denial, anonymous organizer access and invalid-file preservation. It checks the private bucket before testing, rolls its account/session SQL fixtures back, verifies original user fingerprints and deletes only its own random test files. Object cleanup also runs on failure because a SQL rollback cannot undo object storage.
 
 ## Reproduce the checks
 
@@ -115,9 +116,11 @@ npm run typecheck
 npm test
 npm run build
 npm run db:verify:profiles
+npm run storage:setup
+npm run db:verify:profile-storage
 ```
 
-The database verifier requires the private database connection and rolls its SQL fixtures back. Its storage transport is explicitly simulated, even after a provider key is configured; it does not replace the hosted checks above. Existing application tests cover invalid files, private/public projections, spoofed ownership, CSRF, write uncertainty, replacement failure and cleanup behavior.
+Both database verifiers require the private database connection. The hosted command additionally requires the backend Storage settings above. The default verifier's transport stays explicitly simulated even when a provider key is present; choose the hosted command for real Storage evidence. Existing application tests cover invalid files, private/public projections, spoofed ownership, CSRF, write uncertainty, replacement failure and cleanup behavior.
 
 The feature 2 dependency was patched from Next.js 16.4.0 to **16.4.3** after the build's advisory check failed. Sharp is pinned to **0.35.5** and the Supabase SDK to **2.118.0**. Compatible `body-parser`/`fast-uri` lockfile patches were applied. The production dependency audit reports zero known vulnerabilities at this checkpoint. These version changes are confined to feature 2's package/lockfile.
 
