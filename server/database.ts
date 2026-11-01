@@ -89,6 +89,56 @@ export async function readPublishedEvents(): Promise<PublicEventView[]> {
   })
 }
 
+/** Public, read-only event detail for the Feature 1 event page. */
+export async function readPublishedEventById(eventId: string) {
+  const event = await databaseClient().event.findFirst({
+    where: {
+      id: eventId,
+      status: 'PUBLISHED',
+    },
+    include: {
+      organizer: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      ticketTypes: {
+        select: {
+          price: true,
+          availableSeats: true,
+        },
+      },
+    },
+  })
+
+  if (!event) return null
+
+  const prices = event.ticketTypes.map((ticket) => Number(ticket.price))
+
+  const availableSeats = event.ticketTypes.reduce(
+    (total, ticket) => total + ticket.availableSeats,
+    0,
+  )
+
+  return {
+    id: event.id,
+    title: event.name,
+    category: event.category,
+    date: event.startAt.toISOString(),
+    endDate: event.endAt.toISOString(),
+    location: event.location,
+    venue: event.venue,
+    address: event.address,
+    description: event.description,
+    image: event.imageUrl,
+    price: prices.length ? Math.min(...prices) : null,
+    availableSeats,
+    organizerId: event.organizer.id,
+    organizer: event.organizer.name,
+  }
+}
+
 export async function disconnectDatabase() {
   await client?.$disconnect()
   client = undefined

@@ -3,7 +3,11 @@ import { z } from 'zod'
 import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
-import type { DatabaseUserView, PublicEventView } from './database'
+import type {
+  DatabaseUserView,
+  PublicEventView,
+  readPublishedEventById,
+} from './database'
 
 export interface AppOptions {
   now?: () => Date
@@ -11,6 +15,9 @@ export interface AppOptions {
   allowedOrigins?: string[]
   databaseProbe?: () => Promise<DatabaseUserView | null>
   eventsReader?: () => Promise<PublicEventView[]>
+  eventReader?: (eventId: string) => Promise<
+    Awaited<ReturnType<typeof readPublishedEventById>>
+  >
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -87,6 +94,35 @@ export function createApp(options: AppOptions = {}) {
     } catch (error) {
       console.error('GET /api/events failed:', error)
       fail(res, 503, 'EVENTS_UNAVAILABLE', 'Unable to retrieve events from the database')
+    }
+  })
+  app.get('/api/events/:eventId', async (req, res) => {
+    if (!options.eventReader) {
+      fail(res, 503, 'DATABASE_NOT_CONFIGURED', 'Event database reader is not configured')
+      return
+    }
+
+    try {
+      const event = await options.eventReader(req.params.eventId)
+
+      if (!event) {
+        fail(res, 404, 'EVENT_NOT_FOUND', 'Event not found')
+        return
+      }
+
+      res.json({
+        success: true,
+        message: 'Event details',
+        data: event,
+        meta: {
+          mode: 'database',
+          contractVersion: '1.0',
+          asOf: now().toISOString(),
+        },
+      })
+    } catch (error) {
+      console.error(`GET /api/events/${req.params.eventId} failed:`, error)
+      fail(res, 503, 'EVENTS_UNAVAILABLE', 'Unable to retrieve event from the database')
     }
   })
   app.get('/api/demo/me', (req, res) => {

@@ -70,6 +70,7 @@ export default function Page() {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [sortBy, setSortBy] = useState("date");
 
     useEffect(() => {
         const controller = new AbortController();
@@ -142,9 +143,8 @@ const locations = useMemo(
     [events],
 );
 
-    const filtered = useMemo(
-    () =>
-        events.filter((event) => {
+    const filtered = useMemo(() => {
+        const result = events.filter((event) => {
             const haystack = [
                 event.title,
                 event.category,
@@ -157,13 +157,23 @@ const locations = useMemo(
             return (
                 haystack.includes(debouncedQuery.toLowerCase()) &&
                 (category === "Semua" ||
-                event.category?.trim().toLowerCase() === category.trim().toLowerCase()) &&
+                    event.category?.trim().toLowerCase() ===
+                        category.trim().toLowerCase()) &&
                 (location === "Semua Kota" ||
                     event.location === location)
             );
-        }),
-    [events, debouncedQuery, category, location],
-    );
+        });
+
+        return result.sort((a, b) => {
+            if (sortBy === "price") {
+                // Events without a ticket price are treated as free.
+                return (a.price ?? 0) - (b.price ?? 0);
+            }
+
+            // Default: nearest event date first.
+            return new Date(a.date).getTime() - new Date(b.date).getTime();
+        });
+    }, [events, debouncedQuery, category, location, sortBy]);
     const featured = filtered.slice(0, 3);
 
     return (
@@ -380,9 +390,14 @@ const locations = useMemo(
                                 · Diurutkan berdasarkan tanggal
                             </p>
                         </div>
-                        <select className="rounded-full border border-[#e8e3f2] bg-white px-3 py-2 text-xs">
-                            <option>Tanggal: Terdekat</option>
-                            <option>Harga: Terendah</option>
+                        <select
+                            aria-label="Urutkan event"
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="rounded-full border border-[#e8e3f2] bg-white px-3 py-2 text-xs"
+                        >
+                            <option value="date">Tanggal: Terdekat</option>
+                            <option value="price">Harga: Terendah</option>
                         </select>
                     </div>
                     {loading ? (

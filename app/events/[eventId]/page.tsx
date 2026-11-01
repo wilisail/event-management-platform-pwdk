@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
     ArrowLeft,
     CalendarDays,
     Check,
     Clock3,
-    Copy,
     Heart,
     MapPin,
     Share2,
@@ -15,7 +14,38 @@ import {
     Ticket,
     Users,
 } from "lucide-react";
-import { events, formatPrice } from "@/lib/events";
+
+type EventDetail = {
+    id: string;
+    title: string;
+    category: string;
+    description: string;
+    date: string;
+    endDate: string;
+    dateLabel: string;
+    time: string;
+    location: string;
+    venue: string;
+    address: string;
+    price: number | null;
+    image: string | null;
+    organizerId: string;
+    organizer: string;
+    availableSeats: number;
+    rating?: string;
+    featured?: string;
+};
+
+const formatPrice = (price: number | null) =>
+    price
+        ? new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+              maximumFractionDigits: 0,
+          })
+              .format(price)
+              .replace("IDR", "Rp")
+        : "Gratis";
 
 export default function EventDetailsPage({
     params,
@@ -25,9 +55,79 @@ export default function EventDetailsPage({
     const [saved, setSaved] = useState(false);
     const [shared, setShared] = useState(false);
     const [copied, setCopied] = useState(false);
-    const { eventId: rawEventId } = use(params);
-    const eventId = Number(rawEventId);
-    const event = events.find((item) => item.id === eventId);
+
+    const { eventId } = use(params);
+
+    const [event, setEvent] = useState<EventDetail | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function loadEvent() {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:4002"}/api/events/${eventId}`,
+                    { signal: controller.signal },
+                );
+
+                if (response.status === 404) {
+                    setEvent(null);
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Failed to retrieve event");
+                }
+
+                const result = await response.json();
+
+                if (!result.success || !result.data) {
+                    throw new Error("Invalid API response");
+                }
+
+                const data = result.data;
+
+                const dateLabel = new Intl.DateTimeFormat("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                    timeZone: "Asia/Jakarta",
+                }).format(new Date(data.date));
+
+                const timeFormatter = new Intl.DateTimeFormat("id-ID", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                    timeZone: "Asia/Jakarta",
+                });
+
+                const time = `${timeFormatter.format(new Date(data.date))} - ${timeFormatter.format(
+                    new Date(data.endDate),
+                )} WIB`;
+
+                setEvent({
+                    ...data,
+                    dateLabel,
+                    time,
+                });
+
+            } catch (err) {
+                if (err instanceof Error && err.name === "AbortError") return;
+                setError("Gagal memuat detail event.");
+            } finally {
+                if (!controller.signal.aborted) setLoading(false);
+            }
+        }
+
+        void loadEvent();
+
+        return () => controller.abort();
+    }, [eventId]);
 
     const shareEvent = async () => {
         const url = window.location.href;
@@ -44,6 +144,22 @@ export default function EventDetailsPage({
         }
         setShared(true);
     };
+
+    if (loading) {
+    return (
+        <div className="min-h-screen grid place-items-center bg-[#fcf9ff]">
+            Memuat detail event...
+        </div>
+    );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen grid place-items-center bg-[#fcf9ff]">
+                {error}
+            </div>
+        );
+    }
 
     if (!event)
         return (
@@ -99,11 +215,17 @@ export default function EventDetailsPage({
                 </nav>
                 <section className="grid overflow-hidden rounded-3xl border border-[#ebe7f5] bg-white shadow-[0_12px_40px_rgba(64,45,120,.08)] lg:grid-cols-[1.05fr_.95fr]">
                     <div className="relative min-h-[280px] lg:min-h-[390px]">
-                        <img
-                            src={event.image}
-                            alt={event.title}
-                            className="absolute inset-0 h-full w-full object-cover"
-                        />
+                        {event.image ? (
+                            <img
+                                src={event.image}
+                                alt={event.title}
+                                className="absolute inset-0 h-full w-full object-cover"
+                            />
+                        ) : (
+                            <div className="absolute inset-0 grid place-items-center bg-[#eeeaff] text-[#5148df]">
+                                <Ticket size={48} />
+                            </div>
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-[#11103d]/70 via-transparent to-transparent" />
                         <span className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[10px] font-bold text-[#5148df]">
                             {event.category}
@@ -244,7 +366,7 @@ export default function EventDetailsPage({
                                 </div>
                                 <div>
                                     <Link
-                                        href={`/organizers/${event.organizer === "Jakarta Coffee Collective" ? "jakarta-coffee-collective" : "jakarta-coffee-collective"}`}
+                                        href={`/organizers/${event.organizerId}`}
                                         className="font-bold text-[#5148df] hover:underline"
                                     >
                                         {event.organizer}
@@ -307,18 +429,18 @@ export default function EventDetailsPage({
                                     <span>Ketersediaan</span>
                                     <strong
                                         className={
-                                            event.seats
+                                            event.availableSeats
                                                 ? "text-emerald-600"
                                                 : "text-red-500"
                                         }
                                     >
-                                        {event.seats
-                                            ? `${event.seats} kursi tersisa`
+                                        {event.availableSeats
+                                            ? `${event.availableSeats} kursi tersisa`
                                             : "Sold out"}
                                     </strong>
                                 </p>
                             </div>
-                            {event.seats ? (
+                            {event.availableSeats ? (
                                 <Link
                                     href={`/events/${event.id}/tickets`}
                                     className="block w-full rounded-xl bg-[#5148df] py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:bg-[#4039c9]"
