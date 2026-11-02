@@ -31,6 +31,7 @@ model User {
 
   events    Event[]
   purchases Purchase[]
+  reviews Review[]
 
   @@map("users")
   @@schema("temuevent")
@@ -74,6 +75,7 @@ model Event {
   organizer   User        @relation(fields: [organizerId], references: [id], onDelete: Restrict)
   ticketTypes TicketType[]
   purchases   Purchase[]
+  reviews Review[]
 
   @@index([organizerId, startAt])
   @@index([category, location, startAt])
@@ -146,5 +148,22 @@ model PurchaseItem {
   @@index([eventId, purchaseId])
   @@index([eventId, ticketTypeId])
   @@map("purchase_items")
+  @@schema("temuevent")
+}
+
+model Review {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId   String   @map("event_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@map("reviews")
   @@schema("temuevent")
 }
