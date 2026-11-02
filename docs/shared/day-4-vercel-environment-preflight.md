@@ -41,6 +41,14 @@ Live chat is out of scope for TemuEvent: it is not in the current platform and t
 
 Then sketch a queue-backed job for non-immediate work such as sending an order email or reconciling an uploaded payment receipt. Identify who enqueues it, which worker processes it, how retries/backoff and duplicate delivery are handled, and how failures are inspected. Compare a durable queue with an in-process timer: a timer can disappear when the process stops or redeploys. Do not move the authoritative order, payment, or stock decision into a queue; commit those state changes transactionally in PostgreSQL, then queue follow-up work.
 
+### Prisma seed data, mocks and TDD — learning path
+
+Use repeatable dummy data to make the application easy to explore. A Prisma seed script writes realistic but fake records into a dedicated local or non-production database—for example, events, ticket types, and purchases in Waiting for payment, Waiting for admin confirmation, Done, Expired, and Canceled states. Never seed real customer/payment data or run a learning seed against Production.
+
+A Prisma mock replaces database calls with controlled in-memory responses for a unit test. Use it to check service decisions such as invalid input, an unavailable event, an ownership denial, or a database error without needing a running database. A mock does not prove that SQL, schema constraints, transactions, or concurrent reservations work against PostgreSQL.
+
+Try TDD (test-driven development) on one small rule: write an example of the expected behavior first, run it and see it fail, implement the smallest change that makes it pass, then refactor while keeping it passing. For example, define what should happen when payment arrives after `expiresAt`, then implement the server-side decision. Use a mocked Prisma client for the isolated service rule; use a dedicated real PostgreSQL test database to check migrations, constraints, transactions, and two buyers competing for the last ticket. TDD is a way to build in short feedback loops, not a replacement for testing against the real database.
+
 ### Redis-backed queue and worker — optional exercise
 
 Redis can store queue/job state, but Redis is not the worker. The API is the producer: after a successful database transaction, it enqueues a follow-up job in Redis. A separate Node.js worker process reads the job, performs work such as sending an order email, records success/failure, and applies bounded retries/backoff. Make the job idempotent so a retry or duplicate delivery cannot send repeated effects or alter order/stock state twice. Inspect how failed jobs are surfaced and how queue depth is observed.
@@ -77,6 +85,8 @@ Keep these as learning exercises. Do not point a container at Production or put 
 Use a ticket-launch scenario to discuss what happens when many buyers request a small inventory at once. A queue can smooth or defer background tasks such as emails, but it does not prevent overselling by itself. The stock reservation must be an atomic/transactional database operation with a clear conflict result; consider rate limits or a waiting room/backpressure, and record how a burst is observed. Make clear which work can wait and which request needs an immediate answer.
 
 Trace one end-to-end journey through browser/client → deployed API/runtime → PostgreSQL/Supabase → response. Verify that both features use compatible identity, record/status rules and environment configuration. Exercise one success and one controlled failure; inspect the available logs. If a cache was added as a Day 6 experiment, confirm it cannot show stale price/stock data or bypass the database's authority.
+
+If using the TDD exercise, carry its passing rule into a real-database integration check. Seed only non-production test records, verify the expiry and ownership cases, and use a controlled concurrent-reservation scenario to check the database prevents overselling; Prisma mocks alone cannot establish that result.
 
 If the optional Redis queue exercise is built, verify that the API enqueues only after the database transaction commits, the separate worker processes the job, a simulated temporary failure retries safely, and a duplicate job does not create a duplicate effect. Stop/restart the worker and observe how pending jobs recover. Keep this separate from cron expiry processing and from Redis caching; none of these should replace the database's stock/payment authority.
 
