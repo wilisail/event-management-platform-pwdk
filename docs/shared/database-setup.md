@@ -1,6 +1,12 @@
 # Database setup
 
-Updated: 1 November 2026.
+Updated: 2 November 2026.
+
+## Review schema integration — 2 November
+
+`temuevent.reviews` is applied in the same database. The shared schema and feature 2 mapping preserve existing account/reward/reset models and add Rizky's review model. The migration supplies UUID user/event foreign keys, one-review-per-user/event uniqueness, a 1–5 rating check, RLS and SELECT/INSERT only for the existing backend role. See the [companion](review-schema-reference.md).
+
+No database, login, existing user, event or purchase is recreated. Live owner SQL constraint/permission-catalog checks roll back all fixtures; isolated SQL also exercises the actual backend role. This workspace cannot resolve the pooler for a live Prisma rerun. Supabase migration history is recorded; supported Prisma owner reconciliation of the already-applied reset/review migrations remains before a future `prisma migrate deploy`.
 
 ## Referral/reward foundation
 

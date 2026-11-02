@@ -31,6 +31,7 @@ model User {
 
   events    Event[]
   purchases Purchase[]
+  reviews   Review[]
   passwordResets PasswordResetToken[]
   sessions  AuthSession[]
   referralsGiven Referral[] @relation("ReferralsGiven")
@@ -81,6 +82,7 @@ model Event {
   organizer   User        @relation(fields: [organizerId], references: [id], onDelete: Restrict)
   ticketTypes TicketType[]
   purchases   Purchase[]
+  reviews     Review[]
 
   @@index([organizerId, startAt])
   @@index([category, location, startAt])
@@ -155,6 +157,25 @@ model PurchaseItem {
   @@index([eventId, purchaseId])
   @@index([eventId, ticketTypeId])
   @@map("purchase_items")
+  @@schema("temuevent")
+}
+
+// Feature 1's review model; attendance and author authorization are checked by its API.
+model Review {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId   String   @map("event_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+  @@map("reviews")
   @@schema("temuevent")
 }
 

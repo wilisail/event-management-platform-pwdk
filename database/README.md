@@ -1,6 +1,16 @@
 # Shared database starter
 
-Updated: 1 November 2026. Live starter for both feature builders; field changes remain open to discussion.
+Updated: 2 November 2026. Live starter for both feature builders; field changes remain open to discussion.
+
+## Review storage
+
+Rizky's `Review` model from feature-1 commit `51a7264` is integrated into this shared schema and feature 2's client mapping. `temuevent.reviews` is applied in the existing Supabase database: UUID user/event links, one review per author/event, rating 1–5, nullable comment and backend-only SELECT/INSERT. The [review schema companion](../docs/shared/review-schema-reference.md) records ownership, migration, adoption and verification. No new database or credentials are required.
+
+The table starts empty. Feature 1 still builds its review HTTP API and connects its page; feature 2 supplies actual attendance eligibility. A paid/confirmed purchase alone is not attendance. Storage readiness does not complete those flows.
+
+`npm run db:verify:reviews` runs rollback-only SQL/Prisma checks with the existing backend environment after `npm run db:generate`. This run passed both schema/client generation checks, the 138 application tests/typecheck/build, a fresh isolated SQL replay and live owner-connection SQL constraints. A live backend/Prisma rerun is still needed from a host that can resolve the Supabase pooler; this workspace returned `EAI_AGAIN`.
+
+Supabase records the applied review migration. Prisma's separate ledger still needs supported owner reconciliation for the already-applied password-reset and review migrations before `db:deploy`; see the companion. Do not replay their CREATE TABLE statements against this initialized database.
 
 ## Referral/reward storage
 
@@ -22,6 +32,7 @@ Live ownership/constraint/permission checks passed through Prisma with all fixtu
 | TicketType | temuevent.ticket_types | Regular/Workshop/free categories, prices and inventory |
 | Purchase | temuevent.purchases | One event per purchase; customer, totals and six PRD statuses |
 | PurchaseItem | temuevent.purchase_items | Ticket quantities and historical prices within a purchase |
+| Review | temuevent.reviews | Feature 1 review storage; user/event links and one review per pair |
 | Referral | temuevent.referrals | One incoming referral per newcomer |
 | PointGrant | temuevent.point_grants | Referrer's separate point awards and original expiry |
 | RewardCoupon | temuevent.reward_coupons | Newcomer's platform coupon and original expiry |
