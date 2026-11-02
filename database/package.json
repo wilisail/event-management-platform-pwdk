@@ -13,7 +13,8 @@
     "db:status": "prisma migrate status",
     "db:deploy": "prisma migrate deploy",
     "db:verify": "node scripts/run-with-ca.mjs scripts/verify.ts",
-    "db:verify:auth": "node scripts/run-with-ca.mjs scripts/verify-auth.ts"
+    "db:verify:auth": "node scripts/run-with-ca.mjs scripts/verify-auth.ts",
+    "db:verify:reviews": "node scripts/run-with-ca.mjs scripts/verify-reviews.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",
