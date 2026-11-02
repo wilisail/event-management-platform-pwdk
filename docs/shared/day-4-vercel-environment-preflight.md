@@ -8,7 +8,7 @@ Before starting Day 4 organizer decisions work, verify the Vercel environment se
 - Check that database passwords, Resend keys, and Supabase secret/service-role keys are server-only variables and are not exposed through `NEXT_PUBLIC_` names or client bundles.
 - Review whether Preview deployments need Vercel Deployment Protection and whether Preview variables should be restricted to trusted branches.
 - If any variable scope or value changes, redeploy before checking the deployment; existing deployments do not automatically receive changed environment variables.
-- Record only the result and any follow-up needed. Never record secret values.
+- Record only the result and any follow-up needed. Never record secret values. If using a desktop SQL client later, use a non-production connection and a read-only database role.
 
 After this preflight, proceed with the Day 4 organizer transaction/proof review, decision API and notification work in the completion plan.
 
@@ -24,6 +24,16 @@ Then sketch a queue-backed job for non-immediate work such as sending an order e
 
 Treat Redis as an optional experiment. If time allows, cache a frequently read product-list response, compare a cache miss with a cache hit, then change a product and verify the cached result is invalidated or refreshed. PostgreSQL remains the source of truth, especially for stock and order reservations. Skip Redis if it would distract from understanding the core API/database flow.
 
+### Refresh-token storage comparison
+
+TemuEvent's current setup stores hashed refresh-token/session records in PostgreSQL; Redis is not configured as the session store. Trace the existing login → refresh/rotation → logout/revocation path and identify which record is checked when a refresh token is presented. Do not display or copy raw tokens.
+
+As a comparison exercise only, sketch how Redis could store a session identifier or token hash with a TTL, how logout/revocation would remove or invalidate it, and what happens to active sessions if Redis is unavailable or its data is lost. Compare expiry, durability, revocation, and operational dependencies with the current PostgreSQL approach. Do not migrate auth or add Redis just for this exercise; PostgreSQL remains the current session authority.
+
+### TablePlus database inspection
+
+Optionally use TablePlus as a desktop SQL client to inspect the non-production PostgreSQL schema and session-related tables. TablePlus is a manual database viewer/query tool; it does not host the database or replace Prisma, which is the application's database access layer. Start with read-only access and inspect table/column names and sample non-sensitive rows; do not edit or delete records, expose token material, or save/share production connection credentials. If TablePlus is unavailable, the Supabase dashboard or Prisma Studio can demonstrate the same database concepts.
+
 Keep these as learning exercises. Do not point a container at Production or put production credentials in its image. The goal is to understand the difference between local containers and the hosted Vercel + Supabase deployment, not to add Docker or Redis to the production architecture.
 
 ## Day 7 integration check — traffic spikes and live updates
@@ -33,5 +43,7 @@ Use a ticket-launch scenario to discuss what happens when many buyers request a 
 Trace one end-to-end journey through browser/client → deployed API/runtime → PostgreSQL/Supabase → response. Verify that both features use compatible identity, record/status rules and environment configuration. Exercise one success and one controlled failure; inspect the available logs. If a cache was added as a Day 6 experiment, confirm it cannot show stale price/stock data or bypass the database's authority.
 
 For live availability or order progress, compare polling, Server-Sent Events (SSE), and WebSockets at a high level. Identify what message is sent, how clients reconnect, and how the server derives updates from persisted state. Treat countdowns and live counts as display hints; the database remains authoritative, and a timer in a browser does not release a reservation by itself.
+
+Verify the current refresh-token path end to end: confirm a valid refresh can renew a session, a rotated/revoked token is rejected, and logout invalidates the session according to the database record. If a Redis alternative was only sketched, record it as a comparison—not as deployed infrastructure. Use TablePlus or another read-only client only against non-production data to inspect resulting session state; do not copy token secrets into the note.
 
 Confirm any scheduled expiry/notification worker has an actual execution mechanism in the integrated deployment, and document its owner and trigger. If no worker or queue is configured, mark that behavior as pending instead of treating the timer shown in the UI as proof it runs.
