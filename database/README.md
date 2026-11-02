@@ -1,6 +1,16 @@
 # Shared database starter
 
-Updated: 1 November 2026. Live starter for both feature builders; field changes remain open to discussion.
+Updated: 2 November 2026. Live starter for both feature builders; field changes remain open to discussion.
+
+## Review storage
+
+Rizky's `Review` model from feature-1 commit `51a7264` is integrated into this shared schema and feature 2's client mapping. `temuevent.reviews` is applied in the existing Supabase database: UUID user/event links, one review per author/event, rating 1–5, nullable comment and backend-only SELECT/INSERT. The [review schema companion](../docs/shared/review-schema-reference.md) records ownership, migration, adoption and verification. No new database or credentials are required.
+
+The table starts empty. Feature 1 still builds its review HTTP API and connects its page; feature 2 supplies actual attendance eligibility. A paid/confirmed purchase alone is not attendance. Storage readiness does not complete those flows.
+
+`npm run db:verify:reviews` runs rollback-only SQL/Prisma checks with the existing backend environment after `npm run db:generate`. This run passed both schema/client generation checks, the 138 application tests/typecheck/build, a fresh isolated SQL replay and live owner-connection SQL constraints. A live backend/Prisma rerun is still needed from a host that can resolve the Supabase pooler; this workspace returned `EAI_AGAIN`.
+
+Supabase records the applied review migration. Prisma's separate ledger still needs supported owner reconciliation for the already-applied password-reset and review migrations before `db:deploy`; see the companion. Do not replay their CREATE TABLE statements against this initialized database.
 
 ## Referral/reward storage
 
@@ -16,11 +26,13 @@ Live ownership/constraint/permission checks passed through Prisma with all fixtu
 | --- | --- | --- |
 | User | temuevent.users | Existing customer/organizer identities; UUID IDs |
 | AuthSession | temuevent.auth_sessions | One sign-in; user link, expiry and revocation |
+| PasswordResetToken | temuevent.password_reset_tokens | Private recovery delivery request, digest, expiry and one-use status; F2-owned |
 | AuthRefreshToken | temuevent.auth_refresh_tokens | Refresh-secret hashes and consumption history per session |
 | Event | temuevent.events | Event fields from Rizky's current form |
 | TicketType | temuevent.ticket_types | Regular/Workshop/free categories, prices and inventory |
 | Purchase | temuevent.purchases | One event per purchase; customer, totals and six PRD statuses |
 | PurchaseItem | temuevent.purchase_items | Ticket quantities and historical prices within a purchase |
+| Review | temuevent.reviews | Feature 1 review storage; user/event links and one review per pair |
 | Referral | temuevent.referrals | One incoming referral per newcomer |
 | PointGrant | temuevent.point_grants | Referrer's separate point awards and original expiry |
 | RewardCoupon | temuevent.reward_coupons | Newcomer's platform coupon and original expiry |
@@ -105,3 +117,9 @@ See [shared setup](../docs/shared/database-setup.md) and [technical reference](.
 
 Account/session verification passed on 31 October 2026: both schema clients validate/generate, the new script passes TypeScript and live constraint/relationship checks, and the original purchase/inventory checks still pass. Auth test records are rolled back.
 
+
+## Password recovery queue (Day 3 part 3)
+
+`20261101091039_password_reset_queue` is applied to Supabase, with RLS and backend-only access. The F2 implementation stores only reset digests and handles activation/delivery/redeem under the existing account authority; see the [companion](../docs/shared/password-reset-reference.md). F1 need not configure another email provider for recovery.
+
+Supabase migration history records this application. Before a future Prisma deploy, an owner/migration-role `DIRECT_URL` targeting `schema=temuevent` must run `prisma migrate resolve --applied 20261101091039_password_reset_queue` to reconcile Prisma's separate ledger. The runtime account is intentionally not a migration administrator. Do not rerun the CREATE TABLE SQL or reset the shared database. No direct ledger insert was made.

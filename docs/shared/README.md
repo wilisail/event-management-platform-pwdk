@@ -1,9 +1,10 @@
 # Shared project record
 
-Updated: 1 November 2026.
+Updated: 2 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Review schema integration](review-schema-reference.md) | Rizky's Review model, applied shared table, backend permissions, validation, adoption and remaining attendance/API work |
 | [Account regression and learning review](account-regression-reference.md) | Day 3 part 4: combined account journeys, cross-tab stale-edit fix, responsive/error checks, foundational concepts and Resend inbox handoff |
 | [Forgotten-password recovery and email](password-reset-reference.md) | Day 3 part 3: reset flow, private token/delivery queue, Resend setup, verification and Feature 1 email ownership contract |
 | [Password change and session revocation](password-change-reference.md) | Day 3 part 2: current-password proof, atomic all-session revocation, login/refresh/logout races, browser behavior and learning notes |
