@@ -11,3 +11,9 @@ Before starting Day 4 organizer decisions work, verify the Vercel environment se
 - Record only the result and any follow-up needed. Never record secret values.
 
 After this preflight, proceed with the Day 4 organizer transaction/proof review, decision API and notification work in the completion plan.
+
+## Day 6 learning plan — try Docker
+
+Use a small, local exercise to see how Docker makes an app's runtime more reproducible across computers. Containerize the Erogine or TemuEvent learning API and, if practical, a local PostgreSQL database with Docker Compose. Run the same simple API/database check inside the containers and from the usual local setup; note what Docker standardizes and what still comes from environment variables, network/ports, volumes and the external Supabase/Vercel services.
+
+Keep this as a learning exercise. Do not point a container at Production or put production credentials in its image. The goal is to understand the difference between local containers and the hosted Vercel + Supabase deployment, not to add Docker to the production architecture.
