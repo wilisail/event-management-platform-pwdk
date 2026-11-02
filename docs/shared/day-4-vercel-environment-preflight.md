@@ -33,6 +33,17 @@ Study JavaScript async behavior with one route that awaits database I/O and one 
 
 Then sketch a queue-backed job for non-immediate work such as sending an order email or reconciling an uploaded payment receipt. Identify who enqueues it, which worker processes it, how retries/backoff and duplicate delivery are handled, and how failures are inspected. Compare a durable queue with an in-process timer: a timer can disappear when the process stops or redeploys. Do not move the authoritative order, payment, or stock decision into a queue; commit those state changes transactionally in PostgreSQL, then queue follow-up work.
 
+### Cron runner — schedule recurring work
+
+A cron runner is the scheduler that starts a task on a recurring schedule. For TemuEvent, the task could scan for payment windows that have expired, mark eligible purchases Expired, release their reserved ticket stock, and enqueue follow-up notifications. It could also process organizer actions past the three-day deadline.
+
+Compare these possible schedulers without assuming either is already configured:
+
+- Vercel Cron calls a deployed route on a schedule. Its jobs run on Production deployments, not Preview. Current Vercel documentation says Hobby supports only once-daily schedules (with up to an hour of timing variation); Pro and Enterprise support once-per-minute schedules. A once-daily Hobby job is too slow for promptly cleaning up a two-hour reservation, so verify plan limits before selecting it. Secure the route with a server-only `CRON_SECRET`.
+- Supabase Cron uses Postgres `pg_cron`; a job can run SQL/database functions directly or make an HTTP request, and job runs can be inspected in the Supabase dashboard. Decide whether the expiry logic belongs in a database function or should call the application API; don't duplicate business rules in two places.
+
+The scheduled cleanup is not the authority for the deadline. Store an `expiresAt` timestamp in PostgreSQL and have the payment/checkout API reject late actions by comparing it with server/database time. Make the scheduled update transactional, idempotent, and safe to rerun; handle batches, errors and logs. Review the official [Vercel Cron guide](https://vercel.com/docs/cron-jobs), [Vercel limits](https://vercel.com/docs/cron-jobs/usage-and-pricing), and [Supabase Cron guide](https://supabase.com/docs/guides/cron).
+
 Treat Redis as an optional experiment. If time allows, cache a frequently read product-list response, compare a cache miss with a cache hit, then change a product and verify the cached result is invalidated or refreshed. PostgreSQL remains the source of truth, especially for stock and order reservations. Skip Redis if it would distract from understanding the core API/database flow.
 
 ### Refresh-token storage comparison
@@ -47,13 +58,15 @@ Optionally use TablePlus as a desktop SQL client to inspect the non-production P
 
 Keep these as learning exercises. Do not point a container at Production or put production credentials in its image. The goal is to understand the difference between local containers and the hosted Vercel + Supabase deployment, not to add Docker or Redis to the production architecture.
 
-## Day 7 integration check — traffic spikes and live updates
+## Day 7 integration check — traffic spikes, expiry jobs and live updates
 
 Use a ticket-launch scenario to discuss what happens when many buyers request a small inventory at once. A queue can smooth or defer background tasks such as emails, but it does not prevent overselling by itself. The stock reservation must be an atomic/transactional database operation with a clear conflict result; consider rate limits or a waiting room/backpressure, and record how a burst is observed. Make clear which work can wait and which request needs an immediate answer.
 
 Trace one end-to-end journey through browser/client → deployed API/runtime → PostgreSQL/Supabase → response. Verify that both features use compatible identity, record/status rules and environment configuration. Exercise one success and one controlled failure; inspect the available logs. If a cache was added as a Day 6 experiment, confirm it cannot show stale price/stock data or bypass the database's authority.
 
 For live availability or order progress, compare polling, Server-Sent Events (SSE), and WebSockets at a high level. Identify what message is sent, how clients reconnect, and how the server derives updates from persisted state. Treat countdowns and live counts as display hints; the database remains authoritative, and a timer in a browser does not release a reservation by itself.
+
+Verify one scheduled expiry run using test records: an unexpired purchase remains unchanged, an expired unpaid purchase transitions once and releases its reservation once, and a paid/confirmed purchase is not expired. Check the job's authorization, logs, rerun behavior and recovery from a missed/failed invocation. If using Vercel Cron, confirm its Production-only behavior and plan schedule limit; if using Supabase Cron, inspect the recorded job run. Verify the database deadline rejects a late payment even if the cleanup job has not run yet. If no scheduler is configured, mark this behavior pending rather than treating the countdown or a local timer as proof it runs.
 
 Verify the current refresh-token path end to end: confirm a valid refresh can renew a session, a rotated/revoked token is rejected, and logout invalidates the session according to the database record. If a Redis alternative was only sketched, record it as a comparison—not as deployed infrastructure. Use TablePlus or another read-only client only against non-production data to inspect resulting session state; do not copy token secrets into the note.
 
