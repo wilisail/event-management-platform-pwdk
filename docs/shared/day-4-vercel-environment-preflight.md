@@ -12,6 +12,17 @@ Before starting Day 4 organizer decisions work, verify the Vercel environment se
 
 After this preflight, proceed with the Day 4 organizer transaction/proof review, decision API and notification work in the completion plan.
 
+## Security baseline — applies across the learning build
+
+Treat security as a quality requirement even when the assignment rubric does not name it. At each stage, verify the behavior in code and configuration; do not claim the app is secure just because it uses standard tools.
+
+- Keep secrets server-side, use separate Preview/test credentials, and grant database users only the access they need.
+- Validate untrusted input on the server and enforce authentication, role, and record-ownership checks on every protected operation; frontend checks are not authorization.
+- Store password verifiers and refresh-token/session material safely; support expiry, rotation, and revocation without logging or displaying raw credentials.
+- Protect sensitive state changes such as payment decisions and inventory reservations with database transactions and clear audit records.
+- Return safe errors, avoid leaking personal/payment/token data in logs, and test both allowed and denied access paths.
+- Use read-only, non-production database access for manual inspection and learning exercises.
+
 ## Day 6 learning plan — try Docker, runtime handling, async work and Redis
 
 Use a small local exercise to see how Docker makes an app's runtime more reproducible across computers. Containerize the Erogine or TemuEvent learning API and, if practical, a local PostgreSQL database with Docker Compose. Run the same simple API/database check inside the containers and from the usual local setup; note what Docker standardizes and what still comes from environment variables, network/ports, volumes and the external Supabase/Vercel services.
