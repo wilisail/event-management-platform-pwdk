@@ -56,6 +56,8 @@ export interface CreateEventInput {
   name: string
   category: string
   location: string
+  venue?: string
+  address?: string
   description: string
   startAt: Date
   endAt: Date
@@ -169,31 +171,33 @@ export async function createEvent(input: CreateEventInput) {
   const slug = `${baseSlug}-${randomUUID().slice(0, 8)}`
 
   const event = await databaseClient().event.create({
-    data: {
-      name: input.name,
-      slug,
-      category: input.category,
-      location: input.location,
-      description: input.description,
-      startAt: input.startAt,
-      endAt: input.endAt,
-      status: input.status,
-      organizerId: input.organizerId,
+      data: {
+          name: input.name,
+          slug,
+          category: input.category,
+          location: input.location,
+          venue: input.venue,
+          address: input.address,
+          description: input.description,
+          startAt: input.startAt,
+          endAt: input.endAt,
+          status: input.status,
+          organizerId: input.organizerId,
 
-      ticketTypes: {
-        create: input.ticketTypes.map((ticket) => ({
-          name: ticket.name,
-          description: ticket.description,
-          price: BigInt(ticket.price),
-          quota: ticket.quota,
-          availableSeats: ticket.quota,
-        })),
+          ticketTypes: {
+              create: input.ticketTypes.map((ticket) => ({
+                  name: ticket.name,
+                  description: ticket.description,
+                  price: BigInt(ticket.price),
+                  quota: ticket.quota,
+                  availableSeats: ticket.quota,
+              })),
+          },
       },
-    },
-    include: {
-      ticketTypes: true,
-    },
-  })
+      include: {
+          ticketTypes: true,
+      },
+  });
 
   // Convert BigInt prices to numbers before returning JSON-compatible data.
   return {
@@ -202,6 +206,8 @@ export async function createEvent(input: CreateEventInput) {
     slug: event.slug,
     category: event.category,
     location: event.location,
+    venue: event.venue,
+    address: event.address,
     description: event.description,
     startAt: event.startAt.toISOString(),
     endAt: event.endAt.toISOString(),

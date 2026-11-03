@@ -14,6 +14,8 @@ const createEventSchema = z.object({
   name: z.string().trim().min(1).max(200),
   category: z.string().trim().min(1),
   location: z.string().trim().min(1),
+  venue: z.string().trim().optional(),
+  address: z.string().trim().optional(),
   description: z.string().trim().min(1),
   startAt: z.string().refine(
     (value) => !Number.isNaN(Date.parse(value)),

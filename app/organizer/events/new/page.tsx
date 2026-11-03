@@ -13,6 +13,7 @@ import {
     Upload,
     X,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type PricingMode = "free" | "paid";
 type DiscountType = "percentage" | "fixed";
@@ -52,6 +53,8 @@ export default function NewEventPage() {
     const [category, setCategory] = useState("");
     const [description, setDescription] = useState("");
     const [location, setLocation] = useState("");
+    const [venue, setVenue] = useState("");
+    const [address, setAddress] = useState("");
     const [image, setImage] = useState<string | null>(null);
     const [imageName, setImageName] = useState("");
     const [startDate, setStartDate] = useState("");
@@ -221,7 +224,15 @@ export default function NewEventPage() {
     };
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault();
-        if (validate()) setShowConfirm(true);
+
+        if (!validate()) {
+            window.alert(
+                "Masih ada data yang belum lengkap atau tidak valid. Silakan periksa kembali form event kamu."
+            );
+            return;
+        }
+
+        setShowConfirm(true);
     };
     
     const submitEvent = async () => {
@@ -233,6 +244,8 @@ export default function NewEventPage() {
                 name: name.trim(),
                 category,
                 location: location.trim(),
+                venue: venue.trim(),
+                address: address.trim(),
                 description: description.trim(),
 
                 startAt: new Date(
@@ -295,8 +308,9 @@ export default function NewEventPage() {
             setCreatedEventId(result.data.id);
 
             // Update the UI after successful creation.
-            setStatus("published");
+            //setStatus("published");
             setShowConfirm(false);
+            router.push("/");
 
         } catch (error) {
             setApiError(
@@ -313,6 +327,8 @@ export default function NewEventPage() {
         setStatus("draft");
         window.setTimeout(() => setStatus("idle"), 3000);
     };
+
+    const router = useRouter();
 
     return (
         <div className="min-h-screen bg-[#fcf9ff] text-[#17143c]">
@@ -418,7 +434,7 @@ export default function NewEventPage() {
                                     label="Lokasi Event"
                                     required
                                     error={errors.location}
-                                    hint="Bisa berupa venue, alamat, atau link lokasi."
+                                    hint="Bisa berupa kota lokasi."
                                 >
                                     <div className="relative">
                                         <MapPin className="absolute left-3 top-3.5 text-[#aaa6b8]" />
@@ -428,9 +444,32 @@ export default function NewEventPage() {
                                             onChange={(e) =>
                                                 setLocation(e.target.value)
                                             }
-                                            placeholder="Contoh: Senayan Park, Jakarta"
+                                            placeholder="Contoh: Jakarta"
                                         />
                                     </div>
+                                </Field>
+                                <Field
+                                    label="Nama Venue"
+                                    hint="Nama gedung, tempat, atau area penyelenggaraan."
+                                >
+                                    <input
+                                        className={inputClass}
+                                        value={venue}
+                                        onChange={(e) => setVenue(e.target.value)}
+                                        placeholder="Contoh: Senayan Park"
+                                    />
+                                </Field>
+
+                                <Field
+                                    label="Alamat Lengkap"
+                                    hint="Alamat jalan atau detail lokasi venue."
+                                >
+                                    <input
+                                        className={inputClass}
+                                        value={address}
+                                        onChange={(e) => setAddress(e.target.value)}
+                                        placeholder="Contoh: Jl. Gerbang Pemuda, Jakarta Pusat"
+                                    />
                                 </Field>
                                 <Field label="Penyelenggara">
                                     <div className="mt-1.5 flex items-center gap-3 rounded-xl bg-[#f7f4ff] px-3.5 py-3 text-sm">
