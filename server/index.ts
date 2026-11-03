@@ -24,11 +24,13 @@ async function start() {
     databaseProbe,
     eventsReader: database.readPublishedEvents,
     eventReader: database.readPublishedEventById,
+    eventCreator: database.createEvent,
     })
     .listen(port, host, () => {
       console.log(`TemuEvent API: http://${host}:${port}`)
       console.log('GET /api/events reads published upcoming events from PostgreSQL.')
       console.log('GET /api/events/:eventId reads individual event details from PostgreSQL.')
+      console.log('POST /api/events creates events and ticket types in PostgreSQL.')
     })
   for (const signal of ['SIGINT', 'SIGTERM'] as const) {
     process.once(signal, () => {

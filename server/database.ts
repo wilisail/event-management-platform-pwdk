@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import { randomUUID } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '../generated/prisma/client'
@@ -49,6 +50,23 @@ export interface PublicEventView {
   image: string | null
   organizer: string
   availableSeats: number
+}
+
+export interface CreateEventInput {
+  name: string
+  category: string
+  location: string
+  description: string
+  startAt: Date
+  endAt: Date
+  status: 'DRAFT' | 'PUBLISHED'
+  organizerId: string
+  ticketTypes: {
+    name: string
+    description: string
+    price: number
+    quota: number
+  }[]
 }
 
 /** Public, read-only event listing for the Feature 1 homepage. */
@@ -136,6 +154,66 @@ export async function readPublishedEventById(eventId: string) {
     availableSeats,
     organizerId: event.organizer.id,
     organizer: event.organizer.name,
+  }
+}
+
+/** Create an event and its ticket types for Feature 1. */
+/** Create an event and its ticket types for Feature 1. */
+export async function createEvent(input: CreateEventInput) {
+  const baseSlug = input.name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+
+  const slug = `${baseSlug}-${randomUUID().slice(0, 8)}`
+
+  const event = await databaseClient().event.create({
+    data: {
+      name: input.name,
+      slug,
+      category: input.category,
+      location: input.location,
+      description: input.description,
+      startAt: input.startAt,
+      endAt: input.endAt,
+      status: input.status,
+      organizerId: input.organizerId,
+
+      ticketTypes: {
+        create: input.ticketTypes.map((ticket) => ({
+          name: ticket.name,
+          description: ticket.description,
+          price: BigInt(ticket.price),
+          quota: ticket.quota,
+          availableSeats: ticket.quota,
+        })),
+      },
+    },
+    include: {
+      ticketTypes: true,
+    },
+  })
+
+  // Convert BigInt prices to numbers before returning JSON-compatible data.
+  return {
+    id: event.id,
+    name: event.name,
+    slug: event.slug,
+    category: event.category,
+    location: event.location,
+    description: event.description,
+    startAt: event.startAt.toISOString(),
+    endAt: event.endAt.toISOString(),
+    status: event.status,
+    ticketTypes: event.ticketTypes.map((ticket) => ({
+      id: ticket.id,
+      name: ticket.name,
+      description: ticket.description,
+      price: Number(ticket.price),
+      quota: ticket.quota,
+      availableSeats: ticket.availableSeats,
+    })),
   }
 }
 

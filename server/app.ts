@@ -4,10 +4,42 @@ import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
 import type {
+  CreateEventInput,
   DatabaseUserView,
   PublicEventView,
   readPublishedEventById,
 } from './database'
+
+const createEventSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  category: z.string().trim().min(1),
+  location: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+  startAt: z.string().refine(
+    (value) => !Number.isNaN(Date.parse(value)),
+    'Invalid start date',
+  ),
+  endAt: z.string().refine(
+    (value) => !Number.isNaN(Date.parse(value)),
+    'Invalid end date',
+  ),
+  status: z.enum(['DRAFT', 'PUBLISHED']),
+  organizerId: z.string().uuid(),
+  ticketTypes: z.array(
+    z.object({
+      name: z.string().trim().min(1),
+      description: z.string(),
+      price: z.number().int().nonnegative().safe(),
+      quota: z.number().int().positive(),
+    }),
+  ).min(1),
+}).refine(
+  (event) => new Date(event.endAt) > new Date(event.startAt),
+  {
+    message: 'End date must be after start date',
+    path: ['endAt'],
+  },
+)
 
 export interface AppOptions {
   now?: () => Date
@@ -18,6 +50,7 @@ export interface AppOptions {
   eventReader?: (eventId: string) => Promise<
     Awaited<ReturnType<typeof readPublishedEventById>>
   >
+  eventCreator?: (input: CreateEventInput) => Promise<unknown>
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -30,6 +63,7 @@ export function createApp(options: AppOptions = {}) {
   ]
   const app = express()
   app.disable('x-powered-by')
+  app.use(express.json())
 
   const fail = (res: Response, status: number, code: string, message: string) => {
     res.status(status).json({ success: false, code, message })
@@ -54,7 +88,7 @@ export function createApp(options: AppOptions = {}) {
       res.set('Access-Control-Allow-Origin', origin)
       res.vary('Origin')
       res.set('Access-Control-Allow-Headers', 'content-type,x-demo-persona')
-      res.set('Access-Control-Allow-Methods', 'GET,OPTIONS')
+      res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
     }
     if (req.method === 'OPTIONS') {
       res.sendStatus(204)
@@ -96,6 +130,61 @@ export function createApp(options: AppOptions = {}) {
       fail(res, 503, 'EVENTS_UNAVAILABLE', 'Unable to retrieve events from the database')
     }
   })
+  app.post('/api/events', async (req, res) => {
+  if (!options.eventCreator) {
+    fail(res, 503, 'DATABASE_NOT_CONFIGURED', 'Event database writer is not configured')
+    return
+  }
+
+  const parsed = createEventSchema.safeParse(req.body)
+
+  if (!parsed.success) {
+    res.status(400).json({
+      success: false,
+      code: 'INVALID_EVENT_DATA',
+      message: 'Please check the event details',
+      errors: parsed.error.flatten(),
+    })
+    return
+  }
+
+  try {
+    const input: CreateEventInput = {
+      ...parsed.data,
+      startAt: new Date(parsed.data.startAt),
+      endAt: new Date(parsed.data.endAt),
+    }
+
+    const event = await options.eventCreator(input)
+
+    // Convert any BigInt values into JSON-compatible numbers.
+    const safeEvent = JSON.parse(
+      JSON.stringify(event, (_key, value) =>
+        typeof value === 'bigint' ? Number(value) : value,
+      ),
+    )
+
+    res.status(201).json({
+      success: true,
+      message: 'Event created successfully',
+      data: safeEvent,
+      meta: {
+        mode: 'database',
+        contractVersion: '1.0',
+        asOf: now().toISOString(),
+      },
+    })
+  } catch (error) {
+    console.error('POST /api/events failed:', error)
+
+      if (error instanceof Error) {
+        console.error('Error name:', error.name)
+        console.error('Error message:', error.message)
+        console.error('Error stack:', error.stack)
+      }
+    fail(res, 500, 'EVENT_CREATION_FAILED', 'Unable to create event')
+  }
+})
   app.get('/api/events/:eventId', async (req, res) => {
     if (!options.eventReader) {
       fail(res, 503, 'DATABASE_NOT_CONFIGURED', 'Event database reader is not configured')

@@ -83,6 +83,11 @@ export default function NewEventPage() {
     );
     const [showConfirm, setShowConfirm] = useState(false);
 
+    // API submission states
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [apiError, setApiError] = useState("");
+    const [createdEventId, setCreatedEventId] = useState("");
+
     const totalQuota =
         pricingMode === "free"
             ? freeSeats
@@ -119,6 +124,8 @@ export default function NewEventPage() {
         if (!category) next.category = "Pilih kategori event.";
         if (!description.trim())
             next.description = "Tambahkan deskripsi singkat event.";
+        if (!location.trim())
+            next.location = "Lokasi event wajib diisi.";
         if (!startDate || !startTime)
             next.start = "Tanggal dan waktu mulai wajib diisi.";
         else if (!scheduleStart || scheduleStart <= new Date())
@@ -216,6 +223,92 @@ export default function NewEventPage() {
         event.preventDefault();
         if (validate()) setShowConfirm(true);
     };
+    
+    const submitEvent = async () => {
+        setIsSubmitting(true);
+        setApiError("");
+
+        try {
+            const payload = {
+                name: name.trim(),
+                category,
+                location: location.trim(),
+                description: description.trim(),
+
+                startAt: new Date(
+                    `${startDate}T${startTime}`,
+                ).toISOString(),
+
+                endAt: new Date(
+                    `${endDate}T${endTime}`,
+                ).toISOString(),
+
+                status: "PUBLISHED" as const,
+
+                // Temporary development ID.
+                // Later, this should come from the logged-in user.
+                organizerId: "073ae087-205f-4f45-8b96-c7e4fb3efae4",
+
+                ticketTypes:
+                    pricingMode === "free"
+                        ? [
+                            {
+                                name: "Free Admission",
+                                description: "Free event admission",
+                                price: 0,
+                                quota: Number(freeSeats),
+                            },
+                        ]
+                        : tickets.map((ticket) => ({
+                            name: ticket.name.trim(),
+                            description: ticket.description.trim(),
+                            price: Number(ticket.price),
+                            quota: Number(ticket.quantity),
+                        })),
+            };
+
+            const apiBaseUrl =
+                process.env.NEXT_PUBLIC_API_URL ??
+                "http://127.0.0.1:4002";
+
+            const response = await fetch(
+                `${apiBaseUrl}/api/events`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                },
+            );
+
+            const result = await response.json().catch(() => null);
+
+            if (!response.ok || !result?.success) {
+                throw new Error(
+                    result?.message ??
+                        `Request failed (${response.status})`,
+                );
+            }
+
+            // Save the ID returned by the backend.
+            setCreatedEventId(result.data.id);
+
+            // Update the UI after successful creation.
+            setStatus("published");
+            setShowConfirm(false);
+
+        } catch (error) {
+            setApiError(
+                error instanceof Error
+                    ? error.message
+                    : "An unexpected error occurred.",
+            );
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     const saveDraft = () => {
         setStatus("draft");
         window.setTimeout(() => setStatus("idle"), 3000);
@@ -323,6 +416,8 @@ export default function NewEventPage() {
                                 </Field>
                                 <Field
                                     label="Lokasi Event"
+                                    required
+                                    error={errors.location}
                                     hint="Bisa berupa venue, alamat, atau link lokasi."
                                 >
                                     <div className="relative">
@@ -974,9 +1069,16 @@ export default function NewEventPage() {
                             </p>
                         </div>
                         <p className="mt-4 text-xs leading-5 text-[#858196]">
-                            Ini hanya simulasi publikasi untuk prototype. Tidak
-                            ada data yang dikirim ke server atau database.
+                            Event akan dikirim ke server dan disimpan ke database
+                            setelah kamu mengonfirmasi publikasi.
                         </p>
+
+                        {apiError && (
+                                <p role="alert" className="text-sm text-red-600">
+                                    {apiError}
+                                </p>
+                            )}
+
                         <div className="mt-6 flex gap-3">
                             <button
                                 type="button"
@@ -987,14 +1089,13 @@ export default function NewEventPage() {
                             </button>
                             <button
                                 type="button"
-                                onClick={() => {
-                                    setShowConfirm(false);
-                                    setStatus("published");
-                                }}
-                                className="flex-1 rounded-xl bg-[#5148d7] py-3 text-sm font-bold text-white"
+                                onClick={() => void submitEvent()}
+                                disabled={isSubmitting}
+                                className="flex-1 rounded-xl bg-[#5148d7] py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
                             >
-                                Konfirmasi Publikasi
+                                {isSubmitting ? "Menerbitkan..." : "Ya, Terbitkan Event"}
                             </button>
+                            
                         </div>
                     </div>
                 </div>
@@ -1002,9 +1103,13 @@ export default function NewEventPage() {
             {status === "published" && (
                 <div
                     role="status"
-                    className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-xl"
+                    className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
                 >
-                    Event berhasil dipublikasikan sebagai simulasi prototype.
+                    <Check className="mr-2 inline" />
+                    Event berhasil dipublikasikan!
+                    <p className="mt-1 break-all text-xs font-normal">
+                        Event ID: {createdEventId}
+                    </p>
                 </div>
             )}
         </div>
