@@ -8,6 +8,7 @@ import type {
   DatabaseUserView,
   PublicEventView,
   readPublishedEventById,
+  readOrganizerProfile,
 } from './database'
 
 const createEventSchema = z.object({
@@ -53,6 +54,9 @@ export interface AppOptions {
     Awaited<ReturnType<typeof readPublishedEventById>>
   >
   eventCreator?: (input: CreateEventInput) => Promise<unknown>
+  organizerReader?: (organizerId: string) => Promise<
+    Awaited<ReturnType<typeof readOrganizerProfile>>
+  >
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -214,6 +218,55 @@ export function createApp(options: AppOptions = {}) {
     } catch (error) {
       console.error(`GET /api/events/${req.params.eventId} failed:`, error)
       fail(res, 503, 'EVENTS_UNAVAILABLE', 'Unable to retrieve event from the database')
+    }
+  })
+    app.get('/api/organizers/:organizerId', async (req, res) => {
+    if (!options.organizerReader) {
+      fail(
+        res,
+        503,
+        'DATABASE_NOT_CONFIGURED',
+        'Organizer database reader is not configured',
+      )
+      return
+    }
+
+    const organizerId = z.string().uuid().safeParse(req.params.organizerId)
+
+    if (!organizerId.success) {
+      fail(res, 400, 'INVALID_ORGANIZER_ID', 'Organizer ID must be a valid UUID')
+      return
+    }
+
+    try {
+      const organizer = await options.organizerReader(organizerId.data)
+
+      if (!organizer) {
+        fail(res, 404, 'ORGANIZER_NOT_FOUND', 'Organizer not found')
+        return
+      }
+
+      res.json({
+        success: true,
+        message: 'Organizer profile',
+        data: organizer,
+        meta: {
+          mode: 'database',
+          contractVersion: '1.0',
+          asOf: now().toISOString(),
+        },
+      })
+    } catch (error) {
+      console.error(
+        `GET /api/organizers/${organizerId.data} failed:`,
+        error,
+      )
+      fail(
+        res,
+        503,
+        'ORGANIZER_UNAVAILABLE',
+        'Unable to retrieve organizer profile from the database',
+      )
     }
   })
   app.get('/api/demo/me', (req, res) => {

@@ -1,7 +1,8 @@
+
 "use client";
 
 import Link from "next/link";
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
     ArrowLeft,
     CalendarDays,
@@ -12,11 +13,41 @@ import {
     Ticket,
 } from "lucide-react";
 import { formatPrice } from "@/lib/events";
-import {
-    getOrganizer,
-    getOrganizerEvents,
-    organizerReviews,
-} from "@/lib/organizers";
+
+interface OrganizerProfile {
+    id: string;
+    name: string;
+    profilePicture: string | null;
+}
+
+interface OrganizerEvent {
+    id: string;
+    name: string;
+    category: string;
+    location: string;
+    venue: string;
+    startAt: string;
+    endAt: string;
+    image: string | null;
+    availableSeats: number;
+    minimumPrice: number | null;
+}
+
+interface OrganizerReview {
+    id: string;
+    eventId: string;
+    eventName: string;
+    reviewerName: string;
+    rating: number;
+    comment: string | null;
+    createdAt: string;
+}
+
+interface OrganizerProfileResponse {
+    organizer: OrganizerProfile;
+    events: OrganizerEvent[];
+    reviews: OrganizerReview[];
+}
 
 export default function OrganizerProfilePage({
     params,
@@ -24,50 +55,119 @@ export default function OrganizerProfilePage({
     params: Promise<{ organizerId: string }>;
 }) {
     const { organizerId } = use(params);
-    const organizer = getOrganizer(organizerId);
-    const [sort, setSort] = useState("Terbaru");
-    const [tab, setTab] = useState<"Mendatang" | "Selesai">("Mendatang");
 
-    if (!organizer)
-        return (
-            <div className="min-h-screen bg-[#fcf9ff] px-5 py-20 text-[#11103d]">
-                <div className="mx-auto max-w-xl rounded-3xl bg-white p-10 text-center shadow-sm">
-                    <h1 className="text-2xl font-black">
-                        Penyelenggara tidak ditemukan
-                    </h1>
-                    <Link
-                        href="/#explore"
-                        className="mt-6 inline-flex rounded-full bg-[#4e46dc] px-5 py-3 text-sm font-bold text-white"
-                    >
-                        Kembali ke event
-                    </Link>
-                </div>
-            </div>
+            const [profile, setProfile] = useState<OrganizerProfileResponse | null>(null);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState("");
+
+            const [sort, setSort] = useState("Terbaru");
+            const [tab, setTab] = useState<"Mendatang" | "Selesai">("Mendatang");
+
+            useEffect(() => {
+            const controller = new AbortController();
+
+            async function fetchOrganizerProfile() {
+                try {
+                    setLoading(true);
+                    setError("");
+
+                    const apiBaseUrl =
+                        process.env.NEXT_PUBLIC_API_URL ??
+                        "http://127.0.0.1:4002";
+
+                    const response = await fetch(
+                        `${apiBaseUrl}/api/organizers/${organizerId}`,
+                        { signal: controller.signal },
+                    );
+
+                    const result = await response.json();
+
+                    if (!response.ok || !result.success) {
+                        throw new Error(
+                            result.message || "Gagal mengambil profil penyelenggara",
+                        );
+                    }
+
+                    setProfile(result.data);
+                } catch (error) {
+                    if (error instanceof Error && error.name !== "AbortError") {
+                        setError(error.message);
+                    }
+                } finally {
+                    if (!controller.signal.aborted) {
+                        setLoading(false);
+                    }
+                }
+            }
+
+            fetchOrganizerProfile();
+
+            return () => controller.abort();
+        }, [organizerId]);
+
+        // Data from the API
+        const organizer = profile?.organizer;
+        const organizerEvents = profile?.events ?? [];
+        const reviews = profile?.reviews ?? [];
+
+        // Review calculations
+        const average = reviews.length
+            ? reviews.reduce((sum, review) => sum + review.rating, 0) /
+            reviews.length
+            : 0;
+
+        const sortedReviews = [...reviews].sort((a, b) =>
+            sort === "Rating tertinggi"
+                ? b.rating - a.rating
+                : sort === "Rating terendah"
+                ? a.rating - b.rating
+                : new Date(b.createdAt).getTime() -
+                    new Date(a.createdAt).getTime(),
         );
 
-    const organizerEvents = getOrganizerEvents(organizer);
-    const reviews = organizerReviews.filter((review) =>
-        organizerEvents.some((event) => event.id === review.eventId),
-    );
-    const average = reviews.length
-        ? reviews.reduce((sum, review) => sum + review.rating, 0) /
-          reviews.length
-        : 0;
-    const sortedReviews = [...reviews].sort((a, b) =>
-        sort === "Rating tertinggi"
-            ? b.rating - a.rating
-            : sort === "Rating terendah"
-              ? a.rating - b.rating
-              : b.id.localeCompare(a.id),
-    );
-    const displayedEvents =
-        tab === "Mendatang"
-            ? organizerEvents.filter((event) => event.seats > 0)
-            : organizerEvents.filter((event) => event.seats === 0);
-    const distribution = [5, 4, 3, 2, 1].map((star) => ({
-        star,
-        count: reviews.filter((review) => review.rating === star).length,
-    }));
+        // Separate upcoming and completed events by their end date
+        const now = Date.now();
+
+        const displayedEvents =
+            tab === "Mendatang"
+                ? organizerEvents.filter(
+                    (event) => new Date(event.endAt).getTime() >= now,
+                )
+                : organizerEvents.filter(
+                    (event) => new Date(event.endAt).getTime() < now,
+                );
+
+        // Review rating distribution
+        const distribution = [5, 4, 3, 2, 1].map((star) => ({
+            star,
+            count: reviews.filter((review) => review.rating === star).length,
+        }));
+
+    if (loading) {
+            return (
+                <div className="grid min-h-screen place-items-center bg-[#fcf9ff] text-[#5148df]">
+                    <p className="font-bold">Memuat profil penyelenggara...</p>
+                </div>
+            );
+        }
+
+        if (error || !organizer) {
+            return (
+                <div className="min-h-screen bg-[#fcf9ff] px-5 py-20 text-[#11103d]">
+                    <div className="mx-auto max-w-xl rounded-3xl bg-white p-10 text-center shadow-sm">
+                        <h1 className="text-2xl font-black">
+                            {error || "Penyelenggara tidak ditemukan"}
+                        </h1>
+                        <Link
+                            href="/#explore"
+                            className="mt-6 inline-flex rounded-full bg-[#4e46dc] px-5 py-3 text-sm font-bold text-white"
+                        >
+                            Kembali ke event
+                        </Link>
+                    </div>
+                </div>
+            );
+        }    
 
     return (
         <div className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
@@ -98,25 +198,24 @@ export default function OrganizerProfilePage({
                 <section className="rounded-3xl bg-gradient-to-br from-[#4f46df] via-[#6357df] to-[#bd2b9e] p-6 text-white shadow-xl shadow-indigo-100 sm:p-10">
                     <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
                         <div className="grid size-24 shrink-0 place-items-center rounded-3xl bg-white text-2xl font-black text-[#5148df] shadow-lg">
-                            {organizer.initials}
+                            {getInitials(organizer.name)}
                         </div>
                         <div>
                             <div className="flex flex-wrap items-center gap-2">
                                 <span className="rounded-full bg-white/15 px-3 py-1 text-[10px] font-bold">
-                                    {organizer.badge}
+                                    Penyelenggara
                                 </span>
                                 <span className="text-xs text-white/70">
                                     Publik · Profil komunitas
                                 </span>
                             </div>
+
                             <h1 className="mt-3 text-3xl font-black sm:text-4xl">
                                 {organizer.name}
                             </h1>
-                            <p className="mt-2 flex items-center gap-1 text-sm text-white/80">
-                                <MapPin size={15} /> {organizer.location}
-                            </p>
+
                             <p className="mt-4 max-w-2xl text-sm leading-6 text-white/80">
-                                {organizer.description}
+                                Lihat event yang diselenggarakan dan ulasan dari para peserta.
                             </p>
                         </div>
                     </div>
@@ -137,7 +236,7 @@ export default function OrganizerProfilePage({
                             label="Ulasan peserta"
                             value={String(reviews.length)}
                         />
-                        <Stat label="Kota" value={organizer.location} />
+                        <Stat label="Total event" value={String(organizerEvents.length)} />
                     </div>
                 </section>
                 <section className="mt-8 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
@@ -243,24 +342,43 @@ export default function OrganizerProfilePage({
                                         href={`/events/${event.id}`}
                                         className="group flex gap-3 rounded-2xl border border-[#eee9fb] p-3 transition hover:border-[#cfc7f3]"
                                     >
-                                        <img
-                                            src={event.image}
-                                            alt=""
-                                            className="size-20 rounded-xl object-cover"
-                                        />
+                                        {event.image ? (
+                                            <img
+                                                src={event.image}
+                                                alt=""
+                                                className="size-20 rounded-xl object-cover"
+                                            />
+                                        ) : (
+                                            <div className="grid size-20 shrink-0 place-items-center rounded-xl bg-[#eeeaff] text-[#5148df]">
+                                                <Ticket size={24} />
+                                            </div>
+                                        )}
+
                                         <div className="min-w-0 flex-1">
                                             <p className="text-[10px] font-bold text-[#5148df]">
                                                 {event.category}
                                             </p>
+
                                             <h3 className="mt-1 truncate text-sm font-bold group-hover:text-[#5148df]">
-                                                {event.title}
+                                                {event.name}
                                             </h3>
+
                                             <p className="mt-1 flex items-center gap-1 text-[10px] text-[#858196]">
-                                                <CalendarDays size={11} />{" "}
-                                                {event.dateLabel}
+                                                <CalendarDays size={11} />
+                                                {new Date(event.startAt).toLocaleDateString("id-ID", {
+                                                    dateStyle: "long",
+                                                })}
                                             </p>
+
+                                            <p className="mt-1 flex items-center gap-1 text-[10px] text-[#858196]">
+                                                <MapPin size={11} />
+                                                {event.location}
+                                            </p>
+
                                             <p className="mt-1 text-xs font-bold text-[#5148df]">
-                                                {formatPrice(event.price)}
+                                                {event.minimumPrice === null || event.minimumPrice === 0
+                                                    ? "Gratis"
+                                                    : formatPrice(event.minimumPrice)}
                                             </p>
                                         </div>
                                     </Link>
@@ -303,9 +421,7 @@ export default function OrganizerProfilePage({
                     {sortedReviews.length ? (
                         <div className="mt-6 grid gap-4 md:grid-cols-2">
                             {sortedReviews.map((review) => {
-                                const event = organizerEvents.find(
-                                    (item) => item.id === review.eventId,
-                                )!;
+                                
                                 return (
                                     <article
                                         key={review.id}
@@ -314,34 +430,38 @@ export default function OrganizerProfilePage({
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex items-center gap-3">
                                                 <div className="grid size-9 place-items-center rounded-full bg-[#eeeaff] text-xs font-black text-[#5148df]">
-                                                    {review.initials}
+                                                    {getInitials(review.reviewerName)}
                                                 </div>
+
                                                 <div>
                                                     <p className="text-sm font-bold">
-                                                        {review.reviewer}
+                                                        {review.reviewerName}
                                                     </p>
+
                                                     <p className="text-[10px] text-[#858196]">
-                                                        {review.date}
+                                                        {new Date(review.createdAt).toLocaleDateString("id-ID", {
+                                                            dateStyle: "long",
+                                                        })}
                                                     </p>
                                                 </div>
                                             </div>
+
                                             <div className="flex items-center gap-1 text-xs font-bold text-amber-500">
-                                                <Star
-                                                    size={13}
-                                                    fill="currentColor"
-                                                />
+                                                <Star size={13} fill="currentColor" />
                                                 {review.rating}.0
                                             </div>
                                         </div>
+
                                         <p className="mt-4 text-sm leading-6 text-[#69657c]">
-                                            “{review.text}”
+                                            “{review.comment || "Peserta tidak menambahkan komentar."}”
                                         </p>
+
                                         <Link
-                                            href={`/events/${event.id}`}
+                                            href={`/events/${review.eventId}`}
                                             className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-[#5148df] hover:underline"
                                         >
-                                            <CheckCircle2 size={13} />{" "}
-                                            {event.title}
+                                            <CheckCircle2 size={13} />
+                                            {review.eventName}
                                         </Link>
                                     </article>
                                 );
@@ -365,4 +485,13 @@ function Stat({ label, value }: { label: string; value: string }) {
             <p className="mt-1 text-lg font-black">{value}</p>
         </div>
     );
+}
+
+function getInitials(name: string) {
+    return name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0].toUpperCase())
+        .join("");
 }

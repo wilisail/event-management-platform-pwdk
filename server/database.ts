@@ -160,7 +160,6 @@ export async function readPublishedEventById(eventId: string) {
 }
 
 /** Create an event and its ticket types for Feature 1. */
-/** Create an event and its ticket types for Feature 1. */
 export async function createEvent(input: CreateEventInput) {
   const baseSlug = input.name
     .toLowerCase()
@@ -222,6 +221,105 @@ export async function createEvent(input: CreateEventInput) {
     })),
   }
 }
+
+
+/** Public organizer profile, including published events and their reviews. */
+export async function readOrganizerProfile(organizerId: string) {
+  const organizer = await databaseClient().user.findFirst({
+    where: {
+      id: organizerId,
+      role: 'ORGANIZER',
+    },
+    select: {
+      id: true,
+      name: true,
+      profilePictureKey: true,
+      events: {
+        where: {
+          status: 'PUBLISHED',
+        },
+        orderBy: {
+          startAt: 'asc',
+        },
+        select: {
+          id: true,
+          name: true,
+          category: true,
+          location: true,
+          venue: true,
+          startAt: true,
+          endAt: true,
+          imageUrl: true,
+          ticketTypes: {
+            select: {
+              availableSeats: true,
+              price: true,
+            },
+          },
+          reviews: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+            select: {
+              id: true,
+              rating: true,
+              comment: true,
+              createdAt: true,
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!organizer) return null;
+
+  const events = organizer.events.map((event) => ({
+    id: event.id,
+    name: event.name,
+    category: event.category,
+    location: event.location,
+    venue: event.venue,
+    startAt: event.startAt.toISOString(),
+    endAt: event.endAt.toISOString(),
+    image: event.imageUrl,
+    availableSeats: event.ticketTypes.reduce(
+      (total, ticket) => total + ticket.availableSeats,
+      0,
+    ),
+    minimumPrice: event.ticketTypes.length
+      ? Math.min(...event.ticketTypes.map((ticket) => Number(ticket.price)))
+      : null,
+  }));
+
+  const reviews = organizer.events.flatMap((event) =>
+    event.reviews.map((review) => ({
+      id: review.id,
+      eventId: event.id,
+      eventName: event.name,
+      reviewerName: review.user.name,
+      rating: review.rating,
+      comment: review.comment,
+      createdAt: review.createdAt.toISOString(),
+    })),
+  );
+
+  return {
+    organizer: {
+      id: organizer.id,
+      name: organizer.name,
+      profilePicture: organizer.profilePictureKey,
+    },
+    events,
+    reviews,
+  };
+}
+
 
 export async function disconnectDatabase() {
   await client?.$disconnect()
