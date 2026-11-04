@@ -18,6 +18,29 @@ Not complete: production checkout/transition wiring to the implemented reward co
 
 The latest scoring is authentication/authorization **4**, referrals/profile/rewards **4**, organizer dashboard **2**. Completion means satisfying every required behavior, not merely obtaining the largest scoring items.
 
+## Days 1–7: built work and remaining verification
+
+Updated 4 November. The table tracks carryover within the existing schedule. **Built locally** means the Feature 2 code is in the working checkout. It still needs the listed runtime or integration checks. Finish cross-feature checks when both sides are ready, with Day 6 for the release journey and Day 7 for anything still pending. Count each shared check once.
+
+| Part | Current checkpoint | Remaining check or dependency |
+| --- | --- | --- |
+| 1.1 Registration and 1.2 sessions | Database-backed registration, login, refresh rotation and logout are built. Earlier checks are in the [registration](registration-reference.md) and [session](login-session-reference.md) notes. | Day 6–7: verify the combined deployment uses the same account/session authority and checkout resumes through an approved route after login. |
+| 1.3 Guards and 1.4 frontend | Roles, ownership, CSRF, account pages and organizer event/attendee reads are built. Earlier checks are in the [authorization](authorization-reference.md) and [frontend](frontend-authentication-reference.md) notes. | Day 6–7: exercise both roles and two organizers across the combined app, including expired sessions and direct API access. |
+| 2.1 Reward schema, 2.2 referral issuance, 2.3 wallet | Built and checked as F2 foundations. | Day 6–7: check the combined signup and checkout journey uses the recorded wallet balances, coupon values and expiry. |
+| 2.4 Reward operations | Reserve, consume and restore are implemented in a caller-owned SQL transaction. | F1 checkout and the shared transition must call this core. Day 4.4/6–7 checks the real reservation, deduction and exactly-once restoration. |
+| 3.1 Profile and 3.2 password change | Built. Hosted profile storage and password/session checks are recorded in their companion notes. | Recheck the roles on the evaluator URL in Day 6. Private payment proofs in 4.1 use a separate access contract. |
+| 3.3 Password recovery | Built. Protected Preview reached Resend's simulated recipient. | Owner inbox receipt and opening the actual reset link are still pending. This can be done before Day 6 and does not depend on F1. Resolve the migration ledger with the owner role before any affected migration deploy. |
+| 3.4 Account regression | Standalone F2 regression recorded as passed. | Day 6–7: rerun the key account flows in the final combined environment. |
+| 4.1 Organizer transaction reads | [Built locally](organizer-transactions-reference.md). List, filters and details read owned purchases and show the proof upload timestamp. | F1 private proof interface and a real test upload. Allow **5–10 min** to connect and **10–20 min** for the owning organizer/other organizer check once ready. Use the Day 7 buffer if not ready in Day 6. |
+| 4.2 Approve/reject | [F2 decision boundary and controls built locally](organizer-decision-reference.md). They fail closed without the transition. | F1/shared engine owns the atomic write. Wire it and check ownership, deadlines, repeat decisions and contention with timeout. Verify proof viewing before enabling the integrated flow. |
+| 4.3 Decision emails | Planned. Reuse the F2 Resend adapter. | Connect the outbox to the committed transition, confirm one sender per event and check real delivery. Day 6 supplies the hosted executor. |
+| 4.4 Combined decision checks | Planned. | Prepare fixtures early. Finish the actual checkout, proof, decision, expiry and restoration checks when connected. Reuse the 4.1 access evidence. |
+| 5.1 Statistics, 5.2 attendees and attendance | Statistics and attendance marking are planned. Confirmed attendee reads already exist. | Use F1 purchase status and completion time. Check an organizer can mark attendance only for their event and that F1 review eligibility uses attendance. |
+| 5.3 Event management and ratings, 5.4 dashboard checks | Planned. | Link the real F1 screens/aggregates and check loading, empty, error and confirmation states on desktop and phone. |
+| 6.1 Deploy, 6.2 checks and executor | Release work remains. A protected account Preview exists. | Verify evaluator access, environment scope, demo identities, CI and a hosted executor that actually processes due work. |
+| 6.3 Full journeys, 6.4 submission | Planned. | Collect combined browser/API evidence and a reproducible run guide. Separate any pending provider or partner checks from verified results. |
+| 7 Integration buffer | **3–6 focused hours** already allocated. | Complete outstanding F1 checkout/session, proof and decision wiring and the combined verification above. Include event image compatibility only if Rizky's public poster contract requires it. |
+
 ## Sunday, 1 November — referrals and real rewards
 
 | Subtask | Time | Checkpoint / why it matters |
