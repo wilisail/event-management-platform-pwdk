@@ -1,0 +1,18 @@
+# Day 4 Part 3 — Decision email outbox and retry worker
+
+Updated 4 November 2026. The outbox, enqueue helper and worker are built in the local Feature 2 checkout. TypeScript and the production build passed. The SQL migration has not been replayed or applied to the shared database. A live organizer decision, hosted execution and actual inbox receipt remain separate checks.
+
+| Step | What happens |
+| --- | --- |
+| 1. Record the decision | The shared purchase engine writes `DONE` or `REJECTED`. Inside that same Prisma transaction, it calls `enqueueOrganizerDecisionEmail(tx, purchaseId, decision)`. The helper verifies the transaction context and expected purchase status, looks up the buyer server-side and inserts a job. If enqueue fails, the decision transaction must roll back. |
+| 2. Keep one job per purchase | PostgreSQL enforces uniqueness on `purchase_id`. A same-decision replay keeps the existing job. An inconsistent second decision fails. The job stores the rendered subject and bodies so retries can use the same payload. RLS and database grants restrict access to the backend role, which can update delivery bookkeeping only. |
+| 3. Claim and send | The worker claims one job at a time with `FOR UPDATE SKIP LOCKED` and a one-minute lease, up to five jobs per pass. It calls the existing Resend mailer after the claim commits, outside SQL locks. Each retry uses the same job-based idempotency key. Keep the configured sender stable during a retry window. |
+| 4. Record the outcome | Provider acceptance is recorded as `ACCEPTED`. Transient failures retry after 30 seconds and then 120 seconds, up to three attempts and within 12 hours of the first claim. Expired leases can be reclaimed, and an old worker cannot overwrite a newer lease. Exhausted or permanent failures remain `FAILED` for review. |
+
+**How to run later.** The additive migration is `20261104102134_organizer_decision_email_outbox`. Replay it in an isolated database before applying it to the intended environment. The existing Node server can drain the queue with `F2_DECISION_EMAIL_WORKER_ENABLED=true` after the migration and sender are ready. The flag is off by default. The scheduled hosted executor belongs to Day 6. No new provider account or API key is required when the existing Resend configuration is usable.
+
+**Integration evidence still due.** Wire the helper into the actual shared purchase transaction from Part 4.2. Check that a rollback leaves neither the decision nor a job, duplicate requests keep one job, retries reuse the same key, and two workers cannot claim the same active job. Then check one approval and one rejection at a controlled inbox. Resend's response confirms acceptance of the send request. Inbox receipt is a separate check, as is the earlier password reset inbox follow-up.
+
+**Learning checkpoint.** Why put the decision and the email job in the same SQL transaction? If the app stops after committing the decision, the job is still there. Why send after commit? An email can't be rolled back with SQL, and a slow network call would hold database locks. What if the worker stops after Resend accepts the email but before saving that result? A later worker can retry with the same key. The 12-hour retry window stays inside [Resend's 24-hour idempotency window](https://resend.com/docs/dashboard/emails/idempotency-keys).
+
+Implementation: `feature-2/server/email/organizer-decision.ts`, `feature-2/server/email/organizer-decision-repository.ts` and `feature-2/server/index.ts`. See the [decision boundary](organizer-decision-reference.md) and [completion plan](feature-2-completion-plan.md).
