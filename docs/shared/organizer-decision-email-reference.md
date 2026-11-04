@@ -1,6 +1,6 @@
 # Day 4 Part 3 — Decision email outbox and retry worker
 
-Updated 4 November 2026. The outbox, enqueue helper and worker are built in the local Feature 2 checkout. TypeScript and the production build passed. The SQL migration has not been replayed or applied to the shared database. A live organizer decision, hosted execution and actual inbox receipt remain separate checks.
+Updated 4 November 2026. The outbox, enqueue helper and worker are built in the local Feature 2 checkout. TypeScript and the production build passed. [Part 4.4](organizer-day4-verification-reference.md) replayed the SQL migration on a disposable database and checked the worker with a fake provider transport. The migration is not applied to the shared database. A live organizer decision, hosted execution and actual inbox receipt remain separate checks.
 
 | Step | What happens |
 | --- | --- |
