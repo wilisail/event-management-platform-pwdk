@@ -74,6 +74,7 @@ model Event {
   address     String      @default("")
   description String      @default("")
   imageUrl    String?     @map("image_url")
+  imagePublicId String?   @map("image_public_id")
   startAt     DateTime    @map("start_at") @db.Timestamptz(3)
   endAt       DateTime    @map("end_at") @db.Timestamptz(3)
   status      EventStatus @default(DRAFT)
