@@ -42,7 +42,7 @@ Updated 4 November. The table tracks carryover within the existing schedule. **B
 | 6.1 Deploy and evaluator access | [Protected F2 Preview built and demo data prepared](day-6-preview-deployment-reference.md). Preview scope and the local hosted API path were verified. | Owner runs the supported Prisma reconciliation and the two new migrations. Verify hosted login and access with both demo roles and confirm evaluator access. |
 | 6.2 Checks and executor | [CI workflow, readiness and worker endpoint built](day-6-ci-worker-reference.md). Local checks and isolated timer-driven email retries passed. The protected Preview built with the worker disabled. | After the 6.1 Supabase owner steps, configure the Preview secret and Supabase Cron, then verify the live job and inbox. GitHub Actions execution awaits authorization to publish the CI branch snapshot. |
 | 6.3 Full journeys and requirement audit | [Isolated browser/API journey passed and F1 gaps were audited](day-6-journey-audit-reference.md). Verified referral signup, seat and reward accounting through a checkout fixture, approval and attendance, and simulated email dispatch. | Combined Preview still needs F1 checkout and private proof, the shared transition, session-bound attendance-gated reviews, owner migrations and live email. Recheck these in Day 7 as needed. |
-| 6.4 Submission | Planned. | Prepare the independent run guide, evaluator access, submission evidence and presentation Q&A. |
+| 6.4 Submission handoff | [Run guide, demo evidence, presentation Q&A and F1 status prepared](day-6-submission-handoff-reference.md). Fresh local install and standalone checks passed. | Confirm protected evaluator access and live app sign-in, then use the Day 6.3 gates for the combined submission. CI branch publication remains a separate 6.2 follow-up. |
 | 7 Integration buffer | **3–6 focused hours** already allocated. | Complete outstanding F1 checkout/session, proof and decision wiring and the combined verification above. Include event image compatibility only if Rizky's public poster contract requires it. |
 
 ### Platform checks before hosted verification
@@ -113,7 +113,7 @@ Dependency: feature 1 owns the purchase/proof/timeout engine. The feature 2 deci
 | Independent run guide, submission evidence and presentation Q&A | 45–60 min | Fresh install/run instructions, feature ownership, environment template, demo access, known limits and explanation without cue notes. |
 | **Total** | **3¼–5 h** | The final release is demonstrable, reproducible and evaluated against the PRD. |
 
-Existing seed identities have no password. They are not usable evaluator logins until an explicit demo-account setup is prepared. Keep passwords/connection credentials out of public notes; do not casually reset shared seed users. Ensure the dashboard demo account actually owns the events behind the 30 purchases.
+The original seed identities have no password. Day 6.1 created separate demo accounts with an owned sample purchase. Verify both hosted app roles before handing over the link. Share demo credentials privately.
 
 ## Time and completion conditions
 
