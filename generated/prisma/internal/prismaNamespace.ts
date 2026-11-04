@@ -402,7 +402,8 @@ export const ModelName = {
   TicketType: 'TicketType',
   Purchase: 'Purchase',
   PurchaseItem: 'PurchaseItem',
-  Review: 'Review'
+  Review: 'Review',
+  Voucher: 'Voucher'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -418,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "event" | "ticketType" | "purchase" | "purchaseItem" | "review"
+    modelProps: "user" | "event" | "ticketType" | "purchase" | "purchaseItem" | "review" | "voucher"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -866,6 +867,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Voucher: {
+      payload: Prisma.$VoucherPayload<ExtArgs>
+      fields: Prisma.VoucherFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VoucherFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VoucherFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload>
+        }
+        findFirst: {
+          args: Prisma.VoucherFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VoucherFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload>
+        }
+        findMany: {
+          args: Prisma.VoucherFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload>[]
+        }
+        create: {
+          args: Prisma.VoucherCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload>
+        }
+        createMany: {
+          args: Prisma.VoucherCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VoucherCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload>[]
+        }
+        delete: {
+          args: Prisma.VoucherDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload>
+        }
+        update: {
+          args: Prisma.VoucherUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload>
+        }
+        deleteMany: {
+          args: Prisma.VoucherDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VoucherUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VoucherUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload>[]
+        }
+        upsert: {
+          args: Prisma.VoucherUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoucherPayload>
+        }
+        aggregate: {
+          args: Prisma.VoucherAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVoucher>
+        }
+        groupBy: {
+          args: Prisma.VoucherGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VoucherGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VoucherCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VoucherCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -973,7 +1048,8 @@ export const PurchaseScalarFieldEnum = {
   paymentProofKey: 'paymentProofKey',
   completedAt: 'completedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  voucherId: 'voucherId'
 } as const
 
 export type PurchaseScalarFieldEnum = (typeof PurchaseScalarFieldEnum)[keyof typeof PurchaseScalarFieldEnum]
@@ -1002,6 +1078,26 @@ export const ReviewScalarFieldEnum = {
 } as const
 
 export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+export const VoucherScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  code: 'code',
+  discountType: 'discountType',
+  discountValue: 'discountValue',
+  maxDiscount: 'maxDiscount',
+  minimumPurchase: 'minimumPurchase',
+  usageLimit: 'usageLimit',
+  usageCount: 'usageCount',
+  startsAt: 'startsAt',
+  expiresAt: 'expiresAt',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoucherScalarFieldEnum = (typeof VoucherScalarFieldEnum)[keyof typeof VoucherScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1129,6 +1225,27 @@ export type EnumPurchaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'PurchaseStatus[]'
  */
 export type ListEnumPurchaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PurchaseStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'VoucherDiscountType'
+ */
+export type EnumVoucherDiscountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoucherDiscountType'>
+    
+
+
+/**
+ * Reference to a field of type 'VoucherDiscountType[]'
+ */
+export type ListEnumVoucherDiscountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VoucherDiscountType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -1302,6 +1419,7 @@ export type GlobalOmitConfig = {
   purchase?: Prisma.PurchaseOmit
   purchaseItem?: Prisma.PurchaseItemOmit
   review?: Prisma.ReviewOmit
+  voucher?: Prisma.VoucherOmit
 }
 
 /* Types for Logging */

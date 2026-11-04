@@ -52,6 +52,23 @@ export interface PublicEventView {
   availableSeats: number
 }
 
+export interface EventReviewView {
+  id: string
+  eventId: string
+  userId: string
+  reviewerName: string
+  rating: number
+  comment: string | null
+  createdAt: string
+}
+
+export interface CreateEventReviewInput {
+  eventId: string
+  userId: string
+  rating: number
+  comment?: string
+}
+
 export interface CreateEventInput {
   name: string
   category: string
@@ -320,6 +337,121 @@ export async function readOrganizerProfile(organizerId: string) {
   };
 }
 
+/** Public reviews for a published event. */
+export async function readEventReviews(
+  eventId: string,
+): Promise<EventReviewView[] | null> {
+  const event = await databaseClient().event.findFirst({
+    where: {
+      id: eventId,
+      status: 'PUBLISHED',
+    },
+    select: {
+      id: true,
+      reviews: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+        select: {
+          id: true,
+          eventId: true,
+          userId: true,
+          rating: true,
+          comment: true,
+          createdAt: true,
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  if (!event) return null
+
+  return event.reviews.map((review) => ({
+    id: review.id,
+    eventId: review.eventId,
+    userId: review.userId,
+    reviewerName: review.user.name,
+    rating: review.rating,
+    comment: review.comment,
+    createdAt: review.createdAt.toISOString(),
+  }))
+}
+
+/** Create a review for a published event with a completed purchase. */
+export async function createEventReview(
+  input: CreateEventReviewInput,
+): Promise<EventReviewView> {
+  const db = databaseClient()
+
+  // 1. Check whether the event exists and is published.
+  const event = await db.event.findFirst({
+    where: {
+      id: input.eventId,
+      status: 'PUBLISHED',
+    },
+    select: {
+      id: true,
+    },
+  })
+
+  if (!event) {
+    throw new Error('EVENT_NOT_FOUND')
+  }
+
+  // 2. Check whether this customer has completed a purchase.
+  const purchase = await db.purchase.findFirst({
+    where: {
+      eventId: input.eventId,
+      customerId: input.userId,
+      status: 'DONE',
+    },
+    select: {
+      id: true,
+    },
+  })
+
+  if (!purchase) {
+    throw new Error('PURCHASE_REQUIRED')
+  }
+
+  // 3. Create the review.
+  const review = await db.review.create({
+    data: {
+      eventId: input.eventId,
+      userId: input.userId,
+      rating: input.rating,
+      comment: input.comment?.trim() || null,
+    },
+    select: {
+      id: true,
+      eventId: true,
+      userId: true,
+      rating: true,
+      comment: true,
+      createdAt: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  })
+
+  return {
+    id: review.id,
+    eventId: review.eventId,
+    userId: review.userId,
+    reviewerName: review.user.name,
+    rating: review.rating,
+    comment: review.comment,
+    createdAt: review.createdAt.toISOString(),
+  }
+}
 
 export async function disconnectDatabase() {
   await client?.$disconnect()

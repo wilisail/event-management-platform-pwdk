@@ -41,6 +41,8 @@ type EventsApiResponse = {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:4002";
 
+const EVENTS_PER_PAGE = 4;
+
 const formatDateLabel = (date: string) =>
     new Intl.DateTimeFormat("id-ID", {
         day: "numeric",
@@ -71,6 +73,7 @@ export default function Page() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [sortBy, setSortBy] = useState("date");
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -160,7 +163,7 @@ const locations = useMemo(
                     event.category?.trim().toLowerCase() ===
                         category.trim().toLowerCase()) &&
                 (location === "Semua Kota" ||
-                    event.location === location)
+                    event.location?.trim() === location)
             );
         });
 
@@ -175,6 +178,18 @@ const locations = useMemo(
         });
     }, [events, debouncedQuery, category, location, sortBy]);
     const featured = filtered.slice(0, 3);
+
+    // Pagination
+    const totalPages = Math.ceil(filtered.length / EVENTS_PER_PAGE);
+
+    const paginatedEvents = filtered.slice(
+        (currentPage - 1) * EVENTS_PER_PAGE,
+        currentPage * EVENTS_PER_PAGE,
+    );
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [debouncedQuery, category, location, sortBy]);
 
     return (
         <div className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
@@ -386,7 +401,8 @@ const locations = useMemo(
                                 Jelajahi Semua Event Mendatang
                             </h2>
                             <p className="text-xs text-[#858196]">
-                                Menampilkan {filtered.length} event di Indonesia
+                                Menampilkan {filtered.length === 0 ? 0 : (currentPage - 1) * EVENTS_PER_PAGE + 1}
+–{Math.min(currentPage * EVENTS_PER_PAGE, filtered.length)} dari {filtered.length} event di Indonesia
                                 · Diurutkan berdasarkan tanggal
                             </p>
                         </div>
@@ -405,24 +421,65 @@ const locations = useMemo(
                     ) : error ? (
                         <p role="alert" className="rounded-xl bg-white p-6 text-center text-sm text-red-600">{error}</p>
                     ) : filtered.length ? (
-                        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                            {filtered.map((event) => (
-                                <EventCard
-                                    key={`${event.id}-${event.title}`}
-                                    event={event}
-                                    liked={liked.includes(event.id)}
-                                    onLike={() =>
-                                        setLiked((v) =>
-                                            v.includes(event.id)
-                                                ? v.filter(
-                                                      (x) => x !== event.id,
-                                                  )
-                                                : [...v, event.id],
-                                        )
-                                    }
-                                />
-                            ))}
-                        </div>
+                        <>
+                            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                                {paginatedEvents.map((event) => (
+                                    <EventCard
+                                        key={event.id}
+                                        event={event}
+                                        liked={liked.includes(event.id)}
+                                        onLike={() =>
+                                            setLiked((v) =>
+                                                v.includes(event.id)
+                                                    ? v.filter((x) => x !== event.id)
+                                                    : [...v, event.id],
+                                            )
+                                        }
+                                    />
+                                ))}
+                            </div>
+
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <div className="mt-8 flex w-full items-center justify-center gap-2">
+                                    <button
+                                        onClick={() => setCurrentPage((page) => page - 1)}
+                                        disabled={currentPage === 1}
+                                        className="rounded-lg border px-3 py-2 disabled:cursor-not-allowed disabled:opacity-40"
+                                        aria-label="Halaman sebelumnya"
+                                    >
+                                        <ChevronLeft size={18} />
+                                    </button>
+
+                                    {Array.from(
+                                        { length: totalPages },
+                                        (_, index) => index + 1,
+                                    ).map((page) => (
+                                        <button
+                                            key={page}
+                                            onClick={() => setCurrentPage(page)}
+                                            aria-current={currentPage === page ? "page" : undefined}
+                                            className={`rounded-lg border px-4 py-2 ${
+                                                currentPage === page
+                                                    ? "border-violet-600 bg-violet-600 text-white"
+                                                    : "border-gray-200 hover:bg-gray-100"
+                                            }`}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+
+                                    <button
+                                        onClick={() => setCurrentPage((page) => page + 1)}
+                                        disabled={currentPage === totalPages}
+                                        className="rounded-lg border px-3 py-2 disabled:cursor-not-allowed disabled:opacity-40"
+                                        aria-label="Halaman berikutnya"
+                                    >
+                                        <ChevronRight size={18} />
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     ) : (
                         <div className="rounded-3xl bg-white py-20 text-center shadow-sm">
                             <Search className="mx-auto mb-3 text-[#b7b0da]" />

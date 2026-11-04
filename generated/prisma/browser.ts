@@ -47,3 +47,8 @@ export type PurchaseItem = Prisma.PurchaseItemModel
  * 
  */
 export type Review = Prisma.ReviewModel
+/**
+ * Model Voucher
+ * 
+ */
+export type Voucher = Prisma.VoucherModel

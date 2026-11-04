@@ -26,6 +26,8 @@ async function start() {
     eventReader: database.readPublishedEventById,
     eventCreator: database.createEvent,
     organizerReader: database.readOrganizerProfile,
+    reviewReader: database.readEventReviews,
+    reviewCreator: database.createEventReview,
     })
     .listen(port, host, () => {
       console.log(`TemuEvent API: http://${host}:${port}`)
@@ -33,6 +35,8 @@ async function start() {
       console.log('GET /api/events/:eventId reads individual event details from PostgreSQL.')
       console.log('POST /api/events creates events and ticket types in PostgreSQL.')
       console.log('GET /api/organizers/:organizerId reads organizer profiles, events, and reviews from PostgreSQL.')
+      console.log('GET /api/events/:eventId/reviews reads event reviews from PostgreSQL.')
+      console.log('POST /api/events/:eventId/reviews creates event reviews in PostgreSQL.')
     })
   for (const signal of ['SIGINT', 'SIGTERM'] as const) {
     process.once(signal, () => {

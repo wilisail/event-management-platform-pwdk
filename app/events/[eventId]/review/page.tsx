@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
     ArrowLeft,
     CalendarDays,
@@ -9,15 +9,50 @@ import {
     ChevronRight,
     Star,
 } from "lucide-react";
-import { events } from "@/lib/events";
+
+const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:4002";
+
+// Temporary identity for development.
+const TEST_USER_ID = "d6025559-ccd4-4e1c-836b-751d75a288b1";
 
 type Review = {
     id: string;
-    eventId: number;
-    attendeeId: string;
+    eventId: string;
+    userId: string;
+    reviewerName: string;
     rating: number;
-    text: string;
+    comment: string | null;
     createdAt: string;
+};
+
+type Event = {
+    id: string;
+    title: string;
+    category: string;
+    date: string;
+    endDate: string;
+    location: string;
+    venue: string;
+    address: string;
+    description: string;
+    image: string | null;
+    price: number | null;
+    availableSeats: number;
+    organizerId: string;
+    organizer: string;
+};
+
+type EventApiResponse = {
+    success: boolean;
+    data?: Event;
+    message?: string;
+};
+
+type ReviewsApiResponse = {
+    success: boolean;
+    data?: Review[];
+    message?: string;
 };
 
 const labels = [
@@ -28,32 +63,99 @@ const labels = [
     "Memuaskan",
     "Sangat memuaskan",
 ];
-const sampleReviews: Review[] = [
-    {
-        id: "review-1",
-        eventId: 1,
-        attendeeId: "attendee-ayu",
-        rating: 5,
-        text: "Pilihan kopinya beragam dan semua booth sangat ramah. Sesi cupping-nya juga informatif.",
-        createdAt: "28 Mei 2025",
-    },
-    {
-        id: "review-2",
-        eventId: 1,
-        attendeeId: "attendee-raka",
-        rating: 4,
-        text: "Venue nyaman dan acaranya tertata dengan baik. Akan datang lagi tahun depan.",
-        createdAt: "27 Mei 2025",
-    },
-];
 
 export default function EventReviewPage({
     params,
 }: {
     params: Promise<{ eventId: string }>;
 }) {
-    const { eventId: rawEventId } = use(params);
-    const event = events.find((item) => item.id === Number(rawEventId));
+    const { eventId } = use(params);
+
+    const [event, setEvent] = useState<Event | null>(null);
+    const [loadingEvent, setLoadingEvent] = useState(true);
+    const [eventError, setEventError] = useState<string | null>(null);
+
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [loadingReviews, setLoadingReviews] = useState(true);
+    const [reviewsError, setReviewsError] = useState<string | null>(null);
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function loadEvent() {
+            try {
+                setLoadingEvent(true);
+                setEventError(null);
+
+                const response = await fetch(
+                    `${API_URL}/api/events/${eventId}`,
+                    { signal: controller.signal },
+                );
+
+                if (!response.ok) {
+                    throw new Error(`API request failed (${response.status})`);
+                }
+
+                const result = (await response.json()) as EventApiResponse;
+
+                if (!result.success || !result.data) {
+                    throw new Error(result.message || "Invalid API response");
+                }
+
+                setEvent(result.data);
+            } catch (error) {
+                if (error instanceof Error && error.name === "AbortError") return;
+
+                setEventError("Gagal memuat detail event. Silakan coba lagi.");
+            } finally {
+                if (!controller.signal.aborted) {
+                    setLoadingEvent(false);
+                }
+            }
+        }
+
+        void loadEvent();
+
+        return () => controller.abort();
+    }, [eventId]);
+    useEffect(() => {
+        const controller = new AbortController();
+
+        async function loadReviews() {
+            try {
+                setLoadingReviews(true);
+                setReviewsError(null);
+
+                const response = await fetch(
+                    `${API_URL}/api/events/${eventId}/reviews`,
+                    { signal: controller.signal },
+                );
+
+                if (!response.ok) {
+                    throw new Error(`API request failed (${response.status})`);
+                }
+
+                const result = (await response.json()) as ReviewsApiResponse;
+
+                if (!result.success || !result.data) {
+                    throw new Error(result.message || "Invalid API response");
+                }
+
+                setReviews(result.data);
+            } catch (error) {
+                if (error instanceof Error && error.name === "AbortError") return;
+
+                setReviewsError("Gagal memuat ulasan. Silakan coba lagi.");
+            } finally {
+                if (!controller.signal.aborted) {
+                    setLoadingReviews(false);
+                }
+            }
+        }
+
+        void loadReviews();
+
+        return () => controller.abort();
+    }, [eventId]);
     const [rating, setRating] = useState(0);
     const [hovered, setHovered] = useState(0);
     const [reviewText, setReviewText] = useState("");
@@ -63,14 +165,26 @@ export default function EventReviewPage({
     const [submitted, setSubmitted] = useState<Review | null>(null);
     const [confirming, setConfirming] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
-    if (!event)
+    if (loadingEvent) {
+        return (
+            <main className="grid min-h-screen place-items-center bg-[#fcf9ff] text-sm text-[#77738b]">
+                Memuat detail event...
+            </main>
+        );
+    }
+
+    if (eventError || !event) {
         return (
             <main className="min-h-screen bg-[#fcf9ff] px-5 py-20 text-[#11103d]">
                 <div className="mx-auto max-w-xl rounded-3xl bg-white p-10 text-center shadow-sm">
                     <h1 className="text-2xl font-black">
-                        Event tidak ditemukan
+                        {eventError ? "Gagal memuat event" : "Event tidak ditemukan"}
                     </h1>
+                    <p className="mt-3 text-sm text-[#77738b]">
+                        {eventError || "Event yang kamu cari tidak tersedia."}
+                    </p>
                     <Link
                         href="/#explore"
                         className="mt-6 inline-flex rounded-full bg-[#5148df] px-5 py-3 text-sm font-bold text-white"
@@ -80,14 +194,17 @@ export default function EventReviewPage({
                 </div>
             </main>
         );
+    }
 
-    const eligible = event.id === 1;
-    const alreadyReviewed = sampleReviews.some(
-        (review) =>
-            review.eventId === event.id &&
-            review.attendeeId === "current-attendee",
+
+    // Temporary eligibility check for development.
+    // The backend still validates the user's completed purchase.
+    const eligible = true;
+    const alreadyReviewed = reviews.some(
+        (review) => review.userId === TEST_USER_ID,
     );
-    const hasOccurred = new Date(event.date) < new Date("2026-10-21");
+    const hasOccurred = new Date(event.endDate) < new Date();
+
     const canReview = eligible && hasOccurred && !alreadyReviewed && !submitted;
     const displayRating = hovered || rating;
 
@@ -106,20 +223,49 @@ export default function EventReviewPage({
     const requestSubmit = () => {
         if (validate() && canReview) setConfirming(true);
     };
-    const confirmSubmit = () => {
-        setSubmitting(true);
-        setTimeout(() => {
-            setSubmitted({
-                id: `review-${Date.now()}`,
-                eventId: event.id,
-                attendeeId: "current-attendee",
-                rating,
-                text: reviewText.trim(),
-                createdAt: "Hari ini",
-            });
-            setSubmitting(false);
+    const confirmSubmit = async () => {
+        try {
+            setSubmitting(true);
+            setSubmitError(null);
+
+            const response = await fetch(
+                `${API_URL}/api/events/${event.id}/reviews`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        userId: TEST_USER_ID,
+                        rating,
+                        comment: reviewText.trim(),
+                    }),
+                },
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success || !result.data) {
+                throw new Error(
+                    result.message || "Gagal mengirim ulasan.",
+                );
+            }
+
+            const newReview = result.data as Review;
+
+            setSubmitted(newReview);
+            setReviews((previous) => [newReview, ...previous]);
             setConfirming(false);
-        }, 650);
+        } catch (error) {
+            setSubmitError(
+                error instanceof Error
+                    ? error.message
+                    : "Terjadi kesalahan saat mengirim ulasan.",
+            );
+        } finally {
+            setSubmitting(false);
+        }
+        
     };
 
     return (
@@ -342,6 +488,11 @@ export default function EventReviewPage({
                                           ? "Ulasan baru bisa diberikan setelah event selesai."
                                           : "Kamu hanya bisa memberikan ulasan setelah menghadiri event ini."}
                                 </p>
+                                {submitError && (
+                                    <p role="alert" className="mt-3 text-sm font-semibold text-red-600">
+                                        {submitError}
+                                    </p>
+                                )}
                                 <Link
                                     href={`/events/${event.id}`}
                                     className="mt-5 inline-flex rounded-full bg-[#eeeaff] px-5 py-3 text-sm font-bold text-[#5148df]"
@@ -354,81 +505,83 @@ export default function EventReviewPage({
                             <h2 className="text-xl font-black">
                                 Ulasan peserta lainnya
                             </h2>
-                            {sampleReviews.filter(
-                                (review) => review.eventId === event.id,
-                            ).length ? (
+                            {loadingReviews ? (
+                                <p className="mt-4 text-sm text-[#77738b]">
+                                    Memuat ulasan...
+                                </p>
+                            ) : reviewsError ? (
+                                <p role="alert" className="mt-4 text-sm text-red-600">
+                                    {reviewsError}
+                                </p>
+                            ) : reviews.length > 0 ? (
                                 <div className="mt-4 grid gap-3">
-                                    {sampleReviews
-                                        .filter(
-                                            (review) =>
-                                                review.eventId === event.id,
-                                        )
-                                        .map((review) => (
-                                            <article
-                                                key={review.id}
-                                                className="rounded-2xl border border-[#ece8f5] bg-white p-5"
-                                            >
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="grid size-9 place-items-center rounded-full bg-[#eeeaff] text-xs font-black text-[#5148df]">
-                                                            {review.attendeeId ===
-                                                            "attendee-ayu"
-                                                                ? "AS"
-                                                                : "RN"}
-                                                        </div>
-                                                        <span className="text-sm font-bold">
-                                                            {review.attendeeId ===
-                                                            "attendee-ayu"
-                                                                ? "Ayu Sari"
-                                                                : "Raka Nugraha"}
-                                                        </span>
-                                                    </div>
-                                                    <span className="text-xs text-[#9893a8]">
-                                                        {review.createdAt}
-                                                    </span>
-                                                </div>
-                                                <div className="mt-3 flex gap-1">
-                                                    {[1, 2, 3, 4, 5].map(
-                                                        (star) => (
-                                                            <Star
-                                                                key={star}
-                                                                size={14}
-                                                                fill={
-                                                                    star <=
-                                                                    review.rating
-                                                                        ? "currentColor"
-                                                                        : "none"
-                                                                }
-                                                                className={
-                                                                    star <=
-                                                                    review.rating
-                                                                        ? "text-[#f6b51d]"
-                                                                        : "text-[#c9c4d4]"
-                                                                }
-                                                            />
-                                                        ),
+                                    {reviews.map((review) => (
+                                        <article
+                                            key={review.id}
+                                            className="rounded-2xl border border-[#ece8f5] bg-white p-5"
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm font-bold">
+                                                    {review.reviewerName}
+                                                </span>
+                                                <span className="text-xs text-[#9893a8]">
+                                                    {new Date(review.createdAt).toLocaleDateString(
+                                                        "id-ID",
+                                                        {
+                                                            day: "numeric",
+                                                            month: "long",
+                                                            year: "numeric",
+                                                        },
                                                     )}
-                                                </div>
+                                                </span>
+                                            </div>
+
+                                            <div className="mt-3 flex gap-1">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <Star
+                                                        key={star}
+                                                        size={14}
+                                                        fill={
+                                                            star <= review.rating
+                                                                ? "currentColor"
+                                                                : "none"
+                                                        }
+                                                        className={
+                                                            star <= review.rating
+                                                                ? "text-[#f6b51d]"
+                                                                : "text-[#c9c4d4]"
+                                                        }
+                                                    />
+                                                ))}
+                                            </div>
+
+                                            {review.comment && (
                                                 <p className="mt-3 text-sm leading-6 text-[#69657c]">
-                                                    {review.text}
+                                                    {review.comment}
                                                 </p>
-                                            </article>
-                                        ))}
+                                            )}
+                                        </article>
+                                    ))}
                                 </div>
                             ) : (
                                 <p className="mt-4 rounded-2xl bg-white p-5 text-sm text-[#77738b]">
-                                    Belum ada ulasan. Jadilah yang pertama
-                                    berbagi pengalaman.
+                                    Belum ada ulasan. Jadilah yang pertama berbagi pengalaman.
                                 </p>
                             )}
                         </section>
                     </section>
                     <aside className="h-fit rounded-3xl bg-white p-5 shadow-sm">
-                        <img
-                            src={event.image}
-                            alt=""
-                            className="h-36 w-full rounded-2xl object-cover"
-                        />
+                        {event.image ? (
+                            <img
+                                src={event.image}
+                                alt=""
+                                className="h-36 w-full rounded-2xl object-cover"
+                            />
+                        ) : (
+                            <div className="grid h-36 w-full place-items-center rounded-2xl bg-[#f0edff] text-sm font-semibold text-[#8c83c5]">
+                                No event image
+                            </div>
+                        )}
                         <h2 className="mt-4 font-black leading-5">
                             {event.title}
                         </h2>
@@ -440,7 +593,12 @@ export default function EventReviewPage({
                                 size={15}
                                 className="shrink-0 text-[#5148df]"
                             />
-                            {event.dateLabel}
+                            {new Date(event.date).toLocaleDateString("id-ID", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                                timeZone: "Asia/Jakarta",
+                            })}
                         </div>
                     </aside>
                 </div>

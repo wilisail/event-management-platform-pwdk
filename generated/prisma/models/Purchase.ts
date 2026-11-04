@@ -60,6 +60,7 @@ export type PurchaseMinAggregateOutputType = {
   completedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  voucherId: string | null
 }
 
 export type PurchaseMaxAggregateOutputType = {
@@ -80,6 +81,7 @@ export type PurchaseMaxAggregateOutputType = {
   completedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
+  voucherId: string | null
 }
 
 export type PurchaseCountAggregateOutputType = {
@@ -100,6 +102,7 @@ export type PurchaseCountAggregateOutputType = {
   completedAt: number
   createdAt: number
   updatedAt: number
+  voucherId: number
   _all: number
 }
 
@@ -138,6 +141,7 @@ export type PurchaseMinAggregateInputType = {
   completedAt?: true
   createdAt?: true
   updatedAt?: true
+  voucherId?: true
 }
 
 export type PurchaseMaxAggregateInputType = {
@@ -158,6 +162,7 @@ export type PurchaseMaxAggregateInputType = {
   completedAt?: true
   createdAt?: true
   updatedAt?: true
+  voucherId?: true
 }
 
 export type PurchaseCountAggregateInputType = {
@@ -178,6 +183,7 @@ export type PurchaseCountAggregateInputType = {
   completedAt?: true
   createdAt?: true
   updatedAt?: true
+  voucherId?: true
   _all?: true
 }
 
@@ -285,6 +291,7 @@ export type PurchaseGroupByOutputType = {
   completedAt: Date | null
   createdAt: Date
   updatedAt: Date
+  voucherId: string | null
   _count: PurchaseCountAggregateOutputType | null
   _avg: PurchaseAvgAggregateOutputType | null
   _sum: PurchaseSumAggregateOutputType | null
@@ -328,8 +335,10 @@ export type PurchaseWhereInput = {
   completedAt?: Prisma.DateTimeNullableFilter<"Purchase"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
+  voucherId?: Prisma.UuidNullableFilter<"Purchase"> | string | null
   customer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
+  voucher?: Prisma.XOR<Prisma.VoucherNullableScalarRelationFilter, Prisma.VoucherWhereInput> | null
   items?: Prisma.PurchaseItemListRelationFilter
 }
 
@@ -351,8 +360,10 @@ export type PurchaseOrderByWithRelationInput = {
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  voucherId?: Prisma.SortOrderInput | Prisma.SortOrder
   customer?: Prisma.UserOrderByWithRelationInput
   event?: Prisma.EventOrderByWithRelationInput
+  voucher?: Prisma.VoucherOrderByWithRelationInput
   items?: Prisma.PurchaseItemOrderByRelationAggregateInput
 }
 
@@ -378,8 +389,10 @@ export type PurchaseWhereUniqueInput = Prisma.AtLeast<{
   completedAt?: Prisma.DateTimeNullableFilter<"Purchase"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
+  voucherId?: Prisma.UuidNullableFilter<"Purchase"> | string | null
   customer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
+  voucher?: Prisma.XOR<Prisma.VoucherNullableScalarRelationFilter, Prisma.VoucherWhereInput> | null
   items?: Prisma.PurchaseItemListRelationFilter
 }, "id" | "reference" | "eventId_id">
 
@@ -401,6 +414,7 @@ export type PurchaseOrderByWithAggregationInput = {
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  voucherId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.PurchaseCountOrderByAggregateInput
   _avg?: Prisma.PurchaseAvgOrderByAggregateInput
   _max?: Prisma.PurchaseMaxOrderByAggregateInput
@@ -429,6 +443,7 @@ export type PurchaseScalarWhereWithAggregatesInput = {
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Purchase"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Purchase"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Purchase"> | Date | string
+  voucherId?: Prisma.UuidNullableWithAggregatesFilter<"Purchase"> | string | null
 }
 
 export type PurchaseCreateInput = {
@@ -449,6 +464,7 @@ export type PurchaseCreateInput = {
   updatedAt?: Date | string
   customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
   event: Prisma.EventCreateNestedOneWithoutPurchasesInput
+  voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
   items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
 }
 
@@ -470,6 +486,7 @@ export type PurchaseUncheckedCreateInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  voucherId?: string | null
   items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
 }
 
@@ -491,6 +508,7 @@ export type PurchaseUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
+  voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
   items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
 }
 
@@ -512,6 +530,7 @@ export type PurchaseUncheckedUpdateInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
 }
 
@@ -533,6 +552,7 @@ export type PurchaseCreateManyInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  voucherId?: string | null
 }
 
 export type PurchaseUpdateManyMutationInput = {
@@ -571,6 +591,7 @@ export type PurchaseUncheckedUpdateManyInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PurchaseListRelationFilter = {
@@ -606,6 +627,7 @@ export type PurchaseCountOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  voucherId?: Prisma.SortOrder
 }
 
 export type PurchaseAvgOrderByAggregateInput = {
@@ -634,6 +656,7 @@ export type PurchaseMaxOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  voucherId?: Prisma.SortOrder
 }
 
 export type PurchaseMinOrderByAggregateInput = {
@@ -654,6 +677,7 @@ export type PurchaseMinOrderByAggregateInput = {
   completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  voucherId?: Prisma.SortOrder
 }
 
 export type PurchaseSumOrderByAggregateInput = {
@@ -775,6 +799,48 @@ export type PurchaseUpdateOneRequiredWithoutItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PurchaseUpdateToOneWithWhereWithoutItemsInput, Prisma.PurchaseUpdateWithoutItemsInput>, Prisma.PurchaseUncheckedUpdateWithoutItemsInput>
 }
 
+export type PurchaseCreateNestedManyWithoutVoucherInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutVoucherInput, Prisma.PurchaseUncheckedCreateWithoutVoucherInput> | Prisma.PurchaseCreateWithoutVoucherInput[] | Prisma.PurchaseUncheckedCreateWithoutVoucherInput[]
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutVoucherInput | Prisma.PurchaseCreateOrConnectWithoutVoucherInput[]
+  createMany?: Prisma.PurchaseCreateManyVoucherInputEnvelope
+  connect?: Prisma.PurchaseWhereUniqueInput | Prisma.PurchaseWhereUniqueInput[]
+}
+
+export type PurchaseUncheckedCreateNestedManyWithoutVoucherInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutVoucherInput, Prisma.PurchaseUncheckedCreateWithoutVoucherInput> | Prisma.PurchaseCreateWithoutVoucherInput[] | Prisma.PurchaseUncheckedCreateWithoutVoucherInput[]
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutVoucherInput | Prisma.PurchaseCreateOrConnectWithoutVoucherInput[]
+  createMany?: Prisma.PurchaseCreateManyVoucherInputEnvelope
+  connect?: Prisma.PurchaseWhereUniqueInput | Prisma.PurchaseWhereUniqueInput[]
+}
+
+export type PurchaseUpdateManyWithoutVoucherNestedInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutVoucherInput, Prisma.PurchaseUncheckedCreateWithoutVoucherInput> | Prisma.PurchaseCreateWithoutVoucherInput[] | Prisma.PurchaseUncheckedCreateWithoutVoucherInput[]
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutVoucherInput | Prisma.PurchaseCreateOrConnectWithoutVoucherInput[]
+  upsert?: Prisma.PurchaseUpsertWithWhereUniqueWithoutVoucherInput | Prisma.PurchaseUpsertWithWhereUniqueWithoutVoucherInput[]
+  createMany?: Prisma.PurchaseCreateManyVoucherInputEnvelope
+  set?: Prisma.PurchaseWhereUniqueInput | Prisma.PurchaseWhereUniqueInput[]
+  disconnect?: Prisma.PurchaseWhereUniqueInput | Prisma.PurchaseWhereUniqueInput[]
+  delete?: Prisma.PurchaseWhereUniqueInput | Prisma.PurchaseWhereUniqueInput[]
+  connect?: Prisma.PurchaseWhereUniqueInput | Prisma.PurchaseWhereUniqueInput[]
+  update?: Prisma.PurchaseUpdateWithWhereUniqueWithoutVoucherInput | Prisma.PurchaseUpdateWithWhereUniqueWithoutVoucherInput[]
+  updateMany?: Prisma.PurchaseUpdateManyWithWhereWithoutVoucherInput | Prisma.PurchaseUpdateManyWithWhereWithoutVoucherInput[]
+  deleteMany?: Prisma.PurchaseScalarWhereInput | Prisma.PurchaseScalarWhereInput[]
+}
+
+export type PurchaseUncheckedUpdateManyWithoutVoucherNestedInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutVoucherInput, Prisma.PurchaseUncheckedCreateWithoutVoucherInput> | Prisma.PurchaseCreateWithoutVoucherInput[] | Prisma.PurchaseUncheckedCreateWithoutVoucherInput[]
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutVoucherInput | Prisma.PurchaseCreateOrConnectWithoutVoucherInput[]
+  upsert?: Prisma.PurchaseUpsertWithWhereUniqueWithoutVoucherInput | Prisma.PurchaseUpsertWithWhereUniqueWithoutVoucherInput[]
+  createMany?: Prisma.PurchaseCreateManyVoucherInputEnvelope
+  set?: Prisma.PurchaseWhereUniqueInput | Prisma.PurchaseWhereUniqueInput[]
+  disconnect?: Prisma.PurchaseWhereUniqueInput | Prisma.PurchaseWhereUniqueInput[]
+  delete?: Prisma.PurchaseWhereUniqueInput | Prisma.PurchaseWhereUniqueInput[]
+  connect?: Prisma.PurchaseWhereUniqueInput | Prisma.PurchaseWhereUniqueInput[]
+  update?: Prisma.PurchaseUpdateWithWhereUniqueWithoutVoucherInput | Prisma.PurchaseUpdateWithWhereUniqueWithoutVoucherInput[]
+  updateMany?: Prisma.PurchaseUpdateManyWithWhereWithoutVoucherInput | Prisma.PurchaseUpdateManyWithWhereWithoutVoucherInput[]
+  deleteMany?: Prisma.PurchaseScalarWhereInput | Prisma.PurchaseScalarWhereInput[]
+}
+
 export type PurchaseCreateWithoutCustomerInput = {
   id?: string
   reference: string
@@ -792,6 +858,7 @@ export type PurchaseCreateWithoutCustomerInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   event: Prisma.EventCreateNestedOneWithoutPurchasesInput
+  voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
   items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
 }
 
@@ -812,6 +879,7 @@ export type PurchaseUncheckedCreateWithoutCustomerInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  voucherId?: string | null
   items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
 }
 
@@ -862,6 +930,7 @@ export type PurchaseScalarWhereInput = {
   completedAt?: Prisma.DateTimeNullableFilter<"Purchase"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Purchase"> | Date | string
+  voucherId?: Prisma.UuidNullableFilter<"Purchase"> | string | null
 }
 
 export type PurchaseCreateWithoutEventInput = {
@@ -881,6 +950,7 @@ export type PurchaseCreateWithoutEventInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
+  voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
   items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
 }
 
@@ -901,6 +971,7 @@ export type PurchaseUncheckedCreateWithoutEventInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  voucherId?: string | null
   items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
 }
 
@@ -948,6 +1019,7 @@ export type PurchaseCreateWithoutItemsInput = {
   updatedAt?: Date | string
   customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
   event: Prisma.EventCreateNestedOneWithoutPurchasesInput
+  voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
 }
 
 export type PurchaseUncheckedCreateWithoutItemsInput = {
@@ -968,6 +1040,7 @@ export type PurchaseUncheckedCreateWithoutItemsInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  voucherId?: string | null
 }
 
 export type PurchaseCreateOrConnectWithoutItemsInput = {
@@ -1004,6 +1077,7 @@ export type PurchaseUpdateWithoutItemsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
+  voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
 }
 
 export type PurchaseUncheckedUpdateWithoutItemsInput = {
@@ -1024,6 +1098,74 @@ export type PurchaseUncheckedUpdateWithoutItemsInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type PurchaseCreateWithoutVoucherInput = {
+  id?: string
+  reference: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
+  event: Prisma.EventCreateNestedOneWithoutPurchasesInput
+  items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
+}
+
+export type PurchaseUncheckedCreateWithoutVoucherInput = {
+  id?: string
+  reference: string
+  customerId: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
+}
+
+export type PurchaseCreateOrConnectWithoutVoucherInput = {
+  where: Prisma.PurchaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.PurchaseCreateWithoutVoucherInput, Prisma.PurchaseUncheckedCreateWithoutVoucherInput>
+}
+
+export type PurchaseCreateManyVoucherInputEnvelope = {
+  data: Prisma.PurchaseCreateManyVoucherInput | Prisma.PurchaseCreateManyVoucherInput[]
+  skipDuplicates?: boolean
+}
+
+export type PurchaseUpsertWithWhereUniqueWithoutVoucherInput = {
+  where: Prisma.PurchaseWhereUniqueInput
+  update: Prisma.XOR<Prisma.PurchaseUpdateWithoutVoucherInput, Prisma.PurchaseUncheckedUpdateWithoutVoucherInput>
+  create: Prisma.XOR<Prisma.PurchaseCreateWithoutVoucherInput, Prisma.PurchaseUncheckedCreateWithoutVoucherInput>
+}
+
+export type PurchaseUpdateWithWhereUniqueWithoutVoucherInput = {
+  where: Prisma.PurchaseWhereUniqueInput
+  data: Prisma.XOR<Prisma.PurchaseUpdateWithoutVoucherInput, Prisma.PurchaseUncheckedUpdateWithoutVoucherInput>
+}
+
+export type PurchaseUpdateManyWithWhereWithoutVoucherInput = {
+  where: Prisma.PurchaseScalarWhereInput
+  data: Prisma.XOR<Prisma.PurchaseUpdateManyMutationInput, Prisma.PurchaseUncheckedUpdateManyWithoutVoucherInput>
 }
 
 export type PurchaseCreateManyCustomerInput = {
@@ -1043,6 +1185,7 @@ export type PurchaseCreateManyCustomerInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  voucherId?: string | null
 }
 
 export type PurchaseUpdateWithoutCustomerInput = {
@@ -1062,6 +1205,7 @@ export type PurchaseUpdateWithoutCustomerInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
+  voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
   items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
 }
 
@@ -1082,6 +1226,7 @@ export type PurchaseUncheckedUpdateWithoutCustomerInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
 }
 
@@ -1102,6 +1247,7 @@ export type PurchaseUncheckedUpdateManyWithoutCustomerInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PurchaseCreateManyEventInput = {
@@ -1121,6 +1267,7 @@ export type PurchaseCreateManyEventInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  voucherId?: string | null
 }
 
 export type PurchaseUpdateWithoutEventInput = {
@@ -1140,6 +1287,7 @@ export type PurchaseUpdateWithoutEventInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
+  voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
   items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
 }
 
@@ -1160,10 +1308,91 @@ export type PurchaseUncheckedUpdateWithoutEventInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
 }
 
 export type PurchaseUncheckedUpdateManyWithoutEventInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type PurchaseCreateManyVoucherInput = {
+  id?: string
+  reference: string
+  customerId: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PurchaseUpdateWithoutVoucherInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
+  event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
+  items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
+}
+
+export type PurchaseUncheckedUpdateWithoutVoucherInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
+}
+
+export type PurchaseUncheckedUpdateManyWithoutVoucherInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1231,8 +1460,10 @@ export type PurchaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  voucherId?: boolean
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
+  voucher?: boolean | Prisma.Purchase$voucherArgs<ExtArgs>
   items?: boolean | Prisma.Purchase$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.PurchaseCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["purchase"]>
@@ -1255,8 +1486,10 @@ export type PurchaseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  voucherId?: boolean
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
+  voucher?: boolean | Prisma.Purchase$voucherArgs<ExtArgs>
 }, ExtArgs["result"]["purchase"]>
 
 export type PurchaseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1277,8 +1510,10 @@ export type PurchaseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  voucherId?: boolean
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
+  voucher?: boolean | Prisma.Purchase$voucherArgs<ExtArgs>
 }, ExtArgs["result"]["purchase"]>
 
 export type PurchaseSelectScalar = {
@@ -1299,22 +1534,26 @@ export type PurchaseSelectScalar = {
   completedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  voucherId?: boolean
 }
 
-export type PurchaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reference" | "customerId" | "eventId" | "status" | "subtotal" | "voucherDiscount" | "couponDiscount" | "pointsUsed" | "totalPrice" | "paymentDueAt" | "proofUploadedAt" | "decisionDueAt" | "paymentProofKey" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["purchase"]>
+export type PurchaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reference" | "customerId" | "eventId" | "status" | "subtotal" | "voucherDiscount" | "couponDiscount" | "pointsUsed" | "totalPrice" | "paymentDueAt" | "proofUploadedAt" | "decisionDueAt" | "paymentProofKey" | "completedAt" | "createdAt" | "updatedAt" | "voucherId", ExtArgs["result"]["purchase"]>
 export type PurchaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
+  voucher?: boolean | Prisma.Purchase$voucherArgs<ExtArgs>
   items?: boolean | Prisma.Purchase$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.PurchaseCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PurchaseIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
+  voucher?: boolean | Prisma.Purchase$voucherArgs<ExtArgs>
 }
 export type PurchaseIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
+  voucher?: boolean | Prisma.Purchase$voucherArgs<ExtArgs>
 }
 
 export type $PurchasePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1322,6 +1561,7 @@ export type $PurchasePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     customer: Prisma.$UserPayload<ExtArgs>
     event: Prisma.$EventPayload<ExtArgs>
+    voucher: Prisma.$VoucherPayload<ExtArgs> | null
     items: Prisma.$PurchaseItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1342,6 +1582,7 @@ export type $PurchasePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     completedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    voucherId: string | null
   }, ExtArgs["result"]["purchase"]>
   composites: {}
 }
@@ -1738,6 +1979,7 @@ export interface Prisma__PurchaseClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   customer<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   event<T extends Prisma.EventDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventDefaultArgs<ExtArgs>>): Prisma.Prisma__EventClient<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  voucher<T extends Prisma.Purchase$voucherArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Purchase$voucherArgs<ExtArgs>>): Prisma.Prisma__VoucherClient<runtime.Types.Result.GetResult<Prisma.$VoucherPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.Purchase$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Purchase$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchaseItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1785,6 +2027,7 @@ export interface PurchaseFieldRefs {
   readonly completedAt: Prisma.FieldRef<"Purchase", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Purchase", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Purchase", 'DateTime'>
+  readonly voucherId: Prisma.FieldRef<"Purchase", 'String'>
 }
     
 
@@ -2183,6 +2426,25 @@ export type PurchaseDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Purchases to delete.
    */
   limit?: number
+}
+
+/**
+ * Purchase.voucher
+ */
+export type Purchase$voucherArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Voucher
+   */
+  select?: Prisma.VoucherSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Voucher
+   */
+  omit?: Prisma.VoucherOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VoucherInclude<ExtArgs> | null
+  where?: Prisma.VoucherWhereInput
 }
 
 /**

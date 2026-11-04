@@ -5,10 +5,13 @@ import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
 import type {
   CreateEventInput,
+  CreateEventReviewInput,
   DatabaseUserView,
   PublicEventView,
+  createEventReview,
   readPublishedEventById,
   readOrganizerProfile,
+  readEventReviews,
 } from './database'
 
 const createEventSchema = z.object({
@@ -44,6 +47,12 @@ const createEventSchema = z.object({
   },
 )
 
+const createEventReviewSchema = z.object({
+  userId: z.string().uuid(),
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().trim().max(1000).optional(),
+})
+
 export interface AppOptions {
   now?: () => Date
   data?: DemoData
@@ -56,6 +65,12 @@ export interface AppOptions {
   eventCreator?: (input: CreateEventInput) => Promise<unknown>
   organizerReader?: (organizerId: string) => Promise<
     Awaited<ReturnType<typeof readOrganizerProfile>>
+  >
+  reviewReader?: (eventId: string) => Promise<
+    Awaited<ReturnType<typeof readEventReviews>>
+  >
+  reviewCreator?: (input: CreateEventReviewInput) => Promise<
+    Awaited<ReturnType<typeof createEventReview>>
   >
 }
 
@@ -272,6 +287,152 @@ export function createApp(options: AppOptions = {}) {
   app.get('/api/demo/me', (req, res) => {
     const user = demoUser(req, res)
     if (user) ok(res, user, 'Demo identity; not a real login session')
+  })
+  app.get('/api/events/:eventId/reviews', async (req, res) => {
+    if (!options.reviewReader) {
+      fail(
+        res,
+        503,
+        'DATABASE_NOT_CONFIGURED',
+        'Event review database reader is not configured',
+      )
+      return
+    }
+
+    const eventId = z.string().uuid().safeParse(req.params.eventId)
+
+    if (!eventId.success) {
+      fail(res, 400, 'INVALID_EVENT_ID', 'Event ID must be a valid UUID')
+      return
+    }
+
+    try {
+      const reviews = await options.reviewReader(eventId.data)
+
+      if (!reviews) {
+        fail(res, 404, 'EVENT_NOT_FOUND', 'Event not found')
+        return
+      }
+
+      res.json({
+        success: true,
+        message: 'Event reviews',
+        data: reviews,
+        meta: {
+          mode: 'database',
+          contractVersion: '1.0',
+          asOf: now().toISOString(),
+        },
+      })
+    } catch (error) {
+      console.error(
+        `GET /api/events/${eventId.data}/reviews failed:`,
+        error,
+      )
+      fail(
+        res,
+        503,
+        'REVIEWS_UNAVAILABLE',
+        'Unable to retrieve event reviews from the database',
+      )
+    }
+  })
+  app.post('/api/events/:eventId/reviews', async (req, res) => {
+    if (!options.reviewCreator) {
+      fail(
+        res,
+        503,
+        'DATABASE_NOT_CONFIGURED',
+        'Event review database writer is not configured',
+      )
+      return
+    }
+
+    const eventId = z.string().uuid().safeParse(req.params.eventId)
+
+    if (!eventId.success) {
+      fail(res, 400, 'INVALID_EVENT_ID', 'Event ID must be a valid UUID')
+      return
+    }
+
+    const parsed = createEventReviewSchema.safeParse(req.body)
+
+    if (!parsed.success) {
+      res.status(400).json({
+        success: false,
+        code: 'INVALID_REVIEW_DATA',
+        message: 'Please check the review details',
+        errors: parsed.error.flatten(),
+      })
+      return
+    }
+
+    try {
+      const input: CreateEventReviewInput = {
+        eventId: eventId.data,
+        userId: parsed.data.userId,
+        rating: parsed.data.rating,
+        comment: parsed.data.comment,
+      }
+
+      const review = await options.reviewCreator(input)
+
+      res.status(201).json({
+        success: true,
+        message: 'Review created successfully',
+        data: review,
+        meta: {
+          mode: 'database',
+          contractVersion: '1.0',
+          asOf: now().toISOString(),
+        },
+      })
+    } catch (error) {
+      console.error(
+        `POST /api/events/${eventId.data}/reviews failed:`,
+        error,
+      )
+
+      if (error instanceof Error) {
+        if (error.message === 'EVENT_NOT_FOUND') {
+          fail(res, 404, 'EVENT_NOT_FOUND', 'Event not found')
+          return
+        }
+
+        if (error.message === 'PURCHASE_REQUIRED') {
+          fail(
+            res,
+            403,
+            'PURCHASE_REQUIRED',
+            'You must complete a purchase for this event before reviewing it',
+          )
+          return
+        }
+      }
+
+      // Prisma unique constraint violation: one review per customer per event.
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        error.code === 'P2002'
+      ) {
+        fail(
+          res,
+          409,
+          'REVIEW_ALREADY_EXISTS',
+          'You have already reviewed this event',
+        )
+        return
+      }
+
+      fail(
+        res,
+        500,
+        'REVIEW_CREATION_FAILED',
+        'Unable to create event review',
+      )
+    }
   })
   const databaseProbe = options.databaseProbe
   if (databaseProbe) {

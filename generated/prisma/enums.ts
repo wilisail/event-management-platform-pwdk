@@ -17,6 +17,14 @@ export const UserRole = {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
+export const VoucherDiscountType = {
+  PERCENTAGE: 'PERCENTAGE',
+  FIXED_AMOUNT: 'FIXED_AMOUNT'
+} as const
+
+export type VoucherDiscountType = (typeof VoucherDiscountType)[keyof typeof VoucherDiscountType]
+
+
 export const EventStatus = {
   DRAFT: 'DRAFT',
   PUBLISHED: 'PUBLISHED',

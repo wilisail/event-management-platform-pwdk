@@ -56,7 +56,8 @@ export const ModelName = {
   TicketType: 'TicketType',
   Purchase: 'Purchase',
   PurchaseItem: 'PurchaseItem',
-  Review: 'Review'
+  Review: 'Review',
+  Voucher: 'Voucher'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -143,7 +144,8 @@ export const PurchaseScalarFieldEnum = {
   paymentProofKey: 'paymentProofKey',
   completedAt: 'completedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  voucherId: 'voucherId'
 } as const
 
 export type PurchaseScalarFieldEnum = (typeof PurchaseScalarFieldEnum)[keyof typeof PurchaseScalarFieldEnum]
@@ -172,6 +174,26 @@ export const ReviewScalarFieldEnum = {
 } as const
 
 export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+export const VoucherScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  code: 'code',
+  discountType: 'discountType',
+  discountValue: 'discountValue',
+  maxDiscount: 'maxDiscount',
+  minimumPurchase: 'minimumPurchase',
+  usageLimit: 'usageLimit',
+  usageCount: 'usageCount',
+  startsAt: 'startsAt',
+  expiresAt: 'expiresAt',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoucherScalarFieldEnum = (typeof VoucherScalarFieldEnum)[keyof typeof VoucherScalarFieldEnum]
 
 
 export const SortOrder = {
