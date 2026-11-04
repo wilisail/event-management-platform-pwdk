@@ -29,6 +29,7 @@ model User {
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
+  attendanceMarked Attendance[] @relation("AttendanceMarker")
   events    Event[]
   purchases Purchase[]
   reviews   Review[]
@@ -131,6 +132,9 @@ model Purchase {
   event                 Event          @relation(fields: [eventId], references: [id], onDelete: Restrict)
   items                 PurchaseItem[]
   rewardRedemption      RewardRedemption?
+  decisionEmail         OrganizerDecisionEmail?
+  attendanceByEvent     Attendance[]   @relation("AttendanceEventPurchase")
+  attendanceByCustomer  Attendance[]   @relation("AttendanceCustomerPurchase")
 
   @@unique([eventId, id])
   @@unique([customerId, id])
@@ -139,6 +143,49 @@ model Purchase {
   @@index([status, paymentDueAt])
   @@index([status, decisionDueAt])
   @@map("purchases")
+  @@schema("temuevent")
+}
+
+// One private email job per terminal organizer decision.
+model OrganizerDecisionEmail {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  purchaseId     String    @unique @map("purchase_id") @db.Uuid
+  decision       String    @db.VarChar(6)
+  recipientEmail String    @map("recipient_email") @db.VarChar(254)
+  subject        String
+  textBody       String    @map("text_body")
+  htmlBody       String    @map("html_body")
+  deliveryState  String    @default("PENDING") @map("delivery_state") @db.VarChar(16)
+  attemptCount   Int       @default(0) @map("attempt_count")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  nextAttemptAt  DateTime  @default(now()) @map("next_attempt_at") @db.Timestamptz(3)
+  leaseId        String?   @map("lease_id") @db.Uuid
+  leasedUntil    DateTime? @map("leased_until") @db.Timestamptz(3)
+  retryUntil     DateTime? @map("retry_until") @db.Timestamptz(3)
+  acceptedAt     DateTime? @map("accepted_at") @db.Timestamptz(3)
+  purchase       Purchase  @relation(fields: [purchaseId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([deliveryState, nextAttemptAt])
+  @@index([deliveryState, leasedUntil])
+  @@map("organizer_decision_emails")
+  @@schema("temuevent")
+}
+
+model Attendance {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId             String   @map("event_id") @db.Uuid
+  customerId          String   @map("customer_id") @db.Uuid
+  transactionId       String   @map("transaction_id") @db.Uuid
+  markedByOrganizerId String   @map("marked_by_organizer_id") @db.Uuid
+  attendedAt          DateTime @default(now()) @map("attended_at") @db.Timestamptz(3)
+  eventPurchase       Purchase @relation("AttendanceEventPurchase", fields: [eventId, transactionId], references: [eventId, id], onDelete: Restrict, onUpdate: Restrict)
+  customerPurchase    Purchase @relation("AttendanceCustomerPurchase", fields: [customerId, transactionId], references: [customerId, id], onDelete: Restrict, onUpdate: Restrict)
+  markedByOrganizer   User     @relation("AttendanceMarker", fields: [markedByOrganizerId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([eventId, customerId])
+  @@index([transactionId])
+  @@index([markedByOrganizerId])
+  @@map("attendance")
   @@schema("temuevent")
 }
 
