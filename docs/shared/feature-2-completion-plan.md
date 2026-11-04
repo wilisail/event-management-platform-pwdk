@@ -35,11 +35,24 @@ Updated 4 November. The table tracks carryover within the existing schedule. **B
 | 4.2 Approve/reject | [F2 boundary and controls built locally](organizer-decision-reference.md). Isolated HTTP checks passed for role, ownership, CSRF, deadlines, and approval/rejection through a test-only transition. | Wire the F1/shared engine and check its behavior against real checkout, proof, seat, voucher and reward records. Verify proof viewing before enabling the integrated flow. |
 | 4.3 Decision emails | [Outbox and worker built locally](organizer-decision-email-reference.md). Isolated migration replay, rollback, deduplication, retries and stale lease checks passed. | Wire enqueue into the actual shared transition. Verify a live decision triggers one email in a controlled inbox. Day 6 supplies the hosted executor. |
 | 4.4 Combined decision checks | [Local verification passed](organizer-day4-verification-reference.md). All seven SQL migrations replayed, and all 138 existing F2 tests passed. | Day 6–7: run the F1 browser checkout through real proof and approval/rejection/expiry, including two independent database sessions contending for the transition. Confirm the customer-facing status, exactly-once restoration, and actual inbox delivery. |
-| 5.1 Statistics, 5.2 attendees and attendance | Statistics and attendance marking are planned. Confirmed attendee reads already exist. | Use F1 purchase status and completion time. Check an organizer can mark attendance only for their event and that F1 review eligibility uses attendance. |
+| 5.1 Organizer statistics | [Built locally and checked against an isolated database](organizer-statistics-reference.md). Daily, monthly and yearly reports use owned `DONE` purchases, final amounts and WIB completion dates. | Day 5.4: desktop/phone charts, filters and loading/empty/error states. Day 6–7: verify F1 persists final totals, quantities and `completedAt`, then compare the Preview report with a real test checkout. No new service or migration for 5.1. |
+| 5.2 Attendees and attendance | Confirmed attendee reads already exist. Manual attendance marking is planned. | Replay any additive attendance migration before applying to the intended non-production database. Check an organizer can mark attendance only for their event and that F1 review eligibility uses attendance. |
 | 5.3 Event management and ratings, 5.4 dashboard checks | Planned. | Link the real F1 screens/aggregates and check loading, empty, error and confirmation states on desktop and phone. |
 | 6.1 Deploy, 6.2 checks and executor | Release work remains. A protected account Preview exists. | Verify evaluator access, environment scope, demo identities, CI and a hosted executor that actually processes due work. |
 | 6.3 Full journeys, 6.4 submission | Planned. | Collect combined browser/API evidence and a reproducible run guide. Separate any pending provider or partner checks from verified results. |
 | 7 Integration buffer | **3–6 focused hours** already allocated. | Complete outstanding F1 checkout/session, proof and decision wiring and the combined verification above. Include event image compatibility only if Rizky's public poster contract requires it. |
+
+### Platform checks before hosted verification
+
+These checks belong to the existing parts above. Keep them separate from the status of the local code and count each check once.
+
+| Days | What to confirm in the target environment |
+| --- | --- |
+| 1–2 | Reuse the shared PostgreSQL schema and backend role. Verify the combined session and API routing in Preview with working demo accounts. Align F1 reward calls with the existing shared transaction contract. |
+| 3 | Verify private profile storage against the correct test project. Keep Resend credentials server-side and confirm the password reset email in the account owner's inbox. Reuse the current configuration if it works. |
+| 4 | Confirm Preview scopes and the intended database. Align F1 proof access and the shared transition, then apply the verified outbox migration with the authorized migration role in the target environment. Verify receipt, retries and a real expiry/decision race separately from the isolated evidence. |
+| 5 | Statistics uses existing purchase tables. Verify `completedAt` represents the actual completion instant and the report counts the same purchases as the combined app. Attendance and F1 management/review links have their own database and interface checks. |
+| 6–7 | Set up the evaluator deployment, approved routing and demo accounts. Verify the migration ledger, scheduled executor, protected assets and real email delivery. Run a combined browser journey before marking the release complete. |
 
 ## Sunday, 1 November — referrals and real rewards
 
