@@ -49,7 +49,7 @@ export function createPasswordResetService(options: { repository: ResetRepositor
   const key = createHmac('sha256', options.signingSecret).update('temuevent/password-reset/v1').digest()
   const tokenFor = (id: string) => createHmac('sha256', key).update(id).digest('base64url')
   const now = options.now ?? (() => new Date())
-  let flight: Promise<void> | undefined
+  let flight: Promise<boolean> | undefined
   async function drain() {
     await options.repository.prune()
     for (let count = 0; count < 5; count++) {
@@ -79,8 +79,11 @@ export function createPasswordResetService(options: { repository: ResetRepositor
       const id = randomUUID()
       await options.repository.enqueue(parsed.data.email, { id, tokenHash: resetDigest(tokenFor(id)) })
     },
-    dispatchPending(): Promise<void> {
-      if (!flight) flight = drain().catch(() => { options.onDeliveryFailure?.() }).finally(() => { flight = undefined })
+    dispatchPending(): Promise<boolean> {
+      if (!flight) flight = drain().then(() => true, () => {
+        options.onDeliveryFailure?.()
+        return false
+      }).finally(() => { flight = undefined })
       return flight
     },
     async reset(input: unknown): Promise<void> {

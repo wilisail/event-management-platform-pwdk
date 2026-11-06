@@ -41,6 +41,18 @@ button:disabled, input:disabled { cursor: wait; opacity: .65; }
 .owned-event p { color: var(--muted); margin: 0; font-size: 12px; }
 .owned-event button { flex-shrink: 0; }
 .organizer-attendees { margin-top: 22px; }
+.transaction-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; }
+.transaction-filter select { border: 1px solid var(--border); border-radius: var(--control-radius); padding: 8px; }
+.organizer-transaction-detail { margin-top: 22px; border-top: 1px solid var(--border); padding-top: 18px; }
+.transaction-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin: 16px 0; }
+.transaction-fields dt { color: var(--muted); font-size: 12px; }
+.transaction-fields dd { margin: 4px 0 0; font-weight: 600; }
+.statistics-chart-scroll { overflow-x: auto; margin: 18px 0; }
+.statistics-chart { display: grid; gap: 6px; }
+.statistics-chart-column { display: grid; gap: 6px; text-align: center; font-size: 11px; color: var(--muted); }
+.statistics-chart-track { display: flex; height: 120px; align-items: flex-end; justify-content: center; border-bottom: 1px solid var(--border); }
+.statistics-chart-track > span { width: min(65%, 34px); background: var(--primary); border-radius: 5px 5px 0 0; }
+.statistics-data summary { cursor: pointer; color: var(--primary); font-weight: 600; }
 .table-scroll { overflow-x: auto; margin-top: 20px; }
 .attendee-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
 .attendee-table th { color: var(--muted); font-size: 11px; font-weight: 700; }
