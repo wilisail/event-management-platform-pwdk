@@ -8,15 +8,66 @@ Progress, 1 November: day 2 subparts 1–4 and day 3 subparts 1, 2 and 4 are com
 
 Day 3 part 1 was brought forward and completed: own-name editing, real public organizer identity and photo upload/processing/storage are implemented. Real Supabase checks passed for upload, read, replacement, old-file cleanup, ownership/CSRF and customer/organizer visibility. The private bucket is configured; all test records/files were removed. TypeScript, 114 tests and the production build pass. See the [profile companion and Day 3–6 dependency map](profile-upload-reference.md). Day 3 is Monday's account section below; Day 4 is Tuesday's organizer-decision section, Day 5 Wednesday's dashboard and Day 6 Thursday's release.
 
+## Latest checkpoint — 6 November 2026
+
+The autonomous Day 6 follow-up is complete. The F2 snapshot is published in [draft PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40), full Node 22 CI passed (144 application tests, nine isolated migrations and the hosted-mode build), the protected F2 API passed 13 hosted checks, and the once-per-minute email scheduler returns HTTP 200 with both queues enabled. All nine live migration checksums match. Temporary QA records, five sessions and five refresh tokens are removed.
+
+The [operations companion](day-6-operations-reference.md) records the reusable script, cleanup evidence and its regression tests. The earlier owner migration commands, CI publication and Cron activation are no longer outstanding. Older dated checkpoints below are historical.
+
+| Remaining item | Owner / dependency |
+| --- | --- |
+| Actual reset email receipt and use of its link | Wili / inbox owner |
+| Protected Preview access and intended demo login | Evaluator with Wili |
+| Real checkout, private proof, shared transition, reward/voucher restoration and timeouts, attendance-gated reviews | F1 + integrator; complete the combined Day 7 journey when those interfaces are ready |
+
 ## Starting point after today
 
 Day 3 part 2 is complete: both roles can change their password after current-password verification and confirmation. The hash update and all-session revocation commit atomically; concurrent login creation rechecks its password proof under the same user lock. TypeScript, 125 tests, a clean production build, real Supabase rollback checks, six isolated PostgreSQL race scenarios and desktop/phone browser checks pass. See the [password-change companion](password-change-reference.md). Password recovery/email implementation is ready in part 3; its final inbox check is still pending.
 
 Implemented on `feature-2`: real registration, password hashing, persisted sessions/refresh rotation/logout, role/ownership guards, protected identity/event/confirmed-attendee APIs, and their connected account/login/organizer frontend. The shared PostgreSQL/Prisma starter and 30 sample purchases already exist. See the [frontend authentication checkpoint](frontend-authentication-reference.md).
 
-Not complete: production checkout/transition wiring to the implemented reward core; final recovery inbox confirmation; organizer decisions/notification emails/statistics; attendance recording; Feature 1 event-page links/rating integration; final combined testing/deployment. Incoming referral signup/issuance, own-name/photo editing with real private Storage, known-password change/all-session revocation and real public organizer identity are implemented. Fixture pages and sample rows do not count as finished business flows.
+Remaining after the 6 November follow-up: real F1 checkout/transition wiring to the reward and decision/outbox core, private proof integration, final inbox and evaluator-access confirmation, session-bound attendance-gated reviews, and the final combined journey. F2 statistics, attendance, organizer boundaries and the hosted email executor are implemented and independently verified. Incoming referral signup/issuance, own-name/photo editing with real private Storage, known-password change/all-session revocation and real public organizer identity are implemented. Fixture pages and sample rows do not count as finished business flows.
 
 The latest scoring is authentication/authorization **4**, referrals/profile/rewards **4**, organizer dashboard **2**. Completion means satisfying every required behavior, not merely obtaining the largest scoring items.
+
+## Days 1–7: built work and remaining verification
+
+Updated 6 November. The table tracks carryover within the existing schedule. **Built locally** means the Feature 2 code is in the working checkout. It still needs the listed runtime or integration checks. Finish cross-feature checks when both sides are ready, with Day 6 for the release journey and Day 7 for anything still pending. Count each shared check once.
+
+| Part | Current checkpoint | Remaining check or dependency |
+| --- | --- | --- |
+| 1.1 Registration and 1.2 sessions | Database-backed registration, login, refresh rotation and logout are built. Earlier checks are in the [registration](registration-reference.md) and [session](login-session-reference.md) notes. | Day 6–7: verify the combined deployment uses the same account/session authority and checkout resumes through an approved route after login. |
+| 1.3 Guards and 1.4 frontend | Roles, ownership, CSRF, account pages and organizer event/attendee reads are built. Earlier checks are in the [authorization](authorization-reference.md) and [frontend](frontend-authentication-reference.md) notes. | Day 6–7: exercise both roles and two organizers across the combined app, including expired sessions and direct API access. |
+| 2.1 Reward schema, 2.2 referral issuance, 2.3 wallet | Built and checked as F2 foundations. | Day 6–7: check the combined signup and checkout journey uses the recorded wallet balances, coupon values and expiry. |
+| 2.4 Reward operations | Reserve, consume and restore are implemented in a caller-owned SQL transaction. | F1 checkout and the shared transition must call this core. Day 4.4/6–7 checks the real reservation, deduction and exactly-once restoration. |
+| 3.1 Profile and 3.2 password change | Built. Hosted profile storage and password/session checks are recorded in their companion notes. | Recheck the roles on the evaluator URL in Day 6. Private payment proofs in 4.1 use a separate access contract. |
+| 3.3 Password recovery | Built; the live migration ledger is reconciled and the scheduled worker is active. | Actual inbox receipt and opening the reset link remain pending; no F1 dependency. |
+| 3.4 Account regression | Standalone F2 regression recorded as passed. | Day 6–7: rerun the key account flows in the final combined environment. |
+| 4.1 Organizer transaction reads | [Built locally](organizer-transactions-reference.md). Isolated HTTP checks passed for owner-scoped lists/details, all six statuses, and private proof metadata. | F1 private proof interface and a real test upload. Allow **5–10 min** to connect and **10–20 min** for the owning organizer/other organizer file-access check once ready. Use the Day 7 buffer if not ready in Day 6. |
+| 4.2 Approve/reject | [F2 boundary and controls built locally](organizer-decision-reference.md). Isolated HTTP checks passed for role, ownership, CSRF, deadlines, and approval/rejection through a test-only transition. | Wire the F1/shared engine and check its behavior against real checkout, proof, seat, voucher and reward records. Verify proof viewing before enabling the integrated flow. |
+| 4.3 Decision emails | [Outbox and worker built locally](organizer-decision-email-reference.md). Isolated migration replay, rollback, deduplication, retries and stale lease checks passed. | Wire enqueue into the actual shared transition. Verify a live decision triggers one email in a controlled inbox. Day 6 supplies the hosted executor. |
+| 4.4 Combined decision checks | [Local verification passed](organizer-day4-verification-reference.md). All seven SQL migrations replayed, and all 138 existing F2 tests passed. | Day 6–7: run the F1 browser checkout through real proof and approval/rejection/expiry, including two independent database sessions contending for the transition. Confirm the customer-facing status, exactly-once restoration, and actual inbox delivery. |
+| 5.1 Organizer statistics | [Built locally and checked against an isolated database](organizer-statistics-reference.md). Daily, monthly and yearly reports use owned `DONE` purchases, final amounts and WIB completion dates. Charts, filters and state changes passed the Day 5.4 browser checks. | Day 6–7: verify F1 persists final totals, quantities and `completedAt`, then compare the Preview report with a real test checkout. No new service or migration for 5.1. |
+| 5.2 Attendees and attendance | Migration applied; hosted owner/CSRF guards, stable repeat marking, attendee totals and isolation passed. | Wire the F1 review API to session identity and the attendance lookup, then verify the combined journey. |
+| 5.3 Event management and ratings | [Public links and F1 rating adapter built locally](organizer-links-reference.md). F2 links to published events and projects the average/count from F1 reviews when the feed is configured. | Day 6–7: set the F1 web and API origins in Preview, then compare links and ratings against real F1 rows. Enable create only after F1 derives the owner from the shared session. Edit needs an owner-checked F1 route. No new service or migration for 5.3. |
+| 5.4 Dashboard checks | [Local desktop and phone browser regression passed](organizer-dashboard-regression-reference.md). Checked transactions, statistics, attendance, public links, loading/empty/error states and both roles. Fixed focus restoration when closing transaction detail. | Day 6–7: rerun the combined Preview journey using real F1 checkout, proof and review data, the shared transition and the hosted email executor. No new setup for 5.4. |
+| 6.1 Deploy and evaluator access | [Protected Preview READY](day-6-preview-deployment-reference.md); nine live migration checksums, hosted QA login and access isolation verified. | Confirm the evaluator's own protection access and intended demo login. |
+| 6.2 Checks and executor | [Full Node 22 CI passed](day-6-ci-worker-reference.md); every-minute Cron is active, both queues return HTTP 200, durable queue progress verified. | Confirm actual inbox receipt; enqueue real purchase-decision mail through the shared F1 transition. |
+| 6.3 Full journeys and requirement audit | [Isolated journeys and hosted F2 checks passed](day-6-journey-audit-reference.md). QA fixture cleanup is complete. | Combined Preview still needs real F1 checkout, proof, shared transitions, voucher/reward restoration and attendance-gated reviews. |
+| 6.4 Submission handoff | [Run guide and updated companion notes](day-6-submission-handoff-reference.md), [reusable operations script and evidence](day-6-operations-reference.md) published. | Actual inbox, evaluator access and the combined Day 7 journey remain explicit acceptance checks. |
+| 7 Integration buffer | **3–6 focused hours** already allocated. | Complete outstanding F1 checkout/session, proof and decision wiring and the combined verification above. Include event image compatibility only if Rizky's public poster contract requires it. |
+
+### Platform checks before hosted verification
+
+These checks belong to the existing parts above. Keep them separate from the status of the local code and count each check once.
+
+| Days | What to confirm in the target environment |
+| --- | --- |
+| 1–2 | Reuse the shared PostgreSQL schema and backend role. Verify the combined session and API routing in Preview with working demo accounts. Align F1 reward calls with the existing shared transaction contract. |
+| 3 | Verify private profile storage against the correct test project. Keep Resend credentials server-side and confirm the password reset email in the account owner's inbox. Reuse the current configuration if it works. |
+| 4 | Confirm Preview scopes and the intended database. Align F1 proof access and the shared transition, then apply the verified outbox migration with the authorized migration role in the target environment. Verify receipt, retries and a real expiry/decision race separately from the isolated evidence. |
+| 5 | Statistics uses existing purchase tables. Verify `completedAt` represents the actual completion instant and the report counts the same purchases as the combined app. Attendance and F1 management/review links have their own database and interface checks. |
+| 6–7 | Set up the evaluator deployment, approved routing and demo accounts. Verify the migration ledger, scheduled executor, protected assets and real email delivery. Run a combined browser journey before marking the release complete. |
 
 ## Sunday, 1 November — referrals and real rewards
 
@@ -74,7 +125,7 @@ Dependency: feature 1 owns the purchase/proof/timeout engine. The feature 2 deci
 | Independent run guide, submission evidence and presentation Q&A | 45–60 min | Fresh install/run instructions, feature ownership, environment template, demo access, known limits and explanation without cue notes. |
 | **Total** | **3¼–5 h** | The final release is demonstrable, reproducible and evaluated against the PRD. |
 
-Existing seed identities have no password. They are not usable evaluator logins until an explicit demo-account setup is prepared. Keep passwords/connection credentials out of public notes; do not casually reset shared seed users. Ensure the dashboard demo account actually owns the events behind the 30 purchases.
+The original seed identities have no password. Day 6.1 created separate demo accounts with an owned sample purchase. Verify both hosted app roles before handing over the link. Share demo credentials privately.
 
 ## Time and completion conditions
 
