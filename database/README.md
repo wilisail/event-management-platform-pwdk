@@ -95,11 +95,7 @@ The two auth tables are applied and verified. [Account/session notes](../docs/sh
 
 database/prisma/migrations is the shared ordered migration history. The original 0_user_foundation file is copied byte-for-byte and was already applied. The event/purchase and account/session migrations are additive. It was applied through Supabase SQL, then registered as applied in Prisma's history using the matching SQL checksum. The original baseline record was preserved. There is no reset of the shared database.
 
-The application DATABASE_URL provides table operations, not schema ownership. Wili coordinates schema migration execution using a separate authorized connection. New changes can be supplied as draft Prisma models/SQL in feature-1; the starter is available immediately while those changes are discussed.
-
-Rizky can submit shared schema updates and new SQL migration files on `feature-1-migrations`. Wili reviews them and tests the combined F1/F2 flow before merging and applying them through the migration connection. SQL can be authored as a text file in a new directory under `database/prisma/migrations`, alongside the matching Prisma model update.
-
-`P3014` with `permission denied to create database` from `prisma migrate dev` means Prisma could not create its temporary shadow database. The shared runtime account has `NOCREATEDB`. GitHub branch access allows migration proposals to be committed, while `migrate dev` needs a separate development database with appropriate permissions. For a small additive change, a reviewed SQL proposal keeps the current handoff moving. The nullable `image_public_id` proposal is in `20261106021102_event_image_public_id/migration.sql`.
+The application DATABASE_URL is the runtime connection. Rizky now has independently owned development/shadow databases and a named migration login with shared F1 DDL access. His normal Prisma development commands can run independently, and he can apply incremental F1 SQL through the supplied shared migration connection. Wili coordinates combined-flow testing and shared-history reconciliation. See [Feature 1 developer access](../docs/shared/feature-1-developer-access-reference.md).
 
 db:deploy and db:status are migration-maintainer commands. Use an authorized DIRECT_URL for them; do not use the runtime account to reset, push or recreate the shared schema. Native Prisma CLI TLS options differ from the Node adapter; see the shared database setup note.
 
