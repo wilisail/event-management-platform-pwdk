@@ -13,10 +13,13 @@ import { prismaProfileRepository } from './profile/repository'
 import { createProfileService } from './profile/service'
 import { normalizePicture } from './profile/pictures'
 import { supabaseProfileStorage } from './profile/storage'
+import { featureOneOrganizerRating } from './profile/rating'
 
 import { createPasswordResetService, resetOrigin } from './auth/password-reset'
 import { prismaResetRepository } from './auth/reset-repository'
 import { resendMailer } from './email/resend'
+import { createDecisionEmailWorker } from './email/organizer-decision'
+import { prismaDecisionEmailRepository } from './email/organizer-decision-repository'
 
 const allowedOrigins = (
   process.env.F2_ALLOWED_ORIGINS || 'http://localhost:3000,http://localhost:3001'
@@ -25,7 +28,7 @@ const allowedOrigins = (
   .map(value => value.trim())
   .filter(Boolean)
 
-export async function createRuntime(options: { defer?: (work: Promise<void>) => void } = {}) {
+export async function createRuntime(options: { defer?: (work: Promise<unknown>) => void } = {}) {
   const hasDatabase = Boolean(process.env.DATABASE_URL)
   const showDatabaseProbe = process.env.F2_DATABASE_CHECK_ENABLED === 'true' &&
     process.env.NODE_ENV !== 'production'
@@ -49,12 +52,17 @@ export async function createRuntime(options: { defer?: (work: Promise<void>) => 
   const profileService = client ? createProfileService({
     repository: prismaProfileRepository(client, work => client.$transaction(work, { timeout: 10000 })),
     normalize: normalizePicture, storage: pictureStorage?.storage,
+    readOrganizerRating: featureOneOrganizerRating(process.env.F1_PUBLIC_API_ORIGIN),
     onCleanupFailure: () => console.warn('Profile storage cleanup needs attention; check orphaned uploads.'),
   }) : undefined
   const mailer = resendMailer(), origin = resetOrigin()
+  const decisionEmailWorker = client && mailer
+    ? createDecisionEmailWorker(prismaDecisionEmailRepository(client), mailer,
+      () => console.warn('Organizer decision email needs attention.')) : undefined
   const passwordResetService = client && signingSecret && mailer && origin
     ? createPasswordResetService({ repository: prismaResetRepository(client, work => client.$transaction(work, { timeout: 10000 })),
       signingSecret, mailer, origin, onDeliveryFailure: () => console.warn('Password recovery delivery needs attention; no account/token details logged.') }) : undefined
+  const jobSecret = process.env.F2_JOB_RUNNER_SECRET
   const app = createApp({
     allowedOrigins: [...allowedOrigins, ...(process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL ? ['https://' + process.env.VERCEL_URL] : [])], registrationService, sessionService, profileService, passwordResetService, defer: options.defer,
     passwordChangeService: client && sessionService ? createPasswordChangeService({
@@ -64,6 +72,13 @@ export async function createRuntime(options: { defer?: (work: Promise<void>) => 
     rewardRepository: client ? prismaRewardReadRepository(client, work => client.$transaction(work,
       { isolationLevel: 'RepeatableRead', timeout: 10000 })) : undefined,
     databaseProbe: showDatabaseProbe ? database?.readSeededDatabaseUser : undefined,
+    checkReadiness: client && sessionService ? async () => { await client.$queryRaw`SELECT 1` } : undefined,
+    scheduledEmailJobs: jobSecret ? {
+      secret: jobSecret,
+      passwordReset: passwordResetService?.dispatchPending,
+      decisionEmails: process.env.F2_DECISION_EMAIL_WORKER_ENABLED === 'true'
+        ? decisionEmailWorker?.dispatchPending : null,
+    } : undefined,
   })
-  return { app, passwordResetService, disconnect: database?.disconnectDatabase }
+  return { app, passwordResetService, decisionEmailWorker, disconnect: database?.disconnectDatabase }
 }

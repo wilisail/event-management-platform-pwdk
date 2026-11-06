@@ -12,3 +12,9 @@ export const date = (value: string) =>
     year: 'numeric',
     timeZone: 'Asia/Jakarta',
   }).format(new Date(value))
+
+export const dateTime = (value: string) =>
+  new Intl.DateTimeFormat('id-ID', {
+    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+    timeZone: 'Asia/Jakarta', timeZoneName: 'short',
+  }).format(new Date(value))

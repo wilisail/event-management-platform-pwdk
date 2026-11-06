@@ -3,11 +3,15 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import type { OrganizerView } from '../contracts/types'
+import { featureOneUrl } from '../lib/feature-one-links'
 import { UiLogo } from './ui-logo'
 import { ProfileAvatar } from './profile-avatar'
 
+const ratingFormat = new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 })
+
 export function OrganizerProfile({ organizerId }: { organizerId: string }) {
   const [profile, setProfile] = useState<OrganizerView | null>(null), [error, setError] = useState('')
+  const reviewsUrl = featureOneUrl('/organizers/' + encodeURIComponent(organizerId))
   useEffect(() => {
     const abort = new AbortController()
     setProfile(null); setError('')
@@ -25,8 +29,12 @@ export function OrganizerProfile({ organizerId }: { organizerId: string }) {
         <section className="panel public-hero"><ProfileAvatar name={profile.name} url={profile.profilePictureUrl} />
           <p className="eyebrow">EVENT ORGANIZER</p><h1>{profile.name}</h1>{profile.bio && <p>{profile.bio}</p>}</section>
         <section className="panel"><h2>Ulasan & rating</h2>{profile.ratingSummary
-          ? <p>{profile.ratingSummary.average} / 5 · {profile.ratingSummary.count} ulasan</p>
-          : <p>Ulasan belum tersedia.</p>}</section>
+          ? profile.ratingSummary.count > 0
+            ? <p>{ratingFormat.format(profile.ratingSummary.average)} / 5 · {profile.ratingSummary.count} ulasan</p>
+            : <p>Belum ada ulasan.</p>
+          : <p>Ulasan belum tersedia.</p>}
+          {reviewsUrl && <a className="link" href={reviewsUrl}>Lihat event dan ulasan</a>}
+        </section>
       </>}
     <Link className="link" href="/account">← Kembali ke akun</Link>
   </main>

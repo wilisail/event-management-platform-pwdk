@@ -1,9 +1,14 @@
 # Shared project record
 
-Updated: 2 November 2026.
+Updated: 6 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Day 6 automated operations](day-6-operations-reference.md) | Verified hosted checks, nine migration checksums, active scheduler, exact QA cleanup, reusable status/cleanup script and remaining manual/integration gates |
+| [Day 6 hosted Preview](day-6-preview-deployment-reference.md) | Current protected URL, migrated tables, verified hosted roles and evaluator-access follow-up |
+| [Day 6 CI and worker](day-6-ci-worker-reference.md) | Full Node 22 CI result, compatibility fix, active Cron/queue evidence and inbox distinction |
+| [Day 6 journey audit](day-6-journey-audit-reference.md) | Isolated evidence and remaining real F1 checkout, proof, transition and review checks |
+| [Day 6 submission handoff](day-6-submission-handoff-reference.md) | Reproducible standalone run, evaluator sequence, evidence and historical F1 audit |
 | [Review schema integration](review-schema-reference.md) | Rizky's Review model, applied shared table, backend permissions, validation, adoption and remaining attendance/API work |
 | [Account regression and learning review](account-regression-reference.md) | Day 3 part 4: combined account journeys, cross-tab stale-edit fix, responsive/error checks, foundational concepts and Resend inbox handoff |
 | [Forgotten-password recovery and email](password-reset-reference.md) | Day 3 part 3: reset flow, private token/delivery queue, Resend setup, verification and Feature 1 email ownership contract |

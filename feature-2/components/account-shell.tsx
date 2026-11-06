@@ -5,12 +5,14 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState, type ReactNode } from 'react'
 import type { Role } from '../contracts/types'
 import { accountError, safeReturnPath } from '../lib/auth-client'
+import { featureOneUrl } from '../lib/feature-one-links'
 import { useAuth } from './auth-provider'
 import { UiLogo } from './ui-logo'
 
 export function AccountHeader() {
   const auth = useAuth(), router = useRouter()
   const [busy, setBusy] = useState(false), [error, setError] = useState('')
+  const discoveryUrl = featureOneUrl('/')
   const signOut = async () => {
     setBusy(true); setError('')
     try { await auth.signOut(); router.replace('/login') }
@@ -21,7 +23,7 @@ export function AccountHeader() {
     <header className="header"><div className="width flex items-center justify-between gap-3">
       <UiLogo />
       <nav className="account-nav" aria-label="Navigasi utama">
-        <a className="link discovery-link" href={process.env.NEXT_PUBLIC_F1_ORIGIN || 'http://localhost:3000'}>Jelajahi event ↗</a>
+        {discoveryUrl && <a className="link discovery-link" href={discoveryUrl}>Jelajahi event ↗</a>}
         {auth.user?.role === 'ORGANIZER' && <Link className="link" href="/organizer">Dashboard</Link>}
         {auth.user ? <><Link className="link" href="/account">Akun saya</Link>
           <button className="secondary compact" onClick={signOut} disabled={busy}>{busy ? 'Keluar…' : 'Keluar'}</button></>

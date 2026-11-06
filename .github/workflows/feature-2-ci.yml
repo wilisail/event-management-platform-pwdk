@@ -1,0 +1,45 @@
+name: Feature 2 CI
+
+on:
+  push:
+    branches: [main, feature-2, day6-feature-2-ci]
+    paths: ['feature-2/**', 'database/**', '.github/workflows/feature-2-ci.yml']
+  pull_request:
+    paths: ['feature-2/**', 'database/**', '.github/workflows/feature-2-ci.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: feature-2
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      F2_HOSTED_API: 'true'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            feature-2/package-lock.json
+            database/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - name: Replay migrations and test the scheduler on a disposable database
+        working-directory: database
+        run: |
+          npm ci --no-audit --no-fund
+          node --import tsx scripts/verify-day4-isolated.mjs
+      - name: Verify operations status and bounded QA cleanup
+        working-directory: database
+        run: node --test scripts/day6-ops.test.mjs
+      - run: npm run build
