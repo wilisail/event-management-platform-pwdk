@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently --kill-others -n web,api \"npm:dev:web\" \"npm:dev:api\"",
     "dev:web": "next dev --hostname 127.0.0.1 --port 3001",
-    "dev:api": "node --import tsx --watch server/index.ts",
+    "dev:api": "node --import ./server/rizky-env.mjs --import tsx --watch server/index.ts",
     "build": "next build",
     "start:web": "next start --hostname 127.0.0.1 --port 3001",
     "start:api": "node --import tsx server/index.ts",
@@ -15,12 +15,13 @@
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
     "db:seed": "prisma db seed",
-    "db:check": "node --import tsx server/check-database.ts",
+    "db:check": "node --import ./server/rizky-env.mjs --import tsx server/check-database.ts",
     "predev": "npm run db:generate",
     "pretypecheck": "npm run db:generate",
     "prebuild": "npm run db:generate",
     "predev:api": "npm run db:generate",
-    "prestart:api": "npm run db:generate"
+    "prestart:api": "npm run db:generate",
+    "db:shared": "prisma db execute --config prisma.shared.config.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

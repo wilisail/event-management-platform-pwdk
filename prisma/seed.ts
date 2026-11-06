@@ -4,7 +4,7 @@ async function seed() {
   const db = databaseClient()
   const users = [
     { email: 'ayu@example.test', name: 'Ayu Pratiwi', role: 'CUSTOMER' as const, referralCode: 'AYU7K2P' },
-    { email: 'organizer@example.test', name: 'Jakarta Coffee Collective', role: 'ORGANIZER' as const, referralCode: 'JCCDEMO' },
+    { id: '073ae087-205f-4f45-8b96-c7e4fb3efae4', email: 'organizer@example.test', name: 'Jakarta Coffee Collective', role: 'ORGANIZER' as const, referralCode: 'JCCDEMO' },
   ]
   await db.$transaction(async (tx) => {
     for (const user of users) {
