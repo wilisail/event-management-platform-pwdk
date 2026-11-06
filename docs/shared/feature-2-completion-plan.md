@@ -10,7 +10,7 @@ Day 3 part 1 was brought forward and completed: own-name editing, real public or
 
 ## Latest checkpoint — 6 November 2026
 
-The autonomous Day 6 follow-up is complete. The F2 snapshot is published in [draft PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40), full Node 22 CI passed (144 application tests, nine isolated migrations and the hosted-mode build), the protected F2 API passed 13 hosted checks, and the once-per-minute email scheduler returns HTTP 200 with both queues enabled. All nine live migration checksums match. Temporary QA records, five sessions and five refresh tokens are removed.
+The autonomous Day 6 follow-up is complete. The F2 snapshot is published in [draft PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40), [full Node 22 CI passed](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42178273975) (144 application tests, two operations regression tests, nine isolated migrations and the hosted-mode build), the protected F2 API passed 13 hosted checks, and the once-per-minute email scheduler returns HTTP 200 with both queues enabled. All nine live migration checksums match. Temporary QA records, five sessions and five refresh tokens are removed.
 
 The [operations companion](day-6-operations-reference.md) records the reusable script, cleanup evidence and its regression tests. The earlier owner migration commands, CI publication and Cron activation are no longer outstanding. Older dated checkpoints below are historical.
 

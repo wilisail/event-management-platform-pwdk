@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-11-06T06:56:06.387344+00:00",
+  "checkedAt": "2026-11-06T07:04:42.903187+00:00",
   "timezone": "Asia/Jakarta",
   "applicationPreview": "https://temuevent-8jbtjn050-andor2.vercel.app/login",
   "ci": {
     "branch": "day6-feature-2-ci",
     "pullRequest": 40,
-    "verifiedCommit": "64e72b942e5e1447efdc46352f17d08250fb92aa",
-    "runId": 42170565389,
+    "verifiedCommit": "cd6e6b641a52fef9d14e046d981d72d7ffdaa697",
+    "runId": 42178273975,
     "conclusion": "success",
     "applicationTests": 144,
     "isolatedMigrations": 9,
     "build": "passed",
     "opsTests": {
       "count": 2,
-      "result": "passed locally; added to follow-up CI"
+      "result": "passed in the full Node 22 CI run"
     }
   },
   "hostedVerification": {
@@ -45,31 +45,31 @@
     "cronRuns": [
       {
         "status": "succeeded",
-        "end_time": "2026-11-06T06:56:00.020898+00:00",
-        "start_time": "2026-11-06T06:56:00.015408+00:00"
+        "end_time": "2026-11-06T07:04:00.020238+00:00",
+        "start_time": "2026-11-06T07:04:00.016372+00:00"
       },
       {
         "status": "succeeded",
-        "end_time": "2026-11-06T06:55:00.028204+00:00",
-        "start_time": "2026-11-06T06:55:00.022156+00:00"
+        "end_time": "2026-11-06T07:03:00.103925+00:00",
+        "start_time": "2026-11-06T07:03:00.076277+00:00"
       },
       {
         "status": "succeeded",
-        "end_time": "2026-11-06T06:54:00.019767+00:00",
-        "start_time": "2026-11-06T06:54:00.015027+00:00"
+        "end_time": "2026-11-06T07:02:00.02239+00:00",
+        "start_time": "2026-11-06T07:02:00.019085+00:00"
       },
       {
         "status": "succeeded",
-        "end_time": "2026-11-06T06:53:00.064183+00:00",
-        "start_time": "2026-11-06T06:53:00.053101+00:00"
+        "end_time": "2026-11-06T07:01:00.028173+00:00",
+        "start_time": "2026-11-06T07:01:00.015291+00:00"
       },
       {
         "status": "succeeded",
-        "end_time": "2026-11-06T06:52:00.08199+00:00",
-        "start_time": "2026-11-06T06:52:00.064701+00:00"
+        "end_time": "2026-11-06T07:00:00.017961+00:00",
+        "start_time": "2026-11-06T07:00:00.01465+00:00"
       }
     ],
-    "checkedAt": "2026-11-06T06:56:06.387344+00:00",
+    "checkedAt": "2026-11-06T07:04:42.903187+00:00",
     "scheduler": [
       {
         "name": "temuevent-preview-email-jobs",
@@ -118,9 +118,9 @@
     ],
     "workerResponses": [
       {
-        "id": 78,
+        "id": 86,
         "fresh": true,
-        "created": "2026-11-06T06:56:00.020813+00:00",
+        "created": "2026-11-06T07:04:00.019642+00:00",
         "success": true,
         "timed_out": false,
         "status_code": 200,
@@ -128,9 +128,9 @@
         "decision_emails": true
       },
       {
-        "id": 77,
+        "id": 85,
         "fresh": true,
-        "created": "2026-11-06T06:55:00.028084+00:00",
+        "created": "2026-11-06T07:03:00.105189+00:00",
         "success": true,
         "timed_out": false,
         "status_code": 200,
@@ -138,9 +138,9 @@
         "decision_emails": true
       },
       {
-        "id": 76,
+        "id": 84,
         "fresh": true,
-        "created": "2026-11-06T06:54:00.01968+00:00",
+        "created": "2026-11-06T07:02:00.022273+00:00",
         "success": true,
         "timed_out": false,
         "status_code": 200,
@@ -148,9 +148,9 @@
         "decision_emails": true
       },
       {
-        "id": 75,
+        "id": 83,
         "fresh": false,
-        "created": "2026-11-06T06:53:00.063132+00:00",
+        "created": "2026-11-06T07:01:00.028066+00:00",
         "success": true,
         "timed_out": false,
         "status_code": 200,
@@ -158,9 +158,9 @@
         "decision_emails": true
       },
       {
-        "id": 74,
+        "id": 82,
         "fresh": false,
-        "created": "2026-11-06T06:52:00.081872+00:00",
+        "created": "2026-11-06T07:00:00.017849+00:00",
         "success": true,
         "timed_out": false,
         "status_code": 200,

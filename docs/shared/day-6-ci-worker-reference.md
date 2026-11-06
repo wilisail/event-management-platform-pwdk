@@ -4,9 +4,9 @@ Updated 6 November 2026, Asia/Jakarta. The CI branch is published, its full Node
 
 ## CI evidence
 
-The reviewed snapshot is on `day6-feature-2-ci`, proposed in [draft PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40). [Run 42170565389](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42170565389) passed dependency installation, TypeScript, all 144 application tests, nine SQL migration replays and organizer/worker/attendance checks against a disposable database, then the production build in hosted mode.
+The reviewed snapshot is on `day6-feature-2-ci`, proposed in [draft PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40). [Run 42178273975](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42178273975) passed dependency installation, TypeScript, all 144 application tests, nine SQL migration replays and organizer/worker/attendance checks against a disposable database, then the production build in hosted mode.
 
-An earlier run passed typecheck and 144 tests but failed at the disposable harness's Node 22 import boundary. Commit `64e72b9` corrected CommonJS loading; the subsequent full run passed. The operations follow-up adds two regression tests for the reusable status/cleanup script to the same CI workflow. These need no project secrets or live database.
+An earlier run passed typecheck and 144 tests but failed at the disposable harness's Node 22 import boundary. Commit `64e72b9` corrected CommonJS loading; the subsequent full run passed. The same full run also passed both new operations regression tests for the reusable status/cleanup script. They need no project secrets or live database.
 
 ## Hosted execution
 
