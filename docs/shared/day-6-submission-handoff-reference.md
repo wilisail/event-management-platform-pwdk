@@ -1,16 +1,16 @@
 # Day 6 Part 4 — Feature 2 submission handoff
 
-Updated 4 November 2026. This handoff covers the standalone Feature 2 run, demo sequence and evidence. The protected Feature 2 Preview build reports `READY`. Hosted sign-in for the evaluator and the combined Feature 1 journey remain release checks. [Protected Feature 2 Preview](https://temuevent-npdasptr5-andor2.vercel.app/login)
+Updated 6 November 2026, Asia/Jakarta. Automated F2 release checks and cleanup are complete; actual inbox receipt, evaluator access and the combined F1 journey remain acceptance checks. Use the protected [Feature 2 Preview](https://temuevent-8jbtjn050-andor2.vercel.app/login) and the [automated operations evidence](day-6-operations-reference.md).
 
 ## Run Feature 2 independently
 
-Use Node 22.12+ and the current reviewed Feature 2 working snapshot. Reproducing this exact build from GitHub depends on the separate CI branch publication recorded in Day 6.2.
+Use Node 22.12+ and the current reviewed Feature 2 working snapshot. Use the reviewed `day6-feature-2-ci` branch in [draft PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40); the application snapshot is published and its full CI run passed.
 
 From the repository root, install dependencies and run the application and disposable-database checks.
 
 ```sh
 (cd feature-2 && npm ci && npm run typecheck && npm test && npm run build)
-(cd database && npm ci && node --import tsx scripts/verify-day4-isolated.mjs)
+(cd database && npm ci && node --import tsx scripts/verify-day4-isolated.mjs && node --test scripts/day6-ops.test.mjs)
 ```
 
 For the standalone UI, run `cd feature-2` and `npm run dev` in a separate terminal. Open `/preview` on `http://localhost:3001` for the sample UI. Its Express API runs on port 4002, and the browser reaches it at the same origin through the Next.js rewrite. The sample UI works without credentials. For actual registration and login, configure the intended non-production `DATABASE_URL` and a private `AUTH_JWT_SECRET` in `feature-2/.env` using `.env.example`. The intended database needs the shared migrations. Photo storage, password recovery and the scheduled worker use the separate settings in their companion notes. [Feature 2 README](https://github.com/wilisail/event-management-platform-pwdk/blob/feature-2/feature-2/README.md)
@@ -19,9 +19,9 @@ For the standalone UI, run `cd feature-2` and `npm run dev` in a separate termin
 
 | Order | What to show | Evidence or gate |
 | --- | --- | --- |
-| 1 | Sign in as a customer, open the referral and wallet tabs, and show the coupon and points. | Day 6.3 verified mobile signup, login and real referral ledger changes in a disposable database. Use the dedicated demo accounts once hosted sign-in is verified. |
-| 2 | Sign in as the demo organizer, open the owned transaction, and show confirmed attendees and sales. | A separate organizer and a confirmed Rp150,000 purchase were prepared in Supabase. Verify that the hosted account can see its own data and a customer cannot access the organizer API. |
-| 3 | Demonstrate approval, rejection, attendance and email through the isolated journey evidence. | Day 6.3 used a checkout adapter and simulated email. The live sequence depends on F1 checkout and proof, the shared transition, owner migrations, and the scheduled worker. |
+| 1 | Sign in as a customer, open the referral and wallet tabs, and show the coupon and points. | Day 6.3 verified mobile signup, login and real referral ledger changes in a disposable database. Hosted QA login for both roles passed. Use the separately prepared demo identities for the evaluator; the disposable QA identities have been removed. |
+| 2 | Sign in as the demo organizer, open the owned transaction, and show confirmed attendees and sales. | A separate organizer and a confirmed Rp150,000 purchase were prepared in Supabase. Hosted QA verified the owned Rp150,000 purchase, two tickets, customer role denial and cross-organizer isolation. Its disposable dataset was removed; verify the intended evaluator demo separately. |
+| 3 | Demonstrate approval, rejection, attendance and email through the isolated journey evidence. | Day 6.3 used a checkout adapter and simulated email. The live sequence depends on F1 checkout, private proof and the shared transition. Owner migrations and the hosted email worker are now verified. |
 
 Before handing over the protected link, confirm the evaluator can open it with their Vercel access and sign in to both app roles. Share the app demo credentials privately. Use the Day 6.1 and 6.2 notes for the database and worker setup, and the Day 6.3 note for the combined acceptance sequence. [Deployment and owner steps](day-6-preview-deployment-reference.md) · [CI and worker follow-up](day-6-ci-worker-reference.md) · [Journey evidence](day-6-journey-audit-reference.md)
 
@@ -36,7 +36,9 @@ The fresh local copy passed both dependency installs, TypeScript, all **144 test
 | How do rewards stay consistent? | The checkout reserves the coupon and exact point allocations in the same database transaction as the purchase. The final status tells the transition whether to consume or restore them. The outbox writes with the decision and retries independently. |
 | What enables a review? | Feature 2 keeps attendance separate from the `DONE` purchase. The combined review API needs the verified session identity and that attendance check. |
 
-## Feature 1 status at handoff
+## Feature 1 status at the original 4 November handoff
+
+This table is historical evidence for `7d072ba`, not the current F1 branch. The 6 November follow-up confirms Cloudinary helpers, independent developer migration access, the shared `image_public_id` column and its F2 schema mirror. F2 attendance/outbox migrations are now applied. The full F1 checkout/private-proof/shared-transition/review acceptance flow remains open.
 
 | Area | What was checked |
 | --- | --- |

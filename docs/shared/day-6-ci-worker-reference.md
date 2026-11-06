@@ -1,38 +1,30 @@
-# Day 6 Part 2 — CI, readiness and scheduled email
+# Day 6 Part 2 — CI and scheduled email worker
 
-Updated 4 November 2026. The release checks and worker endpoint are implemented. The new protected Preview built successfully. The scheduled endpoint is disabled there until the owner steps below are done. [Day 6.2 Preview](https://temuevent-npdasptr5-andor2.vercel.app/login)
+Updated 6 November 2026, Asia/Jakarta. The CI branch is published, its full Node 22 workflow is green, and the email schedule is active in Preview.
 
-| Check | Evidence |
+## CI evidence
+
+The reviewed snapshot is on `day6-feature-2-ci`, proposed in [draft PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40). [Run 42170565389](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42170565389) passed dependency installation, TypeScript, all 144 application tests, nine SQL migration replays and organizer/worker/attendance checks against a disposable database, then the production build in hosted mode.
+
+An earlier run passed typecheck and 144 tests but failed at the disposable harness's Node 22 import boundary. Commit `64e72b9` corrected CommonJS loading; the subsequent full run passed. The operations follow-up adds two regression tests for the reusable status/cleanup script to the same CI workflow. These need no project secrets or live database.
+
+## Hosted execution
+
+| Boundary | Verified behavior |
 | --- | --- |
-| CI | The local `.github/workflows/feature-2-ci.yml` uses Node 22 and runs `npm ci`, typecheck, the test suite, a disposable database replay and the hosted-mode build. It has read-only repository permissions and takes no application secrets. The workflow parsed locally and its checks passed in the workspace. Automatic approval review blocked publication of the app and migration snapshot to a GitHub branch, so a GitHub Actions run remains pending. |
-| Health and readiness | `/api/health` reports liveness. `/api/ready` checks the configured auth backend and runs a lightweight database query. It returns only `ready: true` or `ready: false`. It does not check that migrations are current. Responses use `Cache-Control: no-store`. |
-| Scheduled email | `POST /api/internal/jobs/run` requires a dedicated bearer secret. It invokes the existing password reset and optional decision email workers. A queue scan failure produces HTTP 503. Logs include queue outcomes and duration, with no recipient addresses, tokens or message bodies. |
-| Isolated check | A timer called the same route against a disposable PostgreSQL database with all eight migrations replayed. A simulated provider returned HTTP 429 on the first attempt and accepted both email jobs on the next tick. The worker recorded both accepted states with the same idempotency keys on retry. No browser or live mail provider was involved. TypeScript, the hosted build and all 144 tests passed locally. |
+| Readiness | `GET /api/ready` returns a safe readiness boolean and no-store headers; it is not a migration ledger check. |
+| Worker authorization | `POST /api/internal/jobs/run` rejects a missing bearer token and query injection. The dedicated secret authorizes both configured email queues. Vercel protection has its separate bypass boundary. |
+| Scheduler | Supabase job `temuevent-preview-email-jobs`, active every minute, targets `https://temuevent-8jbtjn050-andor2.vercel.app/api/internal/jobs/run`. Secrets stay in Vault. |
+| HTTP result | Five consecutive inspected scheduled responses were HTTP 200, `success: true`, `passwordReset: true`, `decisionEmails: true`. Cron's SQL submission result and the HTTP result were checked separately. |
+| Durable progress | A disposable nonexistent-recipient job was claimed once and persisted as SUPPRESSED. It was removed after verification. This test sent no mail. |
+| Cleanup | All exact hosted QA fixture counts are zero. The worker schedule remains active. |
 
-## Supabase follow-up for Wili
+Real inbox receipt remains unconfirmed. The combined purchase/decision path must enqueue its notification inside the shared transition before a real decision-triggered email can be accepted.
 
-1. Run the [Day 6.1 owner commands](day-6-preview-deployment-reference.md) later. Record the already-applied reset and review migrations in Prisma, then apply the decision-email and attendance migrations. Share the final `prisma migrate status` output. Use the protected Preview to verify both demo roles afterward.
-2. Configure a dedicated `F2_JOB_RUNNER_SECRET` in Vercel Preview using 32 random bytes in lowercase hex. Enable `F2_DECISION_EMAIL_WORKER_ENABLED=true` after the outbox migration and controlled sender are ready. Redeploy the reviewed Feature 2 build and verify its protected URL. Set the scheduler target to that specific deployment.
-3. Use Supabase Cron to call the Preview once per minute. Save the exact endpoint URL, the matching bearer secret, and the approved Vercel automation bypass secret in Supabase Vault. The bypass header lets the request pass Vercel's protection. The separate bearer token authorizes the app's worker. [Supabase Cron](https://supabase.com/docs/guides/cron) · [Vercel automation header](https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation)
-4. Verify an actual HTTP 200 and persisted queue progress using a controlled inbox. A successful `cron.job_run_details` row means Postgres submitted the request. Check the HTTP response and queue state separately. Check that the live job runs while the browser is closed. If the Preview is replaced, update the Vault URL and recheck the route.
+The schedule handles password-reset and organizer-decision email retries. It does not implement F1's two-hour purchase expiry or three-day organizer timeout. Those must use the shared purchase/reward transition.
 
-After the owner steps and the secrets are configured, the Cron job can use the following SQL. The values come from Vault and stay out of the stored cron command and repository.
+## Operating changes
 
-```sql
-select cron.schedule('temuevent-preview-email-jobs', '* * * * *', $job$
-  select net.http_post(
-    url := (select decrypted_secret from vault.decrypted_secrets where name = 'temuevent_preview_jobs_url'),
-    headers := jsonb_build_object(
-      'Content-Type', 'application/json',
-      'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'temuevent_preview_jobs_bearer'),
-      'x-vercel-protection-bypass', (select decrypted_secret from vault.decrypted_secrets where name = 'temuevent_preview_jobs_vercel_bypass')
-    ),
-    body := '{}'::jsonb,
-    timeout_milliseconds := 60000
-  );
-$job$);
-```
+Use the [operations script](https://github.com/wilisail/event-management-platform-pwdk/blob/day6-feature-2-ci/database/scripts/day6-ops.mjs) and [companion](day-6-operations-reference.md) for fresh status. If the app Preview is replaced, update the scheduler target and recheck the new protected endpoint, HTTP response and persisted queue outcome together. Keep the app bearer secret and Vercel bypass secret separate and out of SQL output/logs.
 
-Supabase Cron fits this Preview because it can call a specific deployment every minute. Vercel Hobby Cron is daily, which exceeds the reset token's 15-minute lifetime. The reset request still starts its first pass after the browser response. Cron handles work that remains due and retries. Purchase expiry and reward restoration require the shared F1 transition and stay in the combined Day 6–7 test. [Vercel Cron plan limits](https://vercel.com/docs/cron-jobs/usage-and-pricing)
-
-[Work schedule](feature-2-completion-plan.md) · [Decision email outbox](organizer-decision-email-reference.md)
+[Preview state](day-6-preview-deployment-reference.md) · [Sanitized evidence](evidence/day-6-automated-2026-11-06.json) · [Current schedule](feature-2-completion-plan.md)
