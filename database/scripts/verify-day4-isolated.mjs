@@ -2,19 +2,24 @@ import assert from 'node:assert/strict'
 import { once } from 'node:events'
 import { setTimeout as delay } from 'node:timers/promises'
 import { readFile, readdir } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { PGlite } from '@electric-sql/pglite'
 import { PGLiteSocketServer } from '@electric-sql/pglite-socket'
 import { PrismaPg } from '@prisma/adapter-pg'
-import generated from '../../feature-2/generated/prisma/client.ts'
-import application from '../../feature-2/server/app.ts'
-import organizerReads from '../../feature-2/server/organizer/read-repository.ts'
-import attendance from '../../feature-2/server/organizer/attendance.ts'
-import decisionEmails from '../../feature-2/server/email/organizer-decision.ts'
-import outbox from '../../feature-2/server/email/organizer-decision-repository.ts'
-import resend from '../../feature-2/server/email/resend.ts'
-import recovery from '../../feature-2/server/auth/password-reset.ts'
-import resetRepository from '../../feature-2/server/auth/reset-repository.ts'
-import sessions from '../../feature-2/tests/helpers/sessions.ts'
+
+// These TypeScript files are CommonJS in their package. Keep their dependency
+// loading on the CJS path so Node 22 does not translate JSON dependencies as ESM.
+const require = createRequire(import.meta.url)
+const generated = require('../../feature-2/generated/prisma/client.ts')
+const application = require('../../feature-2/server/app.ts')
+const organizerReads = require('../../feature-2/server/organizer/read-repository.ts')
+const attendance = require('../../feature-2/server/organizer/attendance.ts')
+const decisionEmails = require('../../feature-2/server/email/organizer-decision.ts')
+const outbox = require('../../feature-2/server/email/organizer-decision-repository.ts')
+const resend = require('../../feature-2/server/email/resend.ts')
+const recovery = require('../../feature-2/server/auth/password-reset.ts')
+const resetRepository = require('../../feature-2/server/auth/reset-repository.ts')
+const sessions = require('../../feature-2/tests/helpers/sessions.ts')
 
 const pg = await PGlite.create()
 let socket, db
