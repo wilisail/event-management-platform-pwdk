@@ -39,4 +39,7 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           node --import tsx scripts/verify-day4-isolated.mjs
+      - name: Verify operations status and bounded QA cleanup
+        working-directory: database
+        run: node --test scripts/day6-ops.test.mjs
       - run: npm run build
