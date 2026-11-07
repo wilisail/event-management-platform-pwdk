@@ -35,6 +35,7 @@ export type EventMinAggregateOutputType = {
   address: string | null
   description: string | null
   imageUrl: string | null
+  imagePublicId: string | null
   startAt: Date | null
   endAt: Date | null
   status: $Enums.EventStatus | null
@@ -53,6 +54,7 @@ export type EventMaxAggregateOutputType = {
   address: string | null
   description: string | null
   imageUrl: string | null
+  imagePublicId: string | null
   startAt: Date | null
   endAt: Date | null
   status: $Enums.EventStatus | null
@@ -71,6 +73,7 @@ export type EventCountAggregateOutputType = {
   address: number
   description: number
   imageUrl: number
+  imagePublicId: number
   startAt: number
   endAt: number
   status: number
@@ -91,6 +94,7 @@ export type EventMinAggregateInputType = {
   address?: true
   description?: true
   imageUrl?: true
+  imagePublicId?: true
   startAt?: true
   endAt?: true
   status?: true
@@ -109,6 +113,7 @@ export type EventMaxAggregateInputType = {
   address?: true
   description?: true
   imageUrl?: true
+  imagePublicId?: true
   startAt?: true
   endAt?: true
   status?: true
@@ -127,6 +132,7 @@ export type EventCountAggregateInputType = {
   address?: true
   description?: true
   imageUrl?: true
+  imagePublicId?: true
   startAt?: true
   endAt?: true
   status?: true
@@ -218,6 +224,7 @@ export type EventGroupByOutputType = {
   address: string
   description: string
   imageUrl: string | null
+  imagePublicId: string | null
   startAt: Date
   endAt: Date
   status: $Enums.EventStatus
@@ -257,6 +264,7 @@ export type EventWhereInput = {
   address?: Prisma.StringFilter<"Event"> | string
   description?: Prisma.StringFilter<"Event"> | string
   imageUrl?: Prisma.StringNullableFilter<"Event"> | string | null
+  imagePublicId?: Prisma.StringNullableFilter<"Event"> | string | null
   startAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   endAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   status?: Prisma.EnumEventStatusFilter<"Event"> | $Enums.EventStatus
@@ -280,6 +288,7 @@ export type EventOrderByWithRelationInput = {
   address?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  imagePublicId?: Prisma.SortOrderInput | Prisma.SortOrder
   startAt?: Prisma.SortOrder
   endAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -306,6 +315,7 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   address?: Prisma.StringFilter<"Event"> | string
   description?: Prisma.StringFilter<"Event"> | string
   imageUrl?: Prisma.StringNullableFilter<"Event"> | string | null
+  imagePublicId?: Prisma.StringNullableFilter<"Event"> | string | null
   startAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   endAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   status?: Prisma.EnumEventStatusFilter<"Event"> | $Enums.EventStatus
@@ -329,6 +339,7 @@ export type EventOrderByWithAggregationInput = {
   address?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  imagePublicId?: Prisma.SortOrderInput | Prisma.SortOrder
   startAt?: Prisma.SortOrder
   endAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -353,6 +364,7 @@ export type EventScalarWhereWithAggregatesInput = {
   address?: Prisma.StringWithAggregatesFilter<"Event"> | string
   description?: Prisma.StringWithAggregatesFilter<"Event"> | string
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
+  imagePublicId?: Prisma.StringNullableWithAggregatesFilter<"Event"> | string | null
   startAt?: Prisma.DateTimeWithAggregatesFilter<"Event"> | Date | string
   endAt?: Prisma.DateTimeWithAggregatesFilter<"Event"> | Date | string
   status?: Prisma.EnumEventStatusWithAggregatesFilter<"Event"> | $Enums.EventStatus
@@ -370,6 +382,7 @@ export type EventCreateInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -393,6 +406,7 @@ export type EventUncheckedCreateInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -414,6 +428,7 @@ export type EventUpdateInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -437,6 +452,7 @@ export type EventUncheckedUpdateInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -459,6 +475,7 @@ export type EventCreateManyInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -476,6 +493,7 @@ export type EventUpdateManyMutationInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -494,6 +512,7 @@ export type EventUncheckedUpdateManyInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -522,6 +541,7 @@ export type EventCountOrderByAggregateInput = {
   address?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  imagePublicId?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
   endAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -540,6 +560,7 @@ export type EventMaxOrderByAggregateInput = {
   address?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  imagePublicId?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
   endAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -558,6 +579,7 @@ export type EventMinOrderByAggregateInput = {
   address?: Prisma.SortOrder
   description?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  imagePublicId?: Prisma.SortOrder
   startAt?: Prisma.SortOrder
   endAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -682,6 +704,7 @@ export type EventCreateWithoutOrganizerInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -703,6 +726,7 @@ export type EventUncheckedCreateWithoutOrganizerInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -754,6 +778,7 @@ export type EventScalarWhereInput = {
   address?: Prisma.StringFilter<"Event"> | string
   description?: Prisma.StringFilter<"Event"> | string
   imageUrl?: Prisma.StringNullableFilter<"Event"> | string | null
+  imagePublicId?: Prisma.StringNullableFilter<"Event"> | string | null
   startAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   endAt?: Prisma.DateTimeFilter<"Event"> | Date | string
   status?: Prisma.EnumEventStatusFilter<"Event"> | $Enums.EventStatus
@@ -771,6 +796,7 @@ export type EventCreateWithoutTicketTypesInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -793,6 +819,7 @@ export type EventUncheckedCreateWithoutTicketTypesInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -829,6 +856,7 @@ export type EventUpdateWithoutTicketTypesInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -851,6 +879,7 @@ export type EventUncheckedUpdateWithoutTicketTypesInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -871,6 +900,7 @@ export type EventCreateWithoutPurchasesInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -893,6 +923,7 @@ export type EventUncheckedCreateWithoutPurchasesInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -929,6 +960,7 @@ export type EventUpdateWithoutPurchasesInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -951,6 +983,7 @@ export type EventUncheckedUpdateWithoutPurchasesInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -971,6 +1004,7 @@ export type EventCreateWithoutReviewsInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -993,6 +1027,7 @@ export type EventUncheckedCreateWithoutReviewsInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -1029,6 +1064,7 @@ export type EventUpdateWithoutReviewsInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -1051,6 +1087,7 @@ export type EventUncheckedUpdateWithoutReviewsInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -1071,6 +1108,7 @@ export type EventCreateWithoutVouchersInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -1093,6 +1131,7 @@ export type EventUncheckedCreateWithoutVouchersInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -1129,6 +1168,7 @@ export type EventUpdateWithoutVouchersInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -1151,6 +1191,7 @@ export type EventUncheckedUpdateWithoutVouchersInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -1171,6 +1212,7 @@ export type EventCreateManyOrganizerInput = {
   address?: string
   description?: string
   imageUrl?: string | null
+  imagePublicId?: string | null
   startAt: Date | string
   endAt: Date | string
   status?: $Enums.EventStatus
@@ -1188,6 +1230,7 @@ export type EventUpdateWithoutOrganizerInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -1209,6 +1252,7 @@ export type EventUncheckedUpdateWithoutOrganizerInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -1230,6 +1274,7 @@ export type EventUncheckedUpdateManyWithoutOrganizerInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imagePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumEventStatusFieldUpdateOperationsInput | $Enums.EventStatus
@@ -1306,6 +1351,7 @@ export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   address?: boolean
   description?: boolean
   imageUrl?: boolean
+  imagePublicId?: boolean
   startAt?: boolean
   endAt?: boolean
   status?: boolean
@@ -1330,6 +1376,7 @@ export type EventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   address?: boolean
   description?: boolean
   imageUrl?: boolean
+  imagePublicId?: boolean
   startAt?: boolean
   endAt?: boolean
   status?: boolean
@@ -1349,6 +1396,7 @@ export type EventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   address?: boolean
   description?: boolean
   imageUrl?: boolean
+  imagePublicId?: boolean
   startAt?: boolean
   endAt?: boolean
   status?: boolean
@@ -1368,6 +1416,7 @@ export type EventSelectScalar = {
   address?: boolean
   description?: boolean
   imageUrl?: boolean
+  imagePublicId?: boolean
   startAt?: boolean
   endAt?: boolean
   status?: boolean
@@ -1375,7 +1424,7 @@ export type EventSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizerId" | "slug" | "name" | "category" | "location" | "venue" | "address" | "description" | "imageUrl" | "startAt" | "endAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
+export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizerId" | "slug" | "name" | "category" | "location" | "venue" | "address" | "description" | "imageUrl" | "imagePublicId" | "startAt" | "endAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
 export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organizer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   ticketTypes?: boolean | Prisma.Event$ticketTypesArgs<ExtArgs>
@@ -1411,6 +1460,7 @@ export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     address: string
     description: string
     imageUrl: string | null
+    imagePublicId: string | null
     startAt: Date
     endAt: Date
     status: $Enums.EventStatus
@@ -1854,6 +1904,7 @@ export interface EventFieldRefs {
   readonly address: Prisma.FieldRef<"Event", 'String'>
   readonly description: Prisma.FieldRef<"Event", 'String'>
   readonly imageUrl: Prisma.FieldRef<"Event", 'String'>
+  readonly imagePublicId: Prisma.FieldRef<"Event", 'String'>
   readonly startAt: Prisma.FieldRef<"Event", 'DateTime'>
   readonly endAt: Prisma.FieldRef<"Event", 'DateTime'>
   readonly status: Prisma.FieldRef<"Event", 'EventStatus'>
