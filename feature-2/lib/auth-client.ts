@@ -1,4 +1,4 @@
-import type { LoginRequest, LoginSuccess, RegistrationRequest, RegistrationSuccess, UserView } from '../contracts/types'
+import type { AttendanceView, LoginRequest, LoginSuccess, OrganizerDecision, OrganizerDecisionResult, RegistrationRequest, RegistrationSuccess, UserView } from '../contracts/types'
 
 export class AuthApiError extends Error {
   constructor(public readonly status: number, public readonly code: string, message: string) {
@@ -95,7 +95,7 @@ export function createAuthClient(options: Options = {}) {
       throw error
     }
   }
-  async function authenticatedWrite<T>(path: string, init: RequestInit): Promise<T> {
+  async function authenticatedWrite<T>(path: string, init: RequestInit, uncertainCode = 'PROFILE_SAVE_UNCERTAIN'): Promise<T> {
     // Refresh before taking the mutation lock; refresh itself uses this same cross-tab lock.
     const expected = await get<UserView>('/api/me')
     return coordinated(async () => {
@@ -113,8 +113,8 @@ export function createAuthClient(options: Options = {}) {
       catch (error) {
         if (error instanceof AuthApiError && error.status === 401) options.onUnauthorized?.()
         // A network failure could follow a committed edit. Never automatically repeat a write.
-        if (error instanceof AuthApiError && error.code === 'NETWORK_UNAVAILABLE') {
-          throw new AuthApiError(0, 'PROFILE_SAVE_UNCERTAIN', 'Reload your profile before retrying')
+        if (error instanceof AuthApiError && ['NETWORK_UNAVAILABLE', 'API_UNAVAILABLE'].includes(error.code)) {
+          throw new AuthApiError(0, uncertainCode, 'Reload before retrying')
         }
         throw error
       }
@@ -122,6 +122,16 @@ export function createAuthClient(options: Options = {}) {
   }
   return {
     get,
+    markAttendance: (eventId: string, customerId: string, transactionId: string) => authenticatedWrite<AttendanceView>(
+      '/api/organizer/events/' + encodeURIComponent(eventId) + '/attendance',
+      { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ customerId, transactionId }) },
+      'ATTENDANCE_UNCERTAIN',
+    ),
+    decideTransaction: (id: string, decision: OrganizerDecision) => authenticatedWrite<OrganizerDecisionResult>(
+      '/api/organizer/transactions/' + encodeURIComponent(id) + '/decision',
+      { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ decision }) },
+      'DECISION_UNCERTAIN',
+    ),
     requestPasswordReset: (email: string) => post<null>('/api/auth/forgot-password', { email }),
     resetPassword: (token: string, newPassword: string) => coordinated(async () => {
       try { await post('/api/auth/reset-password', { token, newPassword }) }
@@ -222,6 +232,16 @@ export function accountError(error: unknown): string {
     SESSION_REFRESH_UNCERTAIN: 'Silakan masuk ulang untuk menyambungkan sesi.',
     ROLE_FORBIDDEN: 'Peran akunmu tidak memiliki akses ke halaman ini.',
     REWARDS_UNAVAILABLE: 'Poin dan kupon sedang tidak dapat dimuat. Coba lagi sebentar.',
+    ORGANIZER_DATA_UNAVAILABLE: 'Data organizer sedang tidak dapat dimuat. Coba lagi sebentar.',
+    TRANSACTION_NOT_FOUND: 'Transaksi ini tidak tersedia untuk akunmu.',
+    DECISION_CLOSED: 'Transaksi ini sudah tidak dapat dikonfirmasi. Status terbaru sedang dimuat.',
+    DECISION_UNAVAILABLE: 'Konfirmasi pembayaran belum tersedia.',
+    DECISION_UNCERTAIN: 'Keputusan belum dapat dipastikan. Periksa status terbaru sebelum mencoba lagi.',
+    INVALID_DECISION: 'Keputusan transaksi tidak valid.',
+    INVALID_ATTENDANCE: 'Data kehadiran tidak valid.',
+    ATTENDANCE_PURCHASE_NOT_FOUND: 'Pendaftaran terkonfirmasi tidak tersedia untuk event ini.',
+    ATTENDANCE_UNAVAILABLE: 'Pencatatan kehadiran belum tersedia.',
+    ATTENDANCE_UNCERTAIN: 'Hasil pencatatan belum dapat dipastikan. Periksa daftar peserta sebelum mencoba lagi.',
     SESSION_REQUIRED: 'Silakan masuk untuk melanjutkan.',
     NETWORK_UNAVAILABLE: 'Koneksi ke layanan akun belum tersedia. Coba lagi sebentar.',
   }

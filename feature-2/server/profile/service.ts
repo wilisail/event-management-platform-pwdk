@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { z } from 'zod'
 import type { OrganizerView } from '../../contracts/types'
 import { pictureUrl, profileUser, type ProfileRecord } from './views'
+import type { ReadOrganizerRating } from './rating'
 
 export const MAX_PICTURE_BYTES = 5 * 1024 * 1024
 export const MAX_STORED_PICTURE_BYTES = 1024 * 1024
@@ -40,6 +41,7 @@ export function createProfileService(options: {
   repository: ProfileRepository
   normalize: PictureNormalizer
   storage?: PictureStorage
+  readOrganizerRating?: ReadOrganizerRating
   onCleanupFailure?: () => void
 }) {
   const { repository, storage } = options
@@ -59,10 +61,11 @@ export function createProfileService(options: {
       if (!parsed.success) throw new ProfileError(400, 'INVALID_PROFILE', 'Use a name of 2–100 characters; no extra fields')
       return profileUser(await repository.updateName(userId, parsed.data.name))
     },
-    async publicOrganizer(id: string): Promise<OrganizerView> {
+    async publicOrganizer(id: string, includeRating = true): Promise<OrganizerView> {
       const user = await record(id, true)
+      const ratingSummary = includeRating ? await options.readOrganizerRating?.(user.id).catch(() => null) : null
       return { id: user.id, name: user.name, bio: '', profilePictureUrl: pictureUrl(user.profilePictureKey, id),
-        ratingSummary: null } // Feature 1 supplies review aggregates; no invented count or rating.
+        ratingSummary: ratingSummary ?? null }
     },
     async picture(userId: string, isPublic = false) {
       const user = await record(userId, isPublic)

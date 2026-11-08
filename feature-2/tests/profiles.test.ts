@@ -3,15 +3,17 @@ import { once } from 'node:events'
 import { randomUUID } from 'node:crypto'
 import { test } from 'node:test'
 import sharp from 'sharp'
+import { featureOneOrigin } from '../lib/feature-one-links'
 import { createApp } from '../server/app'
 import { normalizePicture } from '../server/profile/pictures'
+import { featureOneOrganizerRating, ratingProjectionHeader, type ReadOrganizerRating } from '../server/profile/rating'
 import { createProfileService, ownedPictureKey, type PictureStorage, type ProfileRepository } from '../server/profile/service'
 import type { ProfileRecord } from '../server/profile/views'
 import { sessionFixture, loginFields, testAccount } from './helpers/sessions'
 
 const otherId = '22222222-2222-4222-8222-222222222222'
 const key = (id = testAccount.id) => 'profiles/' + id + '/' + randomUUID() + '.webp'
-function fixture() {
+function fixture(readOrganizerRating?: ReadOrganizerRating) {
   const f = sessionFixture()
   const records = new Map<string, ProfileRecord>([
     [testAccount.id, { id: testAccount.id, name: 'Original Customer', email: testAccount.email, role: 'CUSTOMER',
@@ -35,7 +37,7 @@ function fixture() {
     async remove(key) { removed.push(key); files.delete(key) },
   }
   let cleanupFailures = 0
-  const service = createProfileService({ repository, storage, normalize: async bytes => bytes,
+  const service = createProfileService({ repository, storage, readOrganizerRating, normalize: async bytes => bytes,
     onCleanupFailure: () => { cleanupFailures++ } })
   return { f, records, files, removed, repository, storage, service, cleanupFailures: () => cleanupFailures }
 }
@@ -132,6 +134,56 @@ test('public organizer projection omits account details and never treats a custo
     assert.equal((await fetch(base + '/api/organizers/' + testAccount.id)).status, 404)
     assert.equal((await fetch(base + '/api/organizers/not-a-uuid')).status, 400)
   })
+})
+test('public profile projects only the F1 rating average and count, without forwarding credentials', async () => {
+  let requests = 0
+  const readOrganizerRating = featureOneOrganizerRating('https://f1.example.test', async (url, options) => {
+    requests++
+    assert.equal(url, 'https://f1.example.test/api/organizers/' + otherId)
+    assert.equal(options?.credentials, 'omit')
+    assert.equal(options?.redirect, 'error')
+    assert.equal(new Headers(options?.headers).has('cookie'), false)
+    assert.equal(new Headers(options?.headers).get(ratingProjectionHeader), '1')
+    return Response.json({ success: true, data: {
+      organizer: { id: otherId, name: 'Upstream name' },
+      reviews: [{ rating: 5, comment: 'Upstream comment', customerEmail: 'reviewer@example.test' }, { rating: 4 }],
+    } })
+  })
+  await http(fixture(readOrganizerRating), async (base, headers) => {
+    const url = base + '/api/organizers/' + otherId
+    const response = await fetch(url, { headers })
+    assert.equal(response.status, 200)
+    const { data } = await response.json()
+    assert.deepEqual(data, { id: otherId, name: 'Public Organizer', bio: '', profilePictureUrl: null,
+      ratingSummary: { average: 4.5, count: 2 } })
+    const recursive = await fetch(url, { headers: { [ratingProjectionHeader]: '1' } })
+    assert.equal((await recursive.json()).data.ratingSummary, null)
+    assert.equal((await fetch(base + '/api/organizers/' + testAccount.id)).status, 404)
+    assert.equal(requests, 1)
+  })
+})
+test('rating adapter distinguishes an empty review list from upstream failures or invalid data', async () => {
+  const result = (id: string, reviews: unknown[]) => Response.json({ success: true, data: { organizer: { id }, reviews } })
+  const origin = 'https://f1.example.test'
+  const empty = featureOneOrganizerRating(origin, async () => result(otherId, []))!
+  assert.deepEqual(await empty(otherId), { average: 0, count: 0 })
+  const invalidResponses = [result(randomUUID(), [{ rating: 5 }]), result(otherId, [{ rating: 6 }]),
+    result(otherId, [{ rating: 1.5 }]), new Response('upstream unavailable', { status: 503 })]
+  for (const response of invalidResponses) {
+    const read = featureOneOrganizerRating(origin, async () => response)!
+    assert.equal(await read(otherId), null)
+  }
+  const timeout = featureOneOrganizerRating(origin, async () => { throw new DOMException('Timed out', 'TimeoutError') })!
+  assert.equal(await timeout(otherId), null)
+  assert.equal(featureOneOrganizerRating(undefined), undefined)
+})
+test('F1 links and ratings require a plain HTTPS origin or local HTTP origin', () => {
+  assert.equal(featureOneOrigin('https://f1.example.test/'), 'https://f1.example.test')
+  assert.equal(featureOneOrigin('http://127.0.0.1:4001'), 'http://127.0.0.1:4001')
+  for (const value of ['https://f1.example.test/path', 'https://f1.example.test/?id=1',
+    'https://user:pass@f1.example.test', 'http://f1.example.test', 'javascript:alert(1)']) {
+    assert.equal(featureOneOrigin(value), null)
+  }
 })
 test('upload type, byte-size and compressed-body boundaries fail without changing the profile', async () => {
   const f = fixture()
