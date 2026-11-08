@@ -2,6 +2,8 @@
 
 Updated 6 November 2026, Asia/Jakarta. The interrupted turn completed the hosted checks but stopped before temporary QA cleanup and the final reusable handoff. This follow-up closes those automated tasks. It does not mark the combined F1/F2 purchase journey complete.
 
+8 November merge update: [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) is merged into `feature-2` at `541839b`. Its operations script and cleanup evidence are included in the incremental [Day 7 integration](day-7-event-poster-integration-reference.md). The live evidence below retains its original 6 November date; combined/live acceptance is deferred to 9 November.
+
 ## Verified result
 
 | Area | Evidence |
