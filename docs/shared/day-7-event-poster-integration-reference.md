@@ -6,7 +6,7 @@ Updated 8 November 2026, Asia/Jakarta. Wili authorized the available Day 6/7 mer
 
 The completed Day 6 snapshot from [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) is merged into `feature-2` at `541839b496d246c311d908cddfc7486d7282711a`. Its reusable operations script, bounded QA cleanup, companion notes and successful Node 22 CI are included. The earlier failed CI alert was superseded by [successful run 42178273975](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42178273975).
 
-This integration combines that checkpoint with Rizky's Cloudinary event-form revision `c07e772cbba2c745b91dd0396909e062d9e1ceea` and his later `feature-1` revision `791ce60c693fcfac3202fe63608c84015716245b`, which adopts the existing shared account/session/referral/reward models in his Prisma schema. The latter changes schema declarations only; it adds no checkout behavior or new SQL migration. Integration changes live on `integration`, with preparation branch `integration/day7-events-20261108`. Rizky's working branch is unchanged.
+This integration combines that checkpoint with Rizky's Cloudinary event-form revision `c07e772cbba2c745b91dd0396909e062d9e1ceea` and his later `feature-1` revision `791ce60c693fcfac3202fe63608c84015716245b`, which adopts the existing shared account/session/referral/reward models in his Prisma schema. The latter changes schema declarations only; it adds no checkout behavior or new SQL migration. Integration changes live on `integration`, with preparation branch `day7-events-integration-20261108`. Rizky's working branch is unchanged.
 
 | Area | Integrated behavior | Still pending |
 | --- | --- | --- |
