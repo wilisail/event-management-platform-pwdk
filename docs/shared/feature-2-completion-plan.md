@@ -14,6 +14,8 @@ The completed Day 6 snapshot is merged into `feature-2` through [PR #40](https:/
 
 Wili deferred live F2/dependency acceptance to 9 November. The incremental merge does not complete checkout, private proof, shared transitions, reward/voucher restoration, timeout races, attendance-gated reviews, the final combined UI, actual inbox receipt or evaluator access. The Day 6 live evidence below is dated 6 November.
 
+[Day 7 PR #41](https://github.com/wilisail/event-management-platform-pwdk/pull/41) is merged into `integration` at `3fa5663`. Its [Integration CI](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42474385346) and [F2 CI](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42474385351) both passed, including 5 integration tests, 144 F2 tests, 2 operations tests, nine migrated SQL fixtures and both application builds. This establishes the incremental code checkpoint; the deferred live acceptance above still applies.
+
 ### Completed Day 6 evidence — 6 November
 
 The autonomous Day 6 follow-up is complete. The F2 snapshot from [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) is now merged, [full Node 22 CI passed](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42178273975) (144 application tests, two operations regression tests, nine isolated migrations and the hosted-mode build), the protected F2 API passed 13 hosted checks, and the once-per-minute email scheduler returned HTTP 200 with both queues enabled. All nine inspected live migration checksums match. Temporary QA records, five sessions and five refresh tokens were removed.

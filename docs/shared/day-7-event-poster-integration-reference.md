@@ -2,6 +2,8 @@
 
 Updated 8 November 2026, Asia/Jakarta. Wili authorized the available Day 6/7 merges while postponing live F2 and dependency checks until 9 November. This is an incremental code integration; the full purchase journey is still pending.
 
+[PR #41](https://github.com/wilisail/event-management-platform-pwdk/pull/41) is merged into `integration` at `3fa5663f19073fc4dd13cdc6129b89ff95e96068`. Both [Integration CI 42474385346](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42474385346) and [Feature 2 CI 42474385351](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42474385351) passed for head `71323d025d777392e003755519b5f711c48b1a09`. The integration job confirms 5 integration tests, 144 F2 tests, 2 operations tests, both SQL harnesses and the production build. [Sanitized evidence](evidence/day-7-integration-2026-11-08.json)
+
 ## Source and scope
 
 The completed Day 6 snapshot from [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) is merged into `feature-2` at `541839b496d246c311d908cddfc7486d7282711a`. Its reusable operations script, bounded QA cleanup, companion notes and successful Node 22 CI are included. The earlier failed CI alert was superseded by [successful run 42178273975](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42178273975).
