@@ -8,9 +8,17 @@ Progress, 1 November: day 2 subparts 1–4 and day 3 subparts 1, 2 and 4 are com
 
 Day 3 part 1 was brought forward and completed: own-name editing, real public organizer identity and photo upload/processing/storage are implemented. Real Supabase checks passed for upload, read, replacement, old-file cleanup, ownership/CSRF and customer/organizer visibility. The private bucket is configured; all test records/files were removed. TypeScript, 114 tests and the production build pass. See the [profile companion and Day 3–6 dependency map](profile-upload-reference.md). Day 3 is Monday's account section below; Day 4 is Tuesday's organizer-decision section, Day 5 Wednesday's dashboard and Day 6 Thursday's release.
 
-## Latest checkpoint — 6 November 2026
+## Latest checkpoint — 8 November 2026
 
-The autonomous Day 6 follow-up is complete. The F2 snapshot is published in [draft PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40), [full Node 22 CI passed](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42178273975) (144 application tests, two operations regression tests, nine isolated migrations and the hosted-mode build), the protected F2 API passed 13 hosted checks, and the once-per-minute email scheduler returns HTTP 200 with both queues enabled. All nine live migration checksums match. Temporary QA records, five sessions and five refresh tokens are removed.
+The completed Day 6 snapshot is merged into `feature-2` through [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40), at `541839b`. The first [Day 7 integration slice](day-7-event-poster-integration-reference.md) combines it with F1 `c07e772` and the later shared-model schema adoption in `791ce60`: shared F2 login/roles/CSRF, F1 event/ticket publishing and optional Cloudinary posters, one composed API, relative browser API URLs, poster recovery and disposable cross-feature SQL checks. F1's working branch is unchanged. Voucher/draft controls are visibly unavailable while their persistence is unfinished, and integrated review writes remain closed pending attendance/UI wiring.
+
+Wili deferred live F2/dependency acceptance to 9 November. The incremental merge does not complete checkout, private proof, shared transitions, reward/voucher restoration, timeout races, attendance-gated reviews, the final combined UI, actual inbox receipt or evaluator access. The Day 6 live evidence below is dated 6 November.
+
+[Day 7 PR #41](https://github.com/wilisail/event-management-platform-pwdk/pull/41) is merged into `integration` at `3fa5663`. Its [Integration CI](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42474385346) and [F2 CI](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42474385351) both passed, including 5 integration tests, 144 F2 tests, 2 operations tests, nine migrated SQL fixtures and both application builds. This establishes the incremental code checkpoint; the deferred live acceptance above still applies.
+
+### Completed Day 6 evidence — 6 November
+
+The autonomous Day 6 follow-up is complete. The F2 snapshot from [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) is now merged, [full Node 22 CI passed](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42178273975) (144 application tests, two operations regression tests, nine isolated migrations and the hosted-mode build), the protected F2 API passed 13 hosted checks, and the once-per-minute email scheduler returned HTTP 200 with both queues enabled. All nine inspected live migration checksums match. Temporary QA records, five sessions and five refresh tokens were removed.
 
 The [operations companion](day-6-operations-reference.md) records the reusable script, cleanup evidence and its regression tests. The earlier owner migration commands, CI publication and Cron activation are no longer outstanding. Older dated checkpoints below are historical.
 
@@ -55,7 +63,7 @@ Updated 6 November. The table tracks carryover within the existing schedule. **B
 | 6.2 Checks and executor | [Full Node 22 CI passed](day-6-ci-worker-reference.md); every-minute Cron is active, both queues return HTTP 200, durable queue progress verified. | Confirm actual inbox receipt; enqueue real purchase-decision mail through the shared F1 transition. |
 | 6.3 Full journeys and requirement audit | [Isolated journeys and hosted F2 checks passed](day-6-journey-audit-reference.md). QA fixture cleanup is complete. | Combined Preview still needs real F1 checkout, proof, shared transitions, voucher/reward restoration and attendance-gated reviews. |
 | 6.4 Submission handoff | [Run guide and updated companion notes](day-6-submission-handoff-reference.md), [reusable operations script and evidence](day-6-operations-reference.md) published. | Actual inbox, evaluator access and the combined Day 7 journey remain explicit acceptance checks. |
-| 7 Integration buffer | **3–6 focused hours** already allocated. | Complete outstanding F1 checkout/session, proof and decision wiring and the combined verification above. Include event image compatibility only if Rizky's public poster contract requires it. |
+| 7 Integration buffer | [First event/poster slice](day-7-event-poster-integration-reference.md): shared session, organizer-owned creation, poster/ticket persistence and SQL ownership checks. **3–6 focused hours** was the original planning range, not a completion measurement. | Live acceptance deferred to 9 November; complete outstanding F1 checkout, proof, shared transitions, restoration, timeouts, reviews and combined UI. |
 
 ### Platform checks before hosted verification
 

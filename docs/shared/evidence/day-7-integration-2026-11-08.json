@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-11-08",
+  "timezone": "Asia/Jakarta",
+  "repository": "wilisail/event-management-platform-pwdk",
+  "source": {
+    "feature2Merge": "541839b496d246c311d908cddfc7486d7282711a",
+    "feature2PullRequest": 40,
+    "feature1PosterCommit": "c07e772cbba2c745b91dd0396909e062d9e1ceea",
+    "feature1SharedModelsCommit": "791ce60c693fcfac3202fe63608c84015716245b"
+  },
+  "integration": {
+    "branch": "integration",
+    "preparationBranch": "day7-events-integration-20261108",
+    "pullRequest": 41,
+    "verifiedHead": "71323d025d777392e003755519b5f711c48b1a09",
+    "mergeCommit": "3fa5663f19073fc4dd13cdc6129b89ff95e96068",
+    "verifiedCodeTree": "8173b72ba0735563c9ef972bb0557e1761d7d685",
+    "merged": true
+  },
+  "ci": {
+    "integration": { "runId": 42474385346, "jobId": 128712316772, "conclusion": "success" },
+    "feature2": { "runId": 42474385351, "jobId": 128712316749, "conclusion": "success" },
+    "integrationHttpTests": 5,
+    "feature2Tests": 144,
+    "operationsTests": 2,
+    "sharedMigrationReplays": 9,
+    "typechecks": ["root", "feature-2"],
+    "builds": ["root hosted-mode", "feature-2 hosted-mode"],
+    "sqlJourneys": [
+      "Existing restricted-role organizer, worker, statistics and attendance checks",
+      "Shared session fixture to real F1 Prisma event/ticket/poster persistence to real F2 organizer reader",
+      "Cross-organizer isolation and matching ticket amounts/seats",
+      "Cleanup before commit, preserve poster after uncertain committed response, no automatic duplicate mutation"
+    ]
+  },
+  "verificationLimits": {
+    "database": "Disposable PGlite with the nine shared migrations; no live project database used",
+    "sessions": "Existing F2 in-memory session fixture in new SQL journey; full existing F2 suite also runs",
+    "posterProvider": "Controlled image provider fixture; real Cloudinary is deferred",
+    "liveSchemaChanged": false,
+    "hostedQaRecordsCreated": false,
+    "schedulerChanged": false,
+    "realEmailSent": false,
+    "productionRelease": false,
+    "feature1WorkingBranchChanged": false
+  },
+  "deferredFrom": "2026-11-09",
+  "remaining": [
+    "Combined Preview configuration, real login/Cloudinary publishing and cross-account acceptance",
+    "Actual inbox receipt/reset-link use and evaluator protected access/demo login",
+    "Real F1 checkout, private proof, shared purchase transitions and seat/reward/voucher restoration",
+    "Decision email delivery, expiry and concurrent transition checks",
+    "Attendance-gated review submission and real-purchase dashboard totals",
+    "Event editing/deletion, drafts/vouchers and combined account/dashboard navigation"
+  ]
+}

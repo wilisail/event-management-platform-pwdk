@@ -4,7 +4,7 @@ Updated 6 November 2026, Asia/Jakarta. Automated F2 release checks and cleanup a
 
 ## Run Feature 2 independently
 
-Use Node 22.12+ and the current reviewed Feature 2 working snapshot. Use the reviewed `day6-feature-2-ci` branch in [draft PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40); the application snapshot is published and its full CI run passed.
+Use Node 22.12+ and the reviewed `feature-2` branch. The Day 6 snapshot from `day6-feature-2-ci` is merged through [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) at `541839b` on 8 November; its full CI run passed. The [Day 7 companion](day-7-event-poster-integration-reference.md) covers the separate combined event/poster slice on `integration` and the live checks deferred to 9 November.
 
 From the repository root, install dependencies and run the application and disposable-database checks.
 
