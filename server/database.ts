@@ -76,6 +76,8 @@ export interface CreateEventInput {
   venue?: string
   address?: string
   description: string
+  imageUrl?: string
+  imagePublicId?: string
   startAt: Date
   endAt: Date
   status: 'DRAFT' | 'PUBLISHED'
@@ -195,6 +197,8 @@ export async function createEvent(input: CreateEventInput) {
           venue: input.venue,
           address: input.address,
           description: input.description,
+          imageUrl: input.imageUrl,
+          imagePublicId: input.imagePublicId,
           startAt: input.startAt,
           endAt: input.endAt,
           status: input.status,

@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import { createApp } from './app'
+import { uploadImage } from './cloudinary'
 
 const port = Number(process.env.F2_API_PORT || 4002)
 const host = process.env.F2_API_HOST || '127.0.0.1'
@@ -28,6 +29,7 @@ async function start() {
     organizerReader: database.readOrganizerProfile,
     reviewReader: database.readEventReviews,
     reviewCreator: database.createEventReview,
+    imageUploader: uploadImage,
     })
     .listen(port, host, () => {
       console.log(`TemuEvent API: http://${host}:${port}`)

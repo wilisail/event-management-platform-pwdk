@@ -57,6 +57,7 @@ export default function NewEventPage() {
     const [address, setAddress] = useState("");
     const [image, setImage] = useState<string | null>(null);
     const [imageName, setImageName] = useState("");
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [startDate, setStartDate] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -219,6 +220,11 @@ export default function NewEventPage() {
     const handleImage = (event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
+
+        // Keep the actual file for the Cloudinary upload.
+        setImageFile(file);
+
+        // Create a local preview for the form.
         setImage(URL.createObjectURL(file));
         setImageName(file.name);
     };
@@ -235,11 +241,47 @@ export default function NewEventPage() {
         setShowConfirm(true);
     };
     
+    
     const submitEvent = async () => {
         setIsSubmitting(true);
         setApiError("");
 
         try {
+            const apiBaseUrl =
+                process.env.NEXT_PUBLIC_API_URL ??
+                "http://127.0.0.1:4002";
+
+            let uploadedImage: {
+                imageUrl: string;
+                imagePublicId: string;
+            } | null = null;
+
+            if (imageFile) {
+                const formData = new FormData();
+                formData.append("image", imageFile);
+
+                const uploadResponse = await fetch(
+                    `${apiBaseUrl}/api/uploads/event-image`,
+                    {
+                        method: "POST",
+                        body: formData,
+                    },
+                );
+
+                const uploadResult = await uploadResponse
+                    .json()
+                    .catch(() => null);
+
+                if (!uploadResponse.ok || !uploadResult?.success) {
+                    throw new Error(
+                        uploadResult?.message ??
+                            `Image upload failed (${uploadResponse.status})`,
+                    );
+                }
+
+                uploadedImage = uploadResult.data;
+            }
+
             const payload = {
                 name: name.trim(),
                 category,
@@ -247,6 +289,9 @@ export default function NewEventPage() {
                 venue: venue.trim(),
                 address: address.trim(),
                 description: description.trim(),
+
+                imageUrl: uploadedImage?.imageUrl,
+                imagePublicId: uploadedImage?.imagePublicId,
 
                 startAt: new Date(
                     `${startDate}T${startTime}`,
@@ -258,8 +303,6 @@ export default function NewEventPage() {
 
                 status: "PUBLISHED" as const,
 
-                // Temporary development ID.
-                // Later, this should come from the logged-in user.
                 organizerId: "073ae087-205f-4f45-8b96-c7e4fb3efae4",
 
                 ticketTypes:
@@ -279,10 +322,6 @@ export default function NewEventPage() {
                             quota: Number(ticket.quantity),
                         })),
             };
-
-            const apiBaseUrl =
-                process.env.NEXT_PUBLIC_API_URL ??
-                "http://127.0.0.1:4002";
 
             const response = await fetch(
                 `${apiBaseUrl}/api/events`,
@@ -304,11 +343,7 @@ export default function NewEventPage() {
                 );
             }
 
-            // Save the ID returned by the backend.
             setCreatedEventId(result.data.id);
-
-            // Update the UI after successful creation.
-            //setStatus("published");
             setShowConfirm(false);
             router.push("/");
 
@@ -322,6 +357,7 @@ export default function NewEventPage() {
             setIsSubmitting(false);
         }
     };
+
 
     const saveDraft = () => {
         setStatus("draft");
@@ -500,6 +536,7 @@ export default function NewEventPage() {
                                                     onClick={() => {
                                                         setImage(null);
                                                         setImageName("");
+                                                        setImageFile(null);
                                                     }}
                                                     className="absolute right-3 top-3 rounded-full bg-white p-2 text-[#5148d7] shadow"
                                                 >

@@ -1,3 +1,6 @@
+import { unlink } from 'node:fs/promises'
+import { upload } from './upload'
+import { uploadImage } from './cloudinary'
 import express, { type ErrorRequestHandler, type Request, type Response } from 'express'
 import { z } from 'zod'
 import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
@@ -21,6 +24,8 @@ const createEventSchema = z.object({
   venue: z.string().trim().optional(),
   address: z.string().trim().optional(),
   description: z.string().trim().min(1),
+  imageUrl: z.string().url().optional(),
+  imagePublicId: z.string().trim().min(1).optional(),
   startAt: z.string().refine(
     (value) => !Number.isNaN(Date.parse(value)),
     'Invalid start date',
@@ -72,6 +77,10 @@ export interface AppOptions {
   reviewCreator?: (input: CreateEventReviewInput) => Promise<
     Awaited<ReturnType<typeof createEventReview>>
   >
+  imageUploader?: (file: { path: string }) => Promise<{
+  secure_url: string
+  public_id: string
+}>
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -128,6 +137,45 @@ export function createApp(options: AppOptions = {}) {
     const persona: DemoPersona = parsed.data
     return persona === 'customer' ? data.customer : data.organizerUser
   }
+
+  app.post(
+    '/api/uploads/event-image',
+    upload.single('image'),
+    async (req, res) => {
+      const file = req.file
+
+      if (!file) {
+        fail(res, 400, 'IMAGE_REQUIRED', 'Please select an image to upload')
+        return
+      }
+
+      try {
+        const uploader = options.imageUploader ?? uploadImage
+        const result = await uploader({ path: file.path })
+
+        res.status(201).json({
+          success: true,
+          message: 'Event image uploaded successfully',
+          data: {
+            imageUrl: result.secure_url,
+            imagePublicId: result.public_id,
+          },
+          meta: {
+            mode: 'database',
+            contractVersion: '1.0',
+            asOf: now().toISOString(),
+          },
+        })
+      } catch (error) {
+        console.error('POST /api/uploads/event-image failed:', error)
+        fail(res, 500, 'IMAGE_UPLOAD_FAILED', 'Unable to upload event image')
+      } finally {
+        await unlink(file.path).catch((error) => {
+          console.error('Unable to remove temporary image:', error)
+        })
+      }
+    },
+  )
 
   app.get('/health', (_req, res) =>
     ok(res, { service: 'feature-2-demo', readOnly: true }, 'Demo API ready'),
@@ -482,7 +530,39 @@ export function createApp(options: AppOptions = {}) {
     ok(res, data.organizer, 'Demo organizer profile; review totals belong to F1')
   })
   app.use((_req, res) => fail(res, 404, 'NOT_FOUND', 'Endpoint not found'))
-  const errorHandler: ErrorRequestHandler = (_error, _req, res, _next) => {
+    const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
+    const errorCode =
+      typeof error === 'object' && error !== null && 'code' in error
+        ? error.code
+        : undefined
+
+    // File exceeds Multer's 5 MB limit.
+    if (errorCode === 'LIMIT_FILE_SIZE') {
+      fail(res, 413, 'FILE_TOO_LARGE', 'Image must be 5 MB or smaller')
+      return
+    }
+
+    // Other Multer errors, such as unexpected file fields.
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'name' in error &&
+      error.name === 'MulterError'
+    ) {
+      fail(res, 400, 'INVALID_UPLOAD', 'Unable to process the uploaded file')
+      return
+    }
+
+    // File type rejected by our upload.ts fileFilter.
+    if (
+      error instanceof Error &&
+      error.message === 'Only JPEG, PNG, and WebP images are allowed.'
+    ) {
+      fail(res, 400, 'INVALID_IMAGE', error.message)
+      return
+    }
+
+    console.error('Unhandled API error:', error)
     fail(res, 500, 'INTERNAL_ERROR', 'Unexpected demo API error')
   }
   app.use(errorHandler)

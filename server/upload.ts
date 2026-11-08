@@ -1,35 +1,36 @@
 
-import multer from "multer";
+import multer from 'multer'
+import { randomUUID } from 'node:crypto'
+import { tmpdir } from 'node:os'
+
+const allowedTypes: Record<string, string> = {
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
+  'image/webp': '.webp',
+}
 
 const storage = multer.diskStorage({
   destination: (_req, _file, callback) => {
-    callback(null, "uploads/");
+    callback(null, tmpdir())
   },
   filename: (_req, file, callback) => {
-    const uniqueName = `${Date.now()}-${Math.round(
-      Math.random() * 1e9
-    )}`;
+    const extension = allowedTypes[file.mimetype]
 
-    callback(null, `${uniqueName}-${file.originalname}`);
+    callback(null, `${randomUUID()}${extension}`)
   },
-});
+})
 
 export const upload = multer({
   storage,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5 MB
+    fileSize: 5 * 1024 * 1024,
+    files: 1,
   },
   fileFilter: (_req, file, callback) => {
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-    ];
-
-    if (allowedTypes.includes(file.mimetype)) {
-      callback(null, true);
+    if (allowedTypes[file.mimetype]) {
+      callback(null, true)
     } else {
-      callback(new Error("Only JPEG, PNG, and WebP images are allowed."));
+      callback(new Error('Only JPEG, PNG, and WebP images are allowed.'))
     }
   },
-});
+})
