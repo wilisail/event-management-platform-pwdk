@@ -171,6 +171,56 @@ export interface AttendeePurchaseView {
   name: string
   ticketQuantity: number
   totalPaid: number
+  attendedAt: string | null
 }
 
+export interface AttendanceView {
+  eventId: string
+  customerId: string
+  transactionId: string
+  attendedAt: string
+}
+
+export const PURCHASE_STATUSES = [
+  'WAITING_FOR_PAYMENT', 'WAITING_FOR_ADMIN_CONFIRMATION', 'DONE',
+  'REJECTED', 'EXPIRED', 'CANCELED',
+] as const
+
+export type PurchaseStatus = typeof PURCHASE_STATUSES[number]
+export type OrganizerDecision = 'ACCEPT' | 'REJECT'
+export type OrganizerDecisionAvailability = 'READY' | 'CLOSED' | 'UNAVAILABLE'
+export interface OrganizerDecisionResult { id: string; status: 'DONE' | 'REJECTED' }
+
+export interface OrganizerTransactionView {
+  id: string
+  reference: string
+  eventName: string
+  customerName: string
+  status: PurchaseStatus
+  totalPrice: number
+  createdAt: string
+}
+
+export interface OrganizerTransactionDetail extends OrganizerTransactionView {
+  decisionAvailability: OrganizerDecisionAvailability
+  subtotal: number
+  voucherDiscount: number
+  couponDiscount: number
+  pointsUsed: number
+  paymentDueAt: string | null
+  decisionDueAt: string | null
+  proofUploadedAt: string | null
+  completedAt: string | null
+  items: { id: string; ticketName: string; quantity: number; unitPrice: number; lineTotal: number }[]
+}
+
+export const STATISTICS_GROUPS = ['day', 'month', 'year'] as const
+export type StatisticsGroup = typeof STATISTICS_GROUPS[number]
+export interface OrganizerStatisticsRange { groupBy: StatisticsGroup; from: string; to: string }
+export interface OrganizerStatisticsTotals { revenueIdr: number; purchaseCount: number; ticketQuantity: number }
+export interface OrganizerStatisticsView extends OrganizerStatisticsRange {
+  timeZone: 'Asia/Jakarta'
+  totals: OrganizerStatisticsTotals
+  periods: (OrganizerStatisticsTotals & { startDate: string })[]
+}
 

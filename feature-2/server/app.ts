@@ -6,6 +6,7 @@ import { sessionRouter } from './auth/session-http'
 import type { SessionService } from './auth/sessions'
 import { protectedRouter } from './protected-http'
 import type { OrganizerReadRepository } from './organizer/reads'
+import type { OrganizerDecisionTransition } from './organizer/decision'
 import type { RewardReadRepository } from './rewards/reads'
 import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
@@ -17,8 +18,10 @@ import { resetRouter } from './auth/reset-http'
 import type { PasswordResetService } from './auth/password-reset'
 import type { PasswordChangeService } from './auth/change-password'
 import type { ProfileService } from './profile/service'
+import { scheduledEmailHandler, type ScheduledEmailJobs } from './email/job-runner'
 
 export interface AppOptions {
+  fallthrough?: boolean
   now?: () => Date
   data?: DemoData
   allowedOrigins?: string[]
@@ -29,12 +32,15 @@ export interface AppOptions {
   secureCookies?: boolean
   loginRateLimit?: { limit: number; windowMs: number }
   organizerRepository?: OrganizerReadRepository
+  organizerDecisionTransition?: OrganizerDecisionTransition
   rewardRepository?: RewardReadRepository
   profileService?: ProfileService
   passwordChangeService?: PasswordChangeService
   passwordResetService?: PasswordResetService
   passwordResetLimit?: { limit: number; windowMs: number }
-  defer?: (work: Promise<void>) => void
+  defer?: (work: Promise<unknown>) => void
+  scheduledEmailJobs?: ScheduledEmailJobs
+  checkReadiness?: () => Promise<void>
   passwordChangeLimit?: { limit: number; windowMs: number }
 }
 
@@ -92,13 +98,23 @@ export function createApp(options: AppOptions = {}) {
     return persona === 'customer' ? data.customer : data.organizerUser
   }
 
-  app.get('/health', (_req, res) =>
+  app.get(['/health', '/api/health'], (_req, res) => {
+    res.set('Cache-Control', 'no-store')
     ok(res, {
       service: 'feature-2-api', readOnly: !options.registrationService && !options.sessionService,
       registrationConfigured: Boolean(options.registrationService),
       sessionsConfigured: Boolean(options.sessionService),
-    }, 'Feature 2 API ready'),
-  )
+    }, 'Feature 2 API ready')
+  })
+  app.get('/api/ready', async (_req, res) => {
+    res.set('Cache-Control', 'no-store')
+    if (options.checkReadiness) {
+      try { await options.checkReadiness(); res.json({ ready: true }); return }
+      catch { console.warn({ event: 'database_readiness_failed' }) }
+    }
+    res.status(503).json({ ready: false })
+  })
+  app.post('/api/internal/jobs/run', scheduledEmailHandler(options.scheduledEmailJobs))
 
   const registrationLimiter = rateLimit({
     windowMs: options.registrationRateLimit?.windowMs ?? 15 * 60 * 1000,
@@ -159,6 +175,7 @@ export function createApp(options: AppOptions = {}) {
     secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production', limit: options.passwordChangeLimit }))
   app.use('/api', protectedRouter({
     sessionService: options.sessionService, organizerRepository: options.organizerRepository,
+    organizerDecisionTransition: options.organizerDecisionTransition,
     rewardRepository: options.rewardRepository, now,
     secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production',
   }))
@@ -216,7 +233,7 @@ export function createApp(options: AppOptions = {}) {
     }
     ok(res, data.organizer, 'Demo organizer profile; review totals belong to F1')
   })
-  app.use((_req, res) => fail(res, 404, 'NOT_FOUND', 'Endpoint not found'))
+  if (!options.fallthrough) app.use((_req, res) => fail(res, 404, 'NOT_FOUND', 'Endpoint not found'))
   const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     if (error?.type === 'entity.too.large') {
       fail(res, 413, 'REQUEST_TOO_LARGE', 'The API request is too large')

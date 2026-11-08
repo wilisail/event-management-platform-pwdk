@@ -4,7 +4,7 @@ import { cookieNames } from './session-http'
 import { PasswordResetError, RESET_REQUEST_MESSAGE, type PasswordResetService } from './password-reset'
 
 export function resetRouter(options: { service?: PasswordResetService; secureCookies: boolean;
-  defer?: (work: Promise<void>) => void;
+  defer?: (work: Promise<unknown>) => void;
   limit?: { limit: number; windowMs: number } }) {
   const router = Router()
   const fail = (res: Response, status: number, code: string, message: string) =>
