@@ -1,9 +1,10 @@
 # Shared project record
 
-Updated: 8 November 2026.
+Updated: 9 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Day 7 hosted combined Preview](day-7-hosted-preview-reference.md) | Protected combined URL, 48 live checks, trusted recovery-origin fix, exact QA cleanup and remaining owner/Cloudinary/F1 acceptance |
 | [Day 7 event/poster integration](day-7-event-poster-integration-reference.md) | F1 publishing with shared F2 login/ownership, one API, poster recovery, automated SQL checks and deferred live acceptance |
 | [Day 6 automated operations](day-6-operations-reference.md) | Verified hosted checks, nine migration checksums, active scheduler, exact QA cleanup, reusable status/cleanup script and remaining manual/integration gates |
 | [Day 6 hosted Preview](day-6-preview-deployment-reference.md) | Current protected URL, migrated tables, verified hosted roles and evaluator-access follow-up |
