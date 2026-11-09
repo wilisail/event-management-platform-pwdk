@@ -8,7 +8,9 @@ Progress, 1 November: day 2 subparts 1–4 and day 3 subparts 1, 2 and 4 are com
 
 Day 3 part 1 was brought forward and completed: own-name editing, real public organizer identity and photo upload/processing/storage are implemented. Real Supabase checks passed for upload, read, replacement, old-file cleanup, ownership/CSRF and customer/organizer visibility. The private bucket is configured; all test records/files were removed. TypeScript, 114 tests and the production build pass. See the [profile companion and Day 3–6 dependency map](profile-upload-reference.md). Day 3 is Monday's account section below; Day 4 is Tuesday's organizer-decision section, Day 5 Wednesday's dashboard and Day 6 Thursday's release.
 
-## Latest checkpoint — 8 November 2026
+## Latest checkpoint — 9 November 2026
+
+9 November follow-up: the [Day 7 schema review](day-7-event-poster-integration-reference.md) covers F1 `c497ddf`, pushed after PR #41. It mirrors existing attendance/outbox models into the root client and retains the new developer-only SQL separately. The disposable integration harness now checks both migration histories independently and reads the shared tables through the F1 client. This does not change the pending live acceptance or F1 checkout/proof/transition dependencies.
 
 The completed Day 6 snapshot is merged into `feature-2` through [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40), at `541839b`. The first [Day 7 integration slice](day-7-event-poster-integration-reference.md) combines it with F1 `c07e772` and the later shared-model schema adoption in `791ce60`: shared F2 login/roles/CSRF, F1 event/ticket publishing and optional Cloudinary posters, one composed API, relative browser API URLs, poster recovery and disposable cross-feature SQL checks. F1's working branch is unchanged. Voucher/draft controls are visibly unavailable while their persistence is unfinished, and integrated review writes remain closed pending attendance/UI wiring.
 
