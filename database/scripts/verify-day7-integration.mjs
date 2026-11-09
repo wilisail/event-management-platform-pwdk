@@ -18,6 +18,21 @@ const { prismaOrganizerReadRepository } = require('../../feature-2/server/organi
 const { sessionFixture, testAccount, loginFields } = require('../../feature-2/tests/helpers/sessions.ts')
 const { createAuthClient } = require('../../feature-2/lib/auth-client.ts')
 
+// The F1 development history creates its own copy of the account/reward tables.
+// Replay it separately; those creation statements must never enter the shared replay below.
+const developer = await PGlite.create()
+try {
+  await developer.exec('CREATE SCHEMA temuevent; SET search_path TO temuevent, public;')
+  const root = new URL('../../prisma/rizky-migrations/', import.meta.url)
+  const names = (await readdir(root, { withFileTypes: true })).filter(d => d.isDirectory()).map(d => d.name).sort()
+  for (const name of names) await developer.exec(await readFile(new URL(name + '/migration.sql', root), 'utf8'))
+  const tables = await developer.query("SELECT table_name FROM information_schema.tables WHERE table_schema='temuevent'")
+  for (const name of ['users', 'events', 'vouchers', 'auth_sessions', 'attendance', 'organizer_decision_emails']) {
+    assert(tables.rows.some(row => row.table_name === name), 'Missing F1 developer table: ' + name)
+  }
+  console.log(`DAY7_F1_DEV_HISTORY_OK: ${names.length} developer migrations replayed separately; no shared database connection used`)
+} finally { await developer.close() }
+
 // Every record and connection lives in this disposable database. No .env/project URL is read.
 const pg = await PGlite.create()
 let socket, eventDb, accountDb, server, pool
@@ -34,6 +49,10 @@ try {
   eventDb = new EventClient({ adapter: adapter() }); accountDb = new AccountClient({ adapter: adapter() })
   await eventDb.$executeRawUnsafe('SET ROLE temuevent_app')
   await accountDb.$executeRawUnsafe('SET ROLE temuevent_app')
+  // F1's adopted models must read the existing shared F2 tables, without replaying its developer migration.
+  assert.deepEqual(await eventDb.attendance.findMany({ take: 1 }), [])
+  assert.deepEqual(await eventDb.organizerDecisionEmail.findMany({ take: 1 }), [])
+  console.log('DAY7_F1_SHARED_MODELS_OK: root Prisma attendance and decision-email projections use existing shared tables')
   const fixture = sessionFixture()
   const owner = { ...testAccount, id: randomUUID(), email: 'day7-owner@example.test', role: 'ORGANIZER', referralCode: 'DAY7OWNER' }
   const other = { ...owner, id: randomUUID(), email: 'day7-other@example.test', referralCode: 'DAY7OTHER' }

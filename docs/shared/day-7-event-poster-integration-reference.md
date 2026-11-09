@@ -1,10 +1,14 @@
 # Day 7 — shared login, event creation and posters
 
-Updated 8 November 2026, Asia/Jakarta. Wili authorized the available Day 6/7 merges while postponing live F2 and dependency checks until 9 November. This is an incremental code integration; the full purchase journey is still pending.
+Updated 9 November 2026, Asia/Jakarta, including the schema follow-up below. Wili authorized the available Day 6/7 merges while postponing live F2 and dependency checks until 9 November. This is an incremental code integration; the full purchase journey is still pending.
 
 [PR #41](https://github.com/wilisail/event-management-platform-pwdk/pull/41) is merged into `integration` at `3fa5663f19073fc4dd13cdc6129b89ff95e96068`. Both [Integration CI 42474385346](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42474385346) and [Feature 2 CI 42474385351](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42474385351) passed for head `71323d025d777392e003755519b5f711c48b1a09`. The integration job confirms 5 integration tests, 144 F2 tests, 2 operations tests, both SQL harnesses and the production build. [Sanitized evidence](evidence/day-7-integration-2026-11-08.json)
 
 ## Source and scope
+
+9 November schema follow-up: Rizky's later commit [`c497ddf04a56a03295571628471e3e4d8429f487`](https://github.com/wilisail/event-management-platform-pwdk/commit/c497ddf04a56a03295571628471e3e4d8429f487), pushed at 21:24 WIB on 8 November, adopts the existing `Attendance` and `OrganizerDecisionEmail` models, their reverse relations and a review index in the root Prisma client. Column/index/foreign-key mappings match F2; local relation aliases differ harmlessly between the two clients. Its new SQL file remains under `prisma/rizky-migrations`, the separate developer history. The shared nine-migration history, runtime connection choice and existing application security remain unchanged. This adds no checkout/payment implementation.
+
+The Day 7 SQL harness now separately replays both F1 developer migrations into a fresh disposable schema, then replays the nine shared migrations in a different disposable database and reads the existing attendance/outbox tables through F1's generated models. It does not execute the developer creation SQL against shared tables. These repository/local checks do not prove that Rizky applied the migration successfully on his laptop or used the private environment ZIP; his terminal result or developer-database migration ledger is still needed for that confirmation.
 
 The completed Day 6 snapshot from [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) is merged into `feature-2` at `541839b496d246c311d908cddfc7486d7282711a`. Its reusable operations script, bounded QA cleanup, companion notes and successful Node 22 CI are included. The earlier failed CI alert was superseded by [successful run 42178273975](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42178273975).
 
