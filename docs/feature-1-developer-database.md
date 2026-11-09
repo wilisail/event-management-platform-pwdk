@@ -2,6 +2,8 @@
 
 9 November integration note: F1 commit `c497ddf` adds `20261108134857_feature_2_schema` to this independent developer history. It creates the account/referral/reward/attendance/outbox tables in that developer database after `initial_f1`. These tables already have their own shared migrations. Preserve this SQL's checksum; do not promote or replay the developer creation history onto the shared database. The Day 7 disposable harness verifies the two histories independently.
 
+The schema adoption and developer SQL were merged into `integration` through [PR #42](https://github.com/wilisail/event-management-platform-pwdk/pull/42) after both CI workflows passed on 9 November. Verification used disposable databases and made no change to the hosted shared database.
+
 The private `.env.rizky` handoff configures the F1 application and Prisma to use `temuevent_rizky_dev`. Prisma uses `temuevent_rizky_shadow` for temporary migration checks. Both databases are owned by Rizky's developer login in the existing TemuEvent Supabase project.
 
 Pull the latest `feature-1` code and extract the private handoff into that checkout. It supplies `.env.rizky` and the existing public TLS certificate. Then use the usual commands:
