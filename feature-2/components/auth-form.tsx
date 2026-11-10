@@ -50,7 +50,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     <section className="panel auth-card">
       {created ? <div role="status"><span className="badge">Akun berhasil dibuat</span><h2>Siap untuk masuk.</h2>
         <p>Akunmu sudah tersimpan. Masuk dengan email dan kata sandi yang baru dibuat.</p>
-        <Link className="primary" href={'/login?next=' + encodeURIComponent(next)}>Masuk ke akun</Link>
+        <Link className="primary" href={'/login?next=' + encodeURIComponent(next)}>Lanjut ke halaman masuk</Link>
       </div> : <>
         <p className="eyebrow">{isRegister ? 'BUAT AKUN' : 'MASUK AKUN'}</p>
         <h2>{isRegister ? 'Kenalan dulu, yuk.' : 'Lanjutkan pengalamanmu.'}</h2>
