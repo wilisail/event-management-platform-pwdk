@@ -1,0 +1,45 @@
+{
+  "checkpoint": "Day 7 Round 4A automated event acceptance",
+  "date": "2026-11-10",
+  "timezone": "Asia/Jakarta",
+  "checkedAt": "2026-11-10 06:00:16.91541+00",
+  "eventId": "c57ed675-52e4-4d11-b1ca-4250226b5510",
+  "publicUrl": "https://temuevent-combined-qa-andor2.vercel.app/events/c57ed675-52e4-4d11-b1ca-4250226b5510",
+  "readOnlyDatabaseVerification": {
+    "endAt": "2026-11-17T09:00:00+00:00",
+    "startAt": "2026-11-17T07:00:00+00:00",
+    "published": true,
+    "eventExists": true,
+    "ownerEvents": 1,
+    "ticketTypes": [
+      {
+        "name": "Regular",
+        "price": "10000",
+        "quota": 5,
+        "availableSeats": 5
+      }
+    ],
+    "expectedName": true,
+    "posterAbsent": true,
+    "eventPurchases": 0,
+    "expectedCategory": true,
+    "ownerCompletedRevenue": "0",
+    "ownerConfirmedPurchases": 0,
+    "uniqueExpectedOrganizer": true,
+    "ownedByExpectedOrganizer": true
+  },
+  "publicApi": {
+    "detailStatus": 200,
+    "price": 10000,
+    "availableSeats": 5,
+    "poster": null
+  },
+  "publicPageShellStatus": 200,
+  "ownerBrowserAcceptance": {
+    "previouslyReachedFormAndSignedIn": true,
+    "publicationAndDashboardScreenshotNotYetReported": true
+  },
+  "operatorDatabaseWrites": false,
+  "eventRetained": true,
+  "next": "Owner confirms public page and one owned dashboard event; separate Round 4B event supplies real poster upload/persistence/display acceptance."
+}
