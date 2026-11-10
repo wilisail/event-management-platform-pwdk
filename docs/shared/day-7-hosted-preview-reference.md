@@ -2,6 +2,8 @@
 
 Updated 10 November 2026, Asia/Jakarta.
 
+Latest Round 2 follow-up: owner inbox/reset/new-password login acceptance passed. Current [combined organizer login](https://temuevent-m978ox58w-andor2.vercel.app/login) and [event form](https://temuevent-m978ox58w-andor2.vercel.app/organizer/events/new) use integration source `cdbac30dc00c5df576c8aa5db5d7c761a43f3b50`. Current [F2 account app](https://temuevent-dcm4os6gu-andor2.vercel.app/account) uses source `3cfbe9019826437a544e6e1ca0caba3949dff2eb`. Both rebuilt with a patched F2 recovery destination and passed SMTP authentication/readiness. See [Round 2 evidence and manual scope](day-6-round-2-reference.md). The earlier deployments and 48-check baseline below remain dated evidence.
+
 10 November sender follow-up: the current [combined organizer login](https://temuevent-cs6c3f52i-andor2.vercel.app/login) and [event form](https://temuevent-cs6c3f52i-andor2.vercel.app/organizer/events/new) deploy reviewed integration source `b497dbb8dcf5256774b8293fef3a2343f3973932` with the shared Gmail sender. The [F2 account/recovery app](https://temuevent-hoowk373y-andor2.vercel.app/forgot-password) deploys source `3cfbe9019826437a544e6e1ca0caba3949dff2eb`. Both builds passed real Google SMTP authentication and readiness; the existing scheduler now targets the new F2 worker. See [sender activation](email-sender-setup-reference.md). Actual inbox receipt remains pending. The 48-check result below is the dated 9 November baseline; this follow-up adds deployment/authentication/page/worker smoke checks and does not claim a repeated full purchase journey.
 
 ## 9 November automated baseline

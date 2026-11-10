@@ -2,9 +2,13 @@
 
 Updated 10 November 2026, Asia/Jakarta.
 
-Round 1 Customer registration/login passed. Round 2 actual forgotten-password email receipt and use remains pending. Seeing a recovery form, receiving HTTP 202 or observing a provider acknowledgement does not establish inbox delivery.
+Round 1 Customer registration/login and Round 2 actual recovery-email receipt, password reset and replacement-password login passed. Read-only database verification agrees with the owner report. See [Round 2 acceptance and remaining manual scope](day-6-round-2-reference.md). The earlier activation evidence below is dated before owner acceptance.
 
-## Current activation — 10 November 2026
+## Current Round 2 follow-up — 10 November 2026
+
+[Round 2 acceptance](day-6-round-2-reference.md) records the consumed request, new session, skipped manual negative/idle tests and 19 passing focused tests. The current [F2 account app](https://temuevent-dcm4os6gu-andor2.vercel.app/account) and [combined app](https://temuevent-m978ox58w-andor2.vercel.app/login) incorporate the updated recovery destination. Future reset links target the patched Gmail-enabled F2 recovery UI on `temuevent-hoowk373y-andor2.vercel.app`. Round 3A profile testing is next.
+
+## Initial sender activation — 10 November 2026
 
 The owner saved both Gmail settings as Preview-only Secrets without branch restrictions. Preview now selects `gmail`. Both reviewed deployments passed the real Google SMTP authentication probe (`GMAIL_SMTP_AUTH_OK`) and reached READY; the probe sent no email. Both readiness endpoints returned HTTP 200 with `ready: true`.
 
@@ -65,4 +69,4 @@ References: [Gmail SMTP](https://developers.google.com/workspace/gmail/imap/imap
 
 [PR #44](https://github.com/wilisail/event-management-platform-pwdk/pull/44) merged reviewed source `af7a4b5509c3cde3c02a4113a223d2da6a6f8bc0` into integration at `33028d108758e47da8cfcda21260bfb7748f0760`. [Integration CI 42737991391](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42737991391) and [Feature 2 CI 42737991392](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42737991392) passed. [PR #45](https://github.com/wilisail/event-management-platform-pwdk/pull/45) carries the same adapter into Feature 2.
 
-The current activation above supersedes the earlier sender-setup dependency. Actual customer/evaluator inbox recovery acceptance remains Round 2 work.
+The initial activation above superseded the sender-setup dependency. Owner Customer recovery acceptance now passed in Round 2; evaluator access and the real purchase/decision-email journey remain separate checks.
