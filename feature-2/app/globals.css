@@ -26,6 +26,12 @@
 .panel.auth-card { padding: 32px; }
 .auth-intro, .auth-switch { color: var(--muted); font-size: 13px; }
 .auth-switch { margin: 23px 0 0; }
+.auth-card [role='status'] > .primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+}
 .auth-error { border: 1px solid #f2cbd5; background: #fff4f6; color: #922b47; padding: 14px; border-radius: var(--control-radius); }
 .auth-error > p { margin: 0 0 12px; }
 .profile-form .auth-submit { width: 100%; }
