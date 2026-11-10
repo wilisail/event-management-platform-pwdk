@@ -49,7 +49,11 @@ Preview `F2_PASSWORD_RESET_ORIGIN` now points to `https://temuevent-hoowk373y-an
 | F2 account/profile app | [My account](https://temuevent-dcm4os6gu-andor2.vercel.app/account) · [Login](https://temuevent-dcm4os6gu-andor2.vercel.app/login) · [Forgot password](https://temuevent-dcm4os6gu-andor2.vercel.app/forgot-password) |
 | Combined F1/F2 app | [Organizer login](https://temuevent-m978ox58w-andor2.vercel.app/login) · [Create event](https://temuevent-m978ox58w-andor2.vercel.app/organizer/events/new) |
 
-## Next owner step — Round 3A only
+## Round 3 follow-up
+
+Round 3A name/photo acceptance has since passed with read-only account/private-storage verification. Continue with the [current Round 3 sequence and exact referred signup](day-6-round-3-reference.md). The original profile steps below are retained as the earlier handoff.
+
+## Original next owner step — Round 3A only
 
 Keep the same Customer account. If the updated Preview asks for login, use the replacement password; do not register again.
 
