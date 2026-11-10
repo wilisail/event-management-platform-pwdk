@@ -35,7 +35,7 @@ The owner plans to use the Gmail already used for Vercel/the email sender for th
 | 3A | Name/photo save and persistence | Passed: saved name, private stored image, ownership and unchanged referral code |
 | 3B — passed | Copied/pasted the original Customer's referral code, registered one separate Customer and inspected both wallets | Verified exactly one referral, one 10,000-point grant for the original Customer and one Rp25,000 coupon for the referred Customer, correct ownership and three-calendar-month expiry |
 | 3C — passed | Original Customer changed the known password, was signed out and signed in with the replacement | Account update/new login match the report; all pre-change stored sessions are revoked, profile/rewards remain and the referred Customer is unchanged |
-| 3D — next | Register/login Organizer, inspect own profile/security/referral and dashboard | Verify role restrictions, owned dashboard records, public organizer identity and isolation from the Customer and another Organizer |
+| 3D — baseline passed | Organizer registration/login, security form and empty owned dashboard shown | Verified ORGANIZER role, one active session, own different referral code, zero owned records and no leakage of other owners' events; populated purchase/participant acceptance remains Day 7 |
 
 The earlier approximately 95% F2 / 73% combined completion figures were planning targets after the whole Round 3, not completion awarded for 3A alone. Real F1 checkout, payment proof, shared purchase decisions, reward restoration, attendance/reviews and decision-email acceptance still belong to the Day 7 dependency list.
 
@@ -75,14 +75,35 @@ The owner report/new login, stored account update and session records support th
 
 [Sanitized Round 3C evidence](evidence/day-6-round-3c-2026-11-10.json)
 
-## Round 3D — Organizer acceptance is next
+## Round 3D — Organizer registration/login and empty dashboard passed
 
-1. Log out of the Customer account. Open [registration](https://temuevent-f2-qa-andor2.vercel.app/register).
-2. Register one account named **QA Organizer 1** (or another clearly identified test name), select **Organizer**, use the planned sender/Vercel Gmail if that exact email is not already registered in TemuEvent, and choose its own TemuEvent password of at least 15 characters. Leave the optional referral field blank.
-3. The success button should read **Lanjut ke halaman masuk**, with the published spacing fix. Click it and log in using that new Organizer identity. This also supplies the outstanding visual confirmation of the updated signup screen.
-4. At [My account](https://temuevent-f2-qa-andor2.vercel.app/account), confirm **Organizer** role and its own profile/referral code. These are separate records from both Customers. Inspect the profile, Referral and Keamanan sections. The Customer wallet menu is not expected for an Organizer; no second Gmail sender authorization is needed.
-5. Open the [Organizer dashboard](https://temuevent-f2-qa-andor2.vercel.app/organizer). A newly registered Organizer should see its own empty event/transaction/attendee/statistics state until fixtures or real test events belong to it. Customer/other-organizer records must not appear.
-6. Report registration/login, role and dashboard results, then pause for backend ownership/role verification. Event publishing/posters follow in Round 4; the full purchase journey follows when the F1 order/proof backend is available.
+The owner reported successful Organizer registration/login and supplied screenshots of the owned event, confirmed participant, transaction and statistics panels, plus the Organizer security form. Read-only verification found one matching Organizer, created at **11:39:09 WIB**, with one active session, its own generated referral code different from both Customers, and no uploaded Organizer photo yet. This is an independent account; its profile/referral and role are not copied from a Customer.
+
+The database contains **zero events owned by this Organizer, zero purchases on its events, zero confirmed purchases and Rp0 completed revenue**. Other owners' events exist and are correctly absent from the new Organizer's screenshot. Both earlier Customer accounts remain present as Customers, and together have **zero purchases**. No missing participant or dashboard defect was found.
+
+### Account registration versus event registration
+
+| Record/action | Meaning | Appears in this Organizer's participant list? |
+| --- | --- | --- |
+| Customer signs up or logs in | Platform account/session | No |
+| Customer signs up using a referral | Account/referral/reward relationship | No |
+| Organizer creates an event | Owned event available for later purchase | Creates the event entry, without automatically adding Customers |
+| Customer purchase reaches `DONE` for that owned event | Confirmed registration for the event | Yes, including ticket quantity |
+| Organizer marks physical attendance | Check-in linked to the confirmed purchase | Updates attendance separately |
+
+The current `listAttendees` query requires the selected event, the verified Organizer's ownership and purchase status `DONE`. Transaction and statistics reads are likewise restricted to events owned by that Organizer. This is an event-management dashboard, not a platform-wide Customer directory. An Organizer should not receive unrelated users' profile or purchase data merely because they registered on TemuEvent.
+
+The screenshot's **Please fill out this field** message is the browser's expected required-field validation on the empty current-password input. The Organizer password was not reported changed and no second change is required for this baseline. Its security form and absence of the Customer wallet menu are visible. The signup-success button's new label/spacing were not explicitly reported in this batch; prior source/build checks remain recorded above.
+
+[Sanitized Round 3D evidence](evidence/day-6-round-3d-2026-11-10.json)
+
+This checkpoint combines the owner's current screenshots, read-only records and current source owner/status filters. The earlier [48 hosted checks](day-7-hosted-preview-reference.md) retain their dated Customer/two-Organizer authorization evidence; no new credentialed negative HTTP replay or nonempty purchase fixture was run against the owner's accounts here. Populated participant, sale, proof, decision and attendance acceptance remains part of the real Day 7 purchase journey. No application fix, database write, migration or redeployment was needed; the real accounts/rewards remain intact.
+
+## Next — Round 4 owned event and poster
+
+Use the new Organizer in the combined event app to create a clearly named test event and ticket type, upload a small poster after provider configuration, publish and reopen the public detail. Then verify that the event belongs to this Organizer and appears in its F2 dashboard. Customer participants still remain empty until an owned-event purchase is confirmed in Round 5.
+
+Cloudinary's setting names and integration code were checked in GitHub; actual API credentials belong in private deployment configuration. A fresh Vercel metadata check confirms all three required Preview variables are absent: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` and `CLOUDINARY_API_SECRET`. The approved Cloudinary account owner must configure them privately in the shared Preview for the upload test. Existing public poster URLs can be displayed without these upload credentials. No credentials were searched for in public source, read, printed or requested in chat.
 
 ## Day 7 dependency checkpoint
 
