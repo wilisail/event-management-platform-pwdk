@@ -8,7 +8,9 @@ Progress, 1 November: day 2 subparts 1–4 and day 3 subparts 1, 2 and 4 are com
 
 Day 3 part 1 was brought forward and completed: own-name editing, real public organizer identity and photo upload/processing/storage are implemented. Real Supabase checks passed for upload, read, replacement, old-file cleanup, ownership/CSRF and customer/organizer visibility. The private bucket is configured; all test records/files were removed. TypeScript, 114 tests and the production build pass. See the [profile companion and Day 3–6 dependency map](profile-upload-reference.md). Day 3 is Monday's account section below; Day 4 is Tuesday's organizer-decision section, Day 5 Wednesday's dashboard and Day 6 Thursday's release.
 
-## Latest checkpoint — 9 November 2026
+## Latest checkpoint — 10 November 2026
+
+10 November: [Round 1 owner registration/login](day-6-round-1-reference.md) passed on the protected F2 account app. Read-only records match the screenshot's Customer role, generated referral and zero starting balance, with one active session. The registration-success link spacing fix passed CI and is published in an updated F2 Preview. The owner can stay signed in; profile/photo/referral/password actions remain Round 3. Before Round 2, complete verified-domain email sender setup and test delivery to a separate real customer inbox. Consumers/evaluators do not require Resend accounts.
 
 The [combined protected Preview and automated preparation](day-7-hosted-preview-reference.md) are complete from integration source `e1a8a6f`: 48 hosted checks passed, all nine live migration checksums match, and the email scheduler is active with fresh HTTP 200 responses. Preview recovery links now target the existing working F2 recovery UI. Exact disposable QA records were removed and temporary credentials retired. Continue with Wili's F2 browser/inbox checks. Live Cloudinary configuration, final combined navigation and the real F1 purchase journey remain pending.
 
