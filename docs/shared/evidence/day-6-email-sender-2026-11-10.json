@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-10",
+  "timezone": "Asia/Jakarta",
+  "checkedAt": "2026-11-10T02:23:12.558594+00:00",
+  "provider": "gmail",
+  "environment": "preview",
+  "settings": [
+    {
+      "name": "F2_GMAIL_USER",
+      "type": "secret",
+      "scope": "preview",
+      "allPreviewBranches": true
+    },
+    {
+      "name": "F2_GMAIL_APP_PASSWORD",
+      "type": "secret",
+      "scope": "preview",
+      "allPreviewBranches": true
+    }
+  ],
+  "deployments": [
+    {
+      "scope": "F2 account app",
+      "id": "dpl_FMyzTJPRKm1hTtJTHfsqfEvP8gi6",
+      "url": "https://temuevent-hoowk373y-andor2.vercel.app",
+      "source": "3cfbe9019826437a544e6e1ca0caba3949dff2eb",
+      "state": "READY",
+      "smtpAuthenticationPassed": true,
+      "readinessHttpStatus": 200
+    },
+    {
+      "scope": "Combined F1/F2 app",
+      "id": "dpl_FDZTDSSVc2d5QUF9GohYS33TkTVR",
+      "url": "https://temuevent-cs6c3f52i-andor2.vercel.app",
+      "source": "b497dbb8dcf5256774b8293fef3a2343f3973932",
+      "state": "READY",
+      "smtpAuthenticationPassed": true,
+      "readinessHttpStatus": 200
+    }
+  ],
+  "recovery": {
+    "requestUrl": "https://temuevent-hoowk373y-andor2.vercel.app/forgot-password",
+    "requestPageHttpStatus": 200,
+    "trustedResetOrigin": "https://temuevent-8jbtjn050-andor2.vercel.app",
+    "destinationPageHttpStatus": 200,
+    "cacheControl": "no-store",
+    "referrerPolicy": "no-referrer"
+  },
+  "scheduler": {
+    "name": "temuevent-preview-email-jobs",
+    "active": true,
+    "schedule": "* * * * *",
+    "target": "https://temuevent-hoowk373y-andor2.vercel.app/api/internal/jobs/run",
+    "activatedAt": "2026-11-10 02:21:39.430769+00",
+    "usesVault": true,
+    "postActivationResponses": [
+      {
+        "id": 5565,
+        "fresh": true,
+        "created": "2026-11-10T02:23:00.082362+00:00",
+        "success": true,
+        "timed_out": false,
+        "status_code": 200,
+        "password_reset": true,
+        "decision_emails": true
+      },
+      {
+        "id": 5564,
+        "fresh": true,
+        "created": "2026-11-10T02:22:00.019375+00:00",
+        "success": true,
+        "timed_out": false,
+        "status_code": 200,
+        "password_reset": true,
+        "decision_emails": true
+      }
+    ],
+    "workerCompletionsOnNewDeployment": 2
+  },
+  "database": {
+    "sharedMigrationChecksumsCurrent": true,
+    "sharedMigrations": 9,
+    "inspectedTablesRlsEnabled": true,
+    "beforeActivation": {
+      "resetJobs": 0,
+      "decisionJobs": 0
+    }
+  },
+  "acceptance": {
+    "round1CustomerSignupLogin": "passed",
+    "senderConfigurationAndAuthentication": "passed",
+    "automatedAuthenticationProbeSentEmail": false,
+    "round2ActualInboxReceipt": "pending",
+    "round2ResetAndLogin": "pending",
+    "realPurchaseAndDecisionEmailJourney": "pending"
+  }
+}
