@@ -34,8 +34,8 @@ The owner plans to use the Gmail already used for Vercel/the email sender for th
 | --- | --- | --- |
 | 3A | Name/photo save and persistence | Passed: saved name, private stored image, ownership and unchanged referral code |
 | 3B — passed | Copied/pasted the original Customer's referral code, registered one separate Customer and inspected both wallets | Verified exactly one referral, one 10,000-point grant for the original Customer and one Rp25,000 coupon for the referred Customer, correct ownership and three-calendar-month expiry |
-| 3C — next | Change the original Customer's password through Keamanan, then sign in with the replacement | Verify the change and account-scoped session revocation; keep separate from Round 2 forgotten-password recovery |
-| 3D | Register/login Organizer, inspect own profile/security/referral and dashboard | Verify role restrictions, owned dashboard records, public organizer identity and isolation from the Customer and another Organizer |
+| 3C — passed | Original Customer changed the known password, was signed out and signed in with the replacement | Account update/new login match the report; all pre-change stored sessions are revoked, profile/rewards remain and the referred Customer is unchanged |
+| 3D — next | Register/login Organizer, inspect own profile/security/referral and dashboard | Verify role restrictions, owned dashboard records, public organizer identity and isolation from the Customer and another Organizer |
 
 The earlier approximately 95% F2 / 73% combined completion figures were planning targets after the whole Round 3, not completion awarded for 3A alone. Real F1 checkout, payment proof, shared purchase decisions, reward restoration, attendance/reviews and decision-email acceptance still belong to the Day 7 dependency list.
 
@@ -65,14 +65,29 @@ Rewards/referral data intentionally refetch every **60 seconds while the page is
 
 The stable alias retains Vercel Authentication: anonymous requests to login and readiness redirect to Vercel sign-in. Preview-only allowed-origin and password-reset-origin configuration includes this exact alias; sensitive email credentials and Production settings were not changed. The existing once-per-minute worker now targets the alias, with the existing bearer and deployment-protection credentials preserved. Three consecutive post-change worker responses returned HTTP 200 with both queues enabled; runtime completions were confirmed on the new deployment. Future recovery links created by this F2 deployment remain on the stable host.
 
-## Round 3C — do this next, then pause
+## Round 3C — known-password change passed
 
-1. Open [My account](https://temuevent-f2-qa-andor2.vercel.app/account) and sign into the **original Customer** using the latest password established in Round 2. Confirm the saved name/photo and 10,000 points belong to that account.
-2. Open **Keamanan**. Enter the current TemuEvent password, then a different new password of 15–128 characters and the matching confirmation. Keep these values private.
-3. Click **Ubah kata sandi**, then **Ya, ubah dan keluar**. All sessions for this Customer should end, including the current session.
-4. Sign in again with the replacement password and confirm the original profile and rewards remain intact.
-5. Report the result, then pause for the operator's credential/session verification before Round 3D. The separate referred Customer's password and account must remain unchanged.
+The owner used the stable F2 alias and supplied screenshots of the confirmation dialog, successful sign-out message and original Customer profile after signing in again with the replacement password. Read-only verification found the account updated at **11:07:56 WIB**, its latest stored session revoked at **11:07:57 WIB**, and one new active session created at **11:08:34 WIB**. All five stored sessions created before the account update are revoked; no pre-change session remains unrevoked.
 
-Round 3D will register/login the separate Organizer account, then inspect its own profile/security/referral and empty owned dashboard before named event/transaction fixtures. The planned sender/Vercel Gmail may be used for that Organizer provided it is not already registered in TemuEvent. No second Gmail sender authorization is needed.
+The saved name/photo are present and the referral code is preserved. The original Customer still has **10,000 points, one grant, one outgoing referral and zero coupons**. The referred Customer still has **zero points, one incoming referral and one Rp25,000 coupon**; its account-update timestamp and active/revoked session counts are unchanged from the pre-3C checkpoint. The operator made no account, credential, reward, database-schema or application-code changes.
+
+The owner report/new login, stored account update and session records support this acceptance. No raw password or password hash was read. Manual wrong/previous-password attempts, a replay from a second old browser session and a long idle wait were not performed; the existing focused session/recovery regressions remain separately documented in Round 2 and were not rerun for this unchanged-code acceptance. No fix, migration or redeployment was needed.
+
+[Sanitized Round 3C evidence](evidence/day-6-round-3c-2026-11-10.json)
+
+## Round 3D — Organizer acceptance is next
+
+1. Log out of the Customer account. Open [registration](https://temuevent-f2-qa-andor2.vercel.app/register).
+2. Register one account named **QA Organizer 1** (or another clearly identified test name), select **Organizer**, use the planned sender/Vercel Gmail if that exact email is not already registered in TemuEvent, and choose its own TemuEvent password of at least 15 characters. Leave the optional referral field blank.
+3. The success button should read **Lanjut ke halaman masuk**, with the published spacing fix. Click it and log in using that new Organizer identity. This also supplies the outstanding visual confirmation of the updated signup screen.
+4. At [My account](https://temuevent-f2-qa-andor2.vercel.app/account), confirm **Organizer** role and its own profile/referral code. These are separate records from both Customers. Inspect the profile, Referral and Keamanan sections. The Customer wallet menu is not expected for an Organizer; no second Gmail sender authorization is needed.
+5. Open the [Organizer dashboard](https://temuevent-f2-qa-andor2.vercel.app/organizer). A newly registered Organizer should see its own empty event/transaction/attendee/statistics state until fixtures or real test events belong to it. Customer/other-organizer records must not appear.
+6. Report registration/login, role and dashboard results, then pause for backend ownership/role verification. Event publishing/posters follow in Round 4; the full purchase journey follows when the F1 order/proof backend is available.
+
+## Day 7 dependency checkpoint
+
+A fresh read of the combined events endpoint returned HTTP 200 and **12 published events**, all without a stored poster URL. The discovery/API integration is available; these records are not evidence of accepted poster uploads. Preview metadata still has no Cloudinary cloud-name/key/secret variables. Existing public poster URLs can be displayed without upload credentials; a new poster upload needs the approved Cloudinary account configured privately in the shared Preview.
+
+Rizky's current `feature-1` head remains `c497ddf`. Its checkout UI is still a mock and has no order/proof write connected. This establishes an unfinished checkout, not a certified overall F1 completion percentage. Round 4 event publishing/poster integration can progress before checkout is complete; Round 5 must connect the real purchase/proof/decision/expiry path. [Day 7 integration scope](day-7-event-poster-integration-reference.md).
 
 [Round 2 acceptance](day-6-round-2-reference.md) · [Completion plan](feature-2-completion-plan.md)
