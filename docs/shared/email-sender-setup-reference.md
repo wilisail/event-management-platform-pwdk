@@ -43,3 +43,9 @@ Rizky should reuse the shared account/recovery routes and the organizer decision
 Local typecheck, all 151 application tests and a production build in hosted API mode passed. Seven added tests cover separate sender/recipient identities, explicit provider selection, TLS/credential boundaries, recipient rejection, redacted errors, SMTP retry capability/Message-ID stability and reuse by the organizer worker. These tests inject an offline transport; they do not establish real Google authorization, SMTP acceptance or customer inbox receipt. The separate deployed SMTP-authentication probe and owner recovery test remain required after the private credentials are saved.
 
 References: [Gmail SMTP](https://developers.google.com/workspace/gmail/imap/imap-smtp), [Nodemailer Gmail](https://nodemailer.com/guides/using-gmail), [Vercel SMTP support](https://vercel.com/kb/guide/serverless-functions-and-smtp), [recovery design](password-reset-reference.md), [decision outbox](organizer-decision-email-reference.md).
+
+## Published source checkpoint
+
+[PR #44](https://github.com/wilisail/event-management-platform-pwdk/pull/44) merged reviewed source `af7a4b5509c3cde3c02a4113a223d2da6a6f8bc0` into integration at `33028d108758e47da8cfcda21260bfb7748f0760`. [Integration CI 42737991391](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42737991391) and [Feature 2 CI 42737991392](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42737991392) passed. [PR #45](https://github.com/wilisail/event-management-platform-pwdk/pull/45) carries the same adapter into Feature 2.
+
+Live Gmail authorization, the provider switch, new deployments and the scheduled-executor handoff are still pending. The earlier live Preview remains on Resend's test sender. Do not start the ordinary-customer inbox test until the operator confirms activation.
