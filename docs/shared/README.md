@@ -4,9 +4,9 @@ Updated: 10 November 2026.
 
 | Reference | Contents |
 | --- | --- |
-| [Day 6 Round 3 account acceptance](day-6-round-3-reference.md) | Persisted name/photo, private stored object, zero reward baseline, separate Customer/Organizer records and exact referred-signup sequence |
+| [Day 6 Round 3 account acceptance](day-6-round-3-reference.md) | Passed name/photo and referral issuance, correct 10,000-point/Rp25,000-coupon ownership/expiry, stable protected F2 link, clarified signup label, known refresh behavior and next password/Organizer subrounds |
 | [Day 6 Round 2 acceptance](day-6-round-2-reference.md) | Real inbox/reset/new-login acceptance, read-only records, explicit manual omissions, existing session-expiry coverage, corrected recovery destination and Round 3A profile steps |
-| [Day 6 shared email sender setup](email-sender-setup-reference.md) | Chosen Gmail demo sender, private authorization steps, shared F1/F2 adapter, worker activation and pending actual inbox acceptance |
+| [Day 6 shared email sender setup](email-sender-setup-reference.md) | Chosen Gmail demo sender, private authorization steps, shared F1/F2 adapter and worker activation; subsequent actual inbox/reset acceptance is recorded in Round 2 |
 | [Day 6 Round 1 acceptance](day-6-round-1-reference.md) | Owner Customer signup/login and read-only account/session match, confirmation-link spacing fix, updated Preview and Round 2 sender prerequisite |
 | [Day 7 hosted combined Preview](day-7-hosted-preview-reference.md) | Protected combined URL, 48 live checks, trusted recovery-origin fix, exact QA cleanup and remaining owner/Cloudinary/F1 acceptance |
 | [Day 7 event/poster integration](day-7-event-poster-integration-reference.md) | F1 publishing with shared F2 login/ownership, one API, poster recovery, automated SQL checks and deferred live acceptance |
