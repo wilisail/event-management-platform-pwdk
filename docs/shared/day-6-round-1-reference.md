@@ -14,7 +14,7 @@ The confirmation's inline primary link can paint its vertical padding over the p
 
 - Round 1's owner registration/login check is complete. The owner can stay signed in while the fix is checked and published; logout belongs at the start of the forgotten-password acceptance sequence.
 - Profile saving, actual photo upload/replacement, clipboard copying, new referral issuance and password changes have not been manually accepted merely because their controls are visible. Exercise them in Round 3.
-- Before Round 2's real customer email test, configure a verified TemuEvent sending domain and its sender address. The default `onboarding@resend.dev` sender's owner-only delivery is a provider setup limitation. Customers and evaluators use ordinary email addresses and do not need Resend accounts. Confirm delivery to a separate customer inbox, then reset and sign in.
+- Before Round 2's real customer email test, complete the [shared Gmail sender setup](email-sender-setup-reference.md), selected to avoid a domain purchase for the demo. The default `onboarding@resend.dev` sender's owner-only delivery is a provider setup limitation. Customers and evaluators use ordinary email addresses and do not need Resend accounts. Confirm delivery to a separate customer inbox, then reset and sign in.
 - This Preview is the standalone F2 account application. Shared login and organizer event publishing already work in the combined Preview; the complete F1 customer checkout/proof/decision/attendance/review journey remains a Day 7 dependency.
 
 ## Published checkpoint
