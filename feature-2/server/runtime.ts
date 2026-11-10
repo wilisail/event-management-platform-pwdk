@@ -17,7 +17,7 @@ import { featureOneOrganizerRating } from './profile/rating'
 
 import { createPasswordResetService, resetOrigin } from './auth/password-reset'
 import { prismaResetRepository } from './auth/reset-repository'
-import { resendMailer } from './email/resend'
+import { configuredMailer } from './email/provider'
 import { createDecisionEmailWorker } from './email/organizer-decision'
 import { prismaDecisionEmailRepository } from './email/organizer-decision-repository'
 
@@ -55,7 +55,7 @@ export async function createRuntime(options: { defer?: (work: Promise<unknown>) 
     readOrganizerRating: featureOneOrganizerRating(process.env.F1_PUBLIC_API_ORIGIN),
     onCleanupFailure: () => console.warn('Profile storage cleanup needs attention; check orphaned uploads.'),
   }) : undefined
-  const mailer = resendMailer(), origin = resetOrigin()
+  const mailer = configuredMailer(), origin = resetOrigin()
   const decisionEmailWorker = client && mailer
     ? createDecisionEmailWorker(prismaDecisionEmailRepository(client), mailer,
       () => console.warn('Organizer decision email needs attention.')) : undefined
