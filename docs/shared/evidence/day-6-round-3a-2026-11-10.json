@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-10",
+  "timezone": "Asia/Jakarta",
+  "ownerReportedNameAndPhotoSaved": true,
+  "readOnlyVerification": {
+    "role": "CUSTOMER",
+    "coupons": 0,
+    "updatedAt": "2026-11-10T03:04:35.872+00:00",
+    "photoLinked": true,
+    "photoObject": {
+      "bytes": "2668",
+      "mimeType": "image/webp",
+      "createdAt": "2026-11-10T03:01:32.229053+00:00"
+    },
+    "referralsGiven": 0,
+    "availablePoints": "0",
+    "matchingAccounts": 1,
+    "incomingReferrals": 0,
+    "photoObjectPresent": true,
+    "nameMatchesReported": true,
+    "profileBucketPrivate": true,
+    "referralCodeUnchanged": true,
+    "photoKeyOwnedByAccount": true
+  },
+  "photoDeliveryEvidence": "Owner screenshots show the saved photo; storage metadata and owner link agree.",
+  "anonymousHttpProbe": {
+    "status": 401,
+    "stage": "Vercel deployment protection",
+    "applicationResponseObserved": false,
+    "excludedFromApplicationAuthorizationClaims": true
+  },
+  "scope": {
+    "accountAndStorageChangedByOperator": false,
+    "newTestsOrDeploymentNeeded": false,
+    "clipboardCopy": "pending",
+    "referredSignupAndRewards": "pending",
+    "knownPasswordChange": "pending",
+    "organizerAcceptance": "pending"
+  },
+  "accountSeparation": {
+    "customerWalletOnly": true,
+    "organizerHasIndependentProfileCodeAndPassword": true,
+    "senderGmailMayBeUsedForOrganizerRegistration": true
+  },
+  "next": "Round 3B: one controlled referred Customer signup, then verify original Customer points and new Customer coupon"
+}
