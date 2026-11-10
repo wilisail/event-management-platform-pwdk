@@ -1,0 +1,110 @@
+{
+  "date": "2026-11-10",
+  "timezone": "Asia/Jakarta",
+  "ownerReported": {
+    "realRecoveryEmailReceived": true,
+    "confirmationDialogShown": true,
+    "passwordResetSucceeded": true,
+    "newPasswordLoginSucceeded": true
+  },
+  "readOnlyAccountVerification": {
+    "role": "CUSTOMER",
+    "latestReset": {
+      "consumed": true,
+      "expiresAt": "2026-11-10T02:50:38.884+00:00",
+      "consumedAt": "2026-11-10T02:37:49.932+00:00",
+      "requestedAt": "2026-11-10T02:35:38.884+00:00",
+      "attemptCount": 2,
+      "deliveryState": "ACCEPTED",
+      "storedCredentialChanged": true
+    },
+    "matchingAccounts": 1,
+    "sessionsRevokedAtReset": 0,
+    "unconsumedResetRequests": 0,
+    "activeSessionsAfterReset": 1,
+    "activeSessionsBeforeReset": 0
+  },
+  "manualChecksNotPerformed": [
+    "wrong-password login",
+    "old-password login after reset",
+    "real reset-link reuse attempt",
+    "live simultaneous pre-reset session challenge",
+    "long wall-clock inactivity"
+  ],
+  "automatedChecks": {
+    "command": "node --import tsx --test tests/password-reset.test.ts tests/sessions.test.ts",
+    "passed": 19,
+    "failed": 0,
+    "fixtureBased": true,
+    "includes": [
+      "wrong-password denial",
+      "old-password denial after reset",
+      "single-use recovery",
+      "all-session revocation",
+      "refresh rotation",
+      "15-minute access expiry",
+      "absolute seven-day session expiry"
+    ]
+  },
+  "layout": {
+    "reportedOnOlderRecoveryPreview": true,
+    "existingFixPr": 43,
+    "publishedCssRule": ".auth-card [role=status]>.primary{justify-content:center;align-items:center;margin-top:16px;display:inline-flex}",
+    "updatedTrustedResetOrigin": "https://temuevent-hoowk373y-andor2.vercel.app",
+    "freshVisualAcceptanceAfterDestinationUpdate": "not repeated; no owner retest required now"
+  },
+  "deployments": [
+    {
+      "scope": "F2",
+      "id": "dpl_J2Nyn7nKf1gxStMTwVpW5eaED889",
+      "url": "https://temuevent-dcm4os6gu-andor2.vercel.app",
+      "source": "3cfbe9019826437a544e6e1ca0caba3949dff2eb",
+      "ready": true,
+      "smtpAuthenticationPassed": true,
+      "readinessHttpStatus": 200
+    },
+    {
+      "scope": "combined",
+      "id": "dpl_6asNi5A5DCa8MFVsUDVXGtVqsi3g",
+      "url": "https://temuevent-m978ox58w-andor2.vercel.app",
+      "source": "cdbac30dc00c5df576c8aa5db5d7c761a43f3b50",
+      "ready": true,
+      "smtpAuthenticationPassed": true,
+      "readinessHttpStatus": 200
+    }
+  ],
+  "scheduler": {
+    "target": "https://temuevent-dcm4os6gu-andor2.vercel.app/api/internal/jobs/run",
+    "cadence": "* * * * *",
+    "usesExistingVaultCredentials": true,
+    "workerResponses": [
+      {
+        "id": 5595,
+        "fresh": true,
+        "created": "2026-11-10T02:53:00.03476+00:00",
+        "success": true,
+        "timed_out": false,
+        "status_code": 200,
+        "password_reset": true,
+        "decision_emails": true
+      },
+      {
+        "id": 5594,
+        "fresh": true,
+        "created": "2026-11-10T02:52:00.01957+00:00",
+        "success": true,
+        "timed_out": false,
+        "status_code": 200,
+        "password_reset": true,
+        "decision_emails": true
+      }
+    ],
+    "updatedAt": "2026-11-10 02:51:15.072832+00"
+  },
+  "acceptance": {
+    "round2HappyPath": "passed",
+    "round3ProfileActions": "pending",
+    "realPurchaseAndDecisionEmailJourney": "pending"
+  },
+  "databaseMigrationsCurrent": true
+}

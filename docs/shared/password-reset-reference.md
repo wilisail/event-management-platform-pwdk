@@ -1,5 +1,7 @@
 # Day 3, part 3 — forgotten-password recovery and email
 
+Latest 10 November result: [Round 2 real inbox recovery acceptance](day-6-round-2-reference.md) passed. The owner received and used the email, reset the password and signed in. Backend records and 19 focused tests agree. Manual wrong/old-password challenges and long wall-clock idle testing remain explicitly unperformed. The current recovery destination uses the published success-link spacing fix.
+
 10 November checkpoint: Round 1 Customer signup/login passed. Wili selected a domain-free Gmail sender for the next demo checkpoint. The [shared sender setup](email-sender-setup-reference.md) is activated in Preview: Gmail authentication and both fresh deployments passed, and the scheduled worker now targets the Gmail-enabled F2 deployment. Recovery and decision notifications use the same provider factory. Actual customer/evaluator inbox receipt and recovery remain Round 2 acceptance work. The original Resend-specific evidence below describes earlier checks.
 
 Updated: 1 November 2026, Asia/Jakarta. Brought forward from Monday, 2 November. Implementation is on `feature-2`, in open PR #2. This note is the cross-feature handoff; the final combined application remains separate integration work.
