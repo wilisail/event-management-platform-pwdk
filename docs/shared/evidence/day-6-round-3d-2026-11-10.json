@@ -1,0 +1,82 @@
+{
+  "checkpoint": "Day 6 Round 3D Organizer empty-dashboard acceptance",
+  "date": "2026-11-10",
+  "timezone": "Asia/Jakarta",
+  "checkedAt": "2026-11-10 04:45:16.928995+00",
+  "ownerAcceptance": {
+    "organizerRegistrationAndLoginReported": true,
+    "organizerDashboardShown": true,
+    "ownedEventsEmpty": true,
+    "transactionsEmpty": true,
+    "revenueZero": true,
+    "confirmedTicketsZero": true,
+    "organizerSecurityFormShown": true,
+    "customerWalletMenuAbsent": true,
+    "signupConfirmationSpacingExplicitlyReported": false,
+    "organizerPasswordChangeReported": false
+  },
+  "readOnlyVerification": {
+    "matchingOrganizers": 1,
+    "organizer": {
+      "role": "ORGANIZER",
+      "createdAt": "2026-11-10T04:39:09.416+00:00",
+      "updatedAt": "2026-11-10T04:39:09.416+00:00",
+      "ownedEvents": 0,
+      "activeSessions": 1,
+      "ownedPurchases": 0,
+      "hasReferralCode": true,
+      "outsideEventsExist": true,
+      "profilePhotoPresent": false,
+      "ownedCompletedRevenue": "0",
+      "ownedConfirmedPurchases": 0,
+      "referralCodeDifferentFromCustomers": true
+    },
+    "existingCustomers": {
+      "accounts": 2,
+      "purchases": 0,
+      "customerRoles": 2
+    }
+  },
+  "participantRule": {
+    "source": "feature-2/server/organizer/read-repository.ts",
+    "eventOwnerFilter": "event.organizerId = verified organizer identity",
+    "purchaseStatus": "DONE",
+    "platformSignupCreatesEventParticipation": false,
+    "referralSignupCreatesEventParticipation": false,
+    "confirmedRegistrationSeparateFromPhysicalAttendance": true
+  },
+  "scope": {
+    "currentOwnerEmptyDashboardVerified": true,
+    "otherOrganizerEventsExistAndAreNotShown": true,
+    "populatedOwnerPurchaseJourneyStillPending": true,
+    "newCustomerOrSecondOrganizerNegativeHttpReplayPerformed": false,
+    "previousHostedRoleIsolationReference": "../day-7-hosted-preview-reference.md",
+    "applicationTestsRepeated": false
+  },
+  "cloudinary": {
+    "configurationSource": "server/cloudinary.ts",
+    "requiredBackendVariables": [
+      "CLOUDINARY_CLOUD_NAME",
+      "CLOUDINARY_API_KEY",
+      "CLOUDINARY_API_SECRET"
+    ],
+    "previewVariablesPresent": [],
+    "credentialValuesRead": false,
+    "credentialsExpectedInPublicRepository": false,
+    "action": "Approved Cloudinary account owner configures the three backend variables privately in the shared Vercel Preview before new poster-upload acceptance."
+  },
+  "operatorChanges": {
+    "applicationCode": false,
+    "databaseWrites": false,
+    "migrations": false,
+    "deployment": false,
+    "accountsOrRewardsDeleted": false
+  },
+  "next": {
+    "round": "4",
+    "task": "Use the combined event app to create an owned test event/ticket, configure and verify poster upload, then reopen its public detail and owning Organizer dashboard. Full checkout remains a separate Round 5 dependency."
+  },
+  "privacy": {
+    "emailsAccountIdsReferralCodesCredentialsAndScreenshotsExcluded": true
+  }
+}
