@@ -1,6 +1,10 @@
 # Day 7 — hosted combined Preview and automated verification
 
-Updated 9 November 2026, Asia/Jakarta.
+Updated 10 November 2026, Asia/Jakarta.
+
+10 November sender follow-up: the current [combined organizer login](https://temuevent-cs6c3f52i-andor2.vercel.app/login) and [event form](https://temuevent-cs6c3f52i-andor2.vercel.app/organizer/events/new) deploy reviewed integration source `b497dbb8dcf5256774b8293fef3a2343f3973932` with the shared Gmail sender. The [F2 account/recovery app](https://temuevent-hoowk373y-andor2.vercel.app/forgot-password) deploys source `3cfbe9019826437a544e6e1ca0caba3949dff2eb`. Both builds passed real Google SMTP authentication and readiness; the existing scheduler now targets the new F2 worker. See [sender activation](email-sender-setup-reference.md). Actual inbox receipt remains pending. The 48-check result below is the dated 9 November baseline; this follow-up adds deployment/authentication/page/worker smoke checks and does not claim a repeated full purchase journey.
+
+## 9 November automated baseline
 
 The combined application is deployed as a protected **Preview** from reviewed integration commit `e1a8a6f77912714bedb057274f797c7cef9f9e21`. The deployment build passed on Node 22 with Next.js 16.4.3. [Sanitized evidence](evidence/day-7-hosted-2026-11-09.json)
 

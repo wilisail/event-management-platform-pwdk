@@ -4,6 +4,23 @@ Updated 10 November 2026, Asia/Jakarta.
 
 Round 1 Customer registration/login passed. Round 2 actual forgotten-password email receipt and use remains pending. Seeing a recovery form, receiving HTTP 202 or observing a provider acknowledgement does not establish inbox delivery.
 
+## Current activation — 10 November 2026
+
+The owner saved both Gmail settings as Preview-only Secrets without branch restrictions. Preview now selects `gmail`. Both reviewed deployments passed the real Google SMTP authentication probe (`GMAIL_SMTP_AUTH_OK`) and reached READY; the probe sent no email. Both readiness endpoints returned HTTP 200 with `ready: true`.
+
+| Target | Current deployment |
+| --- | --- |
+| F2 Customer/account testing | [Forgot password](https://temuevent-hoowk373y-andor2.vercel.app/forgot-password) · [Login](https://temuevent-hoowk373y-andor2.vercel.app/login); source `3cfbe9019826437a544e6e1ca0caba3949dff2eb`, deployment `dpl_FMyzTJPRKm1hTtJTHfsqfEvP8gi6` |
+| Combined F1/F2 event app | [Organizer login](https://temuevent-cs6c3f52i-andor2.vercel.app/login) · [Create event](https://temuevent-cs6c3f52i-andor2.vercel.app/organizer/events/new); source `b497dbb8dcf5256774b8293fef3a2343f3973932`, deployment `dpl_FDZTDSSVc2d5QUF9GohYS33TkTVR` |
+
+At 09:21:39 WIB, the existing Vault-backed per-minute scheduler was retargeted to the new F2 worker. Its existing bearer/protection credentials were retained without returning their values. Scheduled responses at 09:22 and 09:23 WIB returned HTTP 200 with both queues enabled; the new deployment's runtime logs confirm two completed worker calls. Before activation, both queues contained zero jobs. All nine shared migration checksums and inspected RLS flags remain current.
+
+The trusted recovery-link destination remains the existing working F2 `/reset-password` UI on `temuevent-8jbtjn050-andor2.vercel.app`; it returned HTTP 200 with no-store/no-referrer headers. Keeping that explicit origin avoids the combined shell's missing recovery page. Start new requests at the current Gmail-enabled F2 link above.
+
+**Sender configured: start Round 2.** Log out of the Customer session, request recovery once using the existing Customer registration email, check that inbox and Spam, open the real email promptly, choose a replacement of at least 15 characters, then sign in. Actual inbox receipt/reset/login and decision-triggered purchase emails remain pending. Customers and evaluators need no sender-provider account. No re-registration is required.
+
+[Sanitized activation evidence](evidence/day-6-email-sender-2026-11-10.json). The owner/activation instructions below remain a reference for future changes; this initial setup is complete.
+
 ## Chosen path
 
 Wili authorized the simplest convenient option for the demo. No owned custom domain was listed in the connected Vercel team, and no previously authorized Gmail sender was found. Use one authorized personal Gmail account so that the demo does not need a domain purchase. A dedicated project account is preferable; an existing account can also be designated. It need not match the accounts used to create Vercel or Resend, or a TemuEvent customer's registration address.
@@ -48,4 +65,4 @@ References: [Gmail SMTP](https://developers.google.com/workspace/gmail/imap/imap
 
 [PR #44](https://github.com/wilisail/event-management-platform-pwdk/pull/44) merged reviewed source `af7a4b5509c3cde3c02a4113a223d2da6a6f8bc0` into integration at `33028d108758e47da8cfcda21260bfb7748f0760`. [Integration CI 42737991391](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42737991391) and [Feature 2 CI 42737991392](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42737991392) passed. [PR #45](https://github.com/wilisail/event-management-platform-pwdk/pull/45) carries the same adapter into Feature 2.
 
-Live Gmail authorization, the provider switch, new deployments and the scheduled-executor handoff are still pending. The earlier live Preview remains on Resend's test sender. Do not start the ordinary-customer inbox test until the operator confirms activation.
+The current activation above supersedes the earlier sender-setup dependency. Actual customer/evaluator inbox recovery acceptance remains Round 2 work.
