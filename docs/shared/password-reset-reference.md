@@ -1,5 +1,7 @@
 # Day 3, part 3 — forgotten-password recovery and email
 
+10 November checkpoint: Round 1 Customer signup/login passed. Wili selected a domain-free Gmail sender for the next demo checkpoint. The [shared sender setup](email-sender-setup-reference.md) adds a provider factory used by both recovery and decision notifications; Resend remains the deployment default until Gmail authorization, deployed SMTP verification and scheduled-executor activation are complete. Actual customer/evaluator inbox receipt and recovery remain Round 2 acceptance work. The original Resend-specific evidence below describes earlier checks.
+
 Updated: 1 November 2026, Asia/Jakarta. Brought forward from Monday, 2 November. Implementation is on `feature-2`, in open PR #2. This note is the cross-feature handoff; the final combined application remains separate integration work.
 
 ## Checkpoint and provider
