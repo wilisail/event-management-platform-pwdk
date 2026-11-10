@@ -4,7 +4,7 @@ Updated: 10 November 2026.
 
 | Reference | Contents |
 | --- | --- |
-| [Day 6 Round 3 account acceptance](day-6-round-3-reference.md) | Passed name/photo and referral issuance, correct 10,000-point/Rp25,000-coupon ownership/expiry, stable protected F2 link, clarified signup label, known refresh behavior and next password/Organizer subrounds |
+| [Day 6 Round 3 account acceptance](day-6-round-3-reference.md) | Passed name/photo, referral issuance and known-password change/session revocation; retained profile/rewards, stable F2 link, known refresh behavior, next Organizer steps and Day 7 dependencies |
 | [Day 6 Round 2 acceptance](day-6-round-2-reference.md) | Real inbox/reset/new-login acceptance, read-only records, explicit manual omissions, existing session-expiry coverage, corrected recovery destination and Round 3A profile steps |
 | [Day 6 shared email sender setup](email-sender-setup-reference.md) | Chosen Gmail demo sender, private authorization steps, shared F1/F2 adapter and worker activation; subsequent actual inbox/reset acceptance is recorded in Round 2 |
 | [Day 6 Round 1 acceptance](day-6-round-1-reference.md) | Owner Customer signup/login and read-only account/session match, confirmation-link spacing fix, updated Preview and Round 2 sender prerequisite |
