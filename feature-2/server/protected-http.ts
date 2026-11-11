@@ -4,6 +4,7 @@ import { authentication, requireAuthentication, requireCsrf, requireRoles } from
 import type { SessionService } from './auth/sessions'
 import type { OrganizerReadRepository } from './organizer/reads'
 import { decisionAvailability, type OrganizerDecisionTransition } from './organizer/decision'
+import { checkedPaymentProof, type OrganizerProofReader } from './organizer/private-proof'
 import { PURCHASE_STATUSES, STATISTICS_GROUPS, type UserView } from '../contracts/types'
 import { statisticsRange } from './organizer/statistics'
 import type { RewardReadRepository } from './rewards/reads'
@@ -36,6 +37,7 @@ export function protectedRouter(options: {
   sessionService?: SessionService
   organizerRepository?: OrganizerReadRepository
   organizerDecisionTransition?: OrganizerDecisionTransition
+  organizerProofReader?: OrganizerProofReader
   rewardRepository?: RewardReadRepository
   now?: () => Date
   secureCookies: boolean
@@ -149,8 +151,31 @@ export function protectedRouter(options: {
       if (!data) { fail(res, 404, 'TRANSACTION_NOT_FOUND', 'Transaction not found'); return }
       res.json({ success: true, message: 'Transaction details', data: {
         ...data, decisionAvailability: decisionAvailability(data, now(), options.organizerDecisionTransition),
+        proofAvailability: !data.proofUploadedAt ? 'NONE' : options.organizerProofReader ? 'READY' : 'UNAVAILABLE',
       } })
     } catch { fail(res, 503, 'ORGANIZER_DATA_UNAVAILABLE', 'Organizer data is temporarily unavailable') }
+  })
+  router.get('/organizer/transactions/:transactionId/proof', signedIn, organizer, async (req, res) => {
+    const transactionId = z.uuid().safeParse(req.params.transactionId)
+    if (!transactionId.success || Object.keys(req.query).length) {
+      fail(res, 400, 'INVALID_TRANSACTION_ID', 'Use a valid transaction UUID without query fields'); return
+    }
+    const transactions = options.organizerRepository?.transactions
+    if (!transactions) { fail(res, 503, 'ORGANIZER_DATA_UNAVAILABLE', 'Organizer data is not configured'); return }
+    const organizerId = authentication(res)!.user.id
+    try {
+      const purchase = await transactions.detail(organizerId, transactionId.data)
+      if (!purchase?.proofUploadedAt) { fail(res, 404, 'PROOF_NOT_FOUND', 'Payment proof not found'); return }
+      if (!options.organizerProofReader) { fail(res, 503, 'PROOF_UNAVAILABLE', 'Payment proof access is not connected'); return }
+      const stored = await options.organizerProofReader(organizerId, transactionId.data)
+      if (!stored) { fail(res, 404, 'PROOF_NOT_FOUND', 'Payment proof not found'); return }
+      const file = checkedPaymentProof(stored)
+      res.set({ 'Content-Type': file.contentType, 'Content-Disposition': `inline; filename="${file.filename}"`,
+        'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff',
+        'Content-Security-Policy': "default-src 'none'; sandbox; frame-ancestors 'none'",
+        'Referrer-Policy': 'no-referrer' })
+      res.send(file.bytes)
+    } catch { fail(res, 503, 'PROOF_UNAVAILABLE', 'Payment proof is temporarily unavailable') }
   })
   router.post('/organizer/transactions/:transactionId/decision', signedIn, organizer, csrf, (req, res, next) => {
     if (!req.is('application/json')) { fail(res, 415, 'JSON_REQUIRED', 'Send the decision as JSON'); return }
