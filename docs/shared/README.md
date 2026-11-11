@@ -4,6 +4,7 @@ Updated: 11 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Day 7 Round 7 automated F2 handoff](day-7-round-7-f2-handoff.md) | Deployed reviewed Preview, hosted access checks, live operations/preservation evidence and one owner checklist across Rounds 5–7 |
 | [11 November work recap, all rounds](work-session-2026-11-11.md) | Current Round 1–7 status, today's resumed Round 4B/5/6 work, carried-forward owner acceptance, validation and final attention window |
 | [Day 7 Round 6 independent F2 completion](day-7-round-6-f2-reference.md) | Attendance-to-review session/SQL bridge, persisted ratings, populated attendee/statistics checks and deferred live acceptance |
 | [Day 7 Round 5 independent F2 QA](day-7-round-5-f2-qa-reference.md) | Protected private-proof interface, isolated decisions/rewards/seats/email checks, automated-first sequence and deferred owner/live acceptance |
