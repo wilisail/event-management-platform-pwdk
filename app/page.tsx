@@ -463,8 +463,7 @@ const locations = useMemo(
                             </h2>
                             <p className="mt-3 text-sm text-white/80">
                                 Publikasikan workshop, gig musik, atau seminar
-                                komunitasmu dalam 3 menit. Dapatkan sistem tiket
-                                otomatis dan pencairan instan.
+                                komunitasmu dalam 3 menit. Kelola event dan temukan peserta yang tepat.
                             </p>
                             <a
                                 href="/organizer/events/new"
