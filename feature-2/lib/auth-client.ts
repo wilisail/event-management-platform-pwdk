@@ -14,12 +14,14 @@ type Options = {
   onUncertain?: () => void
 }
 
-/** Own-app return routes only. Cross-feature checkout handoff is coordinated separately. */
+/** Allowlisted local routes only; never accept a different origin or a nested redirect. */
 export function safeReturnPath(value: string | null | undefined, fallback = '/account'): string {
   if (!value || /[\\\u0000-\u0020]/.test(value) || !value.startsWith('/') || value.startsWith('//')) return fallback
   try {
     const url = new URL(value, 'https://temuevent.invalid')
-    return url.origin === 'https://temuevent.invalid' && ['/account', '/organizer'].includes(url.pathname)
+    const allowed = ['/account', '/organizer', '/organizer/events/new'].includes(url.pathname)
+      || /^\/events\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\/(?:tickets|review))?$/i.test(url.pathname)
+    return url.origin === 'https://temuevent.invalid' && allowed
       ? url.pathname + url.search : fallback
   } catch { return fallback }
 }
@@ -95,9 +97,10 @@ export function createAuthClient(options: Options = {}) {
       throw error
     }
   }
-  async function authenticatedWrite<T>(path: string, init: RequestInit, uncertainCode = 'PROFILE_SAVE_UNCERTAIN'): Promise<T> {
+  async function authenticatedWrite<T>(path: string, init: RequestInit, uncertainCode = 'PROFILE_SAVE_UNCERTAIN', expectedUserId?: string): Promise<T> {
     // Refresh before taking the mutation lock; refresh itself uses this same cross-tab lock.
     const expected = await get<UserView>('/api/me')
+    if (expectedUserId && expected.id !== expectedUserId) throw new AuthApiError(409, 'ACCOUNT_CHANGED', 'Reload before submitting from another account')
     return coordinated(async () => {
       let current: UserView
       try { current = await request<UserView>('/api/me') }
@@ -122,6 +125,12 @@ export function createAuthClient(options: Options = {}) {
   }
   return {
     get,
+    createEvent: (input: Record<string, unknown>, image?: File | null, expectedUserId?: string) => {
+      const form = new FormData()
+      form.append('event', JSON.stringify(input))
+      if (image) form.append('image', image)
+      return authenticatedWrite<{ id: string }>('/api/events', { method: 'POST', body: form }, 'EVENT_CREATION_UNCERTAIN', expectedUserId)
+    },
     markAttendance: (eventId: string, customerId: string, transactionId: string) => authenticatedWrite<AttendanceView>(
       '/api/organizer/events/' + encodeURIComponent(eventId) + '/attendance',
       { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ customerId, transactionId }) },
@@ -199,6 +208,8 @@ export type AuthClient = ReturnType<typeof createAuthClient>
 export function accountError(error: unknown): string {
   if (!(error instanceof AuthApiError)) return 'Terjadi kendala. Silakan coba lagi.'
   const messages: Record<string, string> = {
+    EVENT_CREATION_UNCERTAIN: 'Hasil penyimpanan belum dapat dipastikan. Periksa daftar event sebelum mengirim ulang.',
+    IMAGE_UPLOAD_FAILED: 'Poster belum dapat diunggah. Coba lagi sebentar.',
     EMAIL_IN_USE: 'Email ini sudah terdaftar. Silakan masuk.',
     INVALID_CREDENTIALS: 'Email atau kata sandi tidak sesuai.',
     INVALID_REGISTRATION: 'Periksa kembali data pendaftaran dan kode referral yang diisi.',

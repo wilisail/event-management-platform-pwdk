@@ -85,6 +85,17 @@ test('return paths stay inside allowed account routes', () => {
   assert.equal(safeReturnPath(null, '/organizer'), '/organizer')
 })
 
+test('login can return to creation or a database event without permitting another origin', () => {
+  const event = '/events/22222222-2222-4222-8222-222222222222'
+  for (const path of ['/organizer/events/new', event, event + '/tickets', event + '/review']) {
+    assert.equal(safeReturnPath(path), path)
+  }
+  for (const path of ['/organizer/events/new/../../login', '/events/not-a-uuid/tickets',
+    '/%2f%2fevil.example', '/organizer%2fevents%2fnew', 'https://evil.example/organizer/events/new']) {
+    assert.equal(safeReturnPath(path), '/account')
+  }
+})
+
 test('signup/login use JSON, application header and browser-managed cookies', async () => {
   const calls: { path: string; init: RequestInit }[] = []
   const client = createAuthClient({ fetcher: transport((path, init) => { calls.push({ path, init }); return ok({ user }) }) })
