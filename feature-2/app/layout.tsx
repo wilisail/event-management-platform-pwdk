@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id">
-      <body><AuthProvider>{children}</AuthProvider></body>
+      <body><AuthProvider><div className="f2-ui">{children}</div></AuthProvider></body>
     </html>
   )
 }
