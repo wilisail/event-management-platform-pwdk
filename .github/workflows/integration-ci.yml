@@ -47,4 +47,6 @@ jobs:
         working-directory: database
       - run: node --import tsx scripts/verify-day7-integration.mjs
         working-directory: database
+      - run: npm run qa:round5
+        working-directory: database
       - run: npm run build

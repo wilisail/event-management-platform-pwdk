@@ -7,6 +7,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "qa:round5": "tsc --project qa/tsconfig.json && node --import tsx scripts/verify-round5-isolated.mjs",
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
     "db:check": "node scripts/run-with-ca.mjs scripts/check.ts",

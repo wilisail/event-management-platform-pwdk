@@ -4,6 +4,7 @@ Updated: 11 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Day 7 Round 5 independent F2 QA](day-7-round-5-f2-qa-reference.md) | Protected private-proof interface, isolated decisions/rewards/seats/email checks, automated-first sequence and deferred owner/live acceptance |
 | [Day 7 Round 4B completed browser acceptance](day-7-round-4b-browser-acceptance.md) | Final approved poster-form submission, public reload, persisted owner/image/tickets, both dashboard events, preserved samples and remaining Round 5 dependency |
 | [Earlier Day 7 Round 4B automated acceptance](day-7-round-4b-reference.md) | One-host navigation, CI/releases, real poster API/database/browser checks, exact QA cleanup and remaining F1 purchase boundary |
 | [Day 7 Round 4 event/poster preparation](day-7-round-4-reference.md) | Stable combined/F2 navigation, claimed Cloudinary/provider smoke, verified no-poster event ownership/tickets, seed-data distinction and pending owner visual/poster acceptance |

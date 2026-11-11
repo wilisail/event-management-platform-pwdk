@@ -203,6 +203,7 @@ export interface OrganizerTransactionView {
 
 export interface OrganizerTransactionDetail extends OrganizerTransactionView {
   decisionAvailability: OrganizerDecisionAvailability
+  proofAvailability?: 'NONE' | 'READY' | 'UNAVAILABLE'
   subtotal: number
   voucherDiscount: number
   couponDiscount: number
