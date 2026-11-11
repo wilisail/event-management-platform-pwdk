@@ -49,4 +49,6 @@ jobs:
         working-directory: database
       - run: npm run qa:round5
         working-directory: database
+      - run: npm run qa:round6
+        working-directory: database
       - run: npm run build

@@ -5,6 +5,7 @@ import { resolve } from 'node:path'
 import { rootCertificates } from 'node:tls'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '../generated/prisma/client'
+import { prismaEventReviewRepository } from '../feature-2/server/organizer/event-reviews'
 
 export const seededUserEmail = 'ayu@example.test'
 
@@ -131,8 +132,8 @@ export async function readPublishedEvents(): Promise<PublicEventView[]> {
 }
 
 /** Public, read-only event detail for the Feature 1 event page. */
-export async function readPublishedEventById(eventId: string) {
-  const event = await databaseClient().event.findFirst({
+export async function readPublishedEventById(eventId: string, db = databaseClient()) {
+  const event = await db.event.findFirst({
     where: {
       id: eventId,
       status: 'PUBLISHED',
@@ -151,6 +152,7 @@ export async function readPublishedEventById(eventId: string) {
           availableSeats: true,
         },
       },
+      reviews: { select: { rating: true } },
     },
   })
 
@@ -178,6 +180,8 @@ export async function readPublishedEventById(eventId: string) {
     availableSeats,
     organizerId: event.organizer.id,
     organizer: event.organizer.name,
+    rating: event.reviews.length ? event.reviews.reduce((sum, review) => sum + review.rating, 0) / event.reviews.length : null,
+    reviewCount: event.reviews.length,
     organizerPicture: event.organizer.profilePictureKey ? `/api/organizers/${event.organizer.id}/picture` : null,
   }
 }
@@ -258,8 +262,8 @@ export async function imagePublicIdInUse(publicId: string) {
 }
 
 /** Public organizer profile, including published events and their reviews. */
-export async function readOrganizerProfile(organizerId: string) {
-  const organizer = await databaseClient().user.findFirst({
+export async function readOrganizerProfile(organizerId: string, db = databaseClient()) {
+  const organizer = await db.user.findFirst({
     where: {
       id: organizerId,
       role: 'ORGANIZER',
@@ -357,8 +361,9 @@ export async function readOrganizerProfile(organizerId: string) {
 /** Public reviews for a published event. */
 export async function readEventReviews(
   eventId: string,
+  db = databaseClient(),
 ): Promise<EventReviewView[] | null> {
-  const event = await databaseClient().event.findFirst({
+  const event = await db.event.findFirst({
     where: {
       id: eventId,
       status: 'PUBLISHED',
@@ -399,75 +404,18 @@ export async function readEventReviews(
   }))
 }
 
-/** Create a review for a published event with a completed purchase. */
-export async function createEventReview(
-  input: CreateEventReviewInput,
-): Promise<EventReviewView> {
-  const db = databaseClient()
+/** Review writes independently recheck published event, DONE purchase and actual attendance. */
+export function createEventReview(input: CreateEventReviewInput): Promise<EventReviewView> {
+  return prismaEventReviewRepository(databaseClient()).create(input)
+}
 
-  // 1. Check whether the event exists and is published.
-  const event = await db.event.findFirst({
-    where: {
-      id: input.eventId,
-      status: 'PUBLISHED',
-    },
-    select: {
-      id: true,
-    },
-  })
+export function readReviewEligibility(eventId: string, customerId: string) {
+  return prismaEventReviewRepository(databaseClient()).eligibility(eventId, customerId)
+}
 
-  if (!event) {
-    throw new Error('EVENT_NOT_FOUND')
-  }
-
-  // 2. Check whether this customer has completed a purchase.
-  const purchase = await db.purchase.findFirst({
-    where: {
-      eventId: input.eventId,
-      customerId: input.userId,
-      status: 'DONE',
-    },
-    select: {
-      id: true,
-    },
-  })
-
-  if (!purchase) {
-    throw new Error('PURCHASE_REQUIRED')
-  }
-
-  // 3. Create the review.
-  const review = await db.review.create({
-    data: {
-      eventId: input.eventId,
-      userId: input.userId,
-      rating: input.rating,
-      comment: input.comment?.trim() || null,
-    },
-    select: {
-      id: true,
-      eventId: true,
-      userId: true,
-      rating: true,
-      comment: true,
-      createdAt: true,
-      user: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  })
-
-  return {
-    id: review.id,
-    eventId: review.eventId,
-    userId: review.userId,
-    reviewerName: review.user.name,
-    rating: review.rating,
-    comment: review.comment,
-    createdAt: review.createdAt.toISOString(),
-  }
+/** The combined app reads published review aggregates directly, without a self-HTTP request. */
+export function readOrganizerReviewRating(organizerId: string) {
+  return prismaEventReviewRepository(databaseClient()).organizerRating(organizerId)
 }
 
 export async function disconnectDatabase() {
