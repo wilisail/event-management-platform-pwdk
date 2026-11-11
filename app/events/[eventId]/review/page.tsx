@@ -3,7 +3,7 @@
 import { SiteHeader } from "@/components/site-header";
 
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import {
     ArrowLeft,
     CalendarDays,
@@ -12,11 +12,9 @@ import {
     Star,
 } from "lucide-react";
 
-const API_URL =
-    process.env.NEXT_PUBLIC_API_URL || "";
-
-// Temporary identity for development.
-const TEST_USER_ID = "d6025559-ccd4-4e1c-836b-751d75a288b1";
+import { useAuth } from "@/feature-2/components/auth-provider";
+import { accountError } from "@/feature-2/lib/auth-client";
+import type { EventReviewEligibility } from "@/feature-2/contracts/types";
 
 type Review = {
     id: string;
@@ -72,6 +70,24 @@ export default function EventReviewPage({
     params: Promise<{ eventId: string }>;
 }) {
     const { eventId } = use(params);
+    const auth = useAuth();
+    const customerId = auth.user?.role === "CUSTOMER" ? auth.user.id : null;
+    const [eligibility, setEligibility] = useState<(EventReviewEligibility & { customerId: string }) | null>(null);
+    const [eligibilityError, setEligibilityError] = useState("");
+    const inFlight = useRef(false);
+    const expectedReviewer = useRef<string | null>(null);
+    useEffect(() => {
+        const controller = new AbortController();
+        setEligibility(null);
+        setEligibilityError("");
+        if (auth.status !== "authenticated" || !customerId) return () => controller.abort();
+        void auth.client.reviewEligibility(eventId, controller.signal).then(state => {
+            if (!controller.signal.aborted) setEligibility({ ...state, customerId });
+        }).catch(error => {
+            if (!controller.signal.aborted) setEligibilityError(accountError(error));
+        });
+        return () => controller.abort();
+    }, [auth.client, auth.status, customerId, eventId]);
 
     const [event, setEvent] = useState<Event | null>(null);
     const [loadingEvent, setLoadingEvent] = useState(true);
@@ -89,7 +105,7 @@ export default function EventReviewPage({
                 setEventError(null);
 
                 const response = await fetch(
-                    `${API_URL}/api/events/${eventId}`,
+                    `/api/events/${eventId}`,
                     { signal: controller.signal },
                 );
 
@@ -128,7 +144,7 @@ export default function EventReviewPage({
                 setReviewsError(null);
 
                 const response = await fetch(
-                    `${API_URL}/api/events/${eventId}/reviews`,
+                    `/api/events/${eventId}/reviews`,
                     { signal: controller.signal },
                 );
 
@@ -168,6 +184,10 @@ export default function EventReviewPage({
     const [confirming, setConfirming] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
+    const confirmDialog = useRef<HTMLDialogElement>(null);
+    useEffect(() => {
+        if (confirming && !confirmDialog.current?.open) confirmDialog.current?.showModal();
+    }, [confirming]);
 
     if (loadingEvent) {
         return (
@@ -199,15 +219,9 @@ export default function EventReviewPage({
     }
 
 
-    // Temporary eligibility check for development.
-    // The backend still validates the user's completed purchase.
-    const eligible = true;
-    const alreadyReviewed = reviews.some(
-        (review) => review.userId === TEST_USER_ID,
-    );
-    const hasOccurred = new Date(event.endDate) < new Date();
-
-    const canReview = eligible && hasOccurred && !alreadyReviewed && !submitted;
+    const currentEligibility = eligibility?.customerId === customerId ? eligibility : null;
+    const alreadyReviewed = currentEligibility?.reason === "ALREADY_REVIEWED";
+    const canReview = auth.status === "authenticated" && Boolean(currentEligibility?.eligible) && !submitted;
     const displayRating = hovered || rating;
 
     const validate = () => {
@@ -223,51 +237,29 @@ export default function EventReviewPage({
     };
 
     const requestSubmit = () => {
-        if (validate() && canReview) setConfirming(true);
+        if (validate() && canReview && customerId) {
+            expectedReviewer.current = customerId;
+            setConfirming(true);
+        }
     };
     const confirmSubmit = async () => {
+        if (inFlight.current || !canReview || !expectedReviewer.current) return;
+        inFlight.current = true;
+        setSubmitting(true);
+        setSubmitError(null);
         try {
-            setSubmitting(true);
-            setSubmitError(null);
-
-            const response = await fetch(
-                `${API_URL}/api/events/${event.id}/reviews`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        userId: TEST_USER_ID,
-                        rating,
-                        comment: reviewText.trim(),
-                    }),
-                },
-            );
-
-            const result = await response.json();
-
-            if (!response.ok || !result.success || !result.data) {
-                throw new Error(
-                    result.message || "Gagal mengirim ulasan.",
-                );
-            }
-
-            const newReview = result.data as Review;
-
+            const newReview = await auth.client.submitEventReview(eventId, {
+                rating, comment: reviewText.trim(),
+            }, expectedReviewer.current);
             setSubmitted(newReview);
-            setReviews((previous) => [newReview, ...previous]);
+            setReviews(previous => [newReview, ...previous.filter(review => review.id !== newReview.id)]);
             setConfirming(false);
         } catch (error) {
-            setSubmitError(
-                error instanceof Error
-                    ? error.message
-                    : "Terjadi kesalahan saat mengirim ulasan.",
-            );
+            setSubmitError(accountError(error));
         } finally {
+            inFlight.current = false;
             setSubmitting(false);
         }
-        
     };
 
     return (
@@ -472,12 +464,24 @@ export default function EventReviewPage({
                                     Belum bisa memberikan ulasan
                                 </h2>
                                 <p className="mt-2 text-sm leading-6 text-[#77738b]">
-                                    {alreadyReviewed
-                                        ? "Kamu sudah memberikan ulasan untuk event ini."
-                                        : !hasOccurred
-                                          ? "Ulasan baru bisa diberikan setelah event selesai."
-                                          : "Kamu hanya bisa memberikan ulasan setelah menghadiri event ini."}
+                                    {auth.status === "loading" ? "Memeriksa sesi akun…"
+                                        : auth.status === "anonymous" ? "Masuk sebagai customer untuk memeriksa kelayakan ulasanmu."
+                                        : auth.status === "error" ? auth.error
+                                        : !customerId ? "Gunakan akun customer yang menghadiri event ini."
+                                        : eligibilityError ? eligibilityError
+                                        : !currentEligibility ? "Memeriksa pembelian dan kehadiranmu…"
+                                        : alreadyReviewed ? "Kamu sudah memberikan ulasan untuk event ini."
+                                        : currentEligibility.reason === "PURCHASE_REQUIRED" ? "Selesaikan pembelian tiket untuk event ini terlebih dahulu."
+                                        : "Minta penyelenggara mencatat kehadiranmu sebelum memberikan ulasan."}
                                 </p>
+                                {auth.status === "anonymous" && <Link
+                                    href={"/login?next=" + encodeURIComponent(`/events/${eventId}/review`)}
+                                    className="mt-5 inline-flex rounded-full bg-[#5148df] px-5 py-3 text-sm font-bold text-white"
+                                >Masuk sebagai customer</Link>}
+                                {(eligibilityError || auth.status === "error") && <button type="button"
+                                    onClick={() => window.location.reload()}
+                                    className="mt-5 rounded-full border px-5 py-3 text-sm font-bold"
+                                >Muat ulang</button>}
                                 {submitError && (
                                     <p role="alert" className="mt-3 text-sm font-semibold text-red-600">
                                         {submitError}
@@ -594,11 +598,10 @@ export default function EventReviewPage({
                 </div>
             </div>
             {confirming && (
-                <div className="fixed inset-0 z-30 grid place-items-center bg-[#16122c]/50 p-5">
+                <dialog ref={confirmDialog} onCancel={() => setConfirming(false)}
+                    aria-labelledby="confirm-title"
+                    className="fixed inset-0 z-30 m-auto max-w-[calc(100%-2.5rem)] rounded-3xl border-0 bg-transparent p-0 backdrop:bg-[#16122c]/50">
                     <div
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="confirm-title"
                         className="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl"
                     >
                         <h2 id="confirm-title" className="text-xl font-black">
@@ -609,6 +612,8 @@ export default function EventReviewPage({
                             {labels[rating].toLowerCase()}. Pastikan ceritamu
                             sudah sesuai.
                         </p>
+                        {submitError && <p role="alert" className="mt-3 text-sm font-semibold text-red-600">{submitError}</p>}
+                        {!canReview && <p role="alert" className="mt-3 text-sm">Akun atau kelayakan berubah. Tutup dialog dan muat ulang sebelum mengirim.</p>}
                         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                             <button
                                 type="button"
@@ -620,7 +625,7 @@ export default function EventReviewPage({
                             </button>
                             <button
                                 type="button"
-                                disabled={submitting}
+                                disabled={submitting || !canReview}
                                 onClick={confirmSubmit}
                                 className="rounded-full bg-[#5148df] px-5 py-3 text-sm font-bold text-white disabled:opacity-60"
                             >
@@ -630,7 +635,7 @@ export default function EventReviewPage({
                             </button>
                         </div>
                     </div>
-                </div>
+                </dialog>
             )}
         </main>
     );

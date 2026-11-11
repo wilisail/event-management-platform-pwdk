@@ -36,7 +36,8 @@ type EventDetail = {
     organizer: string;
     organizerPicture: string | null;
     availableSeats: number;
-    rating?: string;
+    rating?: number | null;
+    reviewCount?: number;
     featured?: string;
 };
 
@@ -381,14 +382,16 @@ export default function EventDetailsPage({
                                         fill="#f59e0b"
                                         className="text-amber-500"
                                     />{" "}
-                                    {event.rating || "Belum ada"}
+                                    {event.rating ? event.rating.toLocaleString("id-ID", { maximumFractionDigits: 1 }) : "Belum ada"}
                                 </span>
                             </div>
                             <p className="mt-4 text-sm text-[#77738b]">
-                                Belum ada ulasan tertulis untuk event ini.
-                                Jadilah yang pertama berbagi pengalaman setelah
-                                hadir.
+                                Baca pengalaman peserta atau bagikan ulasan setelah
+                                kehadiranmu dicatat oleh penyelenggara.
                             </p>
+                            <Link href={`/events/${event.id}/review`} className="mt-4 inline-flex text-sm font-bold text-[#5148df] hover:underline">
+                                Lihat dan tulis ulasan
+                            </Link>
                         </section>
                     </div>
                     <aside className="lg:sticky lg:top-24 lg:h-fit">

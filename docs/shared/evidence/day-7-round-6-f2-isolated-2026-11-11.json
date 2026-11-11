@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-11-11T14:19:32.275Z",
+  "scope": "ISOLATED_ROUND6_F2",
+  "liveDatabaseUsed": false,
+  "externalEmailSent": false,
+  "ownerStandbyRequired": false,
+  "ownerBrowserAccepted": false,
+  "fullF1JourneyAccepted": false,
+  "scenarios": [
+    "Session-derived review eligibility, role/CSRF/input guards and forged identity denial",
+    "DONE-only populated attendee list, ticket quantities and repeated owner/registration checks",
+    "Idempotent owner attendance unlocks only the matching authenticated customer",
+    "Authenticated browser client creates one persisted review; changed account and duplicate blocked",
+    "Concurrent duplicate requests yield one review; SQL writer repeats attendance/publication guards",
+    "Jakarta day/month/year totals count DONE purchases once across multiple items and exclude foreign/pending/rejected sales",
+    "F2 public organizer rating uses the published review aggregate; F1 public feed agrees",
+    "A previously eligible customer cannot review after the anchored purchase ceases to be DONE",
+    "A lost successful review response is reported as uncertain and is never automatically posted twice",
+    "Runtime retains append-only attendance/review permissions and revoked sessions lose eligibility access"
+  ],
+  "postgresSessionTimeZone": "UTC",
+  "migrationsReplayed": 9,
+  "databaseConcurrency": "Concurrent HTTP requests share one disposable PostgreSQL connection; live independent-session races remain unverified.",
+  "fixtureCounts": {
+    "users": 7,
+    "events": 3,
+    "purchases": 6,
+    "attendance": 3,
+    "reviews": 3
+  },
+  "result": "PASS"
+}

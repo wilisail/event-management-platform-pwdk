@@ -60,6 +60,21 @@ export interface OrganizerView {
   ratingSummary: { average: number; count: number } | null
 }
 
+export interface EventReviewEligibility {
+  eligible: boolean
+  reason: 'ELIGIBLE' | 'PURCHASE_REQUIRED' | 'ATTENDANCE_REQUIRED' | 'ALREADY_REVIEWED'
+}
+
+export interface EventReviewView {
+  id: string
+  eventId: string
+  userId: string
+  reviewerName: string
+  rating: number
+  comment: string | null
+  createdAt: string
+}
+
 export interface CheckoutContext {
   user: UserView
   rewards: WalletView

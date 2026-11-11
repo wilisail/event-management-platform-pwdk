@@ -5,6 +5,7 @@ import express, { type ErrorRequestHandler, type RequestHandler, type Request, t
 import { z } from 'zod'
 import { authentication, requireAuthentication, requireCsrf, requireRoles } from '../feature-2/server/auth/authorization'
 import type { SessionService } from '../feature-2/server/auth/sessions'
+import type { EventReviewEligibility } from '../feature-2/contracts/types'
 import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
 import { createDemoData, type DemoData } from './fixtures'
@@ -61,6 +62,7 @@ export interface AppOptions {
   accountApi?: RequestHandler
   secureCookies?: boolean
   attendeeEligibility?: (eventId: string, customerId: string) => Promise<boolean>
+  reviewEligibility?: (eventId: string, customerId: string) => Promise<EventReviewEligibility | null>
   now?: () => Date
   data?: DemoData
   allowedOrigins?: string[]
@@ -175,7 +177,7 @@ export function createApp(options: AppOptions = {}) {
     }
   })
   app.post('/api/events', ...organizerWrites, express.json({ limit: '64kb', strict: true }), upload.single('image'), async (req, res) => {
-    const file = req.file
+    let file = req.file
     let poster: { secure_url: string; public_id: string } | undefined
     let creationAttempted = false
     try {
@@ -210,6 +212,11 @@ export function createApp(options: AppOptions = {}) {
         startAt: new Date(parsed.data.startAt), endAt: new Date(parsed.data.endAt),
         ...(poster ? { imageUrl: poster.secure_url, imagePublicId: poster.public_id } : {}),
       })
+      // Finish temporary-file cleanup before acknowledging a successful upload.
+      if (file) {
+        const path = file.path; file = undefined
+        await unlink(path).catch(() => console.warn({ event: 'temporary_poster_cleanup_failed' }))
+      }
       res.status(201).json({ success: true, message: 'Event created successfully',
         data: JSON.parse(JSON.stringify(event, (_key, value) => typeof value === 'bigint' ? Number(value) : value)),
         meta: { mode: 'database', contractVersion: '1.0', asOf: now().toISOString() } })
@@ -358,8 +365,27 @@ export function createApp(options: AppOptions = {}) {
       )
     }
   })
-  app.post('/api/events/:eventId/reviews', signedIn, requireRoles('CUSTOMER'), csrf, express.json({ limit: '2kb', strict: true }), async (req, res) => {
-    if (!options.reviewCreator || !options.attendeeEligibility) {
+  app.get('/api/events/:eventId/reviews/eligibility', signedIn, requireRoles('CUSTOMER'), async (req, res) => {
+    res.set('Cache-Control', 'private, no-store')
+    const eventId = z.string().uuid().safeParse(req.params.eventId)
+    if (!eventId.success || Object.keys(req.query).length) {
+      fail(res, 400, 'INVALID_REVIEW_QUERY', 'Use an event UUID without query parameters')
+      return
+    }
+    if (!options.reviewEligibility || !options.reviewCreator) {
+      fail(res, 503, 'REVIEWS_UNAVAILABLE', 'Review submission is unavailable')
+      return
+    }
+    try {
+      const state = await options.reviewEligibility(eventId.data, authentication(res)!.user.id)
+      if (!state) { fail(res, 404, 'EVENT_NOT_FOUND', 'Event not found'); return }
+      res.json({ success: true, message: 'Review eligibility retrieved', data: state })
+    } catch {
+      fail(res, 503, 'REVIEWS_UNAVAILABLE', 'Unable to check review eligibility')
+    }
+  })
+  app.post('/api/events/:eventId/reviews', signedIn, requireRoles('CUSTOMER'), csrf, express.json({ limit: '8kb', strict: true }), async (req, res) => {
+    if (!options.reviewCreator || (!options.attendeeEligibility && !options.reviewEligibility)) {
       fail(
         res,
         503,
@@ -371,7 +397,7 @@ export function createApp(options: AppOptions = {}) {
 
     const eventId = z.string().uuid().safeParse(req.params.eventId)
 
-    if (!eventId.success) {
+    if (!eventId.success || Object.keys(req.query).length) {
       fail(res, 400, 'INVALID_EVENT_ID', 'Event ID must be a valid UUID')
       return
     }
@@ -389,8 +415,16 @@ export function createApp(options: AppOptions = {}) {
     }
 
     try {
+      res.set('Cache-Control', 'private, no-store')
       const userId = authentication(res)!.user.id
-      if (!await options.attendeeEligibility!(eventId.data, userId)) {
+      if (options.reviewEligibility) {
+        const state = await options.reviewEligibility(eventId.data, userId)
+        if (!state) { fail(res, 404, 'EVENT_NOT_FOUND', 'Event not found'); return }
+        if (!state.eligible) {
+          fail(res, state.reason === 'ALREADY_REVIEWED' ? 409 : 403, state.reason, 'This customer cannot submit a review')
+          return
+        }
+      } else if (!await options.attendeeEligibility!(eventId.data, userId)) {
         fail(res, 403, 'ATTENDANCE_REQUIRED', 'Attendance is required before reviewing')
         return
       }
@@ -414,11 +448,6 @@ export function createApp(options: AppOptions = {}) {
         },
       })
     } catch (error) {
-      console.error(
-        `POST /api/events/${eventId.data}/reviews failed:`,
-        error,
-      )
-
       if (error instanceof Error) {
         if (error.message === 'EVENT_NOT_FOUND') {
           fail(res, 404, 'EVENT_NOT_FOUND', 'Event not found')
@@ -432,6 +461,14 @@ export function createApp(options: AppOptions = {}) {
             'PURCHASE_REQUIRED',
             'You must complete a purchase for this event before reviewing it',
           )
+          return
+        }
+        if (error.message === 'ATTENDANCE_REQUIRED') {
+          fail(res, 403, 'ATTENDANCE_REQUIRED', 'Attendance is required before reviewing')
+          return
+        }
+        if (error.message === 'REVIEW_ALREADY_EXISTS') {
+          fail(res, 409, 'REVIEW_ALREADY_EXISTS', 'You have already reviewed this event')
           return
         }
       }

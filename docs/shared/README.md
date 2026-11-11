@@ -4,6 +4,8 @@ Updated: 11 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [11 November work recap, all rounds](work-session-2026-11-11.md) | Current Round 1–7 status, today's resumed Round 4B/5/6 work, carried-forward owner acceptance, validation and final attention window |
+| [Day 7 Round 6 independent F2 completion](day-7-round-6-f2-reference.md) | Attendance-to-review session/SQL bridge, persisted ratings, populated attendee/statistics checks and deferred live acceptance |
 | [Day 7 Round 5 independent F2 QA](day-7-round-5-f2-qa-reference.md) | Protected private-proof interface, isolated decisions/rewards/seats/email checks, automated-first sequence and deferred owner/live acceptance |
 | [Day 7 Round 4B completed browser acceptance](day-7-round-4b-browser-acceptance.md) | Final approved poster-form submission, public reload, persisted owner/image/tickets, both dashboard events, preserved samples and remaining Round 5 dependency |
 | [Earlier Day 7 Round 4B automated acceptance](day-7-round-4b-reference.md) | One-host navigation, CI/releases, real poster API/database/browser checks, exact QA cleanup and remaining F1 purchase boundary |
