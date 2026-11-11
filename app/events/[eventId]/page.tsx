@@ -447,8 +447,7 @@ export default function EventDetailsPage({
                                 </button>
                             )}
                             <p className="mt-3 flex items-center justify-center gap-1 text-center text-[10px] text-[#9490a3]">
-                                <Clock3 size={12} /> Checkout demo, tanpa
-                                pembayaran
+                                <Clock3 size={12} /> Pembelian belum aktif pada preview ini
                             </p>
                         </div>
                     </aside>

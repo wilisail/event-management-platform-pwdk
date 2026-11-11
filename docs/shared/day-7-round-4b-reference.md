@@ -1,35 +1,52 @@
-# Day 7 — Round 4B, navigation and poster verification
+# Day 7 — Round 4B completed automated checks, 11 November 2026
 
-## State at resumption — 11 November 2026
+## Result and scope
 
-The owner's screenshots confirm the Round 4A no-poster event renders in public discovery and detail and appears as one published event in the owning Organizer dashboard. Its one Regular ticket remains Rp10,000 with five available seats. This is event publication acceptance; Customer account registration and referral rewards do not create confirmed event participants.
+The hosted authenticated multipart event/poster API, database ownership and poster fields, public image delivery, public browser rendering and exact disposable-fixture cleanup all passed. The visible test pattern rendered at its expected **480×270** dimensions. Customer event writes, writes without CSRF and Customer Organizer-list reads returned **403**. The owner’s Round 4A event and real account/reward records were outside cleanup.
 
-Feature 1 still ends at `c497ddf04a56a03295571628471e3e4d8429f487`. No newer F1 push was available when Round 4B resumed. Its numeric-fixture checkout is a mock, not a database purchase/payment-proof implementation. Round 5 remains blocked on that F1 journey.
+This was a real hosted API upload using disposable QA accounts followed by a browser display check. The operator did **not** submit the authenticated browser event form or read an owner password/cookie. The owner’s existing no-poster form submission supplies Round 4A browser acceptance; a fresh owner-selected poster through the form remains an additional manual acceptance observation, not an operator claim.
 
-The earlier failed combined build omitted the nested F2 email dependency installation. The existing replacement combined and F2 deployments are READY; the failed build is historical, not an indication that the running preview is down.
+Two disposable events, two accounts, their tickets/sessions and two exact Cloudinary test assets were removed. Database verification returned zero matching fixture records; both provider deletions returned HTTP 200/result `ok`. The original no-poster event remains published with five seats.
 
-## Combined application changes
+[Sanitized machine-readable evidence](evidence/day-7-round-4b-2026-11-11.json)
 
-- Mount the existing F2 login, registration, recovery, account and Organizer dashboard components on the combined host with one root AuthProvider and the existing API. Keep F2 standalone support intact.
-- Scope the account stylesheet to its layout so account typography and global classes cannot override public discovery pages.
-- Reuse the original logo asset on public pages. Replace the separate organizer-only integration login and non-functional public login button.
-- Label event details as a public visitor view; label dashboard links `Lihat halaman publik`. Host information on a public event page is not a dashboard.
-- Keep creation's post-login return path on the same origin with a restricted route allowlist. Give creation a real dashboard return link.
-- Use actual public Organizer picture/initials instead of `JC`. Connect the host-profile button.
-- Label illustrative marketing dashboard statistics as examples. Database events show an explicit purchase-unavailable page instead of entering the unrelated numeric-fixture payment mock.
+## Active browser journey
 
-## Intended active pages after release
+Use **https://temuevent-combined-qa-andor2.vercel.app** for the complete journey. Existing accounts work on this host; sign in once because browser cookies are host-only.
 
-Use `https://temuevent-combined-qa-andor2.vercel.app` for the complete browser journey: `/` (public discovery), `/events/{eventId}` (public details), `/organizers/{organizerId}` (public host profile), `/login`, `/register`, `/forgot-password`, `/reset-password`, `/account`, `/organizer` (private dashboard) and `/organizer/events/new` (Organizer creation).
+| Path | Purpose |
+| --- | --- |
+| `/` | Public event discovery |
+| `/events/{eventId}` | Public event details; opening from a dashboard still shows the visitor view |
+| `/organizers/{organizerId}` | Public host profile, not a private dashboard |
+| `/login`, `/register` | Shared Customer/Organizer authentication |
+| `/forgot-password`, `/reset-password` | Password recovery; new emails target the combined host |
+| `/account` | Signed-in profile, referral, Customer points/coupons and password change |
+| `/organizer` | Private Organizer-owned events, confirmed attendees, transactions and statistics |
+| `/organizer/events/new` | Organizer event creation |
 
-The original F2 alias remains a compatibility/operations preview. Browser sessions are host-only: moving from a previous F2 login to the combined host requires signing in once on that host. Old immutable deployment URLs stay historical and do not update when an alias receives a new build.
+The original F2 alias remains a compatible operational preview. Old immutable deployment URLs stay historical. Moving an alias publishes a new build; a browser refresh fetches the new web app. No application download is needed.
 
-## Verification scope
+## Page coherence fixes
 
-Local checks passed: root/F2 TypeScript, root/F2 production builds, 152 F2 tests and six integration tests. The integration suite includes session ownership, multipart poster upload/cleanup behavior, Customer and CSRF restrictions, and same-origin navigation. GitHub CI and the new hosted release still need verification before publication is claimed.
+Reuse the existing F2 account components and API under one root AuthProvider, with account CSS scoped to the account layout. Both root and standalone F2 builds pass. Public pages use the original shared logo instead of separate text marks, and the public header exposes working account/role navigation. The new login accepts either role; creation preserves its allowlisted local return path.
 
-The owned Cloudinary cloud stores uploaded image files; configuring it does not create artwork or populate existing no-poster events. Round 4B reuses the F1 uploader and existing image URL/public-ID contract on the integration branch. It does not change F1's branch or introduce another event-image implementation.
+Public detail pages explicitly say **Halaman publik event**. The private dashboard link says **Lihat halaman publik**, and creation links back to the dashboard. The public host card uses the actual photo/initials instead of `JC`, and its profile button navigates. Illustrative homepage statistics are labeled as examples. Database events show an explicit purchase-unavailable screen rather than entering the unrelated numeric-fixture mock checkout.
 
-A disposable Organizer and Customer are used for the hosted multipart API test. The owner's real accounts, profile image, rewards and Round 4A event are outside cleanup. Hosted API, database, public image/browser rendering and exact test-only cleanup results will be recorded separately after completion. A direct provider smoke test is not equivalent to an event upload, and an API test must not be described as a browser form submission.
+Fresh browser observations confirmed the shared login layout, public-page branding/label, loaded test poster, signed-out dashboard redirect preserving `next=/organizer`, and purchase-unavailable page. No application hydration error was observed; unrelated browser-extension log errors were excluded.
 
-The account rewards panel polls about once per minute and on returning to the tab. That is an existing background rewards read, not an intentional full-page reload.
+## Verification and release
+
+PRs [#66](https://github.com/wilisail/event-management-platform-pwdk/pull/66) and [#67](https://github.com/wilisail/event-management-platform-pwdk/pull/67) passed required CI and were merged with expected head SHAs. Local root/F2 typechecks and production builds passed; **152 F2 tests and 6 integration tests** passed. The integration suite covers authenticated multipart ownership, Customer/CSRF restrictions, poster cleanup recovery and same-origin navigation.
+
+The functional combined release is READY `dpl_986RZ11Hbw785zhYKCe3vm7CYsAw`, reviewed integration source `4858194b35720910ada2214be76e6c7b5ace2331`. F2 compatibility/worker release is READY `dpl_HWzh3tw3YcUp7irfxjuRAuRRumXm`, reviewed source `25765432c396276e762dc6642504f458ad26643d`. Both passed SMTP authentication and `/api/ready` returned 200/ready true. Stable aliases were moved after checks. Anonymous access still returns a Vercel Authentication redirect. Three new scheduled worker completions confirm password-reset and decision-email processing enabled. Production was not changed.
+
+The earlier noon Vercel failure was a build missing the nested F2 email dependency installation. Its corrected READY replacements superseded it. New combined installs include both locked dependency trees.
+
+## Known behavior and remaining boundary
+
+The account rewards panel reads fresh data approximately every minute and when returning to the tab. This can briefly show its loading state; it does not intentionally reload the entire page.
+
+Cloudinary stores uploaded posters; enabling it does not create artwork or fill existing no-poster events. This round reused F1’s uploader and `imageUrl`/`imagePublicId` contract on integration. F1’s branch was not changed. Event editing is still unavailable, so the original Round 4A event remains a no-poster event.
+
+Feature 1 still ends at `c497ddf04a56a03295571628471e3e4d8429f487`; there was no newer push to integrate at resumption. Its checkout remains a mock. **Round 5 is not ready**: database-backed purchase creation, proof upload, the two-hour payment deadline and Customer ticket confirmation still need F1 integration before the complete Organizer approval/rejection/expiry journey can be accepted. Platform signup/referral rewards do not create event participants; confirmed participants require a DONE purchase for an event owned by that Organizer.

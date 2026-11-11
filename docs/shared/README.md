@@ -4,6 +4,7 @@ Updated: 10 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Day 7 Round 4B automated acceptance](day-7-round-4b-reference.md) | One-host navigation, CI/releases, real poster API/database/browser checks, exact QA cleanup and remaining F1 purchase boundary |
 | [Day 7 Round 4 event/poster preparation](day-7-round-4-reference.md) | Stable combined/F2 navigation, claimed Cloudinary/provider smoke, verified no-poster event ownership/tickets, seed-data distinction and pending owner visual/poster acceptance |
 | [Day 6 Round 3 account acceptance](day-6-round-3-reference.md) | Passed Customer profile/referral/password checks and Organizer login/empty dashboard; confirmed participants versus platform users, private Cloudinary setup and next event/purchase dependencies |
 | [Day 6 Round 2 acceptance](day-6-round-2-reference.md) | Real inbox/reset/new-login acceptance, read-only records, explicit manual omissions, existing session-expiry coverage, corrected recovery destination and Round 3A profile steps |

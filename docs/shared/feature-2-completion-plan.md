@@ -1,5 +1,7 @@
 # Feature 2 — remaining implementation plan
 
+Latest checkpoint — **11 November 2026**: [Round 4B automated poster, navigation and cleanup checks passed](day-7-round-4b-reference.md). Use the stable combined host for discovery, login/account, Organizer dashboard and event creation. Owner screenshots accept Round 4A public/dashboard rendering. The real hosted poster API, saved ownership/image fields, browser image display and exact test cleanup passed. Both CI-verified Preview releases are healthy, with three worker completions; new recovery links use the combined host. The operator did not submit the authenticated browser poster form. Round 5 remains blocked by F1’s mock purchase/proof journey. Earlier checkpoints below are historical.
+
 Prepared: 31 October 2026, Asia/Jakarta. These are focused working-time estimates including implementation, relevant checks and companion explanations. They are planning ranges, not scheduled automations or promises of elapsed delivery time. Adjust the pace when a foundation needs more explanation.
 
 2 November shared integration checkpoint: Rizky's review storage is applied and mirrored in the shared/F2 Prisma schemas; see the [review schema companion](review-schema-reference.md). This does not complete Day 4 decisions or Day 5 attendance/review API wiring.
