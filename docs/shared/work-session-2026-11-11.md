@@ -14,7 +14,7 @@ Status consolidated in Asia/Jakarta. This is a recap of today's resumed work plu
 | 4B — Poster, ownership and flow | Completed real approved poster-form publication, public reload, persisted event/tickets/image and both owner dashboard event rows. | Finished the interrupted work; separated public event and private Organizer navigation, retained the approved sample, removed only the earlier disposable API accounts/events/assets, and saved the latest browser acceptance. [Latest Round 4B](day-7-round-4b-browser-acceptance.md). |
 | 5 — Independent F2 transaction QA | Private-proof interface, controlled approve/reject, rewards/seats, expiry/cancellation, duplicates, failure rollback and durable decision-email worker passed in isolation. | [PR #71](https://github.com/wilisail/event-management-platform-pwdk/pull/71) merged into `integration`; actual F1 purchase/proof/transition bindings and real decision inbox receipt remain open. [Round 5](day-7-round-5-f2-qa-reference.md). |
 | 6 — Independent F2 attendance/review | DONE participant reads, owner marking, signed-in Customer eligibility/review bridge, persisted event/organizer ratings and dashboard totals implemented and tested. | This change supplies the remaining independent F2 bridge and companion evidence. Hosted browser acceptance and F1 editing/deletion/voucher/draft behavior are not marked complete. [Round 6](day-7-round-6-f2-reference.md). |
-| 7 — Final handoff | Evidence and companion notes prepared incrementally. | Final protected URL, evaluator's own session/demo accounts, live targeted regression, approved fixture cleanup and final signoff remain after integration. |
+| 7 — Final handoff | Independent automated F2 handoff complete: reviewed Preview deployed, stable entry updated, hosted API/page checks and read-only schema/worker/preservation checks recorded. | Human positive purchase/review/inbox acceptance and evaluator's own session remain. [Round 7 handoff and owner checklist](day-7-round-7-f2-handoff.md). |
 
 ## What changed today
 
@@ -26,6 +26,8 @@ Round 6 connects the shared attendance contract to the combined app. The review 
 
 The `feature-1` head was rechecked and remains `c497ddf04a56a03295571628471e3e4d8429f487`. No new F1 checkout implementation was inferred from the Round 5/6 progress, and that branch was not edited.
 
+Round 7 then deployed the reviewed Round 6 merge source to the protected combined Preview and verified its shared database readiness, deployed account/event/review routes and access boundaries. Read-only operations checks confirmed nine current migrations, private tables/bucket, the active email scheduler and successful worker responses. Both accepted Round 4 events are preserved with the expected tickets/seats and zero purchases. No new shared fixtures, accepted app writes, external emails, Production release or schema/security changes were made. The [Round 7 report](day-7-round-7-f2-handoff.md) records the precise live-smoke limits and remaining owner steps across Rounds 5–7.
+
 ## Validation and evidence
 
 | Check | Result / scope |
@@ -33,6 +35,7 @@ The `feature-1` head was rechecked and remains `c497ddf04a56a03295571628471e3e4d
 | Round 4B | Real browser poster publication/reload plus read-only persistence/ownership checks; see its final acceptance report. |
 | Round 5 checkpoint | 159 F2 tests, six combined HTTP tests, eleven isolated QA groups, both app typechecks and both production builds passed; both GitHub CI jobs green. [Evidence](evidence/day-7-round-5-f2-isolated-2026-11-11.json). |
 | Round 6 | Ten isolated Round 6 groups, eleven Round 5 regression groups, 159 F2 tests, six combined HTTP tests, both app typechecks and both production builds passed locally. PR CI is the separate Node 22 verification checkpoint. [Evidence](evidence/day-7-round-6-f2-isolated-2026-11-11.json). |
+| Round 7 | Reviewed merge-commit Integration CI and hosted Preview build passed. Direct application smoke, private access, live worker/schema and accepted-sample preservation checks are recorded in the [handoff evidence](day-7-round-7-f2-handoff.md). |
 | Isolation limit | Disposable PostgreSQL uses one physical connection; concurrent HTTP checks do not replace live independent-session race tests. Captured emails do not establish real inbox delivery. |
 | Browser limit | Round 6 source/API/build checks do not establish a live visual acceptance. No new deployment/production change is implied by a source merge. |
 
