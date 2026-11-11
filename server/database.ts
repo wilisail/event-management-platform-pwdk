@@ -142,6 +142,7 @@ export async function readPublishedEventById(eventId: string) {
         select: {
           id: true,
           name: true,
+          profilePictureKey: true,
         },
       },
       ticketTypes: {
@@ -177,6 +178,7 @@ export async function readPublishedEventById(eventId: string) {
     availableSeats,
     organizerId: event.organizer.id,
     organizer: event.organizer.name,
+    organizerPicture: event.organizer.profilePictureKey ? `/api/organizers/${event.organizer.id}/picture` : null,
   }
 }
 

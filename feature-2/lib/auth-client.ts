@@ -14,12 +14,14 @@ type Options = {
   onUncertain?: () => void
 }
 
-/** Own-app return routes only. Cross-feature checkout handoff is coordinated separately. */
+/** Allowlisted local routes only; never accept a different origin or a nested redirect. */
 export function safeReturnPath(value: string | null | undefined, fallback = '/account'): string {
   if (!value || /[\\\u0000-\u0020]/.test(value) || !value.startsWith('/') || value.startsWith('//')) return fallback
   try {
     const url = new URL(value, 'https://temuevent.invalid')
-    return url.origin === 'https://temuevent.invalid' && ['/account', '/organizer'].includes(url.pathname)
+    const allowed = ['/account', '/organizer', '/organizer/events/new'].includes(url.pathname)
+      || /^\/events\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\/(?:tickets|review))?$/i.test(url.pathname)
+    return url.origin === 'https://temuevent.invalid' && allowed
       ? url.pathname + url.search : fallback
   } catch { return fallback }
 }

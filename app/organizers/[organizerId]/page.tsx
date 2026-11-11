@@ -1,6 +1,8 @@
 
 "use client";
 
+import { SiteHeader } from "@/components/site-header";
+
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import {
@@ -171,19 +173,7 @@ export default function OrganizerProfilePage({
 
     return (
         <div className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
-            <header className="sticky top-0 z-20 border-b border-[#eee9fb] bg-white/90 backdrop-blur">
-                <div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5">
-                    <Link href="/" className="font-black tracking-tight">
-                        ✦ Temu<span className="text-[#e539a7]">Event</span>
-                    </Link>
-                    <Link
-                        href="/#explore"
-                        className="flex items-center gap-2 text-xs font-bold text-[#5148df]"
-                    >
-                        <ArrowLeft size={15} /> Kembali ke event
-                    </Link>
-                </div>
-            </header>
+            <SiteHeader view="organizer" />
             <main className="mx-auto max-w-[1180px] px-5 pb-20">
                 <nav
                     aria-label="Breadcrumb"

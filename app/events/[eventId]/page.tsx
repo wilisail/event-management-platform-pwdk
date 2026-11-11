@@ -1,5 +1,8 @@
 "use client";
 
+import { profileInitials } from "@/lib/profile-labels";
+import { SiteHeader } from "@/components/site-header";
+
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import {
@@ -31,6 +34,7 @@ type EventDetail = {
     image: string | null;
     organizerId: string;
     organizer: string;
+    organizerPicture: string | null;
     availableSeats: number;
     rating?: string;
     featured?: string;
@@ -187,19 +191,7 @@ export default function EventDetailsPage({
 
     return (
         <div className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
-            <header className="sticky top-0 z-20 border-b border-[#eee9fb] bg-white/90 backdrop-blur">
-                <div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5">
-                    <Link href="/" className="font-black tracking-tight">
-                        ✦ Temu<span className="text-[#e539a7]">Event</span>
-                    </Link>
-                    <Link
-                        href="/#explore"
-                        className="flex items-center gap-2 text-xs font-bold text-[#5148df]"
-                    >
-                        <ArrowLeft size={15} /> Kembali ke event
-                    </Link>
-                </div>
-            </header>
+            <SiteHeader view="event" />
             <main className="mx-auto max-w-[1180px] px-5 pb-20">
                 <nav
                     aria-label="Breadcrumb"
@@ -300,10 +292,7 @@ export default function EventDetailsPage({
                                 Tentang event ini
                             </h2>
                             <p className="mt-4 text-sm leading-7 text-[#69657c]">
-                                {event.description} Nikmati pengalaman yang
-                                dirancang untuk bertemu orang-orang baru,
-                                belajar dari praktisi, dan pulang membawa cerita
-                                serta inspirasi baru.
+                                {event.description}
                             </p>
                             <h3 className="mt-7 font-bold">
                                 Yang akan kamu dapatkan
@@ -362,7 +351,7 @@ export default function EventDetailsPage({
                             </h2>
                             <div className="mt-5 flex items-center gap-4">
                                 <div className="grid h-14 w-14 place-items-center rounded-2xl bg-[#eeeaff] font-black text-[#5148df]">
-                                    JC
+                                    {event.organizerPicture ? <img src={event.organizerPicture} alt="" className="h-full w-full rounded-2xl object-cover" /> : profileInitials(event.organizer)}
                                 </div>
                                 <div>
                                     <Link
@@ -377,9 +366,9 @@ export default function EventDetailsPage({
                                     </p>
                                 </div>
                             </div>
-                            <button className="mt-5 rounded-full border border-[#ddd6f7] px-4 py-2 text-xs font-bold text-[#5148df]">
+                            <Link href={`/organizers/${event.organizerId}`} className="mt-5 inline-flex rounded-full border border-[#ddd6f7] px-4 py-2 text-xs font-bold text-[#5148df]">
                                 Lihat profil penyelenggara
-                            </button>
+                            </Link>
                         </section>
                         <section className="rounded-3xl bg-white p-6 shadow-sm sm:p-8">
                             <div className="flex items-center justify-between">

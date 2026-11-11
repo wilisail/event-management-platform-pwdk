@@ -1,5 +1,8 @@
 "use client";
 
+import { UiLogo } from "@/feature-2/components/ui-logo";
+import { SiteHeader } from "@/components/site-header";
+
 import { useEffect, useMemo, useState } from "react";
 import {
     CalendarDays,
@@ -67,7 +70,6 @@ export default function Page() {
     const [debouncedQuery, setDebouncedQuery] = useState("");
     const [category, setCategory] = useState("Semua");
     const [location, setLocation] = useState("Semua Kota");
-    const [menu, setMenu] = useState(false);
     const [liked, setLiked] = useState<string[]>([]);
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
@@ -193,56 +195,13 @@ const locations = useMemo(
 
     return (
         <div className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
-            <header className="border-b border-[#eee9fb] bg-white/90 backdrop-blur sticky top-0 z-20">
-                <div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5">
-                    <a
-                        href="#top"
-                        className="flex items-center gap-2 font-black tracking-tight text-[#11103d]"
-                    >
-                        <span className="grid h-7 w-7 place-items-center rounded-full bg-[#4f46e5] text-xs text-white">
-                            ✦
-                        </span>{" "}
-                        Temu<span className="text-[#e539a7]">Event</span>
-                    </a>
-                    <nav
-                        className={`${menu ? "flex" : "hidden"} absolute left-0 top-16 w-full flex-col gap-5 border-b bg-white p-5 text-sm md:static md:flex md:w-auto md:flex-row md:border-0 md:bg-transparent md:p-0`}
-                    >
-                        <a href="#explore">Explore Events</a>
-                        <a href="#categories">Categories</a>
-                        <a href="#how">How It Works</a>
-                        <a className="text-[#5146df]" href="#organizer">
-                            For Organizers
-                        </a>
-                    </nav>
-                    <div className="flex items-center gap-3">
-                        <button className="hidden text-sm text-[#4f46e5] sm:block">
-                            Log in
-                        </button>
-                        <a
-                            href="/organizer/events/new"
-                            className="hidden rounded-full bg-[#4f46e5] px-4 py-2 text-xs font-bold text-white shadow-lg shadow-indigo-200 sm:block"
-                        >
-                            + Buat Event
-                        </a>
-                        <button
-                            aria-label="Open menu"
-                            onClick={() => setMenu(!menu)}
-                            className="rounded-full p-2 md:hidden"
-                        >
-                            {menu ? <X size={20} /> : <Menu size={20} />}
-                        </button>
-                        <div className="grid h-8 w-8 place-items-center rounded-full bg-[#ffe6f4] text-xs font-bold">
-                            AR
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <SiteHeader view="discovery" />
             <main id="top">
                 <section className="hero-bg px-5 pb-14 pt-16 text-center">
                     <div className="mx-auto max-w-[760px]">
                         <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/70 px-3 py-1 text-[10px] font-semibold text-[#606078] shadow-sm">
                             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />{" "}
-                            500+ KOMUNITAS AKTIF BERGABUNG
+                            KOMUNITAS & PENGALAMAN BARU
                         </div>
                         <h1 className="text-4xl font-black leading-tight tracking-tight sm:text-6xl">
                             Temukan Pengalaman Seru
@@ -520,13 +479,13 @@ const locations = useMemo(
                                     TE
                                 </div>
                                 <div className="text-[10px] font-bold">
-                                    Dashboard Penyelenggara
+                                    Contoh dashboard · data ilustrasi
                                     <p className="font-normal text-white/60">
-                                        Status Penjualan: Final
+                                        Contoh penjualan tiket
                                     </p>
                                 </div>
                                 <span className="ml-auto rounded-full bg-emerald-300 px-2 py-1 text-[8px] text-emerald-900">
-                                    Live
+                                    Ilustrasi
                                 </span>
                             </div>
                             <div className="mt-6 text-[9px] text-white/70">
@@ -562,9 +521,7 @@ const locations = useMemo(
             >
                 <div className="mx-auto grid max-w-[1180px] gap-8 sm:grid-cols-4">
                     <div className="sm:col-span-2">
-                        <div className="font-black text-[#11103d]">
-                            ✦ Temu<span className="text-[#e539a7]">Event</span>
-                        </div>
+                        <UiLogo />
                         <p className="mt-3 max-w-xs leading-5">
                             Platform kurasi & tiket komunitas terfavorit
                             Indonesia. Menyatukan penggiat kreatif, penikmat
