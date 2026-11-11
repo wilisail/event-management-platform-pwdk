@@ -279,7 +279,7 @@ function OrganizerContent() {
           return <article key={event.id} className="owned-event">
             <div><span className="badge">{event.status}</span><h3>{event.name}</h3><p>{date(event.startAt)} · {event.location}</p></div>
             <div className="auth-actions">
-              {eventUrl && <a className="link" href={eventUrl}>Lihat event</a>}
+              {eventUrl && <a className="link" href={eventUrl}>Lihat halaman publik</a>}
               <button className={selected?.id === event.id ? 'primary' : 'secondary'} onClick={() => setSelected(event)}>Lihat peserta</button>
             </div>
           </article>

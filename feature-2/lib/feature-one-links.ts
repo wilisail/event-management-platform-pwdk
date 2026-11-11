@@ -9,7 +9,10 @@ export function featureOneOrigin(value: string | undefined): string | null {
 }
 
 export function featureOneUrl(path: string): string | null {
+  if (!path.startsWith('/') || path.startsWith('//') || path.includes('\\')) return null
+  // The combined app mounts the same account components and API on this origin.
+  if (process.env.NEXT_PUBLIC_TEMUEVENT_COMBINED === 'true') return path
   const origin = featureOneOrigin(process.env.NEXT_PUBLIC_F1_ORIGIN ??
     (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : undefined))
-  return origin && path.startsWith('/') && !path.startsWith('//') && !path.includes('\\') ? origin + path : null
+  return origin ? origin + path : null
 }

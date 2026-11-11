@@ -18,6 +18,7 @@ import {
     X,
 } from "lucide-react";
 import { events, formatPrice } from "@/lib/events";
+import { SiteHeader } from "@/components/site-header";
 
 type TicketChoice = {
     id: "regular" | "workshop";
@@ -60,6 +61,28 @@ const rewardCoupons = [
 ];
 
 export default function TicketPage({
+    params,
+}: {
+    params: Promise<{ eventId: string }>;
+}) {
+    const { eventId } = use(params);
+    // The F1 prototype below uses numeric fixtures. Database events must never
+    // fall into its simulated payment or report a published event as missing.
+    if (/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(eventId)) {
+        return <div className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
+            <SiteHeader view="checkout" />
+            <main className="mx-auto max-w-2xl px-5 py-12">
+                <h1 className="text-2xl font-black">Pembelian tiket belum tersedia</h1>
+                <p className="mt-4 leading-7 text-[#77738b]">Event sudah terbit. Alur pembelian dan konfirmasi pembayaran masih menunggu integrasi pada preview ini.</p>
+                <p className="mt-3 text-sm text-[#77738b]">Belum ada pesanan atau pembayaran yang dibuat.</p>
+                <Link href={`/events/${eventId}`} className="mt-6 inline-flex rounded-full bg-[#5148df] px-5 py-3 font-bold text-white">Kembali ke halaman event</Link>
+            </main>
+        </div>;
+    }
+    return <MockTicketPage params={params} />;
+}
+
+function MockTicketPage({
     params,
 }: {
     params: Promise<{ eventId: string }>;

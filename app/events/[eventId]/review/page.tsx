@@ -1,5 +1,7 @@
 "use client";
 
+import { SiteHeader } from "@/components/site-header";
+
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import {
@@ -270,19 +272,7 @@ export default function EventReviewPage({
 
     return (
         <main className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
-            <header className="border-b border-[#eee9fb] bg-white">
-                <div className="mx-auto flex h-16 max-w-[1050px] items-center justify-between px-5">
-                    <Link href="/" className="font-black tracking-tight">
-                        ✦ Temu<span className="text-[#e539a7]">Event</span>
-                    </Link>
-                    <Link
-                        href={`/events/${event.id}`}
-                        className="flex items-center gap-2 text-xs font-bold text-[#5148df]"
-                    >
-                        <ArrowLeft size={15} /> Kembali ke event
-                    </Link>
-                </div>
-            </header>
+            <SiteHeader view="event" />
             <div className="mx-auto max-w-[1050px] px-5 py-8 sm:py-12">
                 <div className="mb-8 flex items-center gap-2 text-xs text-[#8c879e]">
                     <Link href={`/events/${event.id}`}>Detail event</Link>

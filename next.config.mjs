@@ -1,11 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: { NEXT_PUBLIC_TEMUEVENT_COMBINED: 'true' },
   outputFileTracingIncludes: { '/api/*': ['./database/certs/prod-ca-2021.crt'] },
   typescript: {
     ignoreBuildErrors: false,
   },
   images: {
     unoptimized: true,
+  },
+  async headers() {
+    return ['/forgot-password', '/reset-password'].map(source => ({ source, headers: [
+      { key: 'Referrer-Policy', value: 'no-referrer' }, { key: 'Cache-Control', value: 'no-store' },
+    ] }))
   },
   async rewrites() {
     if (process.env.VERCEL === '1' || process.env.TEMUEVENT_HOSTED_API === 'true') return []

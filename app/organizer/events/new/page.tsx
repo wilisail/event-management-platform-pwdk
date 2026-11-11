@@ -1,7 +1,10 @@
 "use client";
 
+import { SiteHeader } from "@/components/site-header";
+
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
-import { accountError, AuthApiError, createAuthClient } from "../../../../feature-2/lib/auth-client";
+import { accountError, AuthApiError } from "../../../../feature-2/lib/auth-client";
+import { useAuth } from "@/feature-2/components/auth-provider";
 import type { UserView } from "../../../../feature-2/contracts/types";
 import {
     ArrowLeft,
@@ -50,8 +53,7 @@ const inputClass =
 
 export default function NewEventPage() {
     const router = useRouter();
-    const [auth] = useState(() => createAuthClient({ coordinate: typeof navigator !== "undefined" && navigator.locks
-        ? work => navigator.locks.request("temuevent-auth", work) : undefined }));
+    const { client: auth } = useAuth();
     const [actor, setActor] = useState<UserView | null>(null);
     const [checkingAccount, setCheckingAccount] = useState(true);
     const [name, setName] = useState("");
@@ -101,7 +103,7 @@ export default function NewEventPage() {
             setActor(user);
         }).catch(error => {
             if (abort.signal.aborted) return;
-            if (error instanceof AuthApiError && error.status === 401) router.replace("/login");
+            if (error instanceof AuthApiError && error.status === 401) router.replace("/login?next=%2Forganizer%2Fevents%2Fnew");
             else setApiError(accountError(error));
         }).finally(() => { if (!abort.signal.aborted) setCheckingAccount(false); });
         return () => abort.abort();
@@ -322,34 +324,13 @@ export default function NewEventPage() {
 
     return (
         <div className="min-h-screen bg-[#fcf9ff] text-[#17143c]">
-            <header className="sticky top-0 z-20 border-b border-[#eee9fb] bg-white/95 backdrop-blur">
-                <div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5">
-                    <a
-                        href="/"
-                        className="flex items-center gap-2 font-black tracking-tight"
-                    >
-                        {" "}
-                        <span className="grid size-7 place-items-center rounded-full bg-[#4f46e5] text-xs text-white">
-                            ✦
-                        </span>{" "}
-                        Temu<span className="text-[#e539a7]">Event</span>
-                    </a>
-                    <div className="flex items-center gap-3 text-xs">
-                        <span className="hidden text-[#858196] sm:block">
-                            Mode Penyelenggara
-                        </span>
-                        <span className="grid size-8 place-items-center rounded-full bg-[#ffe6f4] font-bold">
-                            {actor?.name.trim().charAt(0).toUpperCase() || "…"}
-                        </span>
-                    </div>
-                </div>
-            </header>
+            <SiteHeader view="create" />
             <main className="mx-auto max-w-[1180px] px-5 py-8 sm:py-10">
                 <a
-                    href="/"
+                    href="/organizer"
                     className="inline-flex items-center gap-2 text-xs font-semibold text-[#6357de] hover:underline"
                 >
-                    <ArrowLeft data-icon="inline-start" /> Kembali ke Beranda
+                    <ArrowLeft data-icon="inline-start" /> Kembali ke dashboard
                 </a>
                 <div className="mt-5 max-w-2xl">
                     <p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#e03c9b]">
@@ -363,7 +344,7 @@ export default function NewEventPage() {
                     </p>
                 </div>
                 {checkingAccount ? <p role="status" className="mt-5 text-sm text-[#77738b]">Memeriksa akun organizer…</p>
-                    : apiError && !showConfirm ? <p role="alert" className="mt-5 text-sm text-red-700">{apiError} <a href="/login" className="underline">Masuk</a></p> : null}
+                    : apiError && !showConfirm ? <p role="alert" className="mt-5 text-sm text-red-700">{apiError} <a href="/login?next=%2Forganizer%2Fevents%2Fnew" className="underline">Masuk</a></p> : null}
                 <form
                     onSubmit={handleSubmit}
                     className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_350px] lg:items-start"
