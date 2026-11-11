@@ -1,5 +1,7 @@
 # Day 7 — Round 4 event publishing, navigation and posters
 
+Latest checkpoint — **11 November 2026**: [Round 4B automated poster, navigation and cleanup checks passed](day-7-round-4b-reference.md). Use the stable combined host for discovery, login/account, Organizer dashboard and event creation. Owner screenshots accept Round 4A public/dashboard rendering. The real hosted poster API, saved ownership/image fields, browser image display and exact test cleanup passed. Both CI-verified Preview releases are healthy, with three worker completions; new recovery links use the combined host. The operator did not submit the authenticated browser poster form. Round 5 remains blocked by F1’s mock purchase/proof journey. Earlier checkpoints below are historical.
+
 Updated 10 November 2026, Asia/Jakarta.
 
 Latest checkpoint: owner Cloudinary claim completed; provider upload/read/delete smoke passed. The rebuilt combined app is available at its stable protected alias below. The owner's **QA Round 4A - No Poster** event is published with the expected owner, ticket, schedule and zero purchase totals; current public-page/dashboard visual acceptance remains the owner's next confirmation. [Cloudinary activation evidence](evidence/day-7-cloudinary-activation-2026-11-10.json) · [Round 4A automated evidence](evidence/day-7-round-4a-2026-11-10.json).

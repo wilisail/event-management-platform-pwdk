@@ -1,0 +1,74 @@
+{
+  "checkedAt": "2026-11-11T08:38:18.713395+00:00",
+  "origin": "https://temuevent-combined-qa-andor2.vercel.app",
+  "creationStatus": 201,
+  "publicEventStatus": 200,
+  "publicImageStatus": 200,
+  "imageBytes": 4300,
+  "imageCloud": "zjglczua",
+  "visiblePattern": true,
+  "eventCount": 2,
+  "ownerMatched": true,
+  "availableSeats": 3,
+  "organizerListingMatched": true,
+  "customerWriteStatus": 403,
+  "missingCsrfStatus": 403,
+  "customerOrganizerReadStatus": 403,
+  "realPayment": false,
+  "browserFormSubmitted": false,
+  "cleanupVerified": true,
+  "databaseCleanup": {
+    "fixture_users": 0,
+    "fixture_events": 0,
+    "fixture_sessions": 0,
+    "fixture_tickets": 0,
+    "owner_round4a_preserved": true
+  },
+  "cloudCleanup": {
+    "assetsDeleted": 2,
+    "results": [
+      {
+        "status": 200,
+        "result": "ok"
+      },
+      {
+        "status": 200,
+        "result": "ok"
+      }
+    ],
+    "exactTestScope": true
+  },
+  "publicBrowserImageLoaded": true,
+  "publicBrowserImageWidth": 480,
+  "publicBrowserImageHeight": 270,
+  "sharedLoginBrowserRendered": true,
+  "anonymousOrganizerLoginReturnVerified": true,
+  "databasePurchaseAvailabilityGuardVerified": true,
+  "ownerRound4aVisualAcceptance": true,
+  "ownerRound4aRecordPreserved": true,
+  "accountMinuteRefresh": "Existing background rewards polling every 60000ms and on visibility return; no full-page reload scheduled.",
+  "feature1Head": "c497ddf04a56a03295571628471e3e4d8429f487",
+  "round5Ready": false,
+  "round5Blocker": "F1 database-backed purchase/payment-proof journey is still a mock.",
+  "ci": {
+    "integrationPullRequest": 66,
+    "feature2PullRequest": 67,
+    "integration": "success",
+    "feature2": "success",
+    "feature2Tests": 152,
+    "integrationTests": 6
+  },
+  "functionalRelease": {
+    "combinedDeployment": "dpl_986RZ11Hbw785zhYKCe3vm7CYsAw",
+    "combinedCommit": "4858194b35720910ada2214be76e6c7b5ace2331",
+    "feature2Deployment": "dpl_HWzh3tw3YcUp7irfxjuRAuRRumXm",
+    "feature2Commit": "25765432c396276e762dc6642504f458ad26643d",
+    "bothReady": true,
+    "bothSmtpAuthPassed": true,
+    "bothReadiness200": true,
+    "anonymousVercelProtectionStatus": 302,
+    "scheduledEmailWorkerCompletions": 3,
+    "passwordResetOrigin": "https://temuevent-combined-qa-andor2.vercel.app",
+    "previewOnly": true
+  }
+}
