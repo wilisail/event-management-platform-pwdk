@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-11-11T11:03:16.584Z",
+  "scope": "ISOLATED_F2_QA",
+  "productionAdapter": false,
+  "liveDatabaseUsed": false,
+  "liveStorageUsed": false,
+  "externalEmailSent": false,
+  "ownerStandbyRequired": false,
+  "scenarios": [
+    "Private proof bytes, session/role/owner isolation and object-key redaction",
+    "Decision ownership, Customer denial and CSRF guards leave accounting unchanged",
+    "Approval consumes real F2 rewards once; buyer wallet/status, seat hold and one outbox job match",
+    "Rejection restores original point batches, coupon and seat once without extending expiry",
+    "Injected transaction failure rolls back status, reward, seat and email atomically; retry succeeds",
+    "Lost response after commit is resolved by reads; retries do not double-account or notify",
+    "Concurrent HTTP accept/reject requests yield one terminal transition and one email job",
+    "Missing proof and exact deadlines cannot approve; two-hour expiry and three-day cancellation restore once",
+    "Restored expired rewards remain unspendable; QA allowlist rejects unknown IDs; zero-price fixture consumes immediately",
+    "Real durable F2 email worker retries with stable payload/key and stops after recorded acceptance; transport captured only",
+    "Committed approval appears in real owner-scoped attendee and revenue queries"
+  ],
+  "fullF1JourneyAccepted": false,
+  "eventVoucherQuotaVerified": false,
+  "realInboxConfirmed": false,
+  "migrationsReplayed": 9,
+  "databaseConcurrency": "Concurrent HTTP requests serialized through one disposable PostgreSQL connection; live two-session races remain separate.",
+  "decisionEmailJobs": 5,
+  "capturedEmailAttempts": 6,
+  "fixturePurchases": 11,
+  "passed": true,
+  "disposableDatabaseClosed": true,
+  "validation": {
+    "f2Tests": 159,
+    "combinedHttpTests": 6,
+    "rootTypecheck": "passed",
+    "f2Typecheck": "passed",
+    "qaTypecheck": "passed",
+    "rootBuild": "passed",
+    "f2Build": "passed",
+    "localNode": "v24.22.1"
+  },
+  "ownerAcceptance": {
+    "browserVerified": false,
+    "realInboxConfirmed": false,
+    "reviewApiBootstrapVerified": true,
+    "cloudBrowserLocalReachability": false,
+    "manualChecksQueuedAtEnd": true
+  }
+}

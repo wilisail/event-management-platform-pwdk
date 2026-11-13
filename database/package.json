@@ -7,6 +7,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
+    "qa:round5": "tsc --project qa/tsconfig.json && node --import tsx scripts/verify-round5-isolated.mjs",
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
     "db:check": "node scripts/run-with-ca.mjs scripts/check.ts",
@@ -23,9 +24,10 @@
     "pg": "8.23.1"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.4.3",
+    "@electric-sql/pglite-socket": "0.1.3",
     "prisma": "7.10.1",
     "tsx": "4.20.0",
     "typescript": "5.7.3"
   }
 }
-

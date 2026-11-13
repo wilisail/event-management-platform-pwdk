@@ -36,7 +36,7 @@ export function databaseClient() {
     max: 3,
     connectionTimeoutMillis: 8000,
     ssl: {
-      ca: [...rootCertificates, readFileSync(certificatePath, 'utf8')],
+      ca: [...rootCertificates, readFileSync(/* turbopackIgnore: true */ certificatePath, 'utf8')],
       rejectUnauthorized: true,
     },
   })

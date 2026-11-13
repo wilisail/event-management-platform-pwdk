@@ -1,10 +1,15 @@
 # Shared project record
 
-Updated: 10 November 2026.
+Updated: 11 November 2026.
 
 | Reference | Contents |
 | --- | --- |
-| [Day 7 Round 4B automated acceptance](day-7-round-4b-reference.md) | One-host navigation, CI/releases, real poster API/database/browser checks, exact QA cleanup and remaining F1 purchase boundary |
+| [Day 7 Round 7 automated F2 handoff](day-7-round-7-f2-handoff.md) | Deployed reviewed Preview, hosted access checks, live operations/preservation evidence and one owner checklist across Rounds 5–7 |
+| [11 November work recap, all rounds](work-session-2026-11-11.md) | Current Round 1–7 status, today's resumed Round 4B/5/6 work, carried-forward owner acceptance, validation and final attention window |
+| [Day 7 Round 6 independent F2 completion](day-7-round-6-f2-reference.md) | Attendance-to-review session/SQL bridge, persisted ratings, populated attendee/statistics checks and deferred live acceptance |
+| [Day 7 Round 5 independent F2 QA](day-7-round-5-f2-qa-reference.md) | Protected private-proof interface, isolated decisions/rewards/seats/email checks, automated-first sequence and deferred owner/live acceptance |
+| [Day 7 Round 4B completed browser acceptance](day-7-round-4b-browser-acceptance.md) | Final approved poster-form submission, public reload, persisted owner/image/tickets, both dashboard events, preserved samples and remaining Round 5 dependency |
+| [Earlier Day 7 Round 4B automated acceptance](day-7-round-4b-reference.md) | One-host navigation, CI/releases, real poster API/database/browser checks, exact QA cleanup and remaining F1 purchase boundary |
 | [Day 7 Round 4 event/poster preparation](day-7-round-4-reference.md) | Stable combined/F2 navigation, claimed Cloudinary/provider smoke, verified no-poster event ownership/tickets, seed-data distinction and pending owner visual/poster acceptance |
 | [Day 6 Round 3 account acceptance](day-6-round-3-reference.md) | Passed Customer profile/referral/password checks and Organizer login/empty dashboard; confirmed participants versus platform users, private Cloudinary setup and next event/purchase dependencies |
 | [Day 6 Round 2 acceptance](day-6-round-2-reference.md) | Real inbox/reset/new-login acceptance, read-only records, explicit manual omissions, existing session-expiry coverage, corrected recovery destination and Round 3A profile steps |
