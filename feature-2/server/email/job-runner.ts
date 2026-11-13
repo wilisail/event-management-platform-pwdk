@@ -7,6 +7,7 @@ export interface ScheduledEmailJobs {
   passwordReset?: Dispatch
   // null is intentional opt-out. Undefined means enabled but unavailable.
   decisionEmails: Dispatch | null | undefined
+  purchaseDeadlines?: Dispatch
 }
 
 export function scheduledEmailHandler(jobs: ScheduledEmailJobs | undefined): RequestHandler {
@@ -24,12 +25,14 @@ export function scheduledEmailHandler(jobs: ScheduledEmailJobs | undefined): Req
       res.status(503).json({ success: false, code: 'JOB_RUNNER_UNAVAILABLE' }); return
     }
     const started = Date.now()
+    const purchaseDeadlines = jobs.purchaseDeadlines ? await jobs.purchaseDeadlines().catch(() => false) : undefined
     const [passwordReset, decisionEmails] = await Promise.all([
       jobs.passwordReset().catch(() => false),
       jobs.decisionEmails ? jobs.decisionEmails().catch(() => false) : null,
     ])
-    const success = passwordReset && decisionEmails !== false
-    const result = { passwordReset, decisionEmails, durationMs: Date.now() - started }
+    const success = passwordReset && decisionEmails !== false && purchaseDeadlines !== false
+    const result = { passwordReset, decisionEmails,
+      ...(purchaseDeadlines === undefined ? {} : { purchaseDeadlines }), durationMs: Date.now() - started }
     if (success) console.info({ event: 'email_job_runner_complete', ...result })
     else console.warn({ event: 'email_job_runner_failed', ...result })
     res.status(success ? 200 : 503).json({ success, ...result })
