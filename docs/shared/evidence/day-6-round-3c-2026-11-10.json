@@ -75,7 +75,7 @@
     "existingFocusedSessionRecoveryTestsReference": "../day-6-round-2-reference.md",
     "testsRepeatedInThisBatch": false
   },
-  "operatorChanges": {
+  "verificationChanges": {
     "applicationCode": false,
     "databaseWrites": false,
     "migrations": false,

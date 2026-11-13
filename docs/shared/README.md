@@ -4,6 +4,7 @@ Updated: 13 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Final C hosted F2 acceptance](final-c-hosted-acceptance.md) | Controlled hosted purchase inputs, real protected endpoint verification, temporary-data cleanup and the D manual walkthrough |
 | [Final B live F2 connections](final-b-live-f2-reference.md) | Normal-runtime private proof and decision adapters, atomic reward/seat/outbox updates, existing scheduled deadlines, verification and remaining F1 boundary |
 | [Final PRD completion progress — A–F](final-prd-completion-progress.md) | Completed branch sync, exact PR/CI evidence, remaining B/C runtime and fixture work, owner acceptance, learning and video preparation |
 | [Day 7 Round 7 automated F2 handoff](day-7-round-7-f2-handoff.md) | Deployed reviewed Preview, hosted access checks, live operations/preservation evidence and one owner checklist across Rounds 5–7 |
@@ -49,7 +50,7 @@ Updated: 13 November 2026.
 | [UI reference](../ui/README.md) | Rizky's feature 1 source, shared logo, colours, typography and component styling |
 | [UI previews](../previews/README.md) | Feature 1 and feature 2 screenshots |
 
-The UX and technical references record working defaults supplied by Wili, open to changes following input. Record a change with its date, reason and effect on feature 1 and feature 2 so both builders and their coding agents use the same reference.
+The UX and technical references record working defaults supplied by Wili, open to changes following input. Record a change with its date, reason and effect on feature 1 and feature 2 so both builders use the same reference.
 
 The canonical link is `main/docs/shared`. Updates are also carried into `integration`.
 

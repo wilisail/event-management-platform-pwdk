@@ -1,0 +1,116 @@
+{
+  "checkedAt": "2026-11-13T08:25:48.400306+00:00",
+  "scope": "FINAL_C_HOSTED_F2",
+  "method": "Normal deployed HTTPS APIs and existing scheduled worker",
+  "manualUserAcceptance": false,
+  "evaluatorOwnSessionAccepted": false,
+  "f1CheckoutAccepted": false,
+  "liveSource": "18271371fc08a1662628a54dfd3f9da76664720c",
+  "checks": {
+    "privateProofPermissions": true,
+    "approveReject": true,
+    "duplicateDecisions409": true,
+    "attendanceAndReview": true,
+    "duplicateReview409": true,
+    "expiryCancellation": true,
+    "consumeRestorePointsCoupons": true,
+    "seatRestoration": true
+  },
+  "temporaryOutcomes": [
+    {
+      "reference": "C-EXPIRE-7d7eb971",
+      "status": "EXPIRED",
+      "rewardStatus": null,
+      "pointsUsed": 0,
+      "couponDiscount": 0,
+      "totalPrice": 50000
+    },
+    {
+      "reference": "C-ACCEPT-7d7eb971",
+      "status": "DONE",
+      "rewardStatus": "CONSUMED",
+      "pointsUsed": 5000,
+      "couponDiscount": 25000,
+      "totalPrice": 20000
+    },
+    {
+      "reference": "C-CANCEL-7d7eb971",
+      "status": "CANCELED",
+      "rewardStatus": null,
+      "pointsUsed": 0,
+      "couponDiscount": 0,
+      "totalPrice": 50000
+    },
+    {
+      "reference": "C-REJECT-7d7eb971",
+      "status": "REJECTED",
+      "rewardStatus": "RESTORED",
+      "pointsUsed": 5000,
+      "couponDiscount": 25000,
+      "totalPrice": 20000
+    }
+  ],
+  "temporaryPointBalances": [
+    {
+      "buyer": "A",
+      "remaining": 5000
+    },
+    {
+      "buyer": "B",
+      "remaining": 10000
+    }
+  ],
+  "confirmedSeatsRetained": 1,
+  "attendanceRows": 1,
+  "reviewRows": 1,
+  "notificationOutcomes": [
+    {
+      "decision": "ACCEPT",
+      "state": "ACCEPTED",
+      "attempts": 1,
+      "transportAcceptedAt": "2026-11-13T08:21:05.055+00:00"
+    },
+    {
+      "decision": "REJECT",
+      "state": "ACCEPTED",
+      "attempts": 1,
+      "transportAcceptedAt": "2026-11-13T08:24:04.863+00:00"
+    }
+  ],
+  "notificationNote": "Existing worker submitted two disposable example.test notification messages to SMTP. Transport acceptance is not inbox receipt; genuine mailbox acceptance remains D.",
+  "preservation": {
+    "passed": true,
+    "legacyPurchasesRetained": 33,
+    "legacyPendingRetained": 10,
+    "accountsAndRound4EventsUnchanged": true
+  },
+  "cleanup": {
+    "temporaryAccountsRemaining": 0,
+    "temporaryEventsRemaining": 0,
+    "temporaryPurchasesRemaining": 0,
+    "manualPurchasesRetained": 2,
+    "privateProofsRetained": 2
+  },
+  "manualPurchases": [
+    {
+      "id": "47da3d94-d07f-4c9a-9e89-f5550e85545c",
+      "reference": "C-MANUAL-REJECT-7d7eb971",
+      "status": "WAITING_FOR_ADMIN_CONFIRMATION",
+      "pointsUsed": 0,
+      "couponDiscount": 25000,
+      "totalPrice": 25000,
+      "decisionDueAt": "2026-11-16T07:58:12.554+00:00",
+      "rewardStatus": "RESERVED"
+    },
+    {
+      "id": "8ab77931-6cb2-4c8c-bff8-5cdb7654139d",
+      "reference": "C-MANUAL-ACCEPT-7d7eb971",
+      "status": "WAITING_FOR_ADMIN_CONFIRMATION",
+      "pointsUsed": 5000,
+      "couponDiscount": 0,
+      "totalPrice": 45000,
+      "decisionDueAt": "2026-11-16T07:58:12.554+00:00",
+      "rewardStatus": "RESERVED"
+    }
+  ]
+}

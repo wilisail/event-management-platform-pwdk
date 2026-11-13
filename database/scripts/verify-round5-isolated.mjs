@@ -36,7 +36,7 @@ const pg = await PGlite.create()
 let socket, db, server
 let reviewTimer
 const evidence = { checkedAt: new Date().toISOString(), scope: 'ISOLATED_F2_QA', productionAdapter: false,
-  liveDatabaseUsed: false, liveStorageUsed: false, externalEmailSent: false, ownerStandbyRequired: false,
+  liveDatabaseUsed: false, liveStorageUsed: false, externalEmailSent: false, manualInteractionRequired: false,
   scenarios: [], fullF1JourneyAccepted: false, eventVoucherQuotaVerified: false, realInboxConfirmed: false }
 const passed = name => { evidence.scenarios.push(name); console.log('ROUND5_OK:', name) }
 

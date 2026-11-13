@@ -60,5 +60,5 @@
     "productionChanged": false,
     "accountDatabaseWrites": false
   },
-  "next": "Owner refreshes Organizer dashboard and uses Buat event for the no-poster event test. Owner claims Cloudinary privately; operator then rebuilds combined Preview and verifies a separate poster event."
+  "next": "Owner refreshes Organizer dashboard and uses Buat event for the no-poster event test. Owner claims Cloudinary privately; the next release rebuilds combined Preview and verifies a separate poster event."
 }

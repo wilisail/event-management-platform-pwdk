@@ -8,7 +8,7 @@ Current protected F2 testing link: [My account](https://temuevent-f2-qa-andor2.v
 
 The owner reported both changes saved and supplied screenshots showing the uploaded photo followed by the saved new display name. Read-only verification found one matching Customer, the reported display name persisted, its existing referral code unchanged, and an owned photo key linked to a real object in the private `profile-pictures` bucket. The stored image is WebP, 2,668 bytes; upload metadata is 10:01:32 WIB and the latest account update is 10:04:35 WIB. No owner email, display name, referral code, object path, account/session ID, password or original screenshot is published here.
 
-At the Round 3A checkpoint, rewards were **0 available points, 0 coupons, 0 outgoing referrals and 0 incoming referrals**. The subsequent Round 3B changes are recorded below. Changing a name/photo does not itself earn rewards or replace the referral code. The operator made no changes to this account or its photo.
+At the Round 3A checkpoint, rewards were **0 available points, 0 coupons, 0 outgoing referrals and 0 incoming referrals**. The subsequent Round 3B changes are recorded below. Changing a name/photo does not itself earn rewards or replace the referral code. This verification made no changes to this account or its photo.
 
 A separate anonymous HTTP photo probe stopped at Vercel deployment protection (401) before application content could be inspected. It is excluded from application-level authorization claims. Private-bucket configuration, object ownership, the saved object and the owner's displayed photo were verified; the existing source/regression checks remain the evidence for the app's session/role boundaries. No code fix, migration, deployment or new test suite was needed for this acceptance.
 
@@ -30,7 +30,7 @@ The owner plans to use the Gmail already used for Vercel/the email sender for th
 
 ## Remaining Round 3 sequence
 
-| Round | Owner's browser step | Operator's following check |
+| Round | Owner's browser step | Following verification |
 | --- | --- | --- |
 | 3A | Name/photo save and persistence | Passed: saved name, private stored image, ownership and unchanged referral code |
 | 3B — passed | Copied/pasted the original Customer's referral code, registered one separate Customer and inspected both wallets | Verified exactly one referral, one 10,000-point grant for the original Customer and one Rp25,000 coupon for the referred Customer, correct ownership and three-calendar-month expiry |
@@ -51,7 +51,7 @@ The owner completed the controlled signup with a different Customer address and 
 | Ownership | Point grant belongs to this account | Coupon belongs to this account |
 | Expiry | 10 February 2027, 10:27 WIB | 10 February 2027, 10:27 WIB |
 
-Both rewards were issued on 10 November 2026, 10:27 WIB and have the expected three-calendar-month expiry. The new Customer's generated referral code is different from the original Customer's code. Coupon redemptions remain **0**. Issuance passed; the coupon is a future ticket discount, not cash paid out, and checkout consumption remains Day 7 acceptance. These real owner-controlled accounts, photo and rewards are retained; no new accounts or rewards were created by the operator for this check.
+Both rewards were issued on 10 November 2026, 10:27 WIB and have the expected three-calendar-month expiry. The new Customer's generated referral code is different from the original Customer's code. Coupon redemptions remain **0**. Issuance passed; the coupon is a future ticket discount, not cash paid out, and checkout consumption remains Day 7 acceptance. These real owner-controlled accounts, photo and rewards are retained; this check created no new accounts or rewards.
 
 [Sanitized Round 3B evidence](evidence/day-6-round-3b-2026-11-10.json)
 
@@ -69,7 +69,7 @@ The stable alias retains Vercel Authentication: anonymous requests to login and 
 
 The owner used the stable F2 alias and supplied screenshots of the confirmation dialog, successful sign-out message and original Customer profile after signing in again with the replacement password. Read-only verification found the account updated at **11:07:56 WIB**, its latest stored session revoked at **11:07:57 WIB**, and one new active session created at **11:08:34 WIB**. All five stored sessions created before the account update are revoked; no pre-change session remains unrevoked.
 
-The saved name/photo are present and the referral code is preserved. The original Customer still has **10,000 points, one grant, one outgoing referral and zero coupons**. The referred Customer still has **zero points, one incoming referral and one Rp25,000 coupon**; its account-update timestamp and active/revoked session counts are unchanged from the pre-3C checkpoint. The operator made no account, credential, reward, database-schema or application-code changes.
+The saved name/photo are present and the referral code is preserved. The original Customer still has **10,000 points, one grant, one outgoing referral and zero coupons**. The referred Customer still has **zero points, one incoming referral and one Rp25,000 coupon**; its account-update timestamp and active/revoked session counts are unchanged from the pre-3C checkpoint. This verification made no account, credential, reward, database-schema or application-code changes.
 
 The owner report/new login, stored account update and session records support this acceptance. No raw password or password hash was read. Manual wrong/previous-password attempts, a replay from a second old browser session and a long idle wait were not performed; the existing focused session/recovery regressions remain separately documented in Round 2 and were not rerun for this unchanged-code acceptance. No fix, migration or redeployment was needed.
 
