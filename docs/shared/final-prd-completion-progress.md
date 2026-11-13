@@ -4,14 +4,14 @@ Updated: **13 November 2026, Asia/Jakarta**. Submission/video target: **17 Novem
 
 ## Current checkpoint
 
-**A is complete: the reviewed F2 source and completed-round evidence have been synchronized through passing, merged PRs. B and C have not started in this completion pass.** Round 7 remains the completed automated checkpoint; the live purchase/proof/decision connections and positive browser/inbox acceptance are still open. Completing A does not establish 100% F2 or combined-project acceptance.
+**A is complete. B's live adapters are implemented and pass local typechecking, private-storage/scheduler checks and nine disposable real-runtime SQL groups; PR CI and hosted release verification are in progress. C has not started.** Round 7 remains the earlier completed automated checkpoint. Positive hosted purchases and browser/inbox acceptance remain C/D. This is not 100% F2 or combined-project acceptance.
 
 This is the agreed A–F plan. Keep the scope and original working-time estimates stable; update the status and evidence as each block is completed.
 
 | Block | Bounded outcome | Original estimate | Owner | Status |
 | --- | --- | --- | --- | --- |
 | A — synchronize completed F2 work | Current F2 source and Rounds 5–7 records reach the appropriate submission/reference branches through reviewed PRs and passing CI. | 15–25 min | Assistant | **Complete for this source checkpoint** |
-| B — required live F2 connections | Bind private-proof reading, real Organizer approve/reject, reward effects and queued email; close the necessary shared deadline/restoration connections. | 40–70 min | Assistant | Not started; normal runtime connections remain outstanding |
+| B — required live F2 connections | Bind private-proof reading, real Organizer approve/reject, reward effects and queued email; close the necessary shared deadline/restoration connections. | 40–70 min | Assistant | Implemented and locally verified; CI/hosted verification in progress. [Companion](final-b-live-f2-reference.md) |
 | C — controlled purchases and integration checks | Prepare controlled F1-contract inputs and private test proofs; exercise genuine persisted F2 outcomes and provide exact hosted links for acceptance. | 20–35 min | Assistant | Not started; follows B |
 | D — combined acceptance | Owner browser/inbox checks for proof, decisions, status/rewards, attendance/review handoff, sessions and evaluator access. | 25–40 min | Wili, assisted | Pending B/C; no new acceptance claimed here |
 | E — mechanics learning | Explain actual auth/roles, tables, API/database requests, statuses, rewards and background notifications; practise evaluation questions. | 75–120 min | Wili + assistant | Pending final learning walkthrough |

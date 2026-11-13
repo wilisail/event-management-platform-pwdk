@@ -60,3 +60,35 @@ test('readiness fails closed and keeps the database error out of the response', 
     assert.deepEqual(await ready.json(), { ready: true })
   })
 })
+
+test('deadline work runs only behind scheduler authorization and precedes email delivery', async () => {
+  const calls: string[] = []
+  await withApp({ scheduledEmailJobs: { secret,
+    purchaseDeadlines: async () => { calls.push('deadlines'); return true },
+    passwordReset: async () => { calls.push('reset'); return true },
+    decisionEmails: async () => { calls.push('decisions'); return true },
+  } }, async base => {
+    const url = base + '/api/internal/jobs/run'
+    assert.equal((await fetch(url, { method: 'POST' })).status, 401)
+    assert.deepEqual(calls, [])
+    const response = await fetch(url, { method: 'POST', headers: { Authorization: 'Bearer ' + secret } })
+    assert.equal(response.status, 200)
+    assert.equal((await response.json()).purchaseDeadlines, true)
+    assert.deepEqual(calls, ['deadlines', 'reset', 'decisions'])
+  })
+})
+
+test('a deadline failure remains visible while existing notification queues still run', async () => {
+  let delivered = false
+  await withApp({ scheduledEmailJobs: { secret, purchaseDeadlines: async () => { throw new Error('private detail') },
+    passwordReset: async () => true, decisionEmails: async () => { delivered = true; return true },
+  } }, async base => {
+    const response = await fetch(base + '/api/internal/jobs/run', { method: 'POST', headers: { Authorization: 'Bearer ' + secret } })
+    assert.equal(response.status, 503)
+    const data = await response.json()
+    assert.equal(data.purchaseDeadlines, false)
+    assert.equal(data.decisionEmails, true)
+    assert.equal(delivered, true)
+    assert(!JSON.stringify(data).includes('private detail'))
+  })
+})
