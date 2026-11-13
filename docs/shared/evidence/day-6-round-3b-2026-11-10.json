@@ -222,12 +222,12 @@
   },
   "retention": {
     "realCustomerAccountsAndRewardsPreserved": true,
-    "operatorCreatedNewUsers": false,
-    "operatorIssuedNewRewards": false,
+    "verificationCreatedNewUsers": false,
+    "verificationIssuedNewRewards": false,
     "personalIdentifiersRedacted": true
   },
   "next": {
     "owner": "Round 3C: original Customer known-password change and replacement-password login.",
-    "operator": "Verify credential/session metadata before Round 3D Organizer acceptance."
+    "verification": "Verify credential/session metadata before Round 3D Organizer acceptance."
   }
 }

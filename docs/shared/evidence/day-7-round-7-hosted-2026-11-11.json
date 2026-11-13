@@ -3,7 +3,7 @@
   "scope": "ROUND7_HOSTED_F2_HANDOFF",
   "sharedDataMutated": false,
   "externalEmailSent": false,
-  "ownerStandbyRequired": false,
+  "manualInteractionRequired": false,
   "credentialedRoleReplay": false,
   "purchaseJourneyAccepted": false,
   "evaluatorOwnSessionAccepted": false,

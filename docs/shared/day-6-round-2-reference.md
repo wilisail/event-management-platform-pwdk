@@ -59,7 +59,7 @@ Keep the same Customer account. If the updated Preview asks for login, use the r
 
 1. In **Profil saya**, change the display name, click **Simpan nama**, confirm, then refresh. The changed name should remain.
 2. Choose a small JPEG/PNG/WebP, click **Simpan foto** when it appears, confirm, then refresh. The uploaded photo should remain.
-3. Report each result separately. The operator checks the saved record and private stored photo before the next round.
+3. Report each result separately. Verification checks the saved record and private stored photo before the next round.
 
 Next subrounds remain separate: actual referral-code copying and new referred-customer issuance; wallet/reward checks; known-password change; organizer account/dashboard and cross-organizer isolation. Reuse an existing Organizer account when available; otherwise it needs an email different from the Customer registration because each account has one role. The sender Gmail is independent of these customer/organizer identities. Real F1 purchase/proof/decision/attendance/review acceptance remains Day 7 work.
 

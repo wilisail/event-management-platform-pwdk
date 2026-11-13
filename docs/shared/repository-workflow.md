@@ -11,9 +11,9 @@ Updated: 8 November 2026 for CI and integration. Access-rule evidence below was 
 | `integration` | Combined testing and integration; updates and merges coordinated by Wili. |
 | `main` | Shared reference/release branch; updates and merges coordinated by Wili. |
 
-Rizky opens a pull request from feature 1, or asks Wili to open it from his branch. Wili checks the diff, runs relevant checks with coding-agent assistance and merges the intended changes. Each builder keeps ownership of their feature implementation.
+Rizky opens a pull request from feature 1, or asks Wili to open it from his branch. Wili checks the diff, runs the relevant automated checks and merges the intended changes. Each builder keeps ownership of their feature implementation.
 
-Required approving reviews are zero. There is no mandatory third reviewer or requirement for Rizky to approve Wili's own changes. Peer feedback remains available when useful. Coding-agent review supports the builders; it is not an independent human approval.
+Required approving reviews are zero. There is no mandatory third reviewer or requirement for Rizky to approve Wili's own changes. Peer feedback remains available when useful. Automated checks support review; the two builders retain project ownership and approval responsibilities.
 
 ## Active branch rule
 

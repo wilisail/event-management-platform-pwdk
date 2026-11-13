@@ -40,7 +40,7 @@ The database connection is ready when either backend is ready to use it. The [st
 
 A draft event/ticket/purchase model is enough to coordinate shared user relationships and migrations before the whole feature is finished. Connecting the backend, applying the agreed migrations and inserting linked sample data are separate from building the screens; the connection file does not perform those steps automatically.
 
-For coding agents: inspect the builder's current work and the [technical reference](technical-reference.md), then explain which parts use sample data, which use the database, and the next integration step. The existing connection check does not require replacing either feature's application structure.
+Before integration, inspect the builder's current work and the [technical reference](technical-reference.md), then explain which parts use sample data, which use the database, and the next integration step. The existing connection check does not require replacing either feature's application structure.
 
 ## Current project
 

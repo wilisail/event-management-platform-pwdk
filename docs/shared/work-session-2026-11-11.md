@@ -41,7 +41,7 @@ Round 7 then deployed the reviewed Round 6 merge source to the protected combine
 
 ## Direct F2 value and remaining attention
 
-| Work | Direct F2 effect | Owner standby |
+| Work | Direct F2 effect | Manual acceptance |
 | --- | --- | --- |
 | Round 5 proof/decision/reward/outbox checks | Organizer transaction review and notification behavior; consume/restore correctness for referral rewards. | None during automation. Real browser/proof/inbox check at the final window. |
 | Round 6 attendance, eligibility and totals | Populated Organizer dashboard and attendee behavior; secure shared-session bridge; public Organizer rating projection. | None during automation. Brief Organizer → Customer browser sequence after a reachable deployment/fixture exists. |

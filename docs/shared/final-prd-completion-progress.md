@@ -4,20 +4,20 @@ Updated: **13 November 2026, Asia/Jakarta**. Submission/video target: **17 Novem
 
 ## Current checkpoint
 
-**A and B are complete.** B's live adapters are merged, CI passes, both protected Preview builds are READY, and the existing scheduled worker has returned HTTP 200 twice with purchase deadlines and both email queues enabled. **Next: C, controlled hosted purchases and focused integration checks.** Positive hosted purchase/proof outcomes and owner browser/inbox acceptance remain C/D; no 100% combined-project acceptance is claimed.
+**A, B and C are complete for the agreed scope.** Live hosted proof permissions, approve/reject with reward accounting, duplicate prevention, attendance/reviews and scheduled expiry/cancellation passed. Temporary verification records were cleaned up; two purchases and their private test proofs remain for D. **Next: D, Wili's browser/inbox acceptance — 25–40 minutes.** [Exact references, links and walkthrough](final-c-hosted-acceptance.md). No 100% combined-project acceptance is claimed.
 
 This is the agreed A–F plan. Keep the scope and original working-time estimates stable; update the status and evidence as each block is completed.
 
 | Block | Bounded outcome | Original estimate | Owner | Status |
 | --- | --- | --- | --- | --- |
-| A — synchronize completed F2 work | Current F2 source and Rounds 5–7 records reach the appropriate submission/reference branches through reviewed PRs and passing CI. | 15–25 min | Assistant | **Complete for this source checkpoint** |
-| B — required live F2 connections | Bind private-proof reading, real Organizer approve/reject, reward effects and queued email; close the necessary shared deadline/restoration connections. | 40–70 min | Assistant | **Complete:** merged, CI green, both Previews READY and scheduled worker verified. [Companion](final-b-live-f2-reference.md) |
-| C — controlled purchases and integration checks | Prepare controlled F1-contract inputs and private test proofs; exercise genuine persisted F2 outcomes and provide exact hosted links for acceptance. | 20–35 min | Assistant | Not started; follows B |
-| D — combined acceptance | Owner browser/inbox checks for proof, decisions, status/rewards, attendance/review handoff, sessions and evaluator access. | 25–40 min | Wili, assisted | Pending B/C; no new acceptance claimed here |
-| E — mechanics learning | Explain actual auth/roles, tables, API/database requests, statuses, rewards and background notifications; practise evaluation questions. | 75–120 min | Wili + assistant | Pending final learning walkthrough |
-| F — video preparation | Prepare the demonstration sequence, record working F2 behavior and verify the final video. | 45–75 min | Wili + assistant | Pending accepted demonstration |
+| A — synchronize completed F2 work | Current F2 source and Rounds 5–7 records reach the appropriate submission/reference branches through reviewed PRs and passing CI. | 15–25 min | Wili | **Complete for this source checkpoint** |
+| B — required live F2 connections | Bind private-proof reading, real Organizer approve/reject, reward effects and queued email; close the necessary shared deadline/restoration connections. | 40–70 min | Wili | **Complete:** merged, CI green, both Previews READY and scheduled worker verified. [Companion](final-b-live-f2-reference.md) |
+| C — controlled purchases and integration checks | Prepare controlled F1-contract inputs and private test proofs; exercise genuine persisted F2 outcomes and provide exact hosted links for acceptance. | 20–35 min | Wili | **Complete:** hosted outcomes passed and manual fixtures retained. [Evidence and D guide](final-c-hosted-acceptance.md) |
+| D — combined acceptance | Owner browser/inbox checks for proof, decisions, status/rewards, attendance/review handoff, sessions and evaluator access. | 25–40 min | Wili | Ready; browser/inbox/evaluator acceptance remains pending |
+| E — mechanics learning | Explain actual auth/roles, tables, API/database requests, statuses, rewards and background notifications; practise evaluation questions. | 75–120 min | Wili | Pending final learning walkthrough |
+| F — video preparation | Prepare the demonstration sequence, record working F2 behavior and verify the final video. | 45–75 min | Wili | Pending accepted demonstration |
 
-The earlier rough A–D allowance remains approximately 1.5–2.5 hours of assistant work plus 25–40 minutes of owner acceptance. These are planning ranges, including normal PR/CI overhead, rather than guaranteed elapsed delivery times or rubric scores. F2's earlier approximately 98–100% target remains conditional on required live behavior and D passing; fixtures cannot prove completion of F1.
+The earlier rough A–D allowance remains approximately 1.5–2.5 hours of implementation/checks plus 25–40 minutes of owner acceptance. These are planning ranges, including normal PR/CI overhead, rather than guaranteed elapsed delivery times or rubric scores. F2's earlier approximately 98–100% target remains conditional on required live behavior and D passing; fixtures cannot prove completion of F1.
 
 ## A — source synchronization and evidence
 
@@ -48,7 +48,7 @@ This pass used disposable data and captured email in CI. It did not perform live
 | `feature-2` | [#80](https://github.com/wilisail/event-management-platform-pwdk/pull/80), merge `1d66509ee8605cf85ea72d6f24dc238d77833863` | [F2](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/43379234214) |
 | `main` | [#81](https://github.com/wilisail/event-management-platform-pwdk/pull/81), merge `8a85ce6bbd158de89cb99f88968d46324a579529` | [F2](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/43379289359) |
 
-All **149 F2 files** match across these branches at subtree `9f3ea7a889e4aaac037983f4269770cfeb93ec4a`. Standalone Round 5/7 CI steps remain preserved; combined root-dependent checks remain on integration. Validation passed **165 F2 application tests**, the existing migration/operations/Round 5/6/combined checks, nine new real-runtime SQL scenario groups, typechecks and both app builds.
+At B's source checkpoint, all **149 F2 files** matched across these branches at subtree `9f3ea7a889e4aaac037983f4269770cfeb93ec4a`. Standalone Round 5/7 CI steps remain preserved; combined root-dependent checks remain on integration. Validation passed **165 F2 application tests**, the existing migration/operations/Round 5/6/combined checks, nine new real-runtime SQL scenario groups, typechecks and both app builds.
 
 | Preview | Verified release | Result |
 | --- | --- | --- |
@@ -61,13 +61,19 @@ The existing `temuevent-preview-email-jobs` minute executor returned HTTP 200 at
 
 [Implementation and mechanics](final-b-live-f2-reference.md) · [Isolated runtime evidence](evidence/final-b-runtime-isolated-2026-11-13.json) · [Hosted release/worker/preservation evidence](evidence/final-b-hosted-2026-11-13.json).
 
-## C boundaries and next action
+## C — completed hosted integration, 13 November
 
-Start C from the completed B release. Normal startup now uses the real proof/decision/deadline adapters; the nine SQL/runtime groups explicitly use the production adapter rather than the earlier allowlisted QA transition. Shared deadline/restoration behavior is implemented and tested, while positive writes against controlled hosted purchases and a hosted private proof object belong to C. A separate extended multi-session concurrency project remains outside this bounded pass unless a concrete failure requires it.
+[Hosted results and D walkthrough](final-c-hosted-acceptance.md) · [Evidence](evidence/final-c-hosted-2026-11-13.json).
 
-C may seed representative F1 inputs so F2 can be demonstrated independently. Approval/rejection, reward changes, attendance and the review handoff must then execute through real protected services and persist. Hosted fixtures are functional/integration-test preparation, followed by D's user acceptance. They do not themselves establish TDD or complete the customer's F1 checkout/proof-upload journey.
+Normal deployed endpoints returned the expected owned-proof access and denials, persisted approval/rejection and consume/restore effects, duplicate 409s, attendance, eligible review creation and duplicate prevention. The existing scheduled worker executed expiry/cancellation and restored seats. Reconciliation matched expected statuses, points, coupons and one confirmed seat. One notification per decision was submitted to SMTP using disposable example.test recipients; actual inbox receipt remains D.
 
-Rizky retains checkout/proof submission, event edit/delete and voucher/draft implementation. The fetched `feature-1` head remains `c497ddf04a56a03295571628471e3e4d8429f487`; A does not edit it. Final acceptance must distinguish tested F2 outputs from unfinished F1 inputs.
+Seven temporary accounts, their event, four purchases and three proof files were removed. Two manual purchases and two private proofs remain in the existing Organizer/Customer accounts. Accepted account/event/ticket fingerprints and all 33 earlier purchases matched the baseline; all ten old pending purchases remain preserved. The guide records the deliberate 5,000-point and Rp25,000-coupon holds and the **16 November, 14:58 WIB** decision deadline.
+
+C exceeded the original planning range because of test-access setup and preparation-script corrections. Product scope did not expand. The final HTTPS runner uses a temporary deployment link; no scheduler credential was transferred. Normal application routes and the reviewed B running release are unchanged.
+
+C seeds representative F1 inputs and verifies genuine F2 outputs. It is functional/integration testing, followed by D's user acceptance; it does not itself establish TDD or complete F1 checkout/proof upload. Extended multi-session concurrency work remains outside this pass.
+
+Rizky retains checkout/proof submission, event edit/delete and voucher/draft implementation. The fetched `feature-1` head remains `c497ddf04a56a03295571628471e3e4d8429f487`; C does not edit it.
 
 ## Mechanics of A
 

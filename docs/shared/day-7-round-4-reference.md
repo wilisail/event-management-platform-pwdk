@@ -1,6 +1,6 @@
 # Day 7 — Round 4 event publishing, navigation and posters
 
-Latest checkpoint — **11 November 2026**: [Round 4B automated poster, navigation and cleanup checks passed](day-7-round-4b-reference.md). Use the stable combined host for discovery, login/account, Organizer dashboard and event creation. Owner screenshots accept Round 4A public/dashboard rendering. The real hosted poster API, saved ownership/image fields, browser image display and exact test cleanup passed. Both CI-verified Preview releases are healthy, with three worker completions; new recovery links use the combined host. The operator did not submit the authenticated browser poster form. Round 5 remains blocked by F1’s mock purchase/proof journey. Earlier checkpoints below are historical.
+Latest checkpoint — **11 November 2026**: [Round 4B automated poster, navigation and cleanup checks passed](day-7-round-4b-reference.md). Use the stable combined host for discovery, login/account, Organizer dashboard and event creation. Owner screenshots accept Round 4A public/dashboard rendering. The real hosted poster API, saved ownership/image fields, browser image display and exact test cleanup passed. Both CI-verified Preview releases are healthy, with three worker completions; new recovery links use the combined host. This verification did not submit the authenticated browser poster form. Round 5 remains blocked by F1’s mock purchase/proof journey. Earlier checkpoints below are historical.
 
 Updated 10 November 2026, Asia/Jakarta.
 
@@ -22,7 +22,7 @@ The Organizer dashboard already contained a `Buat event` link guarded by `NEXT_P
 
 No application source was changed. Reviewed Feature 2 source `7da6063d5ad26b0f5c16f8da72c978037d87bb7b` was rebuilt in READY deployment `dpl_TAxcV2QjZXN6i7Nn2dkSZLHE9ei2`. Its Google SMTP authentication probe and readiness passed; the published Organizer bundle includes the button and intended combined origin. The stable F2 alias was reassigned after these checks. Anonymous access still redirects to Vercel sign-in, and three scheduled worker completions on the new deployment confirm both email queues remain enabled. The worker's stable target URL and existing private credentials were preserved. Production was not changed.
 
-The owner should refresh the existing Organizer dashboard to load this build. A fresh authenticated visual confirmation of the button remains the owner's next observation; no owner password or browser cookie was read by the operator.
+The owner should refresh the existing Organizer dashboard to load this build. A fresh authenticated visual confirmation of the button remains the owner's next observation; no account password or browser cookie was included in this verification.
 
 [Sanitized navigation/provider evidence](evidence/day-7-round-4-preparation-2026-11-10.json)
 
@@ -34,17 +34,17 @@ The current form and backend accept an optional poster. When no file is supplied
 2. Name the test **QA Round 4A — No Poster**, fill category/description/location and choose a future date. Suggested schedule: 17 November 2026, 14:00–16:00 WIB.
 3. Use one paid ticket type **Regular**, price **Rp10,000**, quantity **5**. Leave the poster blank and the unavailable voucher/draft controls alone.
 4. Choose **Publikasikan Event → Ya, Terbitkan Event**.
-5. Report the resulting public event URL and whether it appears in the F2 Organizer dashboard. The operator then verifies event/ticket values, ownership and public response before recording acceptance.
+5. Report the resulting public event URL and whether it appears in the F2 Organizer dashboard. Then verify event/ticket values, ownership and public response before recording acceptance.
 
 Creating an event does not create purchases or participants. Those remain zero until the later purchase journey is connected.
 
-The original setup included **30 seeded purchases**, with demo event/ticket/identity rows. Those records were inserted by setup SQL and provided sample statuses; they did not establish that an Organizer could create an event through the real UI/API. This round creates one clearly labeled test event through the actual authenticated workflow. Both are test data, but the evidence is different. The operator did not insert an event or new purchase for the owner in this preparation.
+The original setup included **30 seeded purchases**, with demo event/ticket/identity rows. Those records were inserted by setup SQL and provided sample statuses; they did not establish that an Organizer could create an event through the real UI/API. This round creates one clearly labeled test event through the actual authenticated workflow. Both are test data, but the evidence is different. This verification did not insert an event or new purchase for the owner in this preparation.
 
 ## Round 4A — automated record checks passed
 
 The public API now returns the owner's **QA Round 4A - No Poster** event. Read-only database checks confirm one published event belonging to the unique expected Organizer, one **Regular** ticket type priced at **Rp10,000**, quota **5**, and **5** available seats. Schedule: **17 November 2026, 14:00–16:00 WIB**. Both poster columns are null, as intended. The owning Organizer has one event, zero confirmed purchases and Rp0 completed revenue; this event has zero purchases.
 
-[Published test event](https://temuevent-combined-qa-andor2.vercel.app/events/c57ed675-52e4-4d11-b1ca-4250226b5510). Its public detail API and page shell both returned HTTP 200. The operator did not create this database event or alter its tickets. The owner's confirmation that the public page renders correctly and the refreshed dashboard shows one event is still due; API/shell checks are not a fresh authenticated browser visual pass.
+[Published test event](https://temuevent-combined-qa-andor2.vercel.app/events/c57ed675-52e4-4d11-b1ca-4250226b5510). Its public detail API and page shell both returned HTTP 200. This verification did not create this database event or alter its tickets. The owner's confirmation that the public page renders correctly and the refreshed dashboard shows one event is still due; API/shell checks are not a fresh authenticated browser visual pass.
 
 ## Owned Cloudinary cloud — activated after owner claim
 
