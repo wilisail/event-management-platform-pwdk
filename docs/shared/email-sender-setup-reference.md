@@ -2,7 +2,28 @@
 
 Updated 10 November 2026, Asia/Jakarta.
 
-Round 1 Customer registration/login passed. Round 2 actual forgotten-password email receipt and use remains pending. Seeing a recovery form, receiving HTTP 202 or observing a provider acknowledgement does not establish inbox delivery.
+Round 1 Customer registration/login and Round 2 actual recovery-email receipt, password reset and replacement-password login passed. Read-only database verification agrees with the owner report. See [Round 2 acceptance and remaining manual scope](day-6-round-2-reference.md). The earlier activation evidence below is dated before owner acceptance.
+
+## Current Round 2 follow-up — 10 November 2026
+
+[Round 2 acceptance](day-6-round-2-reference.md) records the consumed request, new session, skipped manual negative/idle tests and 19 passing focused tests. The current [F2 account app](https://temuevent-dcm4os6gu-andor2.vercel.app/account) and [combined app](https://temuevent-m978ox58w-andor2.vercel.app/login) incorporate the updated recovery destination. Future reset links target the patched Gmail-enabled F2 recovery UI on `temuevent-hoowk373y-andor2.vercel.app`. Round 3A profile testing is next.
+
+## Initial sender activation — 10 November 2026
+
+The owner saved both Gmail settings as Preview-only Secrets without branch restrictions. Preview now selects `gmail`. Both reviewed deployments passed the real Google SMTP authentication probe (`GMAIL_SMTP_AUTH_OK`) and reached READY; the probe sent no email. Both readiness endpoints returned HTTP 200 with `ready: true`.
+
+| Target | Current deployment |
+| --- | --- |
+| F2 Customer/account testing | [Forgot password](https://temuevent-hoowk373y-andor2.vercel.app/forgot-password) · [Login](https://temuevent-hoowk373y-andor2.vercel.app/login); source `3cfbe9019826437a544e6e1ca0caba3949dff2eb`, deployment `dpl_FMyzTJPRKm1hTtJTHfsqfEvP8gi6` |
+| Combined F1/F2 event app | [Organizer login](https://temuevent-cs6c3f52i-andor2.vercel.app/login) · [Create event](https://temuevent-cs6c3f52i-andor2.vercel.app/organizer/events/new); source `b497dbb8dcf5256774b8293fef3a2343f3973932`, deployment `dpl_FDZTDSSVc2d5QUF9GohYS33TkTVR` |
+
+At 09:21:39 WIB, the existing Vault-backed per-minute scheduler was retargeted to the new F2 worker. Its existing bearer/protection credentials were retained without returning their values. Scheduled responses at 09:22 and 09:23 WIB returned HTTP 200 with both queues enabled; the new deployment's runtime logs confirm two completed worker calls. Before activation, both queues contained zero jobs. All nine shared migration checksums and inspected RLS flags remain current.
+
+The trusted recovery-link destination remains the existing working F2 `/reset-password` UI on `temuevent-8jbtjn050-andor2.vercel.app`; it returned HTTP 200 with no-store/no-referrer headers. Keeping that explicit origin avoids the combined shell's missing recovery page. Start new requests at the current Gmail-enabled F2 link above.
+
+**Sender configured: start Round 2.** Log out of the Customer session, request recovery once using the existing Customer registration email, check that inbox and Spam, open the real email promptly, choose a replacement of at least 15 characters, then sign in. Actual inbox receipt/reset/login and decision-triggered purchase emails remain pending. Customers and evaluators need no sender-provider account. No re-registration is required.
+
+[Sanitized activation evidence](evidence/day-6-email-sender-2026-11-10.json). The owner/activation instructions below remain a reference for future changes; this initial setup is complete.
 
 ## Chosen path
 
@@ -43,3 +64,9 @@ Rizky should reuse the shared account/recovery routes and the organizer decision
 Local typecheck, all 151 application tests and a production build in hosted API mode passed. Seven added tests cover separate sender/recipient identities, explicit provider selection, TLS/credential boundaries, recipient rejection, redacted errors, SMTP retry capability/Message-ID stability and reuse by the organizer worker. These tests inject an offline transport; they do not establish real Google authorization, SMTP acceptance or customer inbox receipt. The separate deployed SMTP-authentication probe and owner recovery test remain required after the private credentials are saved.
 
 References: [Gmail SMTP](https://developers.google.com/workspace/gmail/imap/imap-smtp), [Nodemailer Gmail](https://nodemailer.com/guides/using-gmail), [Vercel SMTP support](https://vercel.com/kb/guide/serverless-functions-and-smtp), [recovery design](password-reset-reference.md), [decision outbox](organizer-decision-email-reference.md).
+
+## Published source checkpoint
+
+[PR #44](https://github.com/wilisail/event-management-platform-pwdk/pull/44) merged reviewed source `af7a4b5509c3cde3c02a4113a223d2da6a6f8bc0` into integration at `33028d108758e47da8cfcda21260bfb7748f0760`. [Integration CI 42737991391](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42737991391) and [Feature 2 CI 42737991392](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42737991392) passed. [PR #45](https://github.com/wilisail/event-management-platform-pwdk/pull/45) carries the same adapter into Feature 2.
+
+The initial activation above superseded the sender-setup dependency. Owner Customer recovery acceptance now passed in Round 2; evaluator access and the real purchase/decision-email journey remain separate checks.

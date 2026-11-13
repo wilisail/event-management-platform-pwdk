@@ -1,0 +1,64 @@
+{
+  "checkpoint": "Day 7 Round 4 navigation and owned Cloudinary preparation",
+  "date": "2026-11-10",
+  "timezone": "Asia/Jakarta",
+  "source": {
+    "feature2Sha": "7da6063d5ad26b0f5c16f8da72c978037d87bb7b",
+    "combinedSha": "cdbac30dc00c5df576c8aa5db5d7c761a43f3b50",
+    "applicationCodeChanged": false,
+    "f1BranchChanged": false
+  },
+  "navigation": {
+    "existingButton": "Buat event",
+    "source": "feature-2/components/organizer-dashboard.tsx",
+    "previewConfig": {
+      "NEXT_PUBLIC_F1_ORIGIN": "https://temuevent-m978ox58w-andor2.vercel.app",
+      "NEXT_PUBLIC_F1_MANAGEMENT_READY": "true"
+    },
+    "stableF2Url": "https://temuevent-f2-qa-andor2.vercel.app",
+    "deploymentId": "dpl_TAxcV2QjZXN6i7Nn2dkSZLHE9ei2",
+    "deploymentUrl": "https://temuevent-40x58iocs-andor2.vercel.app",
+    "readyState": "READY",
+    "readiness": {
+      "status": 200,
+      "ready": true
+    },
+    "smtpAuthenticationPassed": true,
+    "publishedBundleLabelAndCombinedOriginVerified": true,
+    "freshOwnerVisualAcceptance": false,
+    "anonymousAccessRedirectsToVercel": true,
+    "postAliasWorkerCompletions": 3,
+    "bothEmailQueuesEnabled": true,
+    "workerUrlChanged": false
+  },
+  "cloudinary": {
+    "cloudName": "zjglczua",
+    "provisioned": true,
+    "providerAuthenticationStatus": 200,
+    "providerPing": "ok",
+    "ownerClaimPending": true,
+    "unclaimedExpiry": "2026-11-11T05:14:28Z",
+    "publicDeliveryVerified": false,
+    "assetsUploaded": 0,
+    "claimUrlExcludedFromRepository": true,
+    "credentialsExcludedFromRepository": true,
+    "privatePreviewConfigurationSaved": [
+      "CLOUDINARY_CLOUD_NAME",
+      "CLOUDINARY_API_KEY",
+      "CLOUDINARY_API_SECRET"
+    ],
+    "apiKeyAndSecretStoredAsSensitive": true,
+    "combinedDeploymentStillNeedsRebuildAfterClaim": true
+  },
+  "limits": {
+    "twoPreviewHostsStillUsed": true,
+    "sameAccountsAndDatabase": true,
+    "loginPerHostRequired": true,
+    "singleHostFinalNavigationPending": true,
+    "posterEditingNotImplemented": true,
+    "realCheckoutStillPending": true,
+    "productionChanged": false,
+    "accountDatabaseWrites": false
+  },
+  "next": "Owner refreshes Organizer dashboard and uses Buat event for the no-poster event test. Owner claims Cloudinary privately; operator then rebuilds combined Preview and verifies a separate poster event."
+}

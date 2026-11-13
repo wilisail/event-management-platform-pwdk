@@ -1,0 +1,103 @@
+{
+  "checkpoint": "Day 6 Round 3C",
+  "date": "2026-11-10",
+  "timezone": "Asia/Jakarta",
+  "checkedAt": "2026-11-10 04:16:19.264246+00",
+  "ownerAcceptance": {
+    "knownPasswordChangeReported": true,
+    "confirmationDialogShown": true,
+    "logoutSuccessMessageShown": true,
+    "replacementPasswordLoginReported": true,
+    "postLoginOriginalProfileShown": true
+  },
+  "readOnlyAccountVerification": {
+    "originalCustomer": {
+      "role": "CUSTOMER",
+      "updatedAt": "2026-11-10T04:07:56.727+00:00",
+      "activeSessions": 1,
+      "revokedSessions": 5,
+      "expectedSavedName": true,
+      "profilePhotoPresent": true,
+      "latestSessionCreated": "2026-11-10T04:08:34.442+00:00",
+      "latestSessionRevoked": "2026-11-10T04:07:57.264+00:00",
+      "referralCodePreserved": true,
+      "sessionsCreatedBeforeLatestAccountUpdate": 5,
+      "unrevokedSessionsCreatedBeforeLatestAccountUpdate": 0
+    },
+    "referredCustomer": {
+      "role": "CUSTOMER",
+      "updatedAt": "2026-11-10T03:27:00.908+00:00",
+      "activeSessions": 0,
+      "revokedSessions": 1,
+      "expectedSavedName": true,
+      "profilePhotoPresent": false,
+      "latestSessionCreated": "2026-11-10T03:28:54.058+00:00",
+      "latestSessionRevoked": "2026-11-10T03:29:52.775+00:00",
+      "referralCodePreserved": true,
+      "sessionsCreatedBeforeLatestAccountUpdate": 0,
+      "unrevokedSessionsCreatedBeforeLatestAccountUpdate": 0
+    }
+  },
+  "rewards": {
+    "originalCustomer": {
+      "couponCount": 0,
+      "couponValues": null,
+      "availablePoints": "10000",
+      "pointGrantCount": 1,
+      "incomingReferrals": 0,
+      "outgoingReferrals": 1
+    },
+    "referredCustomer": {
+      "couponCount": 1,
+      "couponValues": [
+        "25000"
+      ],
+      "availablePoints": "0",
+      "pointGrantCount": 0,
+      "incomingReferrals": 1,
+      "outgoingReferrals": 0
+    }
+  },
+  "comparisonWithRound3BBaseline": {
+    "baselineCheckedAt": "2026-11-10T03:59:01.500321+00:00",
+    "originalPreviousAccountUpdatedAt": "2026-11-10T03:04:35.872+00:00",
+    "originalRevokedSessionsBefore": 3,
+    "originalRevokedSessionsAfter": 5,
+    "allPreChangeStoredSessionsRevoked": true,
+    "referredAccountUpdateUnchanged": true,
+    "referredSessionCountsUnchanged": true
+  },
+  "verificationLimits": {
+    "rawPasswordsOrHashesRead": false,
+    "manualWrongOrPreviousPasswordAttempt": false,
+    "liveReplayOfOldDeviceSession": false,
+    "longIdleBrowserWait": false,
+    "existingFocusedSessionRecoveryTestsReference": "../day-6-round-2-reference.md",
+    "testsRepeatedInThisBatch": false
+  },
+  "operatorChanges": {
+    "applicationCode": false,
+    "databaseWrites": false,
+    "migrations": false,
+    "deployment": false,
+    "accountOrRewardCleanup": false
+  },
+  "day7ReadOnlyCheckpoint": {
+    "f1BranchHead": "c497ddf04a56a03295571628471e3e4d8429f487",
+    "checkoutStillMock": true,
+    "combinedEventsEndpointStatus": 200,
+    "publishedEvents": 12,
+    "eventsWithStoredPosterUrl": 0,
+    "previewCloudinaryVariablesPresent": [],
+    "newPosterUploadAcceptancePending": true,
+    "overallF1PercentageNotCertified": true
+  },
+  "next": {
+    "round": "3D",
+    "task": "Register and sign into one separate Organizer, inspect own profile/referral/security and owned dashboard, then pause for role/ownership verification."
+  },
+  "privacy": {
+    "personalIdentifiersRedacted": true,
+    "originalScreenshotsNotPublished": true
+  }
+}

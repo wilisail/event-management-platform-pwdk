@@ -15,7 +15,7 @@ export function OrganizerProfile({ organizerId }: { organizerId: string }) {
   useEffect(() => {
     const abort = new AbortController()
     setProfile(null); setError('')
-    void fetch('/api/organizers/' + encodeURIComponent(organizerId), { signal: abort.signal, cache: 'no-store' })
+    void fetch('/api/profiles/organizers/' + encodeURIComponent(organizerId), { signal: abort.signal, cache: 'no-store' })
       .then(async response => {
         const body = await response.json()
         if (!response.ok || !body.success) throw new Error(response.status === 404 ? 'Profil organizer tidak ditemukan.' : 'Profil belum dapat dimuat. Silakan coba lagi.')

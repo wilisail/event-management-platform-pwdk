@@ -13,7 +13,7 @@ import { prismaProfileRepository } from './profile/repository'
 import { createProfileService } from './profile/service'
 import { normalizePicture } from './profile/pictures'
 import { supabaseProfileStorage } from './profile/storage'
-import { featureOneOrganizerRating } from './profile/rating'
+import { featureOneOrganizerRating, type ReadOrganizerRating } from './profile/rating'
 
 import { createPasswordResetService, resetOrigin } from './auth/password-reset'
 import { prismaResetRepository } from './auth/reset-repository'
@@ -28,7 +28,7 @@ const allowedOrigins = (
   .map(value => value.trim())
   .filter(Boolean)
 
-export async function createRuntime(options: { defer?: (work: Promise<unknown>) => void } = {}) {
+export async function createRuntime(options: { defer?: (work: Promise<unknown>) => void; fallthrough?: boolean; allowedOrigins?: string[]; readOrganizerRating?: ReadOrganizerRating } = {}) {
   const hasDatabase = Boolean(process.env.DATABASE_URL)
   const showDatabaseProbe = process.env.F2_DATABASE_CHECK_ENABLED === 'true' &&
     process.env.NODE_ENV !== 'production'
@@ -52,7 +52,7 @@ export async function createRuntime(options: { defer?: (work: Promise<unknown>) 
   const profileService = client ? createProfileService({
     repository: prismaProfileRepository(client, work => client.$transaction(work, { timeout: 10000 })),
     normalize: normalizePicture, storage: pictureStorage?.storage,
-    readOrganizerRating: featureOneOrganizerRating(process.env.F1_PUBLIC_API_ORIGIN),
+    readOrganizerRating: options.readOrganizerRating ?? featureOneOrganizerRating(process.env.F1_PUBLIC_API_ORIGIN),
     onCleanupFailure: () => console.warn('Profile storage cleanup needs attention; check orphaned uploads.'),
   }) : undefined
   const mailer = configuredMailer(), origin = resetOrigin()
@@ -64,7 +64,8 @@ export async function createRuntime(options: { defer?: (work: Promise<unknown>) 
       signingSecret, mailer, origin, onDeliveryFailure: () => console.warn('Password recovery delivery needs attention; no account/token details logged.') }) : undefined
   const jobSecret = process.env.F2_JOB_RUNNER_SECRET
   const app = createApp({
-    allowedOrigins: [...allowedOrigins, ...(process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL ? ['https://' + process.env.VERCEL_URL] : [])], registrationService, sessionService, profileService, passwordResetService, defer: options.defer,
+    fallthrough: options.fallthrough,
+    allowedOrigins: options.allowedOrigins ?? [...allowedOrigins, ...(process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL ? ['https://' + process.env.VERCEL_URL] : [])], registrationService, sessionService, profileService, passwordResetService, defer: options.defer,
     passwordChangeService: client && sessionService ? createPasswordChangeService({
       repository: prismaPasswordRepository(client, work => client.$transaction(work, { timeout: 10000 })),
     }) : undefined,
@@ -80,5 +81,5 @@ export async function createRuntime(options: { defer?: (work: Promise<unknown>) 
         ? decisionEmailWorker?.dispatchPending : null,
     } : undefined,
   })
-  return { app, passwordResetService, decisionEmailWorker, disconnect: database?.disconnectDatabase }
+  return { app, sessionService, passwordResetService, decisionEmailWorker, disconnect: database?.disconnectDatabase }
 }

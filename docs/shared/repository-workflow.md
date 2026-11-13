@@ -1,6 +1,6 @@
 # Repository workflow
 
-Updated: 19 October 2026.
+Updated: 8 November 2026 for CI and integration. Access-rule evidence below was last verified on 19 October.
 
 ## Workflow and access
 
@@ -33,6 +33,8 @@ The name's `feature-2` suffix refers to the feature 2 branch being protected alo
 
 GitHub Actions is optional for these access rules. A workflow can automatically install dependencies, run tests/type checks and build the application on pushes or pull requests, showing results and logs. This supports the course's CI/CD module and reduces repeated manual checking.
 
-There are currently no GitHub Actions workflow files in this repository and no required CI status checks. Automation has not been enabled by this workflow note. A later CI change can start with informational checks; making checks mandatory is a separate setting. Deploying an application also requires an explicitly configured deployment workflow.
+The repository now includes `feature-2-ci.yml` and `integration-ci.yml`. The first checks the standalone F2 app, existing disposable SQL journeys and operations cleanup; the second also checks the combined app, its shared-session event publishing and F1-write/F2-read SQL journey. Both workflows passed for [Day 7 PR #41](https://github.com/wilisail/event-management-platform-pwdk/pull/41) before it was merged into `integration`. See the [Day 7 companion](day-7-event-poster-integration-reference.md) for exact run links and deferred live acceptance. The earlier [Day 6 PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) is merged into `feature-2`.
+
+A failed CI email reports a check failure; it does not itself mean a human approval is pending. The earlier Day 6 Node 22 harness failure was fixed and the subsequent full CI passed. This integration did not change approval requirements, branch rules or production deployment settings. Requiring CI statuses through a ruleset remains a separate repository setting.
 
 References: [GitHub branch rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets), [ruleset administration](https://docs.github.com/en/rest/repos/rules#create-a-repository-ruleset), [GitHub Actions](https://docs.github.com/en/actions/get-started/understand-github-actions).

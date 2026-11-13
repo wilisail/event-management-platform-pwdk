@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "verifiedOn": "2026-11-10",
+  "timezone": "Asia/Jakarta",
+  "round": 1,
+  "classification": "Day 6 F2 owner acceptance",
+  "ownerBrowserResult": "Registration and login succeeded; profile, referral, wallet and security views rendered",
+  "databaseVerification": {
+    "matchingAccountCount": 1,
+    "role": "CUSTOMER",
+    "generatedReferralMatchesScreenshot": true,
+    "activeSessionCount": 1,
+    "incomingReferralCount": 0,
+    "outgoingReferralCount": 0,
+    "availablePoints": 0,
+    "couponCount": 0
+  },
+  "ownerDataChangedByVerification": false,
+  "personalIdentifiersPublished": false,
+  "manualChecksDeferred": [
+    "Profile name save",
+    "Profile photo upload/replacement",
+    "Clipboard copy action",
+    "Actual referral reward issuance",
+    "Password change"
+  ],
+  "fix": {
+    "pullRequest": 43,
+    "reviewedCommit": "1877a98e436d68fff684e69c200ec738c4f31117",
+    "feature2MergeCommit": "51a528e47f5f20cc40347e930c1a87b8b06c6cd9",
+    "description": "Scoped inline-flex confirmation link with 16px top margin",
+    "ciRunId": 42732848469,
+    "ciResult": "success",
+    "visualFixtureResult": "Unavailable in the execution/browser environment; not marked visually accepted",
+    "deployedStylesheetRuleConfirmed": true
+  },
+  "preview": {
+    "url": "https://temuevent-4vwwj2soj-andor2.vercel.app",
+    "deploymentId": "dpl_Bq7EijudwSiav93F7YWt4bRynhET",
+    "state": "READY",
+    "readinessHttp": 200,
+    "ready": true,
+    "registrationHttp": 200
+  },
+  "round2Gate": "Verified TemuEvent sending domain and sender configuration, then real delivery to a separate customer inbox"
+}
