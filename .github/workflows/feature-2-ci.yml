@@ -48,4 +48,7 @@ jobs:
       - name: Syntax-check the credential-free hosted verifier
         working-directory: database
         run: node --check scripts/verify-round7-hosted.mjs
+      - name: Verify the real F2 lifecycle runtime on a disposable database
+        working-directory: database
+        run: npm run qa:final-b
       - run: npm run build

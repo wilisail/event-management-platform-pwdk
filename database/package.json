@@ -15,7 +15,8 @@
     "db:deploy": "prisma migrate deploy",
     "db:verify": "node scripts/run-with-ca.mjs scripts/verify.ts",
     "db:verify:auth": "node scripts/run-with-ca.mjs scripts/verify-auth.ts",
-    "db:verify:reviews": "node scripts/run-with-ca.mjs scripts/verify-reviews.ts"
+    "db:verify:reviews": "node scripts/run-with-ca.mjs scripts/verify-reviews.ts",
+    "qa:final-b": "node --import tsx scripts/verify-final-b-runtime.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

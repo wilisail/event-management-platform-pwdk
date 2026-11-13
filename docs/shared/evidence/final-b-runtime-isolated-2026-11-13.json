@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-11-13T06:23:11.091Z",
+  "scope": "FINAL_B_REAL_RUNTIME_ISOLATED",
+  "liveDatabaseUsed": false,
+  "externalEmailSent": false,
+  "qaTransitionAdapterUsed": false,
+  "ownerBrowserAccepted": false,
+  "scenarios": [
+    "Normal runtime binds proof, decisions and deadlines without a QA transition adapter",
+    "Real sessions and repeat ownership protect private proof bytes and decision identity",
+    "Approval persists DONE, consumes reserved rewards and atomically queues one notification",
+    "Rejection restores original points, coupon availability and seats once",
+    "The existing authorized scheduler retries captured mail without undoing committed decisions",
+    "Database-clock deadlines restore once, reject late approval and preserve the configured historical cohort",
+    "An actual SQL outbox failure rolls the entire decision back; retry commits consistently",
+    "Competing decisions produce one terminal result and one outbox row",
+    "Unsupported F1 event vouchers and inconsistent inventory fail without partial accounting"
+  ],
+  "concurrencyLimit": "Concurrent HTTP requests share one disposable physical SQL connection; independent-session races are not claimed.",
+  "migrationsReplayed": 9
+}

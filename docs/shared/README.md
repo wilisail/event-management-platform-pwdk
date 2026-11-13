@@ -4,6 +4,7 @@ Updated: 13 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Final B live F2 connections](final-b-live-f2-reference.md) | Normal-runtime private proof and decision adapters, atomic reward/seat/outbox updates, existing scheduled deadlines, verification and remaining F1 boundary |
 | [Final PRD completion progress — A–F](final-prd-completion-progress.md) | Completed branch sync, exact PR/CI evidence, remaining B/C runtime and fixture work, owner acceptance, learning and video preparation |
 | [Day 7 Round 7 automated F2 handoff](day-7-round-7-f2-handoff.md) | Deployed reviewed Preview, hosted access checks, live operations/preservation evidence and one owner checklist across Rounds 5–7 |
 | [11 November work recap, all rounds](work-session-2026-11-11.md) | Current Round 1–7 status, today's resumed Round 4B/5/6 work, carried-forward owner acceptance, validation and final attention window |

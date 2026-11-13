@@ -13,6 +13,7 @@ async function start() {
   const dispatchPending = () => {
     void runtime.passwordResetService?.dispatchPending()
     void decisionEmailWorker?.dispatchPending()
+    void runtime.purchaseTransitions?.dispatchDeadlines()
   }
   const timer = setInterval(dispatchPending, 5000)
   timer.unref()
