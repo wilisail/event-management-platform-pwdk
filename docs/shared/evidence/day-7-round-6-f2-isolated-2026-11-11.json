@@ -3,7 +3,7 @@
   "scope": "ISOLATED_ROUND6_F2",
   "liveDatabaseUsed": false,
   "externalEmailSent": false,
-  "ownerStandbyRequired": false,
+  "manualInteractionRequired": false,
   "ownerBrowserAccepted": false,
   "fullF1JourneyAccepted": false,
   "scenarios": [

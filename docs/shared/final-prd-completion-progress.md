@@ -10,14 +10,14 @@ This is the agreed A–F plan. Keep the scope and original working-time estimate
 
 | Block | Bounded outcome | Original estimate | Owner | Status |
 | --- | --- | --- | --- | --- |
-| A — synchronize completed F2 work | Current F2 source and Rounds 5–7 records reach the appropriate submission/reference branches through reviewed PRs and passing CI. | 15–25 min | Assistant | **Complete for this source checkpoint** |
-| B — required live F2 connections | Bind private-proof reading, real Organizer approve/reject, reward effects and queued email; close the necessary shared deadline/restoration connections. | 40–70 min | Assistant | **Complete:** merged, CI green, both Previews READY and scheduled worker verified. [Companion](final-b-live-f2-reference.md) |
-| C — controlled purchases and integration checks | Prepare controlled F1-contract inputs and private test proofs; exercise genuine persisted F2 outcomes and provide exact hosted links for acceptance. | 20–35 min | Assistant | Not started; follows B |
-| D — combined acceptance | Owner browser/inbox checks for proof, decisions, status/rewards, attendance/review handoff, sessions and evaluator access. | 25–40 min | Wili, assisted | Pending B/C; no new acceptance claimed here |
-| E — mechanics learning | Explain actual auth/roles, tables, API/database requests, statuses, rewards and background notifications; practise evaluation questions. | 75–120 min | Wili + assistant | Pending final learning walkthrough |
-| F — video preparation | Prepare the demonstration sequence, record working F2 behavior and verify the final video. | 45–75 min | Wili + assistant | Pending accepted demonstration |
+| A — synchronize completed F2 work | Current F2 source and Rounds 5–7 records reach the appropriate submission/reference branches through reviewed PRs and passing CI. | 15–25 min | Wili | **Complete for this source checkpoint** |
+| B — required live F2 connections | Bind private-proof reading, real Organizer approve/reject, reward effects and queued email; close the necessary shared deadline/restoration connections. | 40–70 min | Wili | **Complete:** merged, CI green, both Previews READY and scheduled worker verified. [Companion](final-b-live-f2-reference.md) |
+| C — controlled purchases and integration checks | Prepare controlled F1-contract inputs and private test proofs; exercise genuine persisted F2 outcomes and provide exact hosted links for acceptance. | 20–35 min | Wili | In progress. [Preparation and acceptance guide](final-c-hosted-acceptance.md) |
+| D — combined acceptance | Owner browser/inbox checks for proof, decisions, status/rewards, attendance/review handoff, sessions and evaluator access. | 25–40 min | Wili | Pending B/C; no new acceptance claimed here |
+| E — mechanics learning | Explain actual auth/roles, tables, API/database requests, statuses, rewards and background notifications; practise evaluation questions. | 75–120 min | Wili | Pending final learning walkthrough |
+| F — video preparation | Prepare the demonstration sequence, record working F2 behavior and verify the final video. | 45–75 min | Wili | Pending accepted demonstration |
 
-The earlier rough A–D allowance remains approximately 1.5–2.5 hours of assistant work plus 25–40 minutes of owner acceptance. These are planning ranges, including normal PR/CI overhead, rather than guaranteed elapsed delivery times or rubric scores. F2's earlier approximately 98–100% target remains conditional on required live behavior and D passing; fixtures cannot prove completion of F1.
+The earlier rough A–D allowance remains approximately 1.5–2.5 hours of implementation/checks plus 25–40 minutes of owner acceptance. These are planning ranges, including normal PR/CI overhead, rather than guaranteed elapsed delivery times or rubric scores. F2's earlier approximately 98–100% target remains conditional on required live behavior and D passing; fixtures cannot prove completion of F1.
 
 ## A — source synchronization and evidence
 

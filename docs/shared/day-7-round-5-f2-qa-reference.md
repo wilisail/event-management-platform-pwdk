@@ -31,7 +31,7 @@ The command typechecks the QA adapters, creates fresh isolated fixtures, runs th
 
 ## Owner attention comes last
 
-| Stage | Operator work | Owner attention |
+| Stage | Implementation/checks | Owner attention |
 | --- | --- | --- |
 | Build and automated QA | Implement adapters, run security/accounting/failure cases, verify builds and save evidence/checkpoint | None |
 | Optional isolated UI review | Start the disposable API/review server and the existing F2 web UI; verify reachability before handing off | One short window: open proof, accept one fixture, reject another, inspect both buyer outcomes and captured messages |

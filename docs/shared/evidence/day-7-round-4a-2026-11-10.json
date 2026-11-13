@@ -39,7 +39,7 @@
     "previouslyReachedFormAndSignedIn": true,
     "publicationAndDashboardScreenshotNotYetReported": true
   },
-  "operatorDatabaseWrites": false,
+  "verificationDatabaseWrites": false,
   "eventRetained": true,
   "next": "Owner confirms public page and one owned dashboard event; separate Round 4B event supplies real poster upload/persistence/display acceptance."
 }

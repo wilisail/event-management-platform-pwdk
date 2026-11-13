@@ -30,7 +30,7 @@
     "excludedFromApplicationAuthorizationClaims": true
   },
   "scope": {
-    "accountAndStorageChangedByOperator": false,
+    "accountAndStorageChangedByVerification": false,
     "newTestsOrDeploymentNeeded": false,
     "clipboardCopy": "pending",
     "referredSignupAndRewards": "pending",

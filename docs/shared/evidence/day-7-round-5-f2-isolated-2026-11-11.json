@@ -5,7 +5,7 @@
   "liveDatabaseUsed": false,
   "liveStorageUsed": false,
   "externalEmailSent": false,
-  "ownerStandbyRequired": false,
+  "manualInteractionRequired": false,
   "scenarios": [
     "Private proof bytes, session/role/owner isolation and object-key redaction",
     "Decision ownership, Customer denial and CSRF guards leave accounting unchanged",

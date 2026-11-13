@@ -20,7 +20,7 @@
   },
   "scope": {
     "providerRestUploadReadDeleteVerified": true,
-    "operatorCreatedDatabaseEvent": false,
+    "verificationCreatedDatabaseEvent": false,
     "fullHostedEventWithPosterAcceptancePending": true
   },
   "combinedDeployment": {

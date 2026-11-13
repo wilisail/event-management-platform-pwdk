@@ -35,12 +35,12 @@ The backend supports `F2_EMAIL_PROVIDER=gmail` through `feature-2/server/email/p
 
 1. Sign into the chosen Gmail account. Enable [Google 2-Step Verification](https://myaccount.google.com/signinoptions/two-step-verification) if needed.
 2. Open [Google App Passwords](https://myaccount.google.com/apppasswords), create an app password named `TemuEvent`, and keep it private. This is a separate credential from the normal Google account password. Some accounts cannot create app passwords; see [Google's eligibility instructions](https://support.google.com/accounts/answer/185833).
-3. In [TemuEvent's Vercel environment settings](https://vercel.com/andor2/temuevent/settings/environment-variables), add `F2_GMAIL_USER` with the selected full Gmail address and `F2_GMAIL_APP_PASSWORD` with the generated credential. Scope both to **Preview only**, with no individual Git branch restriction, and store the password as **Secret** (called Sensitive in older interfaces). Do not paste credentials into chat, source code, screenshots or shared documentation. Do not change `F2_EMAIL_PROVIDER` yet; the operator verifies and switches it with the next deployment.
-4. Tell the operator that both settings have been saved. No password or address needs to be included in that reply.
+3. In [TemuEvent's Vercel environment settings](https://vercel.com/andor2/temuevent/settings/environment-variables), add `F2_GMAIL_USER` with the selected full Gmail address and `F2_GMAIL_APP_PASSWORD` with the generated credential. Scope both to **Preview only**, with no individual Git branch restriction, and store the password as **Secret** (called Sensitive in older interfaces). Do not paste credentials into chat, source code, screenshots or shared documentation. Do not change `F2_EMAIL_PROVIDER` yet; the provider is verified and switched with the next deployment.
+4. Confirm that both settings have been saved. No password or address needs to be included in that reply.
 
-The Gmail connector in ChatGPT is not needed for this backend. Connecting an inbox to chat would not automatically give deployed TemuEvent an SMTP credential.
+SMTP authorization is configured on the backend separately from ordinary inbox access.
 
-## Operator activation and acceptance
+## Backend activation and acceptance
 
 - Confirm the two settings exist without printing their values. Switch the Preview provider to `gmail` only when both are present.
 - Deploy the reviewed standalone F2 and combined integration sources. Run `npm run email:verify:gmail` with the deployment's private settings: it authenticates to Gmail over TLS without sending an email or touching customer data. Only `GMAIL_SMTP_AUTH_OK` / a sanitized failure is logged.
