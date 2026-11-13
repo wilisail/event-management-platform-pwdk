@@ -1,10 +1,11 @@
 /** Loopback-only review tooling. This module is never mounted by the real application. */
-import type { Express } from 'express'
+import type { createApp } from '../../feature-2/server/app'
 import type { PrismaClient } from '../../feature-2/generated/prisma/client'
 import type { EmailMessage } from '../../feature-2/server/email/resend'
 import { requireAuthentication, authentication } from '../../feature-2/server/auth/authorization'
 import { loginFields, type sessionFixture } from '../../feature-2/tests/helpers/sessions'
 
+type Express = ReturnType<typeof createApp>
 type Fixture = { purchaseId: string; owner: { id: string; email: string }; organizer: { id: string; email: string } }
 export function installRound5Review(app: Express, options: {
   auth: ReturnType<typeof sessionFixture>; db: PrismaClient; accept: Fixture; reject: Fixture;
