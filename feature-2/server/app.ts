@@ -7,6 +7,7 @@ import type { SessionService } from './auth/sessions'
 import { protectedRouter } from './protected-http'
 import type { OrganizerReadRepository } from './organizer/reads'
 import type { OrganizerDecisionTransition } from './organizer/decision'
+import type { OrganizerProofReader } from './organizer/private-proof'
 import type { RewardReadRepository } from './rewards/reads'
 import type { ApiSuccess, DemoPersona, UserView } from '../contracts/types'
 import { walletFor } from '../domain/rewards'
@@ -21,6 +22,7 @@ import type { ProfileService } from './profile/service'
 import { scheduledEmailHandler, type ScheduledEmailJobs } from './email/job-runner'
 
 export interface AppOptions {
+  fallthrough?: boolean
   now?: () => Date
   data?: DemoData
   allowedOrigins?: string[]
@@ -32,6 +34,7 @@ export interface AppOptions {
   loginRateLimit?: { limit: number; windowMs: number }
   organizerRepository?: OrganizerReadRepository
   organizerDecisionTransition?: OrganizerDecisionTransition
+  organizerProofReader?: OrganizerProofReader
   rewardRepository?: RewardReadRepository
   profileService?: ProfileService
   passwordChangeService?: PasswordChangeService
@@ -175,6 +178,7 @@ export function createApp(options: AppOptions = {}) {
   app.use('/api', protectedRouter({
     sessionService: options.sessionService, organizerRepository: options.organizerRepository,
     organizerDecisionTransition: options.organizerDecisionTransition,
+    organizerProofReader: options.organizerProofReader,
     rewardRepository: options.rewardRepository, now,
     secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production',
   }))
@@ -232,7 +236,7 @@ export function createApp(options: AppOptions = {}) {
     }
     ok(res, data.organizer, 'Demo organizer profile; review totals belong to F1')
   })
-  app.use((_req, res) => fail(res, 404, 'NOT_FOUND', 'Endpoint not found'))
+  if (!options.fallthrough) app.use((_req, res) => fail(res, 404, 'NOT_FOUND', 'Endpoint not found'))
   const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     if (error?.type === 'entity.too.large') {
       fail(res, 413, 'REQUEST_TOO_LARGE', 'The API request is too large')

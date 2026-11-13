@@ -102,8 +102,12 @@ function TransactionDetail({ id, onRefreshList }: { id: string; onRefreshList: (
         </dl>
         <h4>Bukti pembayaran</h4>
         <p>{transaction.proofUploadedAt
-          ? `Tercatat diunggah pada ${dateTime(transaction.proofUploadedAt)}. Berkas belum dapat ditampilkan.`
+          ? `Tercatat diunggah pada ${dateTime(transaction.proofUploadedAt)}.`
           : 'Belum ada unggahan bukti pembayaran yang tercatat.'}</p>
+        {transaction.proofUploadedAt && (transaction.proofAvailability === 'READY'
+          ? <a className="secondary" href={`/api/organizer/transactions/${encodeURIComponent(transaction.id)}/proof`}
+            target="_blank" rel="noopener noreferrer">Lihat bukti pembayaran</a>
+          : <p>Akses berkas bukti pembayaran belum terhubung.</p>)}
         {transaction.decisionAvailability === 'READY' && <div className="auth-actions">
           <button className="primary" disabled={deciding} onClick={() => void decide('ACCEPT')}>Terima pembayaran</button>
           <button className="secondary" disabled={deciding} onClick={() => void decide('REJECT')}>Tolak pembayaran</button>

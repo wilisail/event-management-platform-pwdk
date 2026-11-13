@@ -1,9 +1,22 @@
 # Shared project record
 
-Updated: 6 November 2026.
+Updated: 11 November 2026.
 
 | Reference | Contents |
 | --- | --- |
+| [Day 7 Round 7 automated F2 handoff](day-7-round-7-f2-handoff.md) | Deployed reviewed Preview, hosted access checks, live operations/preservation evidence and one owner checklist across Rounds 5–7 |
+| [11 November work recap, all rounds](work-session-2026-11-11.md) | Current Round 1–7 status, today's resumed Round 4B/5/6 work, carried-forward owner acceptance, validation and final attention window |
+| [Day 7 Round 6 independent F2 completion](day-7-round-6-f2-reference.md) | Attendance-to-review session/SQL bridge, persisted ratings, populated attendee/statistics checks and deferred live acceptance |
+| [Day 7 Round 5 independent F2 QA](day-7-round-5-f2-qa-reference.md) | Protected private-proof interface, isolated decisions/rewards/seats/email checks, automated-first sequence and deferred owner/live acceptance |
+| [Day 7 Round 4B completed browser acceptance](day-7-round-4b-browser-acceptance.md) | Final approved poster-form submission, public reload, persisted owner/image/tickets, both dashboard events, preserved samples and remaining Round 5 dependency |
+| [Earlier Day 7 Round 4B automated acceptance](day-7-round-4b-reference.md) | One-host navigation, CI/releases, real poster API/database/browser checks, exact QA cleanup and remaining F1 purchase boundary |
+| [Day 7 Round 4 event/poster preparation](day-7-round-4-reference.md) | Stable combined/F2 navigation, claimed Cloudinary/provider smoke, verified no-poster event ownership/tickets, seed-data distinction and pending owner visual/poster acceptance |
+| [Day 6 Round 3 account acceptance](day-6-round-3-reference.md) | Passed Customer profile/referral/password checks and Organizer login/empty dashboard; confirmed participants versus platform users, private Cloudinary setup and next event/purchase dependencies |
+| [Day 6 Round 2 acceptance](day-6-round-2-reference.md) | Real inbox/reset/new-login acceptance, read-only records, explicit manual omissions, existing session-expiry coverage, corrected recovery destination and Round 3A profile steps |
+| [Day 6 shared email sender setup](email-sender-setup-reference.md) | Chosen Gmail demo sender, private authorization steps, shared F1/F2 adapter and worker activation; subsequent actual inbox/reset acceptance is recorded in Round 2 |
+| [Day 6 Round 1 acceptance](day-6-round-1-reference.md) | Owner Customer signup/login and read-only account/session match, confirmation-link spacing fix, updated Preview and Round 2 sender prerequisite |
+| [Day 7 hosted combined Preview](day-7-hosted-preview-reference.md) | Protected combined URL, 48 live checks, trusted recovery-origin fix, exact QA cleanup and remaining owner/Cloudinary/F1 acceptance |
+| [Day 7 event/poster integration](day-7-event-poster-integration-reference.md) | F1 publishing with shared F2 login/ownership, one API, poster recovery, automated SQL checks and deferred live acceptance |
 | [Day 6 automated operations](day-6-operations-reference.md) | Verified hosted checks, nine migration checksums, active scheduler, exact QA cleanup, reusable status/cleanup script and remaining manual/integration gates |
 | [Day 6 hosted Preview](day-6-preview-deployment-reference.md) | Current protected URL, migrated tables, verified hosted roles and evaluator-access follow-up |
 | [Day 6 CI and worker](day-6-ci-worker-reference.md) | Full Node 22 CI result, compatibility fix, active Cron/queue evidence and inbox distinction |

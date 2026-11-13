@@ -47,11 +47,13 @@ export function profileRouter(options: { service?: ProfileService; sessions?: Se
     try { sendPicture(res, await service().picture(authentication(res)!.user.id)) }
     catch (error) { handle(res, error) }
   })
-  router.get('/organizers/:organizerId', async (req, res) => {
-    if (!z.uuid().safeParse(req.params.organizerId).success) { fail(res, 400, 'INVALID_ORGANIZER_ID', 'Use an organizer UUID'); return }
+  // The shared API reserves /organizers/:id for F1's event/review feed.
+  router.get(['/organizers/:organizerId', '/profiles/organizers/:organizerId'], async (req, res) => {
+    const organizerId = z.uuid().safeParse(req.params.organizerId)
+    if (!organizerId.success) { fail(res, 400, 'INVALID_ORGANIZER_ID', 'Use an organizer UUID'); return }
     // Prevent the optional provider request from looping if its origin points back here.
     try { res.set('Cache-Control', 'no-store').json({ success: true, message: 'Organizer profile',
-      data: await service().publicOrganizer(req.params.organizerId, req.get(ratingProjectionHeader) !== '1') }) }
+      data: await service().publicOrganizer(organizerId.data, req.get(ratingProjectionHeader) !== '1') }) }
     catch (error) { handle(res, error) }
   })
   router.get('/organizers/:organizerId/picture', async (req, res) => {

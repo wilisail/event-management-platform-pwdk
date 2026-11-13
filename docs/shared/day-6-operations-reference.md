@@ -2,17 +2,19 @@
 
 Updated 6 November 2026, Asia/Jakarta. The interrupted turn completed the hosted checks but stopped before temporary QA cleanup and the final reusable handoff. This follow-up closes those automated tasks. It does not mark the combined F1/F2 purchase journey complete.
 
+8 November merge update: [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) is merged into `feature-2` at `541839b`. Its operations script and cleanup evidence are included in the incremental [Day 7 integration](day-7-event-poster-integration-reference.md). The live evidence below retains its original 6 November date; combined/live acceptance is deferred to 9 November.
+
 ## Verified result
 
 | Area | Evidence |
 | --- | --- |
-| CI | [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) contains the complete F2 snapshot. [Run 42170565389](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42170565389) passed typecheck, 144 application tests, nine disposable migration replays, the organizer/worker harness, and the hosted-mode build on Node 22. |
+| CI | [PR #40](https://github.com/wilisail/event-management-platform-pwdk/pull/40) contains the complete F2 snapshot. [Run 42178273975](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/42178273975) passed typecheck, 144 application tests, nine disposable migration replays, the organizer/worker harness, both new operations regression tests, and the hosted-mode build on Node 22. |
 | Node 22 fix | Commit `64e72b942e5e1447efdc46352f17d08250fb92aa` loads the TypeScript test dependencies through CommonJS. The earlier failing import was a harness compatibility problem; the subsequent full run passed. |
 | Hosted API | Thirteen build-time checks passed against the protected [F2 Preview](https://temuevent-8jbtjn050-andor2.vercel.app/login): login for a customer and two organizers, secure cookies, role and ownership denial, owned purchase reads, three statistics groupings, attendance/CSRF, logout, worker authorization and persisted queue progress. |
 | Database | All nine Prisma migration records are finished, not rolled back, and match the committed SQL checksums. Attendance and organizer-decision outbox tables are applied; their RLS and backend permissions were checked. The nullable Cloudinary poster ID is present. |
 | Scheduled executor | `temuevent-preview-email-jobs` is active at `* * * * *`. The last five inspected responses were HTTP 200 with both queues enabled. The command reads credentials from Vault. This schedules email work; F1 purchase expiry remains a separate integration responsibility. |
 | Live cleanup | Removed the exact three disposable QA identities, event, ticket type, purchase, item and attendance row, plus five sessions and five refresh tokens. Every targeted remaining count is zero. Unexpected references abort the entire cleanup. |
-| Reusable checks | The new operations tests cover read-only inspection, identity validation, rollback on an unrelated purchase, removal of dependent sessions/tokens, repeat cleanup, migration checksum drift and output redaction. |
+| Reusable checks | Both operations tests also passed in the full Node 22 CI run. They cover read-only inspection, identity validation, rollback on an unrelated purchase, removal of dependent sessions/tokens, repeat cleanup, migration checksum drift and output redaction. |
 
 The persisted queue test used a nonexistent `example.test` recipient and reached `SUPPRESSED` once. It proves durable worker progress without sending email. Real inbox receipt is a separate acceptance check.
 

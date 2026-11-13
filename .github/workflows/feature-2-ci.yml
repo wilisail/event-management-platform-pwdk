@@ -42,4 +42,10 @@ jobs:
       - name: Verify operations status and bounded QA cleanup
         working-directory: database
         run: node --test scripts/day6-ops.test.mjs
+      - name: Verify standalone Round 5 proof and transaction regressions
+        working-directory: database
+        run: npm run qa:round5
+      - name: Syntax-check the credential-free hosted verifier
+        working-directory: database
+        run: node --check scripts/verify-round7-hosted.mjs
       - run: npm run build

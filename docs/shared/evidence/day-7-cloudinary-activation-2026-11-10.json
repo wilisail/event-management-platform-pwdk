@@ -1,0 +1,68 @@
+{
+  "checkpoint": "Day 7 owned Cloudinary activation",
+  "date": "2026-11-10",
+  "timezone": "Asia/Jakarta",
+  "ownerClaim": {
+    "reportedComplete": true,
+    "emailVerificationSuccessScreenshot": true,
+    "initialUnclaimedDeadlineNoLongerActionable": true
+  },
+  "providerSmoke": {
+    "cloudName": "zjglczua",
+    "testAssetOnly": true,
+    "databaseEventCreated": false,
+    "uploadStatus": 200,
+    "publicReadStatus": 200,
+    "contentType": "image/png",
+    "bytes": 79,
+    "cleanupStatus": 200,
+    "cleanupResult": "ok"
+  },
+  "scope": {
+    "providerRestUploadReadDeleteVerified": true,
+    "operatorCreatedDatabaseEvent": false,
+    "fullHostedEventWithPosterAcceptancePending": true
+  },
+  "combinedDeployment": {
+    "id": "dpl_4CaTopi3V1wQK9zsJ41YSP68r1hT",
+    "url": "https://temuevent-hqufb6cde-andor2.vercel.app",
+    "stableAlias": "https://temuevent-combined-qa-andor2.vercel.app",
+    "sourceSha": "fda6f68a88d6e0023cd3a96a0e72627d898af6b3",
+    "state": "READY",
+    "smtpAuthenticationPassed": true,
+    "readiness": {
+      "status": 200,
+      "ready": true
+    },
+    "anonymousLoginRedirectsToVercel": true,
+    "installCommand": "npm ci --no-audit --no-fund && npm --prefix feature-2 ci --no-audit --no-fund",
+    "supersededFailure": {
+      "deploymentId": "dpl_4jBiRSLfB4nF9AawXLyeaxpqoBLH",
+      "reason": "F2 nodemailer dependency tree was not installed by the first root-only install; corrected by installing both locked dependency trees."
+    }
+  },
+  "f2Deployment": {
+    "id": "dpl_AYHZQfFfxVRGby5iswg4bG1txMFf",
+    "stableAlias": "https://temuevent-f2-qa-andor2.vercel.app",
+    "sourceSha": "7da6063d5ad26b0f5c16f8da72c978037d87bb7b",
+    "state": "READY",
+    "smtpAuthenticationPassed": true,
+    "readinessPassed": true,
+    "publishedCreateEventDestinationVerified": "https://temuevent-combined-qa-andor2.vercel.app",
+    "postAliasWorkerCompletions": 3,
+    "bothQueuesEnabled": true
+  },
+  "configuration": {
+    "previewOnly": true,
+    "exactAllowedAliasOrigins": [
+      "https://temuevent-f2-qa-andor2.vercel.app",
+      "https://temuevent-combined-qa-andor2.vercel.app"
+    ],
+    "resetOriginRemainsStableF2": true,
+    "sensitiveCredentialValuesExcluded": true,
+    "claimUrlExcluded": true,
+    "productionChanged": false
+  },
+  "applicationCodeChanged": false,
+  "f1BranchChanged": false
+}
