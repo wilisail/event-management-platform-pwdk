@@ -42,4 +42,7 @@ jobs:
       - name: Verify operations status and bounded QA cleanup
         working-directory: database
         run: node --test scripts/day6-ops.test.mjs
+      - name: Verify the real F2 lifecycle runtime on a disposable database
+        working-directory: database
+        run: npm run qa:final-b
       - run: npm run build

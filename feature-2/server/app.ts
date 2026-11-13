@@ -106,6 +106,9 @@ export function createApp(options: AppOptions = {}) {
       service: 'feature-2-api', readOnly: !options.registrationService && !options.sessionService,
       registrationConfigured: Boolean(options.registrationService),
       sessionsConfigured: Boolean(options.sessionService),
+      privateProofsConfigured: Boolean(options.organizerProofReader),
+      organizerDecisionsConfigured: Boolean(options.organizerDecisionTransition),
+      purchaseDeadlinesConfigured: Boolean(options.scheduledEmailJobs?.purchaseDeadlines),
     }, 'Feature 2 API ready')
   })
   app.get('/api/ready', async (_req, res) => {

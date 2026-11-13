@@ -51,6 +51,8 @@ jobs:
         working-directory: database
       - run: npm run qa:round6
         working-directory: database
+      - run: npm run qa:final-b
+        working-directory: database
       - run: node --check scripts/verify-round7-hosted.mjs
         working-directory: database
       - run: npm run build
