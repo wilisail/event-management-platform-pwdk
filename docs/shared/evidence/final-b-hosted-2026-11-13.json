@@ -1,0 +1,144 @@
+{
+  "checkedAt": "2026-11-13T06:40:57.103Z",
+  "scope": "FINAL_B_PREVIEW_BINDINGS_AND_SCHEDULER",
+  "sourceCommit": "18271371fc08a1662628a54dfd3f9da76664720c",
+  "ownerBrowserAccepted": false,
+  "actualDecisionInboxReceiptAccepted": false,
+  "hostedPositivePurchaseJourneyAccepted": false,
+  "CFixturesPrepared": false,
+  "sourcePRs": [
+    {
+      "number": 79,
+      "base": "integration",
+      "merge": "18271371fc08a1662628a54dfd3f9da76664720c"
+    },
+    {
+      "number": 80,
+      "base": "feature-2",
+      "merge": "1d66509ee8605cf85ea72d6f24dc238d77833863"
+    },
+    {
+      "number": 81,
+      "base": "main",
+      "merge": "8a85ce6bbd158de89cb99f88968d46324a579529"
+    }
+  ],
+  "passingCIRuns": [
+    43378930914,
+    43378930926,
+    43379234214,
+    43379289359
+  ],
+  "previews": [
+    {
+      "kind": "combined",
+      "id": "dpl_HuUEdtRwkPMsz7Bk9hpPNryoaKni",
+      "url": "temuevent-hvmlkpklm-andor2.vercel.app",
+      "target": "preview",
+      "status": "READY",
+      "framework": "Next.js",
+      "node": "22.x",
+      "stableAlias": "temuevent-combined-qa-andor2.vercel.app",
+      "healthStatus": 200,
+      "readyStatus": 200,
+      "bindings": {
+        "privateProofs": true,
+        "organizerDecisions": true,
+        "purchaseDeadlines": true
+      }
+    },
+    {
+      "kind": "f2",
+      "id": "dpl_CNi5G1uXN7CH1baYdzDacqrhd41K",
+      "url": "temuevent-iaskry9ed-andor2.vercel.app",
+      "target": "preview",
+      "status": "READY",
+      "framework": "Next.js",
+      "node": "22.x",
+      "stableAlias": "temuevent-f2-qa-andor2.vercel.app",
+      "healthStatus": 200,
+      "readyStatus": 200,
+      "bindings": {
+        "privateProofs": true,
+        "organizerDecisions": true,
+        "purchaseDeadlines": true
+      }
+    }
+  ],
+  "storage": {
+    "bucket": "payment-proofs",
+    "public": false,
+    "maxBytes": 5242880,
+    "mimeTypes": [
+      "image/png",
+      "image/jpeg"
+    ],
+    "readinessChecksBucket": true,
+    "positiveHostedObjectReadDeferredToC": true
+  },
+  "scheduler": {
+    "existingJob": "temuevent-preview-email-jobs",
+    "schedule": "* * * * *",
+    "cutoff": "2026-11-13T00:00:00.000Z",
+    "confirmedResponses": [
+      {
+        "status_code": 200,
+        "created": "2026-11-13T06:38:00.026655+00:00",
+        "timed_out": false,
+        "purchase_deadlines": true,
+        "password_reset": true,
+        "decision_emails": true
+      },
+      {
+        "status_code": 200,
+        "created": "2026-11-13T06:37:00.019031+00:00",
+        "timed_out": false,
+        "purchase_deadlines": true,
+        "password_reset": true,
+        "decision_emails": true
+      }
+    ]
+  },
+  "preservation": {
+    "eventFingerprintUnchanged": true,
+    "ticketFingerprintUnchanged": true,
+    "purchaseStatusesUnchanged": true,
+    "statusCounts": [
+      {
+        "status": "WAITING_FOR_PAYMENT",
+        "count": 5
+      },
+      {
+        "status": "CANCELED",
+        "count": 5
+      },
+      {
+        "status": "DONE",
+        "count": 8
+      },
+      {
+        "status": "EXPIRED",
+        "count": 5
+      },
+      {
+        "status": "REJECTED",
+        "count": 5
+      },
+      {
+        "status": "WAITING_FOR_ADMIN_CONFIRMATION",
+        "count": 5
+      }
+    ],
+    "historicalPendingDemoPurchasesPreserved": 10,
+    "productionReleaseCreated": false
+  },
+  "runtimeErrorScan": {
+    "scope": "B deployment IDs; error/fatal; preceding 15 minutes",
+    "returnedErrors": 0
+  },
+  "limits": [
+    "C supplies controlled hosted F1 inputs; positive owner browser/inbox acceptance is D.",
+    "F1 event-voucher quota/reservation adapter is absent; nonzero event-voucher discounts fail atomically.",
+    "Real runtime SQL tests use disposable PGlite and captured file/mail transports; independent physical-session races are not claimed."
+  ]
+}

@@ -1,6 +1,6 @@
 # Final PRD pass — B: live F2 transaction connections
 
-Prepared 13 November 2026, Asia/Jakarta. The [A–F progress record](final-prd-completion-progress.md) is the current status authority. This companion explains the bounded B implementation; positive hosted purchases and owner acceptance remain C/D.
+Completed 13 November 2026, Asia/Jakarta: source PRs #79/#80/#81 merged with passing CI; both protected Preview builds are READY and the scheduled worker is verified. The [A–F progress record](final-prd-completion-progress.md) contains exact hashes, run links and release evidence. Positive hosted purchases and owner acceptance remain C/D.
 
 ## Behavior and mechanics
 
@@ -20,7 +20,7 @@ The new disposable SQL/runtime runner starts **createRuntime**, real database-ba
 
 The private storage adapter has separate provider-contract tests for project origin, server authorization, private/size/MIME restrictions, object-key traversal, provider errors and oversized objects. Scheduler tests cover authorization, ordering and visible deadline failure without blocking existing queue processing.
 
-[Sanitized isolated evidence](evidence/final-b-runtime-isolated-2026-11-13.json) records nine scenario groups and nine replayed migrations. Memory file/mail transports are explicit. Hosted bucket/runtime/worker verification and final source PR/CI links are recorded in the A–F progress checkpoint after release. No owner inbox receipt, positive browser acceptance or actual F1 checkout completion is inferred from these tests. Disposable concurrent requests use one physical PostgreSQL connection; independent-session stress testing remains outside this bounded pass.
+[Sanitized isolated evidence](evidence/final-b-runtime-isolated-2026-11-13.json) records nine scenario groups and nine replayed migrations. Memory file/mail transports are explicit. [Hosted evidence](evidence/final-b-hosted-2026-11-13.json) confirms real bucket readiness, both runtime bindings, successful scheduled responses and preserved samples. No owner inbox receipt, positive hosted purchase/proof acceptance or actual F1 checkout completion is inferred from these tests. Disposable concurrent requests use one physical PostgreSQL connection; independent-session stress testing remains outside this bounded pass.
 
 ## Remaining F1 boundary
 
