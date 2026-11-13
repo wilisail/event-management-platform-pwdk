@@ -1,0 +1,190 @@
+{
+  "checkedAt": "2026-11-11T14:58:06.253Z",
+  "scope": "ROUND7_HOSTED_F2_HANDOFF",
+  "sharedDataMutated": false,
+  "externalEmailSent": false,
+  "ownerStandbyRequired": false,
+  "credentialedRoleReplay": false,
+  "purchaseJourneyAccepted": false,
+  "evaluatorOwnSessionAccepted": false,
+  "checks": [
+    {
+      "name": "Readiness and database connection",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Application session service configured",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Page shell /login",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Page shell /register",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Page shell /account",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Page shell /organizer",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Page shell /forgot-password",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Page shell /reset-password",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Signed-out identity denied by application JSON",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Signed-out CSRF endpoint denied by application JSON",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Signed-out wallet denied by application JSON",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Signed-out referral denied by application JSON",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Signed-out Organizer events denied by application JSON",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Signed-out sales totals denied by application JSON",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Signed-out attendees denied by application JSON",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Signed-out private proof denied by application JSON",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Signed-out review eligibility denied by application JSON",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Unauthenticated Event creation denied",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Unauthenticated Review creation denied",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Unauthenticated Attendance marking denied",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Unauthenticated Purchase decision denied",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Unauthenticated Private email worker denied",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Demo header cannot become a real Organizer session",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "Unapproved origin denied",
+      "status": 403,
+      "passed": true
+    },
+    {
+      "name": "QA persona launcher absent from normal hosted app",
+      "status": 404,
+      "passed": true
+    },
+    {
+      "name": "Preserved public sample 1 details and inventory",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Preserved public sample 1 review feed and count",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Preserved sample 1 page /detail",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Preserved sample 1 page /review",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Preserved sample 1 page /tickets",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Preserved public sample 2 details and inventory",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Preserved public sample 2 review feed and count",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Preserved sample 2 page /detail",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Preserved sample 2 page /review",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "name": "Preserved sample 2 page /tickets",
+      "status": 200,
+      "passed": true
+    }
+  ],
+  "protectionAccess": "Owner-authorized temporary platform access; no TemuEvent session acquired",
+  "passed": true,
+  "checkCount": 35
+}
