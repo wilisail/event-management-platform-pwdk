@@ -22,7 +22,7 @@ const { sessionFixture, testAccount, loginFields } = require('../../feature-2/te
 const { rewardFixture, testCheckout } = require('../../feature-2/scripts/helpers/reward-fixtures.ts')
 const { round5QaTransitions } = require('../qa/round5-adapters.ts')
 const { installRound5Review } = require('../qa/round5-review.ts')
-const express = require('express')
+const express = createRequire(new URL('../../feature-2/package.json', import.meta.url))('express')
 
 const reportIndex = process.argv.indexOf('--report')
 const serve = process.argv.includes('--serve')
