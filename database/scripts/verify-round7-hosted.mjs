@@ -14,7 +14,7 @@ export async function verifyRound7Hosted({ origin, shareUrl, samples = [], repor
   assert(samples.every(sample => uuid.test(sample.id)), 'Use explicit sample UUIDs')
   const cookies = new Map()
   const evidence = { checkedAt: new Date().toISOString(), scope: 'ROUND7_HOSTED_F2_HANDOFF',
-    sharedDataMutated: false, externalEmailSent: false, ownerStandbyRequired: false,
+    sharedDataMutated: false, externalEmailSent: false, manualInteractionRequired: false,
     credentialedRoleReplay: false, purchaseJourneyAccepted: false, evaluatorOwnSessionAccepted: false, checks: [] }
   const record = (name, response) => { evidence.checks.push({ name, status: response.status, passed: true }); console.log('ROUND7_OK:', name) }
   const capture = response => {

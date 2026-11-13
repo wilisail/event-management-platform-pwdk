@@ -65,7 +65,7 @@
     "credentialsExpectedInPublicRepository": false,
     "action": "Approved Cloudinary account owner configures the three backend variables privately in the shared Vercel Preview before new poster-upload acceptance."
   },
-  "operatorChanges": {
+  "verificationChanges": {
     "applicationCode": false,
     "databaseWrites": false,
     "migrations": false,
