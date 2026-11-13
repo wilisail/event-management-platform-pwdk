@@ -27,7 +27,7 @@ if (args.length && (args.length !== 2 || args[0] !== '--report' || args[1].start
   throw new Error('Usage: verify-round6-isolated.mjs [--report PATH]')
 }
 const evidence = { checkedAt: new Date().toISOString(), scope: 'ISOLATED_ROUND6_F2',
-  liveDatabaseUsed: false, externalEmailSent: false, ownerStandbyRequired: false,
+  liveDatabaseUsed: false, externalEmailSent: false, manualInteractionRequired: false,
   ownerBrowserAccepted: false, fullF1JourneyAccepted: false, scenarios: [] }
 const passed = name => { evidence.scenarios.push(name); console.log('ROUND6_OK:', name) }
 const pg = await PGlite.create()

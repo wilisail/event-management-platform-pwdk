@@ -4,7 +4,7 @@
 
 The hosted authenticated multipart event/poster API, database ownership and poster fields, public image delivery, public browser rendering and exact disposable-fixture cleanup all passed. The visible test pattern rendered at its expected **480×270** dimensions. Customer event writes, writes without CSRF and Customer Organizer-list reads returned **403**. The owner’s Round 4A event and real account/reward records were outside cleanup.
 
-This was a real hosted API upload using disposable QA accounts followed by a browser display check. The operator did **not** submit the authenticated browser event form or read an owner password/cookie. The owner’s existing no-poster form submission supplies Round 4A browser acceptance; a fresh owner-selected poster through the form remains an additional manual acceptance observation, not an operator claim.
+This was a real hosted API upload using disposable QA accounts followed by a browser display check. This verification did **not** submit the authenticated browser event form or read an owner password/cookie. The owner’s existing no-poster form submission supplies Round 4A browser acceptance; a fresh owner-selected poster through the form remains an additional manual acceptance observation, not a completed automated result.
 
 Two disposable events, two accounts, their tickets/sessions and two exact Cloudinary test assets were removed. Database verification returned zero matching fixture records; both provider deletions returned HTTP 200/result `ok`. The original no-poster event remains published with five seats.
 
