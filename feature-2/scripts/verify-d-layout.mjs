@@ -13,6 +13,7 @@ const browser = await chromium.launch({ headless: true,
   ...(process.env.QA_CHROMIUM_PATH ? { executablePath: process.env.QA_CHROMIUM_PATH } : {}),
 })
 const results = []
+let activePage
 const id = '11111111-1111-4111-8111-111111111111'
 const other = '22222222-2222-4222-8222-222222222222'
 const purchase = '33333333-3333-4333-8333-333333333333'
@@ -25,6 +26,8 @@ try {
   for (const width of [1280, 360, 320]) {
     const context = await browser.newContext({ viewport: { width, height: 900 } })
     const page = await context.newPage()
+    activePage = page
+    page.setDefaultTimeout(10000)
     let status = 'WAITING_FOR_ADMIN_CONFIRMATION', attendeeReads = 0, role = 'ORGANIZER', signedIn = true
     const unexpected = [], errors = []
     page.on('pageerror', error => errors.push(error.message))
@@ -55,7 +58,7 @@ try {
     await page.getByText('Belum ada event dipilih.', { exact: false }).waitFor()
     await page.getByRole('button', { name: 'Lihat peserta: QA Participant Event', exact: true }).click()
     await page.getByText('Belum ada pendaftaran terkonfirmasi pada halaman ini.', { exact: true }).waitFor()
-    await page.getByRole('button', { name: 'Lihat detail', exact: true }).click()
+    await page.getByRole('button', { name: 'Lihat detail transaksi QA-D-ACCEPT', exact: true }).click()
     const detail = page.getByRole('region', { name: 'Detail transaksi', exact: true })
     await detail.getByRole('link', { name: 'Lihat bukti pembayaran' }).waitFor()
     const proof = await box(detail.getByRole('link', { name: 'Lihat bukti pembayaran' }))
@@ -104,4 +107,7 @@ try {
   const evidence = { mode: 'isolated browser with mocked API; no live account or email mutations', origin, results }
   if (process.env.QA_EVIDENCE) await writeFile(process.env.QA_EVIDENCE, JSON.stringify(evidence, null, 2) + '\n')
   console.log(JSON.stringify(evidence))
+} catch (error) {
+  console.error('QA page:', await activePage?.locator('body').innerText().catch(() => 'unavailable'))
+  throw error
 } finally { await browser.close() }
