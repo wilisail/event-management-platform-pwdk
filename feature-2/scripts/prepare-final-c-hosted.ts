@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { createHash, createHmac } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
-import sharp from 'sharp'
+import { renderPaymentProofFixture } from '../server/qa/payment-proof-fixture'
 import { z } from 'zod'
 import { databaseClient, disconnectDatabase } from '../server/database'
 import { hashPassword } from '../server/auth/passwords'
@@ -124,8 +124,7 @@ export async function prepareFinalCHosted(phase: FinalCPhase) {
     }
     if (phase === 'upload') {
       const result = await Promise.all(allCases.filter(x => x !== 'expire').map(async label => {
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="480"><rect width="900" height="480" fill="#f7f5ff"/><rect x="25" y="25" width="850" height="430" rx="20" fill="white" stroke="#5749dc"/><text x="65" y="95" font-size="30" font-family="sans-serif" fill="#5749dc">TemuEvent - BUKTI PEMBAYARAN UJI</text><text x="65" y="170" font-size="26" font-family="sans-serif">C-${label.toUpperCase()}-${p.tag}</text><text x="65" y="245" font-size="28" font-family="sans-serif" fill="#c23735">TIDAK ADA UANG DITRANSFER</text><text x="65" y="310" font-size="22" font-family="sans-serif">Dokumen simulasi untuk pengujian integrasi F2.</text><text x="65" y="370" font-size="22" font-family="sans-serif">Bukan bukti transfer bank atau pembayaran nyata.</text></svg>`
-        const bytes = await sharp(Buffer.from(svg)).png().toBuffer()
+        const bytes = await renderPaymentProofFixture(`C-${label.toUpperCase()}-${p.tag.toUpperCase()}`)
         const existing = await storage.download(key(label))
         if (!existing.error && existing.data) return { label, retained: true }
         const uploaded = await storage.upload(key(label), bytes, { contentType: 'image/png', cacheControl: '0', upsert: false })

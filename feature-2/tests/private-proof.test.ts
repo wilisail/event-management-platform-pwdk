@@ -27,7 +27,7 @@ async function fixture(extra: Partial<AppOptions> = {}) {
       async list() { return emptyPage }, async decisionState() { return null },
       async detail(actor, id) {
         if (actor !== ownerId || id !== purchaseId) return null
-        return { id, reference: 'QA-PROOF', eventName: 'QA event', customerName: 'QA buyer',
+        return { id, reference: 'QA-PROOF', eventId: missingId, eventName: 'QA event', customerName: 'QA buyer',
           status: 'WAITING_FOR_ADMIN_CONFIRMATION', totalPrice: 10000, createdAt: auth.now().toISOString(),
           subtotal: 10000, voucherDiscount: 0, couponDiscount: 0, pointsUsed: 0,
           paymentDueAt: null, decisionDueAt: null, completedAt: null,
