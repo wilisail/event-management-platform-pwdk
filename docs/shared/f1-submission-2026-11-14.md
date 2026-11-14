@@ -23,4 +23,4 @@ Local checks: combined and standalone F2 typechecks; combined production build; 
 
 Integration CI also runs the existing responsive Organizer/account regression and a new isolated F1 browser flow at **1280, 360 and 320 px**. The F1 check verifies same-origin event reads, ticket seat caps, the sample transaction status/file flow, reset on reload, and zero purchase/proof writes. See the integration PR checks for their final execution result.
 
-The standalone F2 source and database schema are unchanged by this merge. The QA release, if updated, uses the reviewed integration commit; Production and the standalone scheduled worker are separate from this F1 checkpoint.
+The standalone F2 application runtime and database schema are unchanged by this merge. Its browser harness now measures document coordinates atomically, so focus-induced smooth scrolling cannot make separately sampled controls appear to overlap. The overlap assertions remain enforced. The QA release, if updated, uses the reviewed integration commit; Production and the standalone scheduled worker are separate from this F1 checkpoint.
