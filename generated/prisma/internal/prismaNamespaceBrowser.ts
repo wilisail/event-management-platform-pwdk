@@ -57,7 +57,17 @@ export const ModelName = {
   Purchase: 'Purchase',
   PurchaseItem: 'PurchaseItem',
   Review: 'Review',
-  Voucher: 'Voucher'
+  Voucher: 'Voucher',
+  AuthSession: 'AuthSession',
+  AuthRefreshToken: 'AuthRefreshToken',
+  PasswordResetToken: 'PasswordResetToken',
+  Referral: 'Referral',
+  PointGrant: 'PointGrant',
+  RewardCoupon: 'RewardCoupon',
+  RewardRedemption: 'RewardRedemption',
+  PointAllocation: 'PointAllocation',
+  Attendance: 'Attendance',
+  OrganizerDecisionEmail: 'OrganizerDecisionEmail'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -195,6 +205,146 @@ export const VoucherScalarFieldEnum = {
 } as const
 
 export type VoucherScalarFieldEnum = (typeof VoucherScalarFieldEnum)[keyof typeof VoucherScalarFieldEnum]
+
+
+export const AuthSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt'
+} as const
+
+export type AuthSessionScalarFieldEnum = (typeof AuthSessionScalarFieldEnum)[keyof typeof AuthSessionScalarFieldEnum]
+
+
+export const AuthRefreshTokenScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  tokenHash: 'tokenHash',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt'
+} as const
+
+export type AuthRefreshTokenScalarFieldEnum = (typeof AuthRefreshTokenScalarFieldEnum)[keyof typeof AuthRefreshTokenScalarFieldEnum]
+
+
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  recipientEmail: 'recipientEmail',
+  userId: 'userId',
+  tokenHash: 'tokenHash',
+  credentialFingerprint: 'credentialFingerprint',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
+  deliveryState: 'deliveryState',
+  attemptCount: 'attemptCount',
+  leaseId: 'leaseId',
+  leasedUntil: 'leasedUntil',
+  nextAttemptAt: 'nextAttemptAt'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
+
+
+export const ReferralScalarFieldEnum = {
+  id: 'id',
+  referrerId: 'referrerId',
+  referredUserId: 'referredUserId',
+  createdAt: 'createdAt'
+} as const
+
+export type ReferralScalarFieldEnum = (typeof ReferralScalarFieldEnum)[keyof typeof ReferralScalarFieldEnum]
+
+
+export const PointGrantScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  referralId: 'referralId',
+  amount: 'amount',
+  remainingAmount: 'remainingAmount',
+  creditedAt: 'creditedAt',
+  expiresAt: 'expiresAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PointGrantScalarFieldEnum = (typeof PointGrantScalarFieldEnum)[keyof typeof PointGrantScalarFieldEnum]
+
+
+export const RewardCouponScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  referralId: 'referralId',
+  code: 'code',
+  discountValue: 'discountValue',
+  issuedAt: 'issuedAt',
+  expiresAt: 'expiresAt'
+} as const
+
+export type RewardCouponScalarFieldEnum = (typeof RewardCouponScalarFieldEnum)[keyof typeof RewardCouponScalarFieldEnum]
+
+
+export const RewardRedemptionScalarFieldEnum = {
+  id: 'id',
+  purchaseId: 'purchaseId',
+  userId: 'userId',
+  couponId: 'couponId',
+  pointsUsed: 'pointsUsed',
+  couponDiscount: 'couponDiscount',
+  status: 'status',
+  reservedAt: 'reservedAt',
+  consumedAt: 'consumedAt',
+  restoredAt: 'restoredAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RewardRedemptionScalarFieldEnum = (typeof RewardRedemptionScalarFieldEnum)[keyof typeof RewardRedemptionScalarFieldEnum]
+
+
+export const PointAllocationScalarFieldEnum = {
+  redemptionId: 'redemptionId',
+  pointGrantId: 'pointGrantId',
+  userId: 'userId',
+  amount: 'amount',
+  createdAt: 'createdAt'
+} as const
+
+export type PointAllocationScalarFieldEnum = (typeof PointAllocationScalarFieldEnum)[keyof typeof PointAllocationScalarFieldEnum]
+
+
+export const AttendanceScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  customerId: 'customerId',
+  transactionId: 'transactionId',
+  markedByOrganizerId: 'markedByOrganizerId',
+  attendedAt: 'attendedAt'
+} as const
+
+export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof typeof AttendanceScalarFieldEnum]
+
+
+export const OrganizerDecisionEmailScalarFieldEnum = {
+  id: 'id',
+  purchaseId: 'purchaseId',
+  decision: 'decision',
+  recipientEmail: 'recipientEmail',
+  subject: 'subject',
+  textBody: 'textBody',
+  htmlBody: 'htmlBody',
+  deliveryState: 'deliveryState',
+  attemptCount: 'attemptCount',
+  createdAt: 'createdAt',
+  nextAttemptAt: 'nextAttemptAt',
+  leaseId: 'leaseId',
+  leasedUntil: 'leasedUntil',
+  retryUntil: 'retryUntil',
+  acceptedAt: 'acceptedAt'
+} as const
+
+export type OrganizerDecisionEmailScalarFieldEnum = (typeof OrganizerDecisionEmailScalarFieldEnum)[keyof typeof OrganizerDecisionEmailScalarFieldEnum]
 
 
 export const SortOrder = {

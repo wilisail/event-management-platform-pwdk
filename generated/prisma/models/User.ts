@@ -217,6 +217,14 @@ export type UserWhereInput = {
   events?: Prisma.EventListRelationFilter
   purchases?: Prisma.PurchaseListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
+  passwordResets?: Prisma.PasswordResetTokenListRelationFilter
+  sessions?: Prisma.AuthSessionListRelationFilter
+  referralsGiven?: Prisma.ReferralListRelationFilter
+  referralUsed?: Prisma.XOR<Prisma.ReferralNullableScalarRelationFilter, Prisma.ReferralWhereInput> | null
+  pointGrants?: Prisma.PointGrantListRelationFilter
+  rewardCoupons?: Prisma.RewardCouponListRelationFilter
+  rewardRedemptions?: Prisma.RewardRedemptionListRelationFilter
+  attendanceMarked?: Prisma.AttendanceListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -232,6 +240,14 @@ export type UserOrderByWithRelationInput = {
   events?: Prisma.EventOrderByRelationAggregateInput
   purchases?: Prisma.PurchaseOrderByRelationAggregateInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
+  passwordResets?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
+  sessions?: Prisma.AuthSessionOrderByRelationAggregateInput
+  referralsGiven?: Prisma.ReferralOrderByRelationAggregateInput
+  referralUsed?: Prisma.ReferralOrderByWithRelationInput
+  pointGrants?: Prisma.PointGrantOrderByRelationAggregateInput
+  rewardCoupons?: Prisma.RewardCouponOrderByRelationAggregateInput
+  rewardRedemptions?: Prisma.RewardRedemptionOrderByRelationAggregateInput
+  attendanceMarked?: Prisma.AttendanceOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -250,6 +266,14 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   events?: Prisma.EventListRelationFilter
   purchases?: Prisma.PurchaseListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
+  passwordResets?: Prisma.PasswordResetTokenListRelationFilter
+  sessions?: Prisma.AuthSessionListRelationFilter
+  referralsGiven?: Prisma.ReferralListRelationFilter
+  referralUsed?: Prisma.XOR<Prisma.ReferralNullableScalarRelationFilter, Prisma.ReferralWhereInput> | null
+  pointGrants?: Prisma.PointGrantListRelationFilter
+  rewardCoupons?: Prisma.RewardCouponListRelationFilter
+  rewardRedemptions?: Prisma.RewardRedemptionListRelationFilter
+  attendanceMarked?: Prisma.AttendanceListRelationFilter
 }, "id" | "email" | "referralCode">
 
 export type UserOrderByWithAggregationInput = {
@@ -295,6 +319,14 @@ export type UserCreateInput = {
   events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
   purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -310,6 +342,14 @@ export type UserUncheckedCreateInput = {
   events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
   purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
 }
 
 export type UserUpdateInput = {
@@ -325,6 +365,14 @@ export type UserUpdateInput = {
   events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
   purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -340,6 +388,14 @@ export type UserUncheckedUpdateInput = {
   events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
   purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -419,6 +475,11 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -477,6 +538,120 @@ export type UserUpdateOneRequiredWithoutReviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewsInput, Prisma.UserUpdateWithoutReviewsInput>, Prisma.UserUncheckedUpdateWithoutReviewsInput>
 }
 
+export type UserCreateNestedOneWithoutSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
+  upsert?: Prisma.UserUpsertWithoutSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+}
+
+export type UserCreateNestedOneWithoutPasswordResetsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPasswordResetsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutPasswordResetsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPasswordResetsInput
+  upsert?: Prisma.UserUpsertWithoutPasswordResetsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPasswordResetsInput, Prisma.UserUpdateWithoutPasswordResetsInput>, Prisma.UserUncheckedUpdateWithoutPasswordResetsInput>
+}
+
+export type UserCreateNestedOneWithoutReferralsGivenInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReferralsGivenInput, Prisma.UserUncheckedCreateWithoutReferralsGivenInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReferralsGivenInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutReferralUsedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReferralUsedInput, Prisma.UserUncheckedCreateWithoutReferralUsedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReferralUsedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutReferralsGivenNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReferralsGivenInput, Prisma.UserUncheckedCreateWithoutReferralsGivenInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReferralsGivenInput
+  upsert?: Prisma.UserUpsertWithoutReferralsGivenInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReferralsGivenInput, Prisma.UserUpdateWithoutReferralsGivenInput>, Prisma.UserUncheckedUpdateWithoutReferralsGivenInput>
+}
+
+export type UserUpdateOneRequiredWithoutReferralUsedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReferralUsedInput, Prisma.UserUncheckedCreateWithoutReferralUsedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReferralUsedInput
+  upsert?: Prisma.UserUpsertWithoutReferralUsedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReferralUsedInput, Prisma.UserUpdateWithoutReferralUsedInput>, Prisma.UserUncheckedUpdateWithoutReferralUsedInput>
+}
+
+export type UserCreateNestedOneWithoutPointGrantsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPointGrantsInput, Prisma.UserUncheckedCreateWithoutPointGrantsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPointGrantsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPointGrantsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPointGrantsInput, Prisma.UserUncheckedCreateWithoutPointGrantsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPointGrantsInput
+  upsert?: Prisma.UserUpsertWithoutPointGrantsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPointGrantsInput, Prisma.UserUpdateWithoutPointGrantsInput>, Prisma.UserUncheckedUpdateWithoutPointGrantsInput>
+}
+
+export type UserCreateNestedOneWithoutRewardCouponsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRewardCouponsInput, Prisma.UserUncheckedCreateWithoutRewardCouponsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRewardCouponsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRewardCouponsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRewardCouponsInput, Prisma.UserUncheckedCreateWithoutRewardCouponsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRewardCouponsInput
+  upsert?: Prisma.UserUpsertWithoutRewardCouponsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRewardCouponsInput, Prisma.UserUpdateWithoutRewardCouponsInput>, Prisma.UserUncheckedUpdateWithoutRewardCouponsInput>
+}
+
+export type UserCreateNestedOneWithoutRewardRedemptionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRewardRedemptionsInput, Prisma.UserUncheckedCreateWithoutRewardRedemptionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRewardRedemptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRewardRedemptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRewardRedemptionsInput, Prisma.UserUncheckedCreateWithoutRewardRedemptionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRewardRedemptionsInput
+  upsert?: Prisma.UserUpsertWithoutRewardRedemptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRewardRedemptionsInput, Prisma.UserUpdateWithoutRewardRedemptionsInput>, Prisma.UserUncheckedUpdateWithoutRewardRedemptionsInput>
+}
+
+export type UserCreateNestedOneWithoutAttendanceMarkedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAttendanceMarkedInput, Prisma.UserUncheckedCreateWithoutAttendanceMarkedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendanceMarkedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAttendanceMarkedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAttendanceMarkedInput, Prisma.UserUncheckedCreateWithoutAttendanceMarkedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAttendanceMarkedInput
+  upsert?: Prisma.UserUpsertWithoutAttendanceMarkedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAttendanceMarkedInput, Prisma.UserUpdateWithoutAttendanceMarkedInput>, Prisma.UserUncheckedUpdateWithoutAttendanceMarkedInput>
+}
+
 export type UserCreateWithoutEventsInput = {
   id?: string
   email: string
@@ -489,6 +664,14 @@ export type UserCreateWithoutEventsInput = {
   updatedAt?: Date | string
   purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
 }
 
 export type UserUncheckedCreateWithoutEventsInput = {
@@ -503,6 +686,14 @@ export type UserUncheckedCreateWithoutEventsInput = {
   updatedAt?: Date | string
   purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
 }
 
 export type UserCreateOrConnectWithoutEventsInput = {
@@ -533,6 +724,14 @@ export type UserUpdateWithoutEventsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEventsInput = {
@@ -547,6 +746,14 @@ export type UserUncheckedUpdateWithoutEventsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
 }
 
 export type UserCreateWithoutPurchasesInput = {
@@ -561,6 +768,14 @@ export type UserCreateWithoutPurchasesInput = {
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
 }
 
 export type UserUncheckedCreateWithoutPurchasesInput = {
@@ -575,6 +790,14 @@ export type UserUncheckedCreateWithoutPurchasesInput = {
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
 }
 
 export type UserCreateOrConnectWithoutPurchasesInput = {
@@ -605,6 +828,14 @@ export type UserUpdateWithoutPurchasesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPurchasesInput = {
@@ -619,6 +850,14 @@ export type UserUncheckedUpdateWithoutPurchasesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
 }
 
 export type UserCreateWithoutReviewsInput = {
@@ -633,6 +872,14 @@ export type UserCreateWithoutReviewsInput = {
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
   purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
@@ -647,6 +894,14 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
   purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
 }
 
 export type UserCreateOrConnectWithoutReviewsInput = {
@@ -677,6 +932,14 @@ export type UserUpdateWithoutReviewsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
   purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -691,6 +954,846 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
   purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserCreateWithoutSessionsInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserUncheckedCreateWithoutSessionsInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserCreateOrConnectWithoutSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+}
+
+export type UserUpsertWithoutSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>
+}
+
+export type UserUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserCreateWithoutPasswordResetsInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserUncheckedCreateWithoutPasswordResetsInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserCreateOrConnectWithoutPasswordResetsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
+}
+
+export type UserUpsertWithoutPasswordResetsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPasswordResetsInput, Prisma.UserUncheckedUpdateWithoutPasswordResetsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPasswordResetsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPasswordResetsInput, Prisma.UserUncheckedUpdateWithoutPasswordResetsInput>
+}
+
+export type UserUpdateWithoutPasswordResetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPasswordResetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserCreateWithoutReferralsGivenInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserUncheckedCreateWithoutReferralsGivenInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserCreateOrConnectWithoutReferralsGivenInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReferralsGivenInput, Prisma.UserUncheckedCreateWithoutReferralsGivenInput>
+}
+
+export type UserCreateWithoutReferralUsedInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserUncheckedCreateWithoutReferralUsedInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserCreateOrConnectWithoutReferralUsedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReferralUsedInput, Prisma.UserUncheckedCreateWithoutReferralUsedInput>
+}
+
+export type UserUpsertWithoutReferralsGivenInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReferralsGivenInput, Prisma.UserUncheckedUpdateWithoutReferralsGivenInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReferralsGivenInput, Prisma.UserUncheckedCreateWithoutReferralsGivenInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReferralsGivenInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReferralsGivenInput, Prisma.UserUncheckedUpdateWithoutReferralsGivenInput>
+}
+
+export type UserUpdateWithoutReferralsGivenInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReferralsGivenInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserUpsertWithoutReferralUsedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReferralUsedInput, Prisma.UserUncheckedUpdateWithoutReferralUsedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReferralUsedInput, Prisma.UserUncheckedCreateWithoutReferralUsedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReferralUsedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReferralUsedInput, Prisma.UserUncheckedUpdateWithoutReferralUsedInput>
+}
+
+export type UserUpdateWithoutReferralUsedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReferralUsedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserCreateWithoutPointGrantsInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserUncheckedCreateWithoutPointGrantsInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserCreateOrConnectWithoutPointGrantsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPointGrantsInput, Prisma.UserUncheckedCreateWithoutPointGrantsInput>
+}
+
+export type UserUpsertWithoutPointGrantsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPointGrantsInput, Prisma.UserUncheckedUpdateWithoutPointGrantsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPointGrantsInput, Prisma.UserUncheckedCreateWithoutPointGrantsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPointGrantsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPointGrantsInput, Prisma.UserUncheckedUpdateWithoutPointGrantsInput>
+}
+
+export type UserUpdateWithoutPointGrantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPointGrantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserCreateWithoutRewardCouponsInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserUncheckedCreateWithoutRewardCouponsInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserCreateOrConnectWithoutRewardCouponsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRewardCouponsInput, Prisma.UserUncheckedCreateWithoutRewardCouponsInput>
+}
+
+export type UserUpsertWithoutRewardCouponsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRewardCouponsInput, Prisma.UserUncheckedUpdateWithoutRewardCouponsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRewardCouponsInput, Prisma.UserUncheckedCreateWithoutRewardCouponsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRewardCouponsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRewardCouponsInput, Prisma.UserUncheckedUpdateWithoutRewardCouponsInput>
+}
+
+export type UserUpdateWithoutRewardCouponsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRewardCouponsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserCreateWithoutRewardRedemptionsInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserUncheckedCreateWithoutRewardRedemptionsInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByOrganizerInput
+}
+
+export type UserCreateOrConnectWithoutRewardRedemptionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRewardRedemptionsInput, Prisma.UserUncheckedCreateWithoutRewardRedemptionsInput>
+}
+
+export type UserUpsertWithoutRewardRedemptionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRewardRedemptionsInput, Prisma.UserUncheckedUpdateWithoutRewardRedemptionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRewardRedemptionsInput, Prisma.UserUncheckedCreateWithoutRewardRedemptionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRewardRedemptionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRewardRedemptionsInput, Prisma.UserUncheckedUpdateWithoutRewardRedemptionsInput>
+}
+
+export type UserUpdateWithoutRewardRedemptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRewardRedemptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByOrganizerNestedInput
+}
+
+export type UserCreateWithoutAttendanceMarkedInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAttendanceMarkedInput = {
+  id?: string
+  email: string
+  name: string
+  role?: $Enums.UserRole
+  passwordHash?: string | null
+  referralCode: string
+  profilePictureKey?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutOrganizerInput
+  purchases?: Prisma.PurchaseUncheckedCreateNestedManyWithoutCustomerInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.AuthSessionUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralUsed?: Prisma.ReferralUncheckedCreateNestedOneWithoutReferredUserInput
+  pointGrants?: Prisma.PointGrantUncheckedCreateNestedManyWithoutUserInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedCreateNestedManyWithoutUserInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAttendanceMarkedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAttendanceMarkedInput, Prisma.UserUncheckedCreateWithoutAttendanceMarkedInput>
+}
+
+export type UserUpsertWithoutAttendanceMarkedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAttendanceMarkedInput, Prisma.UserUncheckedUpdateWithoutAttendanceMarkedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAttendanceMarkedInput, Prisma.UserUncheckedCreateWithoutAttendanceMarkedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAttendanceMarkedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAttendanceMarkedInput, Prisma.UserUncheckedUpdateWithoutAttendanceMarkedInput>
+}
+
+export type UserUpdateWithoutAttendanceMarkedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAttendanceMarkedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePictureKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutOrganizerNestedInput
+  purchases?: Prisma.PurchaseUncheckedUpdateManyWithoutCustomerNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.AuthSessionUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralUsed?: Prisma.ReferralUncheckedUpdateOneWithoutReferredUserNestedInput
+  pointGrants?: Prisma.PointGrantUncheckedUpdateManyWithoutUserNestedInput
+  rewardCoupons?: Prisma.RewardCouponUncheckedUpdateManyWithoutUserNestedInput
+  rewardRedemptions?: Prisma.RewardRedemptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -702,12 +1805,26 @@ export type UserCountOutputType = {
   events: number
   purchases: number
   reviews: number
+  passwordResets: number
+  sessions: number
+  referralsGiven: number
+  pointGrants: number
+  rewardCoupons: number
+  rewardRedemptions: number
+  attendanceMarked: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   events?: boolean | UserCountOutputTypeCountEventsArgs
   purchases?: boolean | UserCountOutputTypeCountPurchasesArgs
   reviews?: boolean | UserCountOutputTypeCountReviewsArgs
+  passwordResets?: boolean | UserCountOutputTypeCountPasswordResetsArgs
+  sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+  referralsGiven?: boolean | UserCountOutputTypeCountReferralsGivenArgs
+  pointGrants?: boolean | UserCountOutputTypeCountPointGrantsArgs
+  rewardCoupons?: boolean | UserCountOutputTypeCountRewardCouponsArgs
+  rewardRedemptions?: boolean | UserCountOutputTypeCountRewardRedemptionsArgs
+  attendanceMarked?: boolean | UserCountOutputTypeCountAttendanceMarkedArgs
 }
 
 /**
@@ -741,6 +1858,55 @@ export type UserCountOutputTypeCountReviewsArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.ReviewWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPasswordResetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PasswordResetTokenWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuthSessionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReferralsGivenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReferralWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPointGrantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PointGrantWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRewardCouponsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RewardCouponWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRewardRedemptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RewardRedemptionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAttendanceMarkedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -755,6 +1921,14 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   events?: boolean | Prisma.User$eventsArgs<ExtArgs>
   purchases?: boolean | Prisma.User$purchasesArgs<ExtArgs>
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
+  passwordResets?: boolean | Prisma.User$passwordResetsArgs<ExtArgs>
+  sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  referralsGiven?: boolean | Prisma.User$referralsGivenArgs<ExtArgs>
+  referralUsed?: boolean | Prisma.User$referralUsedArgs<ExtArgs>
+  pointGrants?: boolean | Prisma.User$pointGrantsArgs<ExtArgs>
+  rewardCoupons?: boolean | Prisma.User$rewardCouponsArgs<ExtArgs>
+  rewardRedemptions?: boolean | Prisma.User$rewardRedemptionsArgs<ExtArgs>
+  attendanceMarked?: boolean | Prisma.User$attendanceMarkedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -799,6 +1973,14 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   events?: boolean | Prisma.User$eventsArgs<ExtArgs>
   purchases?: boolean | Prisma.User$purchasesArgs<ExtArgs>
   reviews?: boolean | Prisma.User$reviewsArgs<ExtArgs>
+  passwordResets?: boolean | Prisma.User$passwordResetsArgs<ExtArgs>
+  sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  referralsGiven?: boolean | Prisma.User$referralsGivenArgs<ExtArgs>
+  referralUsed?: boolean | Prisma.User$referralUsedArgs<ExtArgs>
+  pointGrants?: boolean | Prisma.User$pointGrantsArgs<ExtArgs>
+  rewardCoupons?: boolean | Prisma.User$rewardCouponsArgs<ExtArgs>
+  rewardRedemptions?: boolean | Prisma.User$rewardRedemptionsArgs<ExtArgs>
+  attendanceMarked?: boolean | Prisma.User$attendanceMarkedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -810,6 +1992,14 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     events: Prisma.$EventPayload<ExtArgs>[]
     purchases: Prisma.$PurchasePayload<ExtArgs>[]
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
+    passwordResets: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
+    sessions: Prisma.$AuthSessionPayload<ExtArgs>[]
+    referralsGiven: Prisma.$ReferralPayload<ExtArgs>[]
+    referralUsed: Prisma.$ReferralPayload<ExtArgs> | null
+    pointGrants: Prisma.$PointGrantPayload<ExtArgs>[]
+    rewardCoupons: Prisma.$RewardCouponPayload<ExtArgs>[]
+    rewardRedemptions: Prisma.$RewardRedemptionPayload<ExtArgs>[]
+    attendanceMarked: Prisma.$AttendancePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1218,6 +2408,14 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   events<T extends Prisma.User$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   purchases<T extends Prisma.User$purchasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$purchasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviews<T extends Prisma.User$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  passwordResets<T extends Prisma.User$passwordResetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$passwordResetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  referralsGiven<T extends Prisma.User$referralsGivenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$referralsGivenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReferralPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  referralUsed<T extends Prisma.User$referralUsedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$referralUsedArgs<ExtArgs>>): Prisma.Prisma__ReferralClient<runtime.Types.Result.GetResult<Prisma.$ReferralPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  pointGrants<T extends Prisma.User$pointGrantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pointGrantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PointGrantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  rewardCoupons<T extends Prisma.User$rewardCouponsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rewardCouponsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RewardCouponPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  rewardRedemptions<T extends Prisma.User$rewardRedemptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rewardRedemptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RewardRedemptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendanceMarked<T extends Prisma.User$attendanceMarkedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$attendanceMarkedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1718,6 +2916,193 @@ export type User$reviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
+}
+
+/**
+ * User.passwordResets
+ */
+export type User$passwordResetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PasswordResetToken
+   */
+  select?: Prisma.PasswordResetTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PasswordResetToken
+   */
+  omit?: Prisma.PasswordResetTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PasswordResetTokenInclude<ExtArgs> | null
+  where?: Prisma.PasswordResetTokenWhereInput
+  orderBy?: Prisma.PasswordResetTokenOrderByWithRelationInput | Prisma.PasswordResetTokenOrderByWithRelationInput[]
+  cursor?: Prisma.PasswordResetTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PasswordResetTokenScalarFieldEnum | Prisma.PasswordResetTokenScalarFieldEnum[]
+}
+
+/**
+ * User.sessions
+ */
+export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuthSession
+   */
+  select?: Prisma.AuthSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuthSession
+   */
+  omit?: Prisma.AuthSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuthSessionInclude<ExtArgs> | null
+  where?: Prisma.AuthSessionWhereInput
+  orderBy?: Prisma.AuthSessionOrderByWithRelationInput | Prisma.AuthSessionOrderByWithRelationInput[]
+  cursor?: Prisma.AuthSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuthSessionScalarFieldEnum | Prisma.AuthSessionScalarFieldEnum[]
+}
+
+/**
+ * User.referralsGiven
+ */
+export type User$referralsGivenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Referral
+   */
+  select?: Prisma.ReferralSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Referral
+   */
+  omit?: Prisma.ReferralOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReferralInclude<ExtArgs> | null
+  where?: Prisma.ReferralWhereInput
+  orderBy?: Prisma.ReferralOrderByWithRelationInput | Prisma.ReferralOrderByWithRelationInput[]
+  cursor?: Prisma.ReferralWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReferralScalarFieldEnum | Prisma.ReferralScalarFieldEnum[]
+}
+
+/**
+ * User.referralUsed
+ */
+export type User$referralUsedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Referral
+   */
+  select?: Prisma.ReferralSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Referral
+   */
+  omit?: Prisma.ReferralOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReferralInclude<ExtArgs> | null
+  where?: Prisma.ReferralWhereInput
+}
+
+/**
+ * User.pointGrants
+ */
+export type User$pointGrantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PointGrant
+   */
+  select?: Prisma.PointGrantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PointGrant
+   */
+  omit?: Prisma.PointGrantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PointGrantInclude<ExtArgs> | null
+  where?: Prisma.PointGrantWhereInput
+  orderBy?: Prisma.PointGrantOrderByWithRelationInput | Prisma.PointGrantOrderByWithRelationInput[]
+  cursor?: Prisma.PointGrantWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PointGrantScalarFieldEnum | Prisma.PointGrantScalarFieldEnum[]
+}
+
+/**
+ * User.rewardCoupons
+ */
+export type User$rewardCouponsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RewardCoupon
+   */
+  select?: Prisma.RewardCouponSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RewardCoupon
+   */
+  omit?: Prisma.RewardCouponOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RewardCouponInclude<ExtArgs> | null
+  where?: Prisma.RewardCouponWhereInput
+  orderBy?: Prisma.RewardCouponOrderByWithRelationInput | Prisma.RewardCouponOrderByWithRelationInput[]
+  cursor?: Prisma.RewardCouponWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RewardCouponScalarFieldEnum | Prisma.RewardCouponScalarFieldEnum[]
+}
+
+/**
+ * User.rewardRedemptions
+ */
+export type User$rewardRedemptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RewardRedemption
+   */
+  select?: Prisma.RewardRedemptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RewardRedemption
+   */
+  omit?: Prisma.RewardRedemptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RewardRedemptionInclude<ExtArgs> | null
+  where?: Prisma.RewardRedemptionWhereInput
+  orderBy?: Prisma.RewardRedemptionOrderByWithRelationInput | Prisma.RewardRedemptionOrderByWithRelationInput[]
+  cursor?: Prisma.RewardRedemptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RewardRedemptionScalarFieldEnum | Prisma.RewardRedemptionScalarFieldEnum[]
+}
+
+/**
+ * User.attendanceMarked
+ */
+export type User$attendanceMarkedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Attendance
+   */
+  select?: Prisma.AttendanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Attendance
+   */
+  omit?: Prisma.AttendanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceInclude<ExtArgs> | null
+  where?: Prisma.AttendanceWhereInput
+  orderBy?: Prisma.AttendanceOrderByWithRelationInput | Prisma.AttendanceOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceScalarFieldEnum | Prisma.AttendanceScalarFieldEnum[]
 }
 
 /**

@@ -378,6 +378,23 @@ export type BoolWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedBoolFilter<$PrismaModel>
 }
 
+export type EnumRewardRedemptionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RewardRedemptionStatus | Prisma.EnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RewardRedemptionStatus[] | Prisma.ListEnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RewardRedemptionStatus[] | Prisma.ListEnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRewardRedemptionStatusFilter<$PrismaModel> | $Enums.RewardRedemptionStatus
+}
+
+export type EnumRewardRedemptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RewardRedemptionStatus | Prisma.EnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RewardRedemptionStatus[] | Prisma.ListEnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RewardRedemptionStatus[] | Prisma.ListEnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRewardRedemptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.RewardRedemptionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRewardRedemptionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRewardRedemptionStatusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -749,6 +766,23 @@ export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedBoolFilter<$PrismaModel>
   _max?: Prisma.NestedBoolFilter<$PrismaModel>
+}
+
+export type NestedEnumRewardRedemptionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RewardRedemptionStatus | Prisma.EnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RewardRedemptionStatus[] | Prisma.ListEnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RewardRedemptionStatus[] | Prisma.ListEnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRewardRedemptionStatusFilter<$PrismaModel> | $Enums.RewardRedemptionStatus
+}
+
+export type NestedEnumRewardRedemptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RewardRedemptionStatus | Prisma.EnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RewardRedemptionStatus[] | Prisma.ListEnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RewardRedemptionStatus[] | Prisma.ListEnumRewardRedemptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRewardRedemptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.RewardRedemptionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRewardRedemptionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRewardRedemptionStatusFilter<$PrismaModel>
 }
 
 

@@ -340,6 +340,10 @@ export type PurchaseWhereInput = {
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   voucher?: Prisma.XOR<Prisma.VoucherNullableScalarRelationFilter, Prisma.VoucherWhereInput> | null
   items?: Prisma.PurchaseItemListRelationFilter
+  rewardRedemption?: Prisma.XOR<Prisma.RewardRedemptionNullableScalarRelationFilter, Prisma.RewardRedemptionWhereInput> | null
+  attendances?: Prisma.AttendanceListRelationFilter
+  organizerDecisionEmail?: Prisma.XOR<Prisma.OrganizerDecisionEmailNullableScalarRelationFilter, Prisma.OrganizerDecisionEmailWhereInput> | null
+  attendanceCustomerRecords?: Prisma.AttendanceListRelationFilter
 }
 
 export type PurchaseOrderByWithRelationInput = {
@@ -365,12 +369,17 @@ export type PurchaseOrderByWithRelationInput = {
   event?: Prisma.EventOrderByWithRelationInput
   voucher?: Prisma.VoucherOrderByWithRelationInput
   items?: Prisma.PurchaseItemOrderByRelationAggregateInput
+  rewardRedemption?: Prisma.RewardRedemptionOrderByWithRelationInput
+  attendances?: Prisma.AttendanceOrderByRelationAggregateInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailOrderByWithRelationInput
+  attendanceCustomerRecords?: Prisma.AttendanceOrderByRelationAggregateInput
 }
 
 export type PurchaseWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   reference?: string
   eventId_id?: Prisma.PurchaseEventIdIdCompoundUniqueInput
+  customerId_id?: Prisma.PurchaseCustomerIdIdCompoundUniqueInput
   AND?: Prisma.PurchaseWhereInput | Prisma.PurchaseWhereInput[]
   OR?: Prisma.PurchaseWhereInput[]
   NOT?: Prisma.PurchaseWhereInput | Prisma.PurchaseWhereInput[]
@@ -394,7 +403,11 @@ export type PurchaseWhereUniqueInput = Prisma.AtLeast<{
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   voucher?: Prisma.XOR<Prisma.VoucherNullableScalarRelationFilter, Prisma.VoucherWhereInput> | null
   items?: Prisma.PurchaseItemListRelationFilter
-}, "id" | "reference" | "eventId_id">
+  rewardRedemption?: Prisma.XOR<Prisma.RewardRedemptionNullableScalarRelationFilter, Prisma.RewardRedemptionWhereInput> | null
+  attendances?: Prisma.AttendanceListRelationFilter
+  organizerDecisionEmail?: Prisma.XOR<Prisma.OrganizerDecisionEmailNullableScalarRelationFilter, Prisma.OrganizerDecisionEmailWhereInput> | null
+  attendanceCustomerRecords?: Prisma.AttendanceListRelationFilter
+}, "id" | "reference" | "eventId_id" | "customerId_id">
 
 export type PurchaseOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -466,6 +479,10 @@ export type PurchaseCreateInput = {
   event: Prisma.EventCreateNestedOneWithoutPurchasesInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
   items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceCreateNestedManyWithoutPurchaseCustomerInput
 }
 
 export type PurchaseUncheckedCreateInput = {
@@ -488,6 +505,10 @@ export type PurchaseUncheckedCreateInput = {
   updatedAt?: Date | string
   voucherId?: string | null
   items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseCustomerInput
 }
 
 export type PurchaseUpdateInput = {
@@ -510,6 +531,10 @@ export type PurchaseUpdateInput = {
   event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
   items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseUncheckedUpdateInput = {
@@ -532,6 +557,10 @@ export type PurchaseUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseCreateManyInput = {
@@ -606,6 +635,11 @@ export type PurchaseOrderByRelationAggregateInput = {
 
 export type PurchaseEventIdIdCompoundUniqueInput = {
   eventId: string
+  id: string
+}
+
+export type PurchaseCustomerIdIdCompoundUniqueInput = {
+  customerId: string
   id: string
 }
 
@@ -841,6 +875,62 @@ export type PurchaseUncheckedUpdateManyWithoutVoucherNestedInput = {
   deleteMany?: Prisma.PurchaseScalarWhereInput | Prisma.PurchaseScalarWhereInput[]
 }
 
+export type PurchaseCreateNestedOneWithoutRewardRedemptionInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutRewardRedemptionInput, Prisma.PurchaseUncheckedCreateWithoutRewardRedemptionInput>
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutRewardRedemptionInput
+  connect?: Prisma.PurchaseWhereUniqueInput
+}
+
+export type PurchaseUpdateOneRequiredWithoutRewardRedemptionNestedInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutRewardRedemptionInput, Prisma.PurchaseUncheckedCreateWithoutRewardRedemptionInput>
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutRewardRedemptionInput
+  upsert?: Prisma.PurchaseUpsertWithoutRewardRedemptionInput
+  connect?: Prisma.PurchaseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PurchaseUpdateToOneWithWhereWithoutRewardRedemptionInput, Prisma.PurchaseUpdateWithoutRewardRedemptionInput>, Prisma.PurchaseUncheckedUpdateWithoutRewardRedemptionInput>
+}
+
+export type PurchaseCreateNestedOneWithoutAttendancesInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutAttendancesInput, Prisma.PurchaseUncheckedCreateWithoutAttendancesInput>
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutAttendancesInput
+  connect?: Prisma.PurchaseWhereUniqueInput
+}
+
+export type PurchaseCreateNestedOneWithoutAttendanceCustomerRecordsInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutAttendanceCustomerRecordsInput, Prisma.PurchaseUncheckedCreateWithoutAttendanceCustomerRecordsInput>
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutAttendanceCustomerRecordsInput
+  connect?: Prisma.PurchaseWhereUniqueInput
+}
+
+export type PurchaseUpdateOneRequiredWithoutAttendancesNestedInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutAttendancesInput, Prisma.PurchaseUncheckedCreateWithoutAttendancesInput>
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutAttendancesInput
+  upsert?: Prisma.PurchaseUpsertWithoutAttendancesInput
+  connect?: Prisma.PurchaseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PurchaseUpdateToOneWithWhereWithoutAttendancesInput, Prisma.PurchaseUpdateWithoutAttendancesInput>, Prisma.PurchaseUncheckedUpdateWithoutAttendancesInput>
+}
+
+export type PurchaseUpdateOneRequiredWithoutAttendanceCustomerRecordsNestedInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutAttendanceCustomerRecordsInput, Prisma.PurchaseUncheckedCreateWithoutAttendanceCustomerRecordsInput>
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutAttendanceCustomerRecordsInput
+  upsert?: Prisma.PurchaseUpsertWithoutAttendanceCustomerRecordsInput
+  connect?: Prisma.PurchaseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PurchaseUpdateToOneWithWhereWithoutAttendanceCustomerRecordsInput, Prisma.PurchaseUpdateWithoutAttendanceCustomerRecordsInput>, Prisma.PurchaseUncheckedUpdateWithoutAttendanceCustomerRecordsInput>
+}
+
+export type PurchaseCreateNestedOneWithoutOrganizerDecisionEmailInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutOrganizerDecisionEmailInput, Prisma.PurchaseUncheckedCreateWithoutOrganizerDecisionEmailInput>
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutOrganizerDecisionEmailInput
+  connect?: Prisma.PurchaseWhereUniqueInput
+}
+
+export type PurchaseUpdateOneRequiredWithoutOrganizerDecisionEmailNestedInput = {
+  create?: Prisma.XOR<Prisma.PurchaseCreateWithoutOrganizerDecisionEmailInput, Prisma.PurchaseUncheckedCreateWithoutOrganizerDecisionEmailInput>
+  connectOrCreate?: Prisma.PurchaseCreateOrConnectWithoutOrganizerDecisionEmailInput
+  upsert?: Prisma.PurchaseUpsertWithoutOrganizerDecisionEmailInput
+  connect?: Prisma.PurchaseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PurchaseUpdateToOneWithWhereWithoutOrganizerDecisionEmailInput, Prisma.PurchaseUpdateWithoutOrganizerDecisionEmailInput>, Prisma.PurchaseUncheckedUpdateWithoutOrganizerDecisionEmailInput>
+}
+
 export type PurchaseCreateWithoutCustomerInput = {
   id?: string
   reference: string
@@ -860,6 +950,10 @@ export type PurchaseCreateWithoutCustomerInput = {
   event: Prisma.EventCreateNestedOneWithoutPurchasesInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
   items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceCreateNestedManyWithoutPurchaseCustomerInput
 }
 
 export type PurchaseUncheckedCreateWithoutCustomerInput = {
@@ -881,6 +975,10 @@ export type PurchaseUncheckedCreateWithoutCustomerInput = {
   updatedAt?: Date | string
   voucherId?: string | null
   items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseCustomerInput
 }
 
 export type PurchaseCreateOrConnectWithoutCustomerInput = {
@@ -952,6 +1050,10 @@ export type PurchaseCreateWithoutEventInput = {
   customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
   items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceCreateNestedManyWithoutPurchaseCustomerInput
 }
 
 export type PurchaseUncheckedCreateWithoutEventInput = {
@@ -973,6 +1075,10 @@ export type PurchaseUncheckedCreateWithoutEventInput = {
   updatedAt?: Date | string
   voucherId?: string | null
   items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseCustomerInput
 }
 
 export type PurchaseCreateOrConnectWithoutEventInput = {
@@ -1020,6 +1126,10 @@ export type PurchaseCreateWithoutItemsInput = {
   customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
   event: Prisma.EventCreateNestedOneWithoutPurchasesInput
   voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
+  rewardRedemption?: Prisma.RewardRedemptionCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceCreateNestedManyWithoutPurchaseCustomerInput
 }
 
 export type PurchaseUncheckedCreateWithoutItemsInput = {
@@ -1041,6 +1151,10 @@ export type PurchaseUncheckedCreateWithoutItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   voucherId?: string | null
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseCustomerInput
 }
 
 export type PurchaseCreateOrConnectWithoutItemsInput = {
@@ -1078,6 +1192,10 @@ export type PurchaseUpdateWithoutItemsInput = {
   customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseUncheckedUpdateWithoutItemsInput = {
@@ -1099,6 +1217,10 @@ export type PurchaseUncheckedUpdateWithoutItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseCreateWithoutVoucherInput = {
@@ -1120,6 +1242,10 @@ export type PurchaseCreateWithoutVoucherInput = {
   customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
   event: Prisma.EventCreateNestedOneWithoutPurchasesInput
   items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceCreateNestedManyWithoutPurchaseCustomerInput
 }
 
 export type PurchaseUncheckedCreateWithoutVoucherInput = {
@@ -1140,6 +1266,10 @@ export type PurchaseUncheckedCreateWithoutVoucherInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseCustomerInput
 }
 
 export type PurchaseCreateOrConnectWithoutVoucherInput = {
@@ -1166,6 +1296,470 @@ export type PurchaseUpdateWithWhereUniqueWithoutVoucherInput = {
 export type PurchaseUpdateManyWithWhereWithoutVoucherInput = {
   where: Prisma.PurchaseScalarWhereInput
   data: Prisma.XOR<Prisma.PurchaseUpdateManyMutationInput, Prisma.PurchaseUncheckedUpdateManyWithoutVoucherInput>
+}
+
+export type PurchaseCreateWithoutRewardRedemptionInput = {
+  id?: string
+  reference: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
+  event: Prisma.EventCreateNestedOneWithoutPurchasesInput
+  voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
+  items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceCreateNestedManyWithoutPurchaseCustomerInput
+}
+
+export type PurchaseUncheckedCreateWithoutRewardRedemptionInput = {
+  id?: string
+  reference: string
+  customerId: string
+  eventId: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  voucherId?: string | null
+  items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseCustomerInput
+}
+
+export type PurchaseCreateOrConnectWithoutRewardRedemptionInput = {
+  where: Prisma.PurchaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.PurchaseCreateWithoutRewardRedemptionInput, Prisma.PurchaseUncheckedCreateWithoutRewardRedemptionInput>
+}
+
+export type PurchaseUpsertWithoutRewardRedemptionInput = {
+  update: Prisma.XOR<Prisma.PurchaseUpdateWithoutRewardRedemptionInput, Prisma.PurchaseUncheckedUpdateWithoutRewardRedemptionInput>
+  create: Prisma.XOR<Prisma.PurchaseCreateWithoutRewardRedemptionInput, Prisma.PurchaseUncheckedCreateWithoutRewardRedemptionInput>
+  where?: Prisma.PurchaseWhereInput
+}
+
+export type PurchaseUpdateToOneWithWhereWithoutRewardRedemptionInput = {
+  where?: Prisma.PurchaseWhereInput
+  data: Prisma.XOR<Prisma.PurchaseUpdateWithoutRewardRedemptionInput, Prisma.PurchaseUncheckedUpdateWithoutRewardRedemptionInput>
+}
+
+export type PurchaseUpdateWithoutRewardRedemptionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
+  event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
+  voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
+  items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUpdateManyWithoutPurchaseCustomerNestedInput
+}
+
+export type PurchaseUncheckedUpdateWithoutRewardRedemptionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseCustomerNestedInput
+}
+
+export type PurchaseCreateWithoutAttendancesInput = {
+  id?: string
+  reference: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
+  event: Prisma.EventCreateNestedOneWithoutPurchasesInput
+  voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
+  items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionCreateNestedOneWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceCreateNestedManyWithoutPurchaseCustomerInput
+}
+
+export type PurchaseUncheckedCreateWithoutAttendancesInput = {
+  id?: string
+  reference: string
+  customerId: string
+  eventId: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  voucherId?: string | null
+  items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedCreateNestedOneWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedCreateNestedOneWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseCustomerInput
+}
+
+export type PurchaseCreateOrConnectWithoutAttendancesInput = {
+  where: Prisma.PurchaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.PurchaseCreateWithoutAttendancesInput, Prisma.PurchaseUncheckedCreateWithoutAttendancesInput>
+}
+
+export type PurchaseCreateWithoutAttendanceCustomerRecordsInput = {
+  id?: string
+  reference: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
+  event: Prisma.EventCreateNestedOneWithoutPurchasesInput
+  voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
+  items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailCreateNestedOneWithoutPurchaseInput
+}
+
+export type PurchaseUncheckedCreateWithoutAttendanceCustomerRecordsInput = {
+  id?: string
+  reference: string
+  customerId: string
+  eventId: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  voucherId?: string | null
+  items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedCreateNestedOneWithoutPurchaseInput
+}
+
+export type PurchaseCreateOrConnectWithoutAttendanceCustomerRecordsInput = {
+  where: Prisma.PurchaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.PurchaseCreateWithoutAttendanceCustomerRecordsInput, Prisma.PurchaseUncheckedCreateWithoutAttendanceCustomerRecordsInput>
+}
+
+export type PurchaseUpsertWithoutAttendancesInput = {
+  update: Prisma.XOR<Prisma.PurchaseUpdateWithoutAttendancesInput, Prisma.PurchaseUncheckedUpdateWithoutAttendancesInput>
+  create: Prisma.XOR<Prisma.PurchaseCreateWithoutAttendancesInput, Prisma.PurchaseUncheckedCreateWithoutAttendancesInput>
+  where?: Prisma.PurchaseWhereInput
+}
+
+export type PurchaseUpdateToOneWithWhereWithoutAttendancesInput = {
+  where?: Prisma.PurchaseWhereInput
+  data: Prisma.XOR<Prisma.PurchaseUpdateWithoutAttendancesInput, Prisma.PurchaseUncheckedUpdateWithoutAttendancesInput>
+}
+
+export type PurchaseUpdateWithoutAttendancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
+  event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
+  voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
+  items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUpdateOneWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUpdateManyWithoutPurchaseCustomerNestedInput
+}
+
+export type PurchaseUncheckedUpdateWithoutAttendancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedUpdateOneWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseCustomerNestedInput
+}
+
+export type PurchaseUpsertWithoutAttendanceCustomerRecordsInput = {
+  update: Prisma.XOR<Prisma.PurchaseUpdateWithoutAttendanceCustomerRecordsInput, Prisma.PurchaseUncheckedUpdateWithoutAttendanceCustomerRecordsInput>
+  create: Prisma.XOR<Prisma.PurchaseCreateWithoutAttendanceCustomerRecordsInput, Prisma.PurchaseUncheckedCreateWithoutAttendanceCustomerRecordsInput>
+  where?: Prisma.PurchaseWhereInput
+}
+
+export type PurchaseUpdateToOneWithWhereWithoutAttendanceCustomerRecordsInput = {
+  where?: Prisma.PurchaseWhereInput
+  data: Prisma.XOR<Prisma.PurchaseUpdateWithoutAttendanceCustomerRecordsInput, Prisma.PurchaseUncheckedUpdateWithoutAttendanceCustomerRecordsInput>
+}
+
+export type PurchaseUpdateWithoutAttendanceCustomerRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
+  event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
+  voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
+  items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUpdateOneWithoutPurchaseNestedInput
+}
+
+export type PurchaseUncheckedUpdateWithoutAttendanceCustomerRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedUpdateOneWithoutPurchaseNestedInput
+}
+
+export type PurchaseCreateWithoutOrganizerDecisionEmailInput = {
+  id?: string
+  reference: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customer: Prisma.UserCreateNestedOneWithoutPurchasesInput
+  event: Prisma.EventCreateNestedOneWithoutPurchasesInput
+  voucher?: Prisma.VoucherCreateNestedOneWithoutPurchasesInput
+  items?: Prisma.PurchaseItemCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceCreateNestedManyWithoutPurchaseCustomerInput
+}
+
+export type PurchaseUncheckedCreateWithoutOrganizerDecisionEmailInput = {
+  id?: string
+  reference: string
+  customerId: string
+  eventId: string
+  status?: $Enums.PurchaseStatus
+  subtotal: bigint | number
+  voucherDiscount?: bigint | number
+  couponDiscount?: bigint | number
+  pointsUsed?: bigint | number
+  totalPrice: bigint | number
+  paymentDueAt?: Date | string | null
+  proofUploadedAt?: Date | string | null
+  decisionDueAt?: Date | string | null
+  paymentProofKey?: string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  voucherId?: string | null
+  items?: Prisma.PurchaseItemUncheckedCreateNestedManyWithoutPurchaseInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedCreateNestedOneWithoutPurchaseInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedCreateNestedManyWithoutPurchaseCustomerInput
+}
+
+export type PurchaseCreateOrConnectWithoutOrganizerDecisionEmailInput = {
+  where: Prisma.PurchaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.PurchaseCreateWithoutOrganizerDecisionEmailInput, Prisma.PurchaseUncheckedCreateWithoutOrganizerDecisionEmailInput>
+}
+
+export type PurchaseUpsertWithoutOrganizerDecisionEmailInput = {
+  update: Prisma.XOR<Prisma.PurchaseUpdateWithoutOrganizerDecisionEmailInput, Prisma.PurchaseUncheckedUpdateWithoutOrganizerDecisionEmailInput>
+  create: Prisma.XOR<Prisma.PurchaseCreateWithoutOrganizerDecisionEmailInput, Prisma.PurchaseUncheckedCreateWithoutOrganizerDecisionEmailInput>
+  where?: Prisma.PurchaseWhereInput
+}
+
+export type PurchaseUpdateToOneWithWhereWithoutOrganizerDecisionEmailInput = {
+  where?: Prisma.PurchaseWhereInput
+  data: Prisma.XOR<Prisma.PurchaseUpdateWithoutOrganizerDecisionEmailInput, Prisma.PurchaseUncheckedUpdateWithoutOrganizerDecisionEmailInput>
+}
+
+export type PurchaseUpdateWithoutOrganizerDecisionEmailInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
+  event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
+  voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
+  items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUpdateManyWithoutPurchaseCustomerNestedInput
+}
+
+export type PurchaseUncheckedUpdateWithoutOrganizerDecisionEmailInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPurchaseStatusFieldUpdateOperationsInput | $Enums.PurchaseStatus
+  subtotal?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  voucherDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  couponDiscount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pointsUsed?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalPrice?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  paymentDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  proofUploadedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  decisionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paymentProofKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseCreateManyCustomerInput = {
@@ -1207,6 +1801,10 @@ export type PurchaseUpdateWithoutCustomerInput = {
   event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
   items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseUncheckedUpdateWithoutCustomerInput = {
@@ -1228,6 +1826,10 @@ export type PurchaseUncheckedUpdateWithoutCustomerInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseUncheckedUpdateManyWithoutCustomerInput = {
@@ -1289,6 +1891,10 @@ export type PurchaseUpdateWithoutEventInput = {
   customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
   voucher?: Prisma.VoucherUpdateOneWithoutPurchasesNestedInput
   items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseUncheckedUpdateWithoutEventInput = {
@@ -1310,6 +1916,10 @@ export type PurchaseUncheckedUpdateWithoutEventInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   voucherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseUncheckedUpdateManyWithoutEventInput = {
@@ -1370,6 +1980,10 @@ export type PurchaseUpdateWithoutVoucherInput = {
   customer?: Prisma.UserUpdateOneRequiredWithoutPurchasesNestedInput
   event?: Prisma.EventUpdateOneRequiredWithoutPurchasesNestedInput
   items?: Prisma.PurchaseItemUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseUncheckedUpdateWithoutVoucherInput = {
@@ -1390,6 +2004,10 @@ export type PurchaseUncheckedUpdateWithoutVoucherInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.PurchaseItemUncheckedUpdateManyWithoutPurchaseNestedInput
+  rewardRedemption?: Prisma.RewardRedemptionUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseNestedInput
+  organizerDecisionEmail?: Prisma.OrganizerDecisionEmailUncheckedUpdateOneWithoutPurchaseNestedInput
+  attendanceCustomerRecords?: Prisma.AttendanceUncheckedUpdateManyWithoutPurchaseCustomerNestedInput
 }
 
 export type PurchaseUncheckedUpdateManyWithoutVoucherInput = {
@@ -1418,10 +2036,14 @@ export type PurchaseUncheckedUpdateManyWithoutVoucherInput = {
 
 export type PurchaseCountOutputType = {
   items: number
+  attendances: number
+  attendanceCustomerRecords: number
 }
 
 export type PurchaseCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | PurchaseCountOutputTypeCountItemsArgs
+  attendances?: boolean | PurchaseCountOutputTypeCountAttendancesArgs
+  attendanceCustomerRecords?: boolean | PurchaseCountOutputTypeCountAttendanceCustomerRecordsArgs
 }
 
 /**
@@ -1439,6 +2061,20 @@ export type PurchaseCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
  */
 export type PurchaseCountOutputTypeCountItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PurchaseItemWhereInput
+}
+
+/**
+ * PurchaseCountOutputType without action
+ */
+export type PurchaseCountOutputTypeCountAttendancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceWhereInput
+}
+
+/**
+ * PurchaseCountOutputType without action
+ */
+export type PurchaseCountOutputTypeCountAttendanceCustomerRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceWhereInput
 }
 
 
@@ -1465,6 +2101,10 @@ export type PurchaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   voucher?: boolean | Prisma.Purchase$voucherArgs<ExtArgs>
   items?: boolean | Prisma.Purchase$itemsArgs<ExtArgs>
+  rewardRedemption?: boolean | Prisma.Purchase$rewardRedemptionArgs<ExtArgs>
+  attendances?: boolean | Prisma.Purchase$attendancesArgs<ExtArgs>
+  organizerDecisionEmail?: boolean | Prisma.Purchase$organizerDecisionEmailArgs<ExtArgs>
+  attendanceCustomerRecords?: boolean | Prisma.Purchase$attendanceCustomerRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.PurchaseCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["purchase"]>
 
@@ -1543,6 +2183,10 @@ export type PurchaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   voucher?: boolean | Prisma.Purchase$voucherArgs<ExtArgs>
   items?: boolean | Prisma.Purchase$itemsArgs<ExtArgs>
+  rewardRedemption?: boolean | Prisma.Purchase$rewardRedemptionArgs<ExtArgs>
+  attendances?: boolean | Prisma.Purchase$attendancesArgs<ExtArgs>
+  organizerDecisionEmail?: boolean | Prisma.Purchase$organizerDecisionEmailArgs<ExtArgs>
+  attendanceCustomerRecords?: boolean | Prisma.Purchase$attendanceCustomerRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.PurchaseCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PurchaseIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1563,6 +2207,10 @@ export type $PurchasePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     event: Prisma.$EventPayload<ExtArgs>
     voucher: Prisma.$VoucherPayload<ExtArgs> | null
     items: Prisma.$PurchaseItemPayload<ExtArgs>[]
+    rewardRedemption: Prisma.$RewardRedemptionPayload<ExtArgs> | null
+    attendances: Prisma.$AttendancePayload<ExtArgs>[]
+    organizerDecisionEmail: Prisma.$OrganizerDecisionEmailPayload<ExtArgs> | null
+    attendanceCustomerRecords: Prisma.$AttendancePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1981,6 +2629,10 @@ export interface Prisma__PurchaseClient<T, Null = never, ExtArgs extends runtime
   event<T extends Prisma.EventDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventDefaultArgs<ExtArgs>>): Prisma.Prisma__EventClient<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   voucher<T extends Prisma.Purchase$voucherArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Purchase$voucherArgs<ExtArgs>>): Prisma.Prisma__VoucherClient<runtime.Types.Result.GetResult<Prisma.$VoucherPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.Purchase$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Purchase$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchaseItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  rewardRedemption<T extends Prisma.Purchase$rewardRedemptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Purchase$rewardRedemptionArgs<ExtArgs>>): Prisma.Prisma__RewardRedemptionClient<runtime.Types.Result.GetResult<Prisma.$RewardRedemptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  attendances<T extends Prisma.Purchase$attendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Purchase$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  organizerDecisionEmail<T extends Prisma.Purchase$organizerDecisionEmailArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Purchase$organizerDecisionEmailArgs<ExtArgs>>): Prisma.Prisma__OrganizerDecisionEmailClient<runtime.Types.Result.GetResult<Prisma.$OrganizerDecisionEmailPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  attendanceCustomerRecords<T extends Prisma.Purchase$attendanceCustomerRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Purchase$attendanceCustomerRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2469,6 +3121,92 @@ export type Purchase$itemsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.PurchaseItemScalarFieldEnum | Prisma.PurchaseItemScalarFieldEnum[]
+}
+
+/**
+ * Purchase.rewardRedemption
+ */
+export type Purchase$rewardRedemptionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RewardRedemption
+   */
+  select?: Prisma.RewardRedemptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RewardRedemption
+   */
+  omit?: Prisma.RewardRedemptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RewardRedemptionInclude<ExtArgs> | null
+  where?: Prisma.RewardRedemptionWhereInput
+}
+
+/**
+ * Purchase.attendances
+ */
+export type Purchase$attendancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Attendance
+   */
+  select?: Prisma.AttendanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Attendance
+   */
+  omit?: Prisma.AttendanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceInclude<ExtArgs> | null
+  where?: Prisma.AttendanceWhereInput
+  orderBy?: Prisma.AttendanceOrderByWithRelationInput | Prisma.AttendanceOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceScalarFieldEnum | Prisma.AttendanceScalarFieldEnum[]
+}
+
+/**
+ * Purchase.organizerDecisionEmail
+ */
+export type Purchase$organizerDecisionEmailArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrganizerDecisionEmail
+   */
+  select?: Prisma.OrganizerDecisionEmailSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrganizerDecisionEmail
+   */
+  omit?: Prisma.OrganizerDecisionEmailOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizerDecisionEmailInclude<ExtArgs> | null
+  where?: Prisma.OrganizerDecisionEmailWhereInput
+}
+
+/**
+ * Purchase.attendanceCustomerRecords
+ */
+export type Purchase$attendanceCustomerRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Attendance
+   */
+  select?: Prisma.AttendanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Attendance
+   */
+  omit?: Prisma.AttendanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceInclude<ExtArgs> | null
+  where?: Prisma.AttendanceWhereInput
+  orderBy?: Prisma.AttendanceOrderByWithRelationInput | Prisma.AttendanceOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceScalarFieldEnum | Prisma.AttendanceScalarFieldEnum[]
 }
 
 /**

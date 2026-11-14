@@ -74,3 +74,53 @@ export type Review = Prisma.ReviewModel
  * 
  */
 export type Voucher = Prisma.VoucherModel
+/**
+ * Model AuthSession
+ * 
+ */
+export type AuthSession = Prisma.AuthSessionModel
+/**
+ * Model AuthRefreshToken
+ * 
+ */
+export type AuthRefreshToken = Prisma.AuthRefreshTokenModel
+/**
+ * Model PasswordResetToken
+ * 
+ */
+export type PasswordResetToken = Prisma.PasswordResetTokenModel
+/**
+ * Model Referral
+ * 
+ */
+export type Referral = Prisma.ReferralModel
+/**
+ * Model PointGrant
+ * 
+ */
+export type PointGrant = Prisma.PointGrantModel
+/**
+ * Model RewardCoupon
+ * 
+ */
+export type RewardCoupon = Prisma.RewardCouponModel
+/**
+ * Model RewardRedemption
+ * 
+ */
+export type RewardRedemption = Prisma.RewardRedemptionModel
+/**
+ * Model PointAllocation
+ * 
+ */
+export type PointAllocation = Prisma.PointAllocationModel
+/**
+ * Model Attendance
+ * 
+ */
+export type Attendance = Prisma.AttendanceModel
+/**
+ * Model OrganizerDecisionEmail
+ * 
+ */
+export type OrganizerDecisionEmail = Prisma.OrganizerDecisionEmailModel

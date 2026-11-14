@@ -44,3 +44,12 @@ export const PurchaseStatus = {
 } as const
 
 export type PurchaseStatus = (typeof PurchaseStatus)[keyof typeof PurchaseStatus]
+
+
+export const RewardRedemptionStatus = {
+  RESERVED: 'RESERVED',
+  CONSUMED: 'CONSUMED',
+  RESTORED: 'RESTORED'
+} as const
+
+export type RewardRedemptionStatus = (typeof RewardRedemptionStatus)[keyof typeof RewardRedemptionStatus]

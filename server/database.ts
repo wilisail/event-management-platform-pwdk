@@ -144,7 +144,11 @@ export async function readPublishedEventById(eventId: string) {
       },
       ticketTypes: {
         select: {
+          id: true,
+          name: true,
+          description: true,
           price: true,
+          quota: true,
           availableSeats: true,
         },
       },
@@ -175,6 +179,14 @@ export async function readPublishedEventById(eventId: string) {
     availableSeats,
     organizerId: event.organizer.id,
     organizer: event.organizer.name,
+    ticketTypes: event.ticketTypes.map((ticket) => ({
+      id: ticket.id,
+      name: ticket.name,
+      description: ticket.description,
+      price: Number(ticket.price),
+      quota: ticket.quota,
+      availableSeats: ticket.availableSeats,
+    })),
   }
 }
 

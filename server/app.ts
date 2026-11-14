@@ -116,8 +116,12 @@ export function createApp(options: AppOptions = {}) {
     }
     if (origin) {
       res.set('Access-Control-Allow-Origin', origin)
+      res.set('Access-Control-Allow-Credentials', 'true')
       res.vary('Origin')
-      res.set('Access-Control-Allow-Headers', 'content-type,x-demo-persona')
+      res.set(
+        'Access-Control-Allow-Headers',
+        'content-type,x-demo-persona,x-temuevent-client,x-csrf-token',
+      )
       res.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
     }
     if (req.method === 'OPTIONS') {
