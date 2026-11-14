@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { AuthApiError, createAuthClient, safeReturnPath } from '../lib/auth-client'
+import { AuthApiError, createAuthClient, safeReturnPath, signedInReturnPath } from '../lib/auth-client'
 
 const user = { id: 'test-user', name: 'Browser User', email: 'browser@example.test', role: 'CUSTOMER', referralCode: 'CODE', profilePictureUrl: null }
 const ok = (data: unknown) => new Response(JSON.stringify({ success: true, data }), { status: 200 })
@@ -94,6 +94,18 @@ test('login can return to creation or a database event without permitting anothe
     '/%2f%2fevil.example', '/organizer%2fevents%2fnew', 'https://evil.example/organizer/events/new']) {
     assert.equal(safeReturnPath(path), '/account')
   }
+})
+
+test('customer sign-in leaves organizer destinations while preserving permitted event returns', () => {
+  for (const path of ['/organizer', '/organizer?page=2', '/organizer/events/new']) {
+    assert.equal(signedInReturnPath(path, 'CUSTOMER'), '/account')
+    assert.equal(signedInReturnPath(path, 'ORGANIZER'), path)
+  }
+  const review = '/events/22222222-2222-4222-8222-222222222222/review'
+  assert.equal(signedInReturnPath(review, 'CUSTOMER'), review)
+  assert.equal(signedInReturnPath(null, 'ORGANIZER'), '/organizer')
+  assert.equal(signedInReturnPath('https://other.example/organizer', 'CUSTOMER'), '/account')
+  assert.equal(signedInReturnPath('//other.example', 'ORGANIZER'), '/organizer')
 })
 
 test('signup/login use JSON, application header and browser-managed cookies', async () => {

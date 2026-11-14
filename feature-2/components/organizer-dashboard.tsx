@@ -32,7 +32,12 @@ const purchaseStatusLabel: Record<PurchaseStatus, string> = {
   CANCELED: 'Dibatalkan',
 }
 
-function TransactionDetail({ id, onRefreshList }: { id: string; onRefreshList: () => void }) {
+type ParticipantEvent = Pick<EventSummaryView, 'id' | 'name'>
+type ViewParticipants = (event: ParticipantEvent) => void
+
+function TransactionDetail({ id, onRefreshList, onViewParticipants }: {
+  id: string; onRefreshList: () => void; onViewParticipants: ViewParticipants
+}) {
   const { client } = useAuth()
   const [transaction, setTransaction] = useState<OrganizerTransactionDetail | null>(null)
   const [error, setError] = useState('')
@@ -65,6 +70,7 @@ function TransactionDetail({ id, onRefreshList }: { id: string; onRefreshList: (
     try {
       const result = await client.decideTransaction(id, decision)
       setDecisionNotice({ message: result.status === 'DONE' ? 'Pembayaran diterima.' : 'Pembayaran ditolak.', error: false })
+      if (result.status === 'DONE') onViewParticipants({ id: transaction.eventId, name: transaction.eventName })
       refresh()
     } catch (reason) {
       setDecisionNotice({ message: accountError(reason), error: true })
@@ -100,27 +106,33 @@ function TransactionDetail({ id, onRefreshList }: { id: string; onRefreshList: (
           <div><dt>Potongan poin</dt><dd>{money(transaction.pointsUsed)}</dd></div>
           <div><dt>Total transaksi</dt><dd>{money(transaction.totalPrice)}</dd></div>
         </dl>
-        <h4>Bukti pembayaran</h4>
+        <div className="transaction-proof"><h4>Bukti pembayaran</h4>
         <p>{transaction.proofUploadedAt
           ? `Tercatat diunggah pada ${dateTime(transaction.proofUploadedAt)}.`
           : 'Belum ada unggahan bukti pembayaran yang tercatat.'}</p>
         {transaction.proofUploadedAt && (transaction.proofAvailability === 'READY'
           ? <a className="secondary" href={`/api/organizer/transactions/${encodeURIComponent(transaction.id)}/proof`}
             target="_blank" rel="noopener noreferrer">Lihat bukti pembayaran</a>
-          : <p>Akses berkas bukti pembayaran belum terhubung.</p>)}
+          : <p>Akses berkas bukti pembayaran belum terhubung.</p>)}</div>
         {transaction.decisionAvailability === 'READY' && <div className="auth-actions">
           <button className="primary" disabled={deciding} onClick={() => void decide('ACCEPT')}>Terima pembayaran</button>
           <button className="secondary" disabled={deciding} onClick={() => void decide('REJECT')}>Tolak pembayaran</button>
           {deciding && <span role="status">Menyimpan keputusan…</span>}
         </div>}
         {transaction.decisionAvailability === 'UNAVAILABLE' && <p>Konfirmasi pembayaran belum tersedia.</p>}
+        {transaction.status === 'DONE' && <div className="auth-actions">
+          <button className="secondary" onClick={() => onViewParticipants({ id: transaction.eventId, name: transaction.eventName })}>
+            Lihat peserta event ini
+          </button>
+        </div>}
       </>}
   </section>
 }
 
-function TransactionList({ page, status, changePage, refreshStatistics, focusStatusFilter }: {
+function TransactionList({ page, status, changePage, refreshStatistics, focusStatusFilter, onViewParticipants }: {
   page: number; status: PurchaseStatus | ''; changePage: (page: number) => void
   refreshStatistics: () => void; focusStatusFilter: () => void
+  onViewParticipants: ViewParticipants
 }) {
   const { client } = useAuth()
   const [transactions, setTransactions] = useState<PageView<OrganizerTransactionView> | null>(null)
@@ -169,8 +181,8 @@ function TransactionList({ page, status, changePage, refreshStatistics, focusSta
     {selectedId && <>
       <TransactionDetail key={selectedId} id={selectedId} onRefreshList={() => {
         setRetry(value => value + 1); refreshStatistics()
-      }} />
-      <button className="secondary" onClick={() => {
+      }} onViewParticipants={onViewParticipants} />
+      <button className="secondary transaction-close" onClick={() => {
         setSelectedId(null)
         if (detailOpener.current?.isConnected) detailOpener.current.focus()
         else focusStatusFilter()
@@ -179,7 +191,9 @@ function TransactionList({ page, status, changePage, refreshStatistics, focusSta
   </>
 }
 
-function OrganizerTransactions({ refreshStatistics }: { refreshStatistics: () => void }) {
+function OrganizerTransactions({ refreshStatistics, onViewParticipants }: {
+  refreshStatistics: () => void; onViewParticipants: ViewParticipants
+}) {
   const [status, setStatus] = useState<PurchaseStatus | ''>('')
   const [page, setPage] = useState(1)
   const statusFilter = useRef<HTMLSelectElement>(null)
@@ -194,11 +208,12 @@ function OrganizerTransactions({ refreshStatistics }: { refreshStatistics: () =>
       </select></label>
     </div>
     <TransactionList key={`${status}:${page}`} status={status} page={page} changePage={setPage}
-      refreshStatistics={refreshStatistics} focusStatusFilter={() => statusFilter.current?.focus()} />
+      refreshStatistics={refreshStatistics} onViewParticipants={onViewParticipants}
+      focusStatusFilter={() => statusFilter.current?.focus()} />
   </section>
 }
 
-function OrganizerAttendees({ event }: { event: EventSummaryView }) {
+function OrganizerAttendees({ event, revision }: { event: ParticipantEvent; revision: number }) {
   const { client } = useAuth()
   const [attendees, setAttendees] = useState<PageView<AttendeePurchaseView> | null>(null)
   const [error, setError] = useState(''), [page, setPage] = useState(1), [retry, setRetry] = useState(0)
@@ -208,11 +223,12 @@ function OrganizerAttendees({ event }: { event: EventSummaryView }) {
 
   useEffect(() => {
     const abort = new AbortController()
+    setAttendees(null); setError('')
     client.get<PageView<AttendeePurchaseView>>('/api/organizer/events/' + encodeURIComponent(event.id) + '/attendees?page=' + page, abort.signal)
       .then(value => { if (!abort.signal.aborted) setAttendees(value) })
       .catch(reason => { if (!abort.signal.aborted) setError(accountError(reason)) })
     return () => abort.abort()
-  }, [client, event.id, page, retry])
+  }, [client, event.id, page, retry, revision])
 
   const refresh = () => { setAttendees(null); setError(''); setRetry(value => value + 1) }
   const mark = async (row: AttendeePurchaseView) => {
@@ -256,7 +272,17 @@ function OrganizerContent() {
   const [statisticsRevision, setStatisticsRevision] = useState(0)
   const [events, setEvents] = useState<PageView<EventSummaryView> | null>(null)
   const [eventError, setEventError] = useState(''), [eventPage, setEventPage] = useState(1), [eventRetry, setEventRetry] = useState(0)
-  const [selected, setSelected] = useState<EventSummaryView | null>(null)
+  const [selected, setSelected] = useState<ParticipantEvent | null>(null)
+  const [participantRevision, setParticipantRevision] = useState(0)
+  const participantHeading = useRef<HTMLHeadingElement>(null)
+  const viewParticipants: ViewParticipants = event => {
+    setSelected(event)
+    setParticipantRevision(value => value + 1)
+    requestAnimationFrame(() => {
+      participantHeading.current?.focus()
+      participantHeading.current?.scrollIntoView({ block: 'start' })
+    })
+  }
   const createEventUrl = user?.role === 'ORGANIZER' && process.env.NEXT_PUBLIC_F1_MANAGEMENT_READY === 'true'
     && process.env.NEXT_PUBLIC_F1_ORIGIN ? featureOneUrl('/organizer/events/new') : null
   useEffect(() => {
@@ -284,19 +310,28 @@ function OrganizerContent() {
             <div><span className="badge">{event.status}</span><h3>{event.name}</h3><p>{date(event.startAt)} · {event.location}</p></div>
             <div className="auth-actions">
               {eventUrl && <a className="link" href={eventUrl}>Lihat halaman publik</a>}
-              <button className={selected?.id === event.id ? 'primary' : 'secondary'} onClick={() => setSelected(event)}>Lihat peserta</button>
+              <button className={selected?.id === event.id ? 'primary' : 'secondary'}
+                aria-pressed={selected?.id === event.id} aria-controls="organizer-participants"
+                aria-label={`Lihat peserta: ${event.name}`} onClick={() => viewParticipants(event)}>Lihat peserta</button>
             </div>
           </article>
         })}</div>}
       {events && <Pager page={eventPage} pages={events.pagination.totalPages} change={setEventPage} />}
     </section>
-    <section className="panel organizer-attendees" aria-label="Daftar peserta"><p className="eyebrow">PENDAFTARAN TERKONFIRMASI</p>
-      <h2>{selected ? selected.name : 'Daftar peserta'}</h2>
-      {selected ? <OrganizerAttendees key={selected.id} event={selected} />
-        : <p>Pilih event untuk melihat pendaftaran yang telah terkonfirmasi.</p>}
+    <section id="organizer-participants" className="panel organizer-attendees" aria-label="Daftar peserta"><p className="eyebrow">PENDAFTARAN TERKONFIRMASI</p>
+      <div className="section-title"><h2 className="participant-heading" ref={participantHeading} tabIndex={-1}>
+        {selected ? selected.name : 'Daftar peserta'}</h2>
+        {selected && <button className="secondary" onClick={() => setParticipantRevision(value => value + 1)}>Perbarui peserta</button>}
+      </div>
+      {selected ? <OrganizerAttendees key={selected.id} event={selected} revision={participantRevision} />
+        : <div className="participant-selection"><p>Belum ada event dipilih. Klik <strong>Lihat peserta</strong> pada event di atas.
+          Membuka detail transaksi tidak memilih daftar peserta.</p></div>}
       <p className="help">Daftar ini menampilkan pendaftaran terkonfirmasi. Kehadiran di lokasi dicatat terpisah.</p>
     </section>
-    <OrganizerTransactions refreshStatistics={() => setStatisticsRevision(value => value + 1)} />
+    <OrganizerTransactions onViewParticipants={viewParticipants} refreshStatistics={() => {
+      setStatisticsRevision(value => value + 1)
+      setParticipantRevision(value => value + 1)
+    }} />
     <OrganizerStatistics revision={statisticsRevision} />
   </main>
 }

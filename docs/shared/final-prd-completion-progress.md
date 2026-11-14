@@ -1,10 +1,10 @@
 # TemuEvent — final PRD completion progress
 
-Updated: **13 November 2026, Asia/Jakarta**. Submission/video target: **17 November**.
+Updated: **14 November 2026, Asia/Jakarta**. Submission/video target: **17 November**.
 
 ## Current checkpoint
 
-**A, B and C are complete for the agreed scope.** Live hosted proof permissions, approve/reject with reward accounting, duplicate prevention, attendance/reviews and scheduled expiry/cancellation passed. Temporary verification records were cleaned up; two purchases and their private test proofs remain for D. **Next: D, Wili's browser/inbox acceptance — 25–40 minutes.** [Exact references, links and walkthrough](final-c-hosted-acceptance.md). No 100% combined-project acceptance is claimed.
+**A, B and C are complete for the agreed scope; D is partially accepted.** On 14 November, Wili confirmed Organizer approval/rejection, Rp45,000 revenue, the original Customer's 5,000-point balance and both decision emails. The approval is DONE and the rejection is REJECTED. D exposed overlapping links, unclear participant selection, stale participant refresh, unreadable QA proofs and a Customer return-route issue. [Correction record and remaining checks](final-d-browser-corrections.md). Attendance/review, referred-Customer login/coupon UX, session separation and evaluator access still require owner acceptance. No 100% combined-project acceptance is claimed.
 
 This is the agreed A–F plan. Keep the scope and original working-time estimates stable; update the status and evidence as each block is completed.
 
@@ -13,7 +13,7 @@ This is the agreed A–F plan. Keep the scope and original working-time estimate
 | A — synchronize completed F2 work | Current F2 source and Rounds 5–7 records reach the appropriate submission/reference branches through reviewed PRs and passing CI. | 15–25 min | Wili | **Complete for this source checkpoint** |
 | B — required live F2 connections | Bind private-proof reading, real Organizer approve/reject, reward effects and queued email; close the necessary shared deadline/restoration connections. | 40–70 min | Wili | **Complete:** merged, CI green, both Previews READY and scheduled worker verified. [Companion](final-b-live-f2-reference.md) |
 | C — controlled purchases and integration checks | Prepare controlled F1-contract inputs and private test proofs; exercise genuine persisted F2 outcomes and provide exact hosted links for acceptance. | 20–35 min | Wili | **Complete:** hosted outcomes passed and manual fixtures retained. [Evidence and D guide](final-c-hosted-acceptance.md) |
-| D — combined acceptance | Owner browser/inbox checks for proof, decisions, status/rewards, attendance/review handoff, sessions and evaluator access. | 25–40 min | Wili | Ready; browser/inbox/evaluator acceptance remains pending |
+| D — combined acceptance | Owner browser/inbox checks for proof, decisions, status/rewards, attendance/review handoff, sessions and evaluator access. | 25–40 min | Wili | **Partially accepted, 14 November:** decisions, revenue, points and inbox observed; corrections and remaining attendance/review/session/evaluator checks tracked below |
 | E — mechanics learning | Explain actual auth/roles, tables, API/database requests, statuses, rewards and background notifications; practise evaluation questions. | 75–120 min | Wili | Pending final learning walkthrough |
 | F — video preparation | Prepare the demonstration sequence, record working F2 behavior and verify the final video. | 45–75 min | Wili | Pending accepted demonstration |
 
@@ -73,7 +73,7 @@ C exceeded the original planning range because of test-access setup and preparat
 
 C seeds representative F1 inputs and verifies genuine F2 outputs. It is functional/integration testing, followed by D's user acceptance; it does not itself establish TDD or complete F1 checkout/proof upload. Extended multi-session concurrency work remains outside this pass.
 
-Rizky retains checkout/proof submission, event edit/delete and voucher/draft implementation. The fetched `feature-1` head remains `c497ddf04a56a03295571628471e3e4d8429f487`; C does not edit it.
+Rizky retains checkout/proof submission, event edit/delete and voucher/draft implementation. At the historical C checkpoint, `feature-1` was `c497ddf04a56a03295571628471e3e4d8429f487`. A newer `3ea06774a8461d649943fb95fc1f0c97af3f192e` push, **14 November, 20:19 WIB**, is titled “Adding Transaction Page Mockup”. It is not merged by the D correction pass and does not by itself certify working checkout.
 
 ## Mechanics of A
 
