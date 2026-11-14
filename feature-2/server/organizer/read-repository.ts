@@ -12,14 +12,14 @@ const pagination = (page: number, pageSize: number, total: number) => ({
 })
 
 const transactionSelect = {
-  id: true, reference: true, status: true, totalPrice: true, createdAt: true,
+  id: true, reference: true, eventId: true, status: true, totalPrice: true, createdAt: true,
   event: { select: { name: true } }, customer: { select: { name: true } },
 } satisfies Prisma.PurchaseSelect
 
 function transactionView(purchase: Prisma.PurchaseGetPayload<{ select: typeof transactionSelect }>) {
   return {
     id: purchase.id, reference: purchase.reference, status: purchase.status,
-    eventName: purchase.event.name, customerName: purchase.customer.name,
+    eventId: purchase.eventId, eventName: purchase.event.name, customerName: purchase.customer.name,
     totalPrice: integerIdr(purchase.totalPrice), createdAt: purchase.createdAt.toISOString(),
   }
 }
