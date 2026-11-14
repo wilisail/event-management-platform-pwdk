@@ -148,7 +148,11 @@ export async function readPublishedEventById(eventId: string, db = databaseClien
       },
       ticketTypes: {
         select: {
+          id: true,
+          name: true,
+          description: true,
           price: true,
+          quota: true,
           availableSeats: true,
         },
       },
@@ -183,6 +187,14 @@ export async function readPublishedEventById(eventId: string, db = databaseClien
     rating: event.reviews.length ? event.reviews.reduce((sum, review) => sum + review.rating, 0) / event.reviews.length : null,
     reviewCount: event.reviews.length,
     organizerPicture: event.organizer.profilePictureKey ? `/api/organizers/${event.organizer.id}/picture` : null,
+    ticketTypes: event.ticketTypes.map((ticket) => ({
+      id: ticket.id,
+      name: ticket.name,
+      description: ticket.description,
+      price: Number(ticket.price),
+      quota: ticket.quota,
+      availableSeats: ticket.availableSeats,
+    })),
   }
 }
 

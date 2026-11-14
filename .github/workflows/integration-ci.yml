@@ -61,3 +61,4 @@ jobs:
           npm --prefix feature-2 exec -- playwright install chromium --only-shell --with-deps
           npm run start:web > /tmp/temuevent-combined-web.log 2>&1 &
           QA_ORIGIN=http://127.0.0.1:3000 npm --prefix feature-2 run qa:layout
+          QA_ORIGIN=http://127.0.0.1:3000 node scripts/verify-f1-submission.mjs
