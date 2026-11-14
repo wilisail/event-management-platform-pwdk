@@ -1,4 +1,4 @@
-import type { AttendanceView, EventReviewEligibility, EventReviewView, LoginRequest, LoginSuccess, OrganizerDecision, OrganizerDecisionResult, RegistrationRequest, RegistrationSuccess, UserView } from '../contracts/types'
+import type { AttendanceView, EventReviewEligibility, EventReviewView, LoginRequest, LoginSuccess, OrganizerDecision, OrganizerDecisionResult, RegistrationRequest, RegistrationSuccess, Role, UserView } from '../contracts/types'
 
 export class AuthApiError extends Error {
   constructor(public readonly status: number, public readonly code: string, message: string) {
@@ -24,6 +24,14 @@ export function safeReturnPath(value: string | null | undefined, fallback = '/ac
     return url.origin === 'https://temuevent.invalid' && allowed
       ? url.pathname + url.search : fallback
   } catch { return fallback }
+}
+
+/** Preserve a safe return destination only when the signed-in role can use it. */
+export function signedInReturnPath(value: string | null | undefined, role: Role): string {
+  const target = safeReturnPath(value, role === 'ORGANIZER' ? '/organizer' : '/account')
+  const pathname = new URL(target, 'https://temuevent.invalid').pathname
+  return role === 'CUSTOMER' && (pathname === '/organizer' || pathname.startsWith('/organizer/'))
+    ? '/account' : target
 }
 
 export function createAuthClient(options: Options = {}) {
