@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-14",
+  "reviewedCommit": "6518bef88ffe65ef2379802af7982e234f81c48c",
+  "applicationTests": 167,
+  "integrationTests": 6,
+  "browser": {
+    "mode": "isolated mocked API on localhost; no live writes",
+    "builds": [
+      "standalone F2",
+      "combined"
+    ],
+    "widths": [
+      1280,
+      360,
+      320
+    ],
+    "passed": [
+      "approval selects transaction event by ID",
+      "already selected participant list refreshes",
+      "proof, decision and return controls do not overlap",
+      "customer next=/organizer returns to /account",
+      "deliberate Customer Organizer visit retains guard",
+      "signup return link layout",
+      "no page overflow"
+    ]
+  },
+  "hosted": {
+    "combinedDeployment": "dpl_4aKk5XM7tG3awHuQwX9vcHy5b3L2",
+    "standaloneDeployment": "dpl_4a9tE42eX3e24K1Ta2Uk29K23Spo",
+    "healthStatus": [
+      200,
+      200
+    ],
+    "readinessStatus": [
+      200,
+      200
+    ],
+    "readOnlyBrowserObserved": [
+      "one confirmed participant: original Customer",
+      "one ticket, IDR 45000",
+      "DONE transaction detail",
+      "readable owned private proof"
+    ]
+  },
+  "proofRepair": {
+    "passed": true,
+    "operation": "repair",
+    "objects": [
+      {
+        "label": "accept",
+        "before": "e9376618076b9b45c1dc2397610c123d30146a029880cf0a2e9d72c5f905dac6",
+        "expected": "21a746eabb29bbfb02a820817823b28e8b8d1e21ca08970c839895614f52ab4a",
+        "actual": "21a746eabb29bbfb02a820817823b28e8b8d1e21ca08970c839895614f52ab4a",
+        "bytes": 27169,
+        "repaired": true
+      },
+      {
+        "label": "reject",
+        "before": "e9376618076b9b45c1dc2397610c123d30146a029880cf0a2e9d72c5f905dac6",
+        "expected": "17025481fb2d48e6e13b3d69d1659731fb54c3a042f549255db9964040155bff",
+        "actual": "17025481fb2d48e6e13b3d69d1659731fb54c3a042f549255db9964040155bff",
+        "bytes": 27330,
+        "repaired": true
+      }
+    ]
+  },
+  "preserved": {
+    "purchaseRows": true,
+    "accountRowsIncludingCredentials": true,
+    "rewardRedemptions": true,
+    "eventRow": true,
+    "ticketRows": true,
+    "attendanceCount": 0,
+    "reviewCount": 0
+  },
+  "manualAcceptance": "partial; attendance/review, referred Customer coupon UX, session separation and evaluator access remain",
+  "passwordReset": "deferred by owner"
+}
