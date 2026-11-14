@@ -32,7 +32,7 @@ try {
         detailReads++
         return route.fulfill({ json: { success: true, data: event } })
       }
-      if (url.pathname === '/api/me') return route.fulfill({ status: 401, json: { success: false, code: 'UNAUTHORIZED' } })
+      if (['/api/me', '/api/auth/csrf'].includes(url.pathname)) return route.fulfill({ status: 401, json: { success: false, code: 'UNAUTHORIZED' } })
       unexpected.push(url.pathname)
       return route.fulfill({ status: 500, json: { success: false } })
     })
