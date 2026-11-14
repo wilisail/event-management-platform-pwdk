@@ -23,4 +23,18 @@ Local checks: combined and standalone F2 typechecks; combined production build; 
 
 Integration CI also runs the existing responsive Organizer/account regression and a new isolated F1 browser flow at **1280, 360 and 320 px**. The F1 check verifies same-origin event reads, ticket seat caps, the sample transaction status/file flow, reset on reload, and zero purchase/proof writes. See the integration PR checks for their final execution result.
 
-The standalone F2 application runtime and database schema are unchanged by this merge. Its browser harness now measures document coordinates atomically, so focus-induced smooth scrolling cannot make separately sampled controls appear to overlap. The overlap assertions remain enforced. The QA release, if updated, uses the reviewed integration commit; Production and the standalone scheduled worker are separate from this F1 checkpoint.
+The standalone F2 application runtime and database schema are unchanged by this merge. Its browser harness now measures document coordinates atomically, so focus-induced smooth scrolling cannot make separately sampled controls appear to overlap. The overlap assertions remain enforced. The published QA release is recorded below; Production and the standalone scheduled worker are separate from this F1 checkpoint.
+
+## Published checkpoint
+
+[PR #95](https://github.com/wilisail/event-management-platform-pwdk/pull/95) is merged into `integration` at `5270be329adc8fd72c0d1cd293e640031ca2e209`. The reviewed head is `fd633a13e0bdeb1b5202ffe9680022712ff153fe`; both commits have the same complete source tree, `369fd4ed9ef9245249dd7e802b12680c2e31a237`.
+
+Both final pipelines passed: [Integration CI #34](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/43614854591) and [Feature 2 CI #49](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/43614854598). Their browser results passed all three viewport widths for F2 layout/participant/session behavior and the F1 same-origin ticket selection, seat cap and sample transaction flow. Preview writes remained zero.
+
+The combined QA alias now points to READY Preview `dpl_JBXJ3Kzqj4SVB3UNm8w4Pyrtgmxv`, built from exact reviewed head `fd633a13e0bdeb1b5202ffe9680022712ff153fe` with Next.js and Node 22. Health, database readiness, event detail and transaction-preview requests returned HTTP 200 before alias assignment. After assignment, alias ownership, readiness and the labelled transaction page were checked again successfully.
+
+- [Combined QA dashboard](https://temuevent-combined-qa-andor2.vercel.app/organizer)
+- [QA event ticket selection](https://temuevent-combined-qa-andor2.vercel.app/events/9d9339b2-adb3-4f23-b2ab-fc296391201d/tickets)
+- [Sample transaction states](https://temuevent-combined-qa-andor2.vercel.app/transactions/preview)
+
+The existing event still reports its Rp50,000 ticket and 39/40 availability. This pass performed hosted reads only; it created no live purchase, proof, attendance, review, reward redemption or notification. Production, the standalone F2 worker alias and scheduler settings were not changed. D remains partially accepted, and F1 persisted checkout/proof submission remains outstanding.
