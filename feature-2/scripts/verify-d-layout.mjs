@@ -40,7 +40,7 @@ try {
       const request = route.request(), url = new URL(request.url()), path = url.pathname
       let data, code = 200
       if (path === '/api/me') { data = { ...user, role }; if (!signedIn) code = 401 }
-      else if (path === '/api/auth/csrf') data = { csrfToken: 'local-qa-csrf' }
+      else if (path === '/api/auth/csrf') { data = { csrfToken: 'local-qa-csrf' }; if (!signedIn) code = 401 }
       else if (path === '/api/auth/login') { signedIn = true; data = { user: { ...user, role } } }
       else if (path === '/api/auth/register') data = { user: { ...user, role: 'CUSTOMER' } }
       else if (path === '/api/organizer/events') data = pageOf([{ ...event, id: other, name: 'Different event' }, event])
