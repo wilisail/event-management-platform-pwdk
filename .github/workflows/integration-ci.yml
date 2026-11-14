@@ -56,3 +56,8 @@ jobs:
       - run: node --check scripts/verify-round7-hosted.mjs
         working-directory: database
       - run: npm run build
+      - name: Verify combined account and Organizer interactions
+        run: |
+          npm --prefix feature-2 exec -- playwright install chromium --only-shell --with-deps
+          npm run start:web > /tmp/temuevent-combined-web.log 2>&1 &
+          QA_ORIGIN=http://127.0.0.1:3000 npm --prefix feature-2 run qa:layout
