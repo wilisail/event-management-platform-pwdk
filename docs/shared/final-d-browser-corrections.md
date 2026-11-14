@@ -6,12 +6,12 @@ D is **partially accepted**. Wili's screenshots demonstrate real hosted decision
 
 | Observation | Diagnosis and correction | Acceptance status |
 | --- | --- | --- |
-| Proof/back/signup controls overlap text | Shared padded anchor controls had no layout box. Shared F2 controls now use inline-flex; proof text and actions have separate rows. Styles stay inside `.f2-ui`. | Responsive browser regression covers 1280, 360 and 320 px in standalone and combined builds; final hosted owner check remains. |
-| Participant section still says to choose an event | The screenshot shows no participant event selected. The database contains one DONE purchase/ticket for the QA event. There was also a real refresh gap after a decision. Buttons now identify the event, approval selects it by transaction event ID, and the list refreshes after decisions. DONE details have a participant shortcut and the list has a refresh button. | Backend registration exists; attendance remains unmarked. |
+| Proof/back/signup controls overlap text | Shared padded anchor controls had no layout box. Shared F2 controls now use inline-flex; proof text and actions have separate rows. Styles stay inside `.f2-ui`. | Responsive browser regression passed at 1280, 360 and 320 px in standalone and combined builds. The corrected hosted layout was inspected; Wili's final acceptance remains. |
+| Participant section still says to choose an event | The screenshot shows no participant event selected. The database contains one DONE purchase/ticket for the QA event. There was also a real refresh gap after a decision. Buttons now identify the event, approval selects it by transaction event ID, and the list refreshes after decisions. DONE details have a participant shortcut and the list has a refresh button. | Confirmed in the hosted browser: Xu Harga, one ticket, Rp45,000. Attendance remains unmarked. |
 | Original Customer has 5,000 points | Initial referral grant 10,000 minus 5,000 consumed by the DONE purchase. The first Customer's zero coupon count is expected. | Screenshot and backend agree. Full event-to-payment learning flow is deferred. |
 | Both decision messages reach one inbox | Rejection uses the referred account's Gmail `+` alias, which reaches the same mailbox. References distinguish the two purchases. | Both actual inbox messages observed; no new notification was sent by this correction pass. |
 | Customer sees 403 after signing in from an Organizer link | Role guard worked, but login reused the Organizer return path. Login now returns that Customer to `/account`; deliberately opening an Organizer page still enforces the guard. | Role-aware return cases tested; owner session walkthrough remains. |
-| Proof image contains rectangles | Server-side SVG text was rendered without a usable font. The maintenance generator now uses a bundled licensed font. Only the two controlled private QA PNGs were replaced and read back with matching SHA-256 values. | Readable replacement visually checked; owner can reopen the same proof links. |
+| Proof image contains rectangles | Server-side SVG text was rendered without a usable font. The maintenance generator now uses a bundled licensed font. Only the two controlled private QA PNGs were replaced and read back with matching SHA-256 values. | Replacement readback hashes match. The live owned-proof endpoint was opened in the hosted browser and displays readable text. |
 | Forgotten referred-account password | The account exists; its password is hashed and cannot be recovered as plaintext. | Reset remains last/later, as requested. No credential changed. |
 
 ## Preserved manual outcomes
@@ -26,6 +26,25 @@ D is **partially accepted**. Wili's screenshots demonstrate real hosted decision
 [Correction PR #89](https://github.com/wilisail/event-management-platform-pwdk/pull/89). F2 typecheck and **167 application tests** pass locally; the combined typecheck and **six integration tests** pass. CI additionally builds both apps, replays isolated database checks and runs the rendered browser regression. The browser regression uses isolated API fixtures on localhost and sends no real email or account mutations. It does not substitute for Wili's hosted acceptance.
 
 The proof renderer is a maintenance/test utility, separate from normal API routes. Its explicit font file avoids dependence on server fonts and makes distinct purchase references render distinct glyphs. Existing private proof authorization, file validation and no-store headers remain enforced. Original fixture hashes were identical despite distinct references; the replacement hashes are distinct and match readback.
+
+## Published correction checkpoint
+
+All correction PRs are merged and their required CI is green:
+
+| Branch | PR | Merge | Passing checks |
+| --- | --- | --- | --- |
+| `integration` | [#89](https://github.com/wilisail/event-management-platform-pwdk/pull/89) | `6518bef88ffe65ef2379802af7982e234f81c48c` | [F2](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/43607222585), [Integration](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/43607222584) |
+| `main` | [#90](https://github.com/wilisail/event-management-platform-pwdk/pull/90) | `58772afafb2c9329d81a0a3143b669b76548bda0` | [F2](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/43607339937) |
+| `feature-2` | [#91](https://github.com/wilisail/event-management-platform-pwdk/pull/91) | `025c49596ab24cf0d175dad68258ba4ba72b0a27` | [F2](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/43607407749) |
+
+Both corrected Node 22 / Next.js Previews were built from exact reviewed integration merge `6518bef88ffe65ef2379802af7982e234f81c48c`. Health and database readiness returned HTTP 200 before the existing aliases were reassigned:
+
+- Combined: `dpl_4aKk5XM7tG3awHuQwX9vcHy5b3L2`, [Organizer dashboard](https://temuevent-combined-qa-andor2.vercel.app/organizer).
+- Standalone F2/worker: `dpl_4a9tE42eX3e24K1Ta2Uk29K23Spo`, [account entry](https://temuevent-f2-qa-andor2.vercel.app/account).
+
+Production and deployment protection were not changed. The scheduler retains its existing alias and credentials. Preserved purchase, account, redemption, event and ticket fingerprints match the pre-correction baseline. No attendance, review, password or decision email was added. The temporary proof-only repair is bounded to its two fixed QA keys and expires on 14 November at 18:00 UTC; it is not a normal product endpoint.
+
+The actual hosted browser confirmed the selected participant row and completed transaction, with a readable private proof at the existing owned endpoint. These read-only inspections supplement the isolated browser regression; Wili still owns final user acceptance. [Sanitized correction evidence](evidence/final-d-corrections-2026-11-14.json).
 
 ## Resume D after the corrected release
 
