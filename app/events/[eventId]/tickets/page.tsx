@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { use, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import {
     ArrowLeft,
     CalendarDays,
@@ -17,33 +17,9 @@ import {
     Wallet,
     X,
 } from "lucide-react";
-import { events, formatPrice } from "@/lib/events";
+import { formatPrice, type ApiEvent } from "@/lib/events";
 import { SiteHeader } from "@/components/site-header";
 
-type TicketChoice = {
-    id: "regular" | "workshop";
-    name: string;
-    description: string;
-    price: number;
-    available: number;
-};
-
-const choices: TicketChoice[] = [
-    {
-        id: "regular",
-        name: "Regular Pass",
-        description: "Akses ke area utama festival.",
-        price: 150000,
-        available: 40,
-    },
-    {
-        id: "workshop",
-        name: "Workshop Pass",
-        description: "Akses festival plus satu workshop brewing pilihan.",
-        price: 250000,
-        available: 12,
-    },
-];
 
 const rewardCoupons = [
     {
@@ -66,42 +42,61 @@ export default function TicketPage({
     params: Promise<{ eventId: string }>;
 }) {
     const { eventId } = use(params);
-    // The F1 prototype below uses numeric fixtures. Database events must never
-    // fall into its simulated payment or report a published event as missing.
-    if (/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(eventId)) {
-        return <div className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
-            <SiteHeader view="checkout" />
-            <main className="mx-auto max-w-2xl px-5 py-12">
-                <h1 className="text-2xl font-black">Pembelian tiket belum tersedia</h1>
-                <p className="mt-4 leading-7 text-[#77738b]">Event sudah terbit. Alur pembelian dan konfirmasi pembayaran masih menunggu integrasi pada preview ini.</p>
-                <p className="mt-3 text-sm text-[#77738b]">Belum ada pesanan atau pembayaran yang dibuat.</p>
-                <Link href={`/events/${eventId}`} className="mt-6 inline-flex rounded-full bg-[#5148df] px-5 py-3 font-bold text-white">Kembali ke halaman event</Link>
-            </main>
-        </div>;
-    }
-    return <MockTicketPage params={params} />;
+    return <><SiteHeader view="checkout" /><TicketPreview key={eventId} eventId={eventId} /></>;
 }
 
-function MockTicketPage({
-    params,
-}: {
-    params: Promise<{ eventId: string }>;
-}) {
-    const { eventId: rawEventId } = use(params);
-    const event = events.find((item) => item.id === Number(rawEventId));
-    const [quantities, setQuantities] = useState<Record<string, number>>({
-        regular: 0,
-        workshop: 0,
-    });
+function TicketPreview({ eventId }: { eventId: string }) {
+    const [event, setEvent] = useState<ApiEvent | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    useEffect(() => {
+        const controller = new AbortController();
+        const fetchEvent = async () => {
+            try {
+                setLoading(true);
+                setError("");
+
+                const response = await fetch(
+                    `/api/events/${encodeURIComponent(eventId)}`,
+                    { signal: controller.signal },
+                );
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success || !result.data) {
+                    throw new Error(
+                        result.message || "Gagal mengambil data event.",
+                    );
+                }
+
+                setEvent(result.data);
+            } catch (err) {
+                if (controller.signal.aborted) return;
+                setError(
+                    err instanceof Error
+                        ? err.message
+                        : "Terjadi kesalahan saat mengambil data event.",
+                );
+            } finally {
+                if (!controller.signal.aborted) setLoading(false);
+            }
+        };
+
+        void fetchEvent();
+        return () => controller.abort();
+    }, [eventId]);
+    const [quantities, setQuantities] = useState<Record<string, number>>({});
     const [voucher, setVoucher] = useState("");
     const [voucherApplied, setVoucherApplied] = useState(false);
     const [voucherMessage, setVoucherMessage] = useState("");
+    const [checkoutMessage, setCheckoutMessage] = useState("");
     const [coupon, setCoupon] = useState("");
     const [couponApplied, setCouponApplied] = useState(false);
     const [couponMessage, setCouponMessage] = useState("");
     const [usePoints, setUsePoints] = useState(false);
     const [confirming, setConfirming] = useState(false);
     const [paymentStage, setPaymentStage] = useState(false);
+    const choices = event?.ticketTypes ?? [];
 
     const subtotal = useMemo(
         () =>
@@ -110,7 +105,7 @@ function MockTicketPage({
                     sum + choice.price * (quantities[choice.id] || 0),
                 0,
             ),
-        [quantities],
+        [choices, quantities],
     );
     const voucherDiscount = voucherApplied ? Math.round(subtotal * 0.1) : 0;
     const couponDiscount = couponApplied ? 25000 : 0;
@@ -130,12 +125,20 @@ function MockTicketPage({
         0,
     );
 
-    if (!event)
+    if (loading) {
+        return (
+            <main className="grid min-h-screen place-items-center bg-[#fcf9ff] p-5 text-[#11103d]">
+                <p className="font-semibold">Memuat detail event...</p>
+            </main>
+        );
+    }
+
+    if (error || !event) {
         return (
             <main className="grid min-h-screen place-items-center bg-[#fcf9ff] p-5 text-[#11103d]">
                 <div className="text-center">
                     <h1 className="text-2xl font-black">
-                        Event tidak ditemukan
+                        {error || "Event tidak ditemukan"}
                     </h1>
                     <Link
                         href="/"
@@ -146,12 +149,13 @@ function MockTicketPage({
                 </div>
             </main>
         );
+    }
 
     const updateQuantity = (id: string, delta: number) =>
         setQuantities((current) => ({
             ...current,
             [id]: Math.min(
-                choices.find((choice) => choice.id === id)?.available || 0,
+                choices.find((choice) => choice.id === id)?.availableSeats || 0,
                 Math.max(0, (current[id] || 0) + delta),
             ),
         }));
@@ -235,6 +239,9 @@ function MockTicketPage({
                         >
                             Kembali edit pesanan
                         </button>
+                        <Link href="/transactions/preview" className="mt-4 inline-flex rounded-xl px-5 py-3 text-sm font-bold text-[#5148df]">
+                            Lihat contoh status transaksi
+                        </Link>
                     </div>
                 </div>
             </main>
@@ -261,6 +268,9 @@ function MockTicketPage({
                             Demo frontend — belum membuat transaksi atau
                             pembayaran nyata.
                         </p>
+                        <p className="mt-2 text-sm text-[#77738b]">
+                            Jenis tiket memakai data event. Voucher, kupon, dan poin memakai data contoh.
+                        </p>
                     </div>
                     <div className="flex items-center gap-2 text-[11px] font-bold">
                         <span className="rounded-full bg-[#5148df] px-3 py-2 text-white">
@@ -280,8 +290,8 @@ function MockTicketPage({
                     <section className="space-y-5">
                         <div className="flex gap-4 rounded-2xl bg-white p-4 shadow-[0_8px_25px_rgba(64,45,120,.07)]">
                             <img
-                                src={event.image}
-                                alt=""
+                                src={event.image || undefined }
+                                alt={event.title}
                                 className="h-24 w-28 rounded-xl object-cover"
                             />
                             <div className="min-w-0">
@@ -294,11 +304,20 @@ function MockTicketPage({
                                 <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#77738b]">
                                     <span className="flex items-center gap-1">
                                         <CalendarDays size={13} />
-                                        {event.dateLabel}
+                                        {new Date(event.date).toLocaleDateString("id-ID", {
+                                            day: "numeric",
+                                            month: "long",
+                                            year: "numeric",
+                                            timeZone: "Asia/Jakarta",
+                                        })}
                                     </span>
                                     <span className="flex items-center gap-1">
                                         <Clock3 size={13} />
-                                        {event.time}
+                                        {new Date(event.date).toLocaleTimeString("id-ID", {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            timeZone: "Asia/Jakarta",
+                                        })}
                                     </span>
                                     <span className="flex items-center gap-1">
                                         <MapPin size={13} />
@@ -335,7 +354,7 @@ function MockTicketPage({
                                                 {choice.description}
                                             </p>
                                             <p className="mt-2 text-[11px] text-[#9a94ad]">
-                                                Tersedia {choice.available}{" "}
+                                                Tersedia {choice.availableSeats}{" "}
                                                 tiket
                                             </p>
                                         </div>
@@ -353,7 +372,7 @@ function MockTicketPage({
                                                 <Minus size={15} />
                                             </button>
                                             <span className="w-5 text-center text-sm font-black">
-                                                {quantities[choice.id]}
+                                                {quantities[choice.id] || 0}
                                             </span>
                                             <button
                                                 aria-label={`Tambah ${choice.name}`}
@@ -503,7 +522,7 @@ function MockTicketPage({
                                     >
                                         <span>
                                             {choice.name} ×{" "}
-                                            {quantities[choice.id]}
+                                            {quantities[choice.id] || 0}
                                         </span>
                                         <strong>
                                             {formatPrice(
@@ -524,7 +543,11 @@ function MockTicketPage({
                                 <span className="text-[#77738b]">
                                     Subtotal tiket
                                 </span>
-                                <strong>{formatPrice(subtotal)}</strong>
+                                <strong>
+                                    {subtotal === 0 && event.price !== 0
+                                        ? "Rp0"
+                                        : formatPrice(subtotal)}
+                                </strong>
                             </div>
                             {voucherApplied && (
                                 <div className="flex justify-between text-emerald-600">
@@ -574,21 +597,31 @@ function MockTicketPage({
                                 Total pembayaran
                             </span>
                             <strong className="text-2xl font-black text-[#5148df]">
-                                {formatPrice(total)}
+                                {total === 0 && event.price !== 0
+                                        ? "Rp0"
+                                        : formatPrice(total)}
                             </strong>
                         </div>
                         <button
-                            onClick={() =>
-                                itemCount
-                                    ? setConfirming(true)
-                                    : setVoucherMessage(
-                                          "Pilih minimal satu tiket untuk melanjutkan.",
-                                      )
-                            }
+                            onClick={() => {
+                                if (itemCount > 0) {
+                                    setCheckoutMessage("");
+                                    setConfirming(true);
+                                } else {
+                                    setCheckoutMessage(
+                                        "Pilih minimal satu tiket untuk melanjutkan.",
+                                    );
+                                }
+                            }}
                             className="mt-5 w-full rounded-xl bg-[#5148df] py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:bg-[#4039c9]"
                         >
-                            Continue to Payment
+                            Lihat pratinjau pembayaran
                         </button>
+                        {checkoutMessage && (
+                            <p className="mt-2 text-center text-xs font-bold text-rose-500">
+                                {checkoutMessage}
+                            </p>
+                        )}
                         <p className="mt-3 text-center text-[11px] leading-4 text-[#9a94ad]">
                             Harga transparan. Belum ada transaksi nyata.
                         </p>
@@ -633,7 +666,7 @@ function MockTicketPage({
                                     className="flex justify-between"
                                 >
                                     <span>
-                                        {choice.name} × {quantities[choice.id]}
+                                        {choice.name} × {quantities[choice.id] || 0}
                                     </span>
                                     <strong>
                                         {formatPrice(

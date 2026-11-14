@@ -75,6 +75,8 @@ C seeds representative F1 inputs and verifies genuine F2 outputs. It is function
 
 Rizky retains checkout/proof submission, event edit/delete and voucher/draft implementation. At the historical C checkpoint, `feature-1` was `c497ddf04a56a03295571628471e3e4d8429f487`. A newer `3ea06774a8461d649943fb95fc1f0c97af3f192e` push, **14 November, 20:19 WIB**, is titled “Adding Transaction Page Mockup”. It is not merged by the D correction pass and does not by itself certify working checkout.
 
+The subsequent F1 integration checkpoint is documented in [14 November submission integration](f1-submission-2026-11-14.md). It adds API-backed ticket selection and the sample transaction page while retaining the functional checkout/proof boundary; it does not change A–F acceptance status.
+
 ## Mechanics of A
 
 A branch identifies a saved code snapshot. A PR makes the proposed changes reviewable; CI installs and checks that proposed snapshot before merge. Merging puts the verified files into the target branch. A hosted deployment is a separate running release, so a successful source sync alone does not establish browser/inbox acceptance. The source hashes and linked checks above allow the next session to resume without recreating accepted samples or repeating completed account tests.

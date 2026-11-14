@@ -20,8 +20,13 @@ const purchase = '33333333-3333-4333-8333-333333333333'
 const user = { id: other, name: 'QA Organizer', email: 'qa@example.test', role: 'ORGANIZER', profilePictureUrl: null, referralCode: 'QA1234567890' }
 const event = { id, name: 'QA Participant Event', category: 'Learning', location: 'Jakarta', venue: 'QA', startAt: '2026-11-13T00:00:00Z', endAt: '2026-11-13T02:00:00Z', status: 'PUBLISHED' }
 const pageOf = items => ({ items, pagination: { page: 1, pageSize: 10, total: items.length, totalPages: items.length ? 1 : 0 } })
-const box = locator => locator.boundingBox().then(value => { assert(value); return value })
-const separate = (a,b,label) => assert(a.y+a.height <= b.y+1 || b.y+b.height <= a.y+1 || a.x+a.width <= b.x+1 || b.x+b.width <= a.x+1, label)
+// Focus can smoothly scroll the page between samples. Compare document coordinates,
+// reading each rectangle and its scroll offsets in the same browser evaluation.
+const box = locator => locator.evaluate(element => {
+  const rect = element.getBoundingClientRect()
+  return { x: rect.x + window.scrollX, y: rect.y + window.scrollY, width: rect.width, height: rect.height }
+}).then(value => { assert(value.width > 0 && value.height > 0); return value })
+const separate = (a,b,label) => assert(a.y+a.height <= b.y+1 || b.y+b.height <= a.y+1 || a.x+a.width <= b.x+1 || b.x+b.width <= a.x+1, `${label}: ${JSON.stringify({ a, b })}`)
 try {
   for (const width of [1280, 360, 320]) {
     const context = await browser.newContext({ viewport: { width, height: 900 } })

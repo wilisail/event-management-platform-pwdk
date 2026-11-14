@@ -79,3 +79,65 @@ export interface ApiFailure {
 }
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiFailure
+
+
+export interface PageView<T> {
+  items: T[]
+  pagination: {
+    page: number
+    pageSize: number
+    total: number
+    totalPages: number
+  }
+}
+
+export interface WalletPointGrantView {
+  id: string
+  amount: number
+  remainingAmount: number
+  creditedAt: string
+  expiresAt: string
+  status: 'AVAILABLE' | 'EXPIRED' | 'EMPTY' | 'PENDING'
+}
+
+export interface WalletCouponView {
+  id: string
+  code: string
+  discountType: 'FIXED_AMOUNT'
+  discountValue: number
+  issuedAt: string
+  expiresAt: string
+  status: 'AVAILABLE' | 'RESERVED' | 'USED' | 'EXPIRED' | 'PENDING'
+}
+
+export interface AccountWalletView {
+  userId: string
+  asOf: string
+  currency: 'IDR'
+  availablePoints: number
+  availableCouponCount: number
+  pointValueIdr: 1
+  pointGrants: PageView<WalletPointGrantView>
+  coupons: PageView<WalletCouponView>
+}
+
+/** One confirmed purchase, not an attendance/check-in record. */
+export interface AttendeePurchaseView {
+  purchaseId: string
+  purchaseReference: string
+  customerId: string
+  name: string
+  ticketQuantity: number
+  totalPaid: number
+}
+
+export interface EventSummaryView {
+  id: string
+  name: string
+  category: string
+  location: string
+  venue: string
+  startAt: string
+  endAt: string
+  status: 'DRAFT' | 'PUBLISHED' | 'CANCELED'
+}
