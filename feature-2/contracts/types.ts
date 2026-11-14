@@ -209,6 +209,7 @@ export interface OrganizerDecisionResult { id: string; status: 'DONE' | 'REJECTE
 export interface OrganizerTransactionView {
   id: string
   reference: string
+  eventId: string
   eventName: string
   customerName: string
   status: PurchaseStatus

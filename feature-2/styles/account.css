@@ -28,12 +28,7 @@
 .panel.auth-card { padding: 32px; }
 .auth-intro, .auth-switch { color: var(--muted); font-size: 13px; }
 .auth-switch { margin: 23px 0 0; }
-.auth-card [role='status'] > .primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 16px;
-}
+.auth-card [role='status'] > .primary { margin-top: 16px; }
 .auth-error { border: 1px solid #f2cbd5; background: #fff4f6; color: #922b47; padding: 14px; border-radius: var(--control-radius); }
 .auth-error > p { margin: 0 0 12px; }
 .profile-form .auth-submit { width: 100%; }
@@ -52,6 +47,17 @@ button:disabled, input:disabled { cursor: wait; opacity: .65; }
 .transaction-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; }
 .transaction-filter select { border: 1px solid var(--border); border-radius: var(--control-radius); padding: 8px; }
 .organizer-transaction-detail { margin-top: 22px; border-top: 1px solid var(--border); padding-top: 18px; }
+.organizer-transaction-detail { display: grid; gap: 16px; align-items: start; }
+.organizer-transaction-detail > p, .transaction-proof > p { margin: 0; }
+.organizer-transaction-detail > .badge { justify-self: start; }
+.transaction-proof { display: grid; gap: 10px; justify-items: start; }
+.transaction-close { margin-top: 16px; }
+.participant-heading { scroll-margin-top: 24px; }
+.participant-heading:focus { outline: none; }
+.participant-selection { border: 1px solid var(--border); border-radius: var(--control-radius); padding: 16px; margin-top: 14px; }
+.participant-selection > p { margin: 0; }
+.owned-event > div { min-width: 0; }
+.owned-event h3, .organizer-transaction-detail h3 { overflow-wrap: anywhere; }
 .transaction-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin: 16px 0; }
 .transaction-fields dt { color: var(--muted); font-size: 12px; }
 .transaction-fields dd { margin: 4px 0 0; font-weight: 600; }
@@ -453,14 +459,24 @@ h3 {
 .profile-message { margin-bottom: 20px; }
 .primary,
 .secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  gap: 8px;
   width: fit-content;
   max-width: 100%;
+  flex-shrink: 0;
   border: 1px solid var(--primary);
   border-radius: var(--control-radius);
   padding: 12px 18px;
   min-height: 44px;
   font-weight: 700;
   font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .primary {
   background: var(--primary);

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRef, useState, type FormEvent } from 'react'
 import type { Role } from '../contracts/types'
-import { accountError, safeReturnPath } from '../lib/auth-client'
+import { accountError, safeReturnPath, signedInReturnPath } from '../lib/auth-client'
 import { useAuth } from './auth-provider'
 import { AccountFrame } from './account-shell'
 
@@ -35,7 +35,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         setCreated(true)
       } else {
         const user = await auth.signIn({ email, password })
-        router.replace(safeReturnPath(search?.get('next'), user.role === 'ORGANIZER' ? '/organizer' : '/account'))
+        router.replace(signedInReturnPath(search?.get('next'), user.role))
       }
     } catch (reason) { setError(accountError(reason)); queueMicrotask(() => errorRef.current?.focus()) }
     finally { setBusy(false) }

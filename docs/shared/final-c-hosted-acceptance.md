@@ -27,18 +27,20 @@ Use the **existing accepted accounts**. No password reset or registration is nee
 - [Customer account/wallet](https://temuevent-combined-qa-andor2.vercel.app/account)
 - [Test event and review entry](https://temuevent-combined-qa-andor2.vercel.app/events/9d9339b2-adb3-4f23-b2ab-fc296391201d)
 
-Event: **QA F2 - Persetujuan dan Kehadiran**. It is intentionally in the past so attendance and post-event review can be checked now. Its records and private proofs are marked as test data, with no real payment. Both purchases are **WAITING_FOR_ADMIN_CONFIRMATION**.
+Event: **QA F2 - Persetujuan dan Kehadiran**. It is intentionally in the past so attendance and post-event review can be checked now. Its records and private proofs are marked as test data, with no real payment. At preparation both purchases were WAITING_FOR_ADMIN_CONFIRMATION. **Wili completed both decisions on 14 November: ACCEPT is DONE; REJECT is REJECTED. Do not repeat these decisions.** [D correction record](final-d-browser-corrections.md).
 
 | Reference | Existing Customer | Ticket / discount / payable | D action |
 | --- | --- | --- | --- |
 | `C-MANUAL-ACCEPT-7d7eb971` | Original Customer who earned the referral points | Rp50,000 − 5,000 points = **Rp45,000** | Accept, then mark attendance and submit a review as this Customer. |
 | `C-MANUAL-REJECT-7d7eb971` | Referred Customer with the Rp25,000 coupon | Rp50,000 − Rp25,000 coupon = **Rp25,000** | Reject, then check that the coupon is available again. |
 
-**Decision deadline: 16 November 2026, 14:58 WIB.** Complete D before then; the normal three-day cancellation rule remains active.
+The original decision deadline was **16 November 2026, 14:58 WIB**. Both decisions were completed before it; these two terminal purchases no longer await an Organizer decision.
 
-The original Customer now has 5,000 available points and 5,000 reserved for the first test purchase. The referred Customer's coupon is reserved for the second. These are deliberate holds, not lost rewards. Approval consumes the first hold; rejection restores the second. Profiles, passwords and previously accepted event samples are unchanged.
+After the manual decisions, the original Customer has **5,000 available points**; the other 5,000 were consumed by the approved purchase. The referred Customer's **Rp25,000 coupon was restored** by rejection. The first Customer's zero coupon count is expected. Profiles, passwords and previously accepted event samples are unchanged. The earlier preparation holds and automated disposable-buyer balances above are historical C evidence, not the current manual-purchase state.
 
-## D walkthrough — 25–40 minutes
+## D walkthrough — original 25–40 minute plan
+
+**14 November update:** steps 1–3, original-Customer points and both inbox messages were observed. Use the correction record to resume at participants/attendance; the table below retains the original sequence for reference.
 
 | Step | Action | Expected result |
 | --- | --- | --- |
