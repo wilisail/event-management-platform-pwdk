@@ -1,9 +1,9 @@
 # Temporary F2 connection — QA release, 15 November 2026
 
-**Live QA:** https://temuevent-combined-qa-andor2.vercel.app  
-**Application source:** `d300edd2136d313719cc657dc236f78c1400f2e5`  
-**Preview deployment:** `dpl_AXfoXCbFeQYXu2HsUWcWgAaTMU1W` — READY  
-**Branch / PR:** `f2/temporary-purchase-proof-20261115`, [PR #98](https://github.com/wilisail/event-management-platform-pwdk/pull/98) targeting `integration`.
+- **Live QA:** https://temuevent-combined-qa-andor2.vercel.app
+- **Application source:** `d300edd2136d313719cc657dc236f78c1400f2e5`
+- **Preview deployment:** `dpl_AXfoXCbFeQYXu2HsUWcWgAaTMU1W` — READY
+- **Branch / PR:** `f2/temporary-purchase-proof-20261115`, [PR #98](https://github.com/wilisail/event-management-platform-pwdk/pull/98) targeting `integration`.
 
 The canonical QA alias was switched after hosted verification and temporary-data cleanup. Its health and readiness endpoints return 200; checkout, sessions, private proofs, Organizer decisions and purchase deadlines are configured. The orders page also returns 200. No error/fatal runtime logs were found in the checked 30-minute window. Preview protection remains enabled. This is a QA release from the temporary branch; it does not merge the PR or promote production.
 
