@@ -22,10 +22,10 @@ BEGIN
     OR EXISTS (SELECT 1 FROM temuevent.attendance WHERE event_id IN ('07cf75a2-d6bd-4bdf-a7c0-065e23c5ab58'::uuid, '1f6362ec-d41b-4d2c-82ac-92701604f5ea'::uuid, '966fc3aa-9f42-409e-bc88-3261291bddf9'::uuid, 'a8749a72-3c98-450b-828f-9b4e087c4b9c'::uuid, 'd416d92d-0a15-4d97-a339-eed198e44772'::uuid, 'd775e0eb-9183-4cdc-8736-1f2dbda17b40'::uuid)) THEN
     RAISE EXCEPTION 'A backend fixture has activity; do not archive it automatically';
   END IF;
-  purchases_before := (SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.purchases x);
+  purchases_before := (SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.purchases x);
   reviews_before := (SELECT md5(string_agg(jsonb_build_array(x.id,x.event_id,x.user_id,x.rating,x.comment,x.created_at)::text, '|' ORDER BY x.id)) FROM temuevent.reviews x);
-  attendance_before := (SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.attendance x);
-  rewards_before := md5(concat((SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.point_grants x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.reward_coupons x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.reward_redemptions x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.point_allocations x)));
+  attendance_before := (SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.attendance x);
+  rewards_before := md5(concat((SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.point_grants x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.reward_coupons x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.reward_redemptions x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.point_allocations x)));
 
   UPDATE temuevent.events SET status='DRAFT',updated_at=now() WHERE id IN ('07cf75a2-d6bd-4bdf-a7c0-065e23c5ab58'::uuid, '1f6362ec-d41b-4d2c-82ac-92701604f5ea'::uuid, '966fc3aa-9f42-409e-bc88-3261291bddf9'::uuid, 'a8749a72-3c98-450b-828f-9b4e087c4b9c'::uuid, 'd416d92d-0a15-4d97-a339-eed198e44772'::uuid, 'd775e0eb-9183-4cdc-8736-1f2dbda17b40'::uuid);
   UPDATE temuevent.events SET name='Kopi & Karya Jakarta', category='Food & Beverage', venue='Ruang Kopi & Karya', address='Lokasi demo di Jakarta; bukan tempat penyelenggaraan acara nyata.', description='Sore santai untuk bertukar ide, mengenal teman baru, dan menikmati cerita di balik secangkir kopi. Bawa rasa ingin tahu dan pulang dengan inspirasi untuk karya berikutnya.
@@ -39,10 +39,10 @@ Acara demo TemuEvent. Tidak ada acara, pembayaran, atau transfer uang nyata.',up
 Acara demo TemuEvent. Tidak ada acara, pembayaran, atau transfer uang nyata.', image_url='https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1400&q=90',updated_at=now() WHERE id='9d9339b2-adb3-4f23-b2ab-fc296391201d'::uuid;
   UPDATE temuevent.ticket_types SET name='Tiket Reguler',description='Akses satu orang untuk sesi komunitas. Tiket demo; tidak ada pembayaran nyata.' WHERE id IN ('20c406e0-1f05-427b-88fd-271bde8c1fd6'::uuid, '3940c382-4844-41fd-8d1a-de08a43ae2f4'::uuid, '7f997566-1515-4446-894c-02dfe926ca42'::uuid);
 
-  IF purchases_before IS DISTINCT FROM (SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.purchases x)
+  IF purchases_before IS DISTINCT FROM (SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.purchases x)
     OR reviews_before IS DISTINCT FROM (SELECT md5(string_agg(jsonb_build_array(x.id,x.event_id,x.user_id,x.rating,x.comment,x.created_at)::text, '|' ORDER BY x.id)) FROM temuevent.reviews x)
-    OR attendance_before IS DISTINCT FROM (SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.attendance x)
-    OR rewards_before IS DISTINCT FROM md5(concat((SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.point_grants x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.reward_coupons x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.reward_redemptions x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY x.id)) FROM temuevent.point_allocations x))) THEN
+    OR attendance_before IS DISTINCT FROM (SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.attendance x)
+    OR rewards_before IS DISTINCT FROM md5(concat((SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.point_grants x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.reward_coupons x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.reward_redemptions x),(SELECT md5(string_agg(to_jsonb(x)::text, '|' ORDER BY to_jsonb(x)::text)) FROM temuevent.point_allocations x))) THEN
     RAISE EXCEPTION 'Unexpected purchase/review/attendance/reward change; cleanup rolled back';
   END IF;
 END
