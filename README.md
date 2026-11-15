@@ -2,6 +2,7 @@
 
 # TemuEvent — Event Management Platform
 
+- [Current UX acceptance and remaining test steps](docs/shared/current-ux-acceptance.md) — current QA behavior, owner decisions and live versus mock dependencies. The UI snapshots below are dated historical previews.
 - [Shared project record](docs/shared/README.md)
 - [TemuEvent UI reference](docs/ui/README.md) · [Social-preview image](docs/ui/temuevent-social-preview.png)
 - [Shared database/backend technical reference](docs/shared/technical-reference.md)

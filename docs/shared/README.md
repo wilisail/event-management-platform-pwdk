@@ -1,6 +1,8 @@
 # Shared project record
 
-Updated: 13 November 2026.
+Updated: 15 November 2026.
+
+Start testing with [current UX acceptance](current-ux-acceptance.md): current owner decisions, live versus mock dependencies and the remaining seven-step sequence. Dated records below retain historical evidence and may describe superseded working defaults.
 
 | Reference | Contents |
 | --- | --- |

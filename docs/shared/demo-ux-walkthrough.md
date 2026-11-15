@@ -2,6 +2,8 @@
 
 Owner decision: attendance is an optional Customer self-report. A DONE purchase remains required for a review. The checkbox does not grant access, change purchase status, or require an Organizer to approve attendance. Existing saved reviews cannot be posted again.
 
+[Current flow/dependency checklist and remaining steps 1–7](current-ux-acceptance.md) is the testing entry point; the tour below supplies event links and release history.
+
 ## A coherent tour
 
 Use the combined QA host throughout, with the existing Organizer and Customer accounts. These are presentation updates to the existing records, retaining their dates, ownership, prices, seats, accepted purchases, rewards and review.

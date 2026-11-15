@@ -2,6 +2,8 @@
 
 Completed: **13 November 2026**. Project responsibilities: **Wili — F2; Rizky — F1**.
 
+**Current testing, 15 November:** use [current UX acceptance and the remaining steps 1–7](current-ux-acceptance.md). This dated guide retains the original execution history. Steps 1–5 and both inbox messages are already accepted; do not repeat terminal decisions or the saved review. Mandatory attendance was superseded by Wili's optional-checkbox decision. Referred-Customer own-account coupon inspection and step 7 remain pending.
+
 C is complete for its agreed scope. Controlled purchase inputs exercised the normal deployed F2 APIs and the existing scheduled worker. Two separate purchases remain for Wili's browser/inbox acceptance in D. These are integration fixtures; no real bank transfer occurred and F1 checkout/proof submission is not certified by these checks.
 
 ## Verified outcomes
