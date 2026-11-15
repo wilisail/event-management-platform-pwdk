@@ -55,13 +55,13 @@ const createEventSchema = z.strictObject({
 const createEventReviewSchema = z.strictObject({
   rating: z.number().int().min(1).max(5),
   comment: z.string().trim().max(1000).optional(),
+  reportedAttendance: z.boolean().optional(),
 })
 
 export interface AppOptions {
   sessionService?: SessionService
   accountApi?: RequestHandler
   secureCookies?: boolean
-  attendeeEligibility?: (eventId: string, customerId: string) => Promise<boolean>
   reviewEligibility?: (eventId: string, customerId: string) => Promise<EventReviewEligibility | null>
   now?: () => Date
   data?: DemoData
@@ -385,7 +385,7 @@ export function createApp(options: AppOptions = {}) {
     }
   })
   app.post('/api/events/:eventId/reviews', signedIn, requireRoles('CUSTOMER'), csrf, express.json({ limit: '8kb', strict: true }), async (req, res) => {
-    if (!options.reviewCreator || (!options.attendeeEligibility && !options.reviewEligibility)) {
+    if (!options.reviewCreator || !options.reviewEligibility) {
       fail(
         res,
         503,
@@ -417,15 +417,10 @@ export function createApp(options: AppOptions = {}) {
     try {
       res.set('Cache-Control', 'private, no-store')
       const userId = authentication(res)!.user.id
-      if (options.reviewEligibility) {
-        const state = await options.reviewEligibility(eventId.data, userId)
-        if (!state) { fail(res, 404, 'EVENT_NOT_FOUND', 'Event not found'); return }
-        if (!state.eligible) {
-          fail(res, state.reason === 'ALREADY_REVIEWED' ? 409 : 403, state.reason, 'This customer cannot submit a review')
-          return
-        }
-      } else if (!await options.attendeeEligibility!(eventId.data, userId)) {
-        fail(res, 403, 'ATTENDANCE_REQUIRED', 'Attendance is required before reviewing')
+      const state = await options.reviewEligibility(eventId.data, userId)
+      if (!state) { fail(res, 404, 'EVENT_NOT_FOUND', 'Event not found'); return }
+      if (!state.eligible) {
+        fail(res, state.reason === 'ALREADY_REVIEWED' ? 409 : 403, state.reason, 'This customer cannot submit a review')
         return
       }
       const input: CreateEventReviewInput = {
@@ -433,6 +428,7 @@ export function createApp(options: AppOptions = {}) {
         userId,
         rating: parsed.data.rating,
         comment: parsed.data.comment,
+        reportedAttendance: parsed.data.reportedAttendance,
       }
 
       const review = await options.reviewCreator(input)
@@ -461,10 +457,6 @@ export function createApp(options: AppOptions = {}) {
             'PURCHASE_REQUIRED',
             'You must complete a purchase for this event before reviewing it',
           )
-          return
-        }
-        if (error.message === 'ATTENDANCE_REQUIRED') {
-          fail(res, 403, 'ATTENDANCE_REQUIRED', 'Attendance is required before reviewing')
           return
         }
         if (error.message === 'REVIEW_ALREADY_EXISTS') {

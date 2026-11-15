@@ -62,6 +62,7 @@ export interface EventReviewView {
   reviewerName: string
   rating: number
   comment: string | null
+  reportedAttendance?: boolean | null
   createdAt: string
 }
 
@@ -70,6 +71,7 @@ export interface CreateEventReviewInput {
   userId: string
   rating: number
   comment?: string
+  reportedAttendance?: boolean
 }
 
 export interface CreateEventInput {
@@ -392,6 +394,7 @@ export async function readEventReviews(
           userId: true,
           rating: true,
           comment: true,
+          reportedAttendance: true,
           createdAt: true,
           user: {
             select: {
@@ -412,11 +415,12 @@ export async function readEventReviews(
     reviewerName: review.user.name,
     rating: review.rating,
     comment: review.comment,
+    reportedAttendance: review.reportedAttendance,
     createdAt: review.createdAt.toISOString(),
   }))
 }
 
-/** Review writes independently recheck published event, DONE purchase and actual attendance. */
+/** Review writes independently recheck published event and the Customer's DONE purchase. */
 export function createEventReview(input: CreateEventReviewInput): Promise<EventReviewView> {
   return prismaEventReviewRepository(databaseClient()).create(input)
 }

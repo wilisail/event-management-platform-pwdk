@@ -109,7 +109,7 @@ try {
   const reviewUrl = `/api/events/${ownEvent.id}/reviews`, eligibilityUrl = reviewUrl + '/eligibility'
   const attendanceUrl = `/api/organizer/events/${ownEvent.id}/attendance`
   const attendanceBody = { customerId: buyer.id, transactionId: confirmed.id }
-  const reviewBody = { rating: 5, comment: 'A useful event with a welcoming organizer.' }
+  const reviewBody = { rating: 5, comment: 'A useful event with a welcoming organizer.', reportedAttendance: true }
   const state = async actor => (await (await get(eligibilityUrl, actor)).json()).data
 
   assert.equal((await get(eligibilityUrl)).status, 401)
@@ -119,12 +119,13 @@ try {
   assert.equal((await get(`/api/events/${draft.id}/reviews/eligibility`, buyerLogin)).status, 404)
   assert.equal((await state(outsiderLogin)).reason, 'PURCHASE_REQUIRED')
   assert.equal((await state(waitingLogin)).reason, 'PURCHASE_REQUIRED')
-  assert.equal((await state(buyerLogin)).reason, 'ATTENDANCE_REQUIRED')
-  assert.equal((await post(reviewUrl, buyerLogin, reviewBody)).status, 403)
+  assert.equal((await state(buyerLogin)).reason, 'ELIGIBLE')
+  assert.equal((await post(reviewUrl, outsiderLogin, { ...reviewBody, reportedAttendance: true })).status, 403)
   assert.equal((await post(reviewUrl, ownerLogin, reviewBody)).status, 403)
   assert.equal((await post(reviewUrl, buyerLogin, reviewBody, { 'x-csrf-token': '' })).status, 403)
   assert.equal((await post(reviewUrl, buyerLogin, { ...reviewBody, userId: second.id })).status, 400)
   for (const rating of [0, 6, 1.5, '5']) assert.equal((await post(reviewUrl, buyerLogin, { rating })).status, 400)
+  for (const reportedAttendance of ['yes', 1, null]) assert.equal((await post(reviewUrl, buyerLogin, { ...reviewBody, reportedAttendance })).status, 400)
   assert.equal(await db.review.count(), 0)
   passed('Session-derived review eligibility, role/CSRF/input guards and forged identity denial')
 
@@ -148,11 +149,11 @@ try {
   assert.deepEqual((await (await post(attendanceUrl, ownerLogin, attendanceBody)).json()).data, marked)
   assert.equal(await db.attendance.count(), 1)
   assert.deepEqual(await state(buyerLogin), { eligible: true, reason: 'ELIGIBLE' })
-  assert.equal((await state(secondLogin)).reason, 'ATTENDANCE_REQUIRED')
+  assert.equal((await state(secondLogin)).reason, 'ELIGIBLE')
   assert.equal((await get(eligibilityUrl, buyerLogin)).headers.get('cache-control'), 'private, no-store')
   const updatedList = (await (await get(attendeeUrl, ownerLogin)).json()).data
   assert.equal(updatedList.items.find(row => row.purchaseId === confirmed.id).attendedAt, marked.attendedAt)
-  passed('Idempotent owner attendance unlocks only the matching authenticated customer')
+  passed('Optional owner check-in is idempotent and does not gate Customer reviews')
 
   const clientFor = actor => createAuthClient({ fetcher: (path, init) => {
     const headers = new Headers(init?.headers); headers.set('cookie', cookie(actor))
@@ -162,7 +163,7 @@ try {
   await assert.rejects(client.submitEventReview(ownEvent.id, reviewBody, second.id), error => error instanceof AuthApiError && error.code === 'ACCOUNT_CHANGED')
   assert.equal(await db.review.count(), 0)
   const review = await client.submitEventReview(ownEvent.id, reviewBody, buyer.id)
-  assert.equal(review.userId, buyer.id); assert.equal(review.rating, 5)
+  assert.equal(review.userId, buyer.id); assert.equal(review.rating, 5); assert.equal(review.reportedAttendance, true)
   assert.equal((await state(buyerLogin)).reason, 'ALREADY_REVIEWED')
   assert.equal((await post(reviewUrl, buyerLogin, reviewBody)).status, 409)
   const publicReviews = await (await get(reviewUrl)).json()
@@ -170,16 +171,17 @@ try {
   assert(!JSON.stringify(publicReviews).includes(buyer.email))
   passed('Authenticated browser client creates one persisted review; changed account and duplicate blocked')
 
-  assert.equal((await post(attendanceUrl, ownerLogin, { customerId: second.id, transactionId: confirmed2.id })).status, 200)
-  const duplicates = await Promise.all([post(reviewUrl, secondLogin, { rating: 4 }), post(reviewUrl, secondLogin, { rating: 4 })])
+  const duplicates = await Promise.all([post(reviewUrl, secondLogin, { rating: 4, reportedAttendance: false }), post(reviewUrl, secondLogin, { rating: 4, reportedAttendance: false })])
   assert.deepEqual(duplicates.map(response => response.status).sort(), [201, 409])
   assert.equal(await db.review.count(), 2)
-  // Direct writer calls must enforce attendance, too; they cannot rely on HTTP prechecks.
+  assert.equal(await db.attendance.count({ where: { customerId: second.id } }), 0)
+  assert.equal((await db.review.findUnique({ where: { eventId_userId: { eventId: ownEvent.id, userId: second.id } } })).reportedAttendance, false)
+  // Direct writer calls repeat purchase/publication checks; the checkbox never grants access.
   await assert.rejects(reviews.create({ eventId: ownEvent.id, userId: outsider.id, rating: 5 }), /PURCHASE_REQUIRED/)
-  await assert.rejects(reviews.create({ eventId: ownEvent.id, userId: earlierBuyer.id, rating: 5 }), /ATTENDANCE_REQUIRED/)
+  assert.equal((await reviews.eligibility(ownEvent.id, earlierBuyer.id)).eligible, true)
   await assert.rejects(reviews.create({ eventId: draft.id, userId: buyer.id, rating: 5 }), /EVENT_NOT_FOUND/)
   await assert.rejects(reviews.create({ eventId: ownEvent.id, userId: buyer.id, rating: 5 }), /REVIEW_ALREADY_EXISTS/)
-  passed('Concurrent duplicate requests yield one review; SQL writer repeats attendance/publication guards')
+  passed('Unchecked self-report and no organizer check-in still allow one review; duplicate/purchase/publication guards hold')
 
   const totalsBefore = await (await get('/api/organizer/statistics?groupBy=day&from=2026-11-11&to=2026-11-11', ownerLogin)).json()
   assert.deepEqual(totalsBefore.data.totals, { revenueIdr: 200000, purchaseCount: 2, ticketQuantity: 4 })

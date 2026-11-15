@@ -177,6 +177,8 @@ export default function EventReviewPage({
     const [rating, setRating] = useState(0);
     const [hovered, setHovered] = useState(0);
     const [reviewText, setReviewText] = useState("");
+    const [reportedAttendance, setReportedAttendance] = useState(false);
+    useEffect(() => { setReportedAttendance(false); }, [customerId, eventId]);
     const [errors, setErrors] = useState<{ rating?: string; text?: string }>(
         {},
     );
@@ -249,7 +251,7 @@ export default function EventReviewPage({
         setSubmitError(null);
         try {
             const newReview = await auth.client.submitEventReview(eventId, {
-                rating, comment: reviewText.trim(),
+                rating, comment: reviewText.trim(), reportedAttendance,
             }, expectedReviewer.current);
             setSubmitted(newReview);
             setReviews(previous => [newReview, ...previous.filter(review => review.id !== newReview.id)]);
@@ -332,6 +334,14 @@ export default function EventReviewPage({
                                     }}
                                     noValidate
                                 >
+                                    <label className="mb-7 flex items-start gap-3 rounded-2xl bg-[#f7f5ff] p-4 text-sm">
+                                        <input type="checkbox" aria-label="Saya menghadiri event ini" checked={reportedAttendance}
+                                            onChange={event => setReportedAttendance(event.target.checked)}
+                                            className="mt-1 size-4 shrink-0 accent-[#5148df]" />
+                                        <span><span className="font-bold">Saya menghadiri event ini</span>
+                                            <span className="mt-1 block text-xs leading-5 text-[#77738b]">Opsional. Kamu tetap bisa mengirim ulasan tanpa mencentang kotak ini.</span>
+                                        </span>
+                                    </label>
                                     <fieldset>
                                         <legend className="text-base font-black">
                                             Bagaimana pengalamanmu?
@@ -467,12 +477,12 @@ export default function EventReviewPage({
                                     {auth.status === "loading" ? "Memeriksa sesi akun…"
                                         : auth.status === "anonymous" ? "Masuk sebagai customer untuk memeriksa kelayakan ulasanmu."
                                         : auth.status === "error" ? auth.error
-                                        : !customerId ? "Gunakan akun customer yang menghadiri event ini."
+                                        : !customerId ? "Gunakan akun customer yang membeli tiket event ini."
                                         : eligibilityError ? eligibilityError
-                                        : !currentEligibility ? "Memeriksa pembelian dan kehadiranmu…"
+                                        : !currentEligibility ? "Memeriksa pembelianmu…"
                                         : alreadyReviewed ? "Kamu sudah memberikan ulasan untuk event ini."
                                         : currentEligibility.reason === "PURCHASE_REQUIRED" ? "Selesaikan pembelian tiket untuk event ini terlebih dahulu."
-                                        : "Minta penyelenggara mencatat kehadiranmu sebelum memberikan ulasan."}
+                                        : "Ulasan belum tersedia. Muat ulang halaman untuk memeriksa kembali."}
                                 </p>
                                 {auth.status === "anonymous" && <Link
                                     href={"/login?next=" + encodeURIComponent(`/events/${eventId}/review`)}
@@ -573,7 +583,7 @@ export default function EventReviewPage({
                             />
                         ) : (
                             <div className="grid h-36 w-full place-items-center rounded-2xl bg-[#f0edff] text-sm font-semibold text-[#8c83c5]">
-                                No event image
+                                Poster belum ditambahkan
                             </div>
                         )}
                         <h2 className="mt-4 font-black leading-5">

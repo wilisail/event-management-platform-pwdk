@@ -289,11 +289,12 @@ function TicketPreview({ eventId }: { eventId: string }) {
                 <div className="mt-7 grid gap-7 lg:grid-cols-[1fr_360px] lg:items-start">
                     <section className="space-y-5">
                         <div className="flex gap-4 rounded-2xl bg-white p-4 shadow-[0_8px_25px_rgba(64,45,120,.07)]">
-                            <img
-                                src={event.image || undefined }
+                            {event.image ? <img
+                                src={event.image}
                                 alt={event.title}
-                                className="h-24 w-28 rounded-xl object-cover"
-                            />
+                                className="h-24 w-28 shrink-0 rounded-xl object-cover"
+                            /> : <div role="img" aria-label="Poster belum ditambahkan"
+                                className="grid h-24 w-28 shrink-0 place-items-center rounded-xl bg-[#f0edff] text-[#5148df]"><Ticket size={30} /></div>}
                             <div className="min-w-0">
                                 <span className="rounded-full bg-[#f0edff] px-2.5 py-1 text-[10px] font-bold text-[#5148df]">
                                     {event.category}
@@ -568,10 +569,10 @@ function TicketPreview({ eventId }: { eventId: string }) {
                             <label className="flex cursor-pointer items-start justify-between gap-3 rounded-xl bg-[#f7f5ff] p-3">
                                 <span>
                                     <span className="block font-bold">
-                                        Gunakan 20.000 poin
+                                            Gunakan 20.000 poin contoh
                                     </span>
                                     <span className="mt-1 block text-[11px] text-[#77738b]">
-                                        Saldo tersedia: 20.000 poin
+                                            Saldo simulasi: 20.000 poin
                                     </span>
                                 </span>
                                 <input

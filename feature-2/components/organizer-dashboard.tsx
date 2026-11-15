@@ -326,7 +326,7 @@ function OrganizerContent() {
       {selected ? <OrganizerAttendees key={selected.id} event={selected} revision={participantRevision} />
         : <div className="participant-selection"><p>Belum ada event dipilih. Klik <strong>Lihat peserta</strong> pada event di atas.
           Membuka detail transaksi tidak memilih daftar peserta.</p></div>}
-      <p className="help">Daftar ini menampilkan pendaftaran terkonfirmasi. Kehadiran di lokasi dicatat terpisah.</p>
+      <p className="help">Daftar ini menampilkan pendaftaran terkonfirmasi. Pencatatan kehadiran bersifat opsional dan tidak diperlukan untuk mengirim ulasan.</p>
     </section>
     <OrganizerTransactions onViewParticipants={viewParticipants} refreshStatistics={() => {
       setStatisticsRevision(value => value + 1)
