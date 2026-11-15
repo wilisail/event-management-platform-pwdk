@@ -23,10 +23,17 @@ const results = []
 let activePage
 async function contextFor(f, organizer = false) {
   const context = await browser.newContext({ viewport: { width: f.width, height: 900 } })
+  let dropCheckoutReply = !organizer && f.width === 1280
   await context.route('**/api/**', async route => {
     const url = new URL(route.request().url())
     // Forward real UI requests to the real runtime and disposable SQL, never synthesize a success payload.
     const response = await route.fetch({ url: api + url.pathname + url.search })
+    if (dropCheckoutReply && url.pathname === '/api/checkout/purchases' && route.request().method() === 'POST') {
+      assert.equal(response.status(), 201)
+      dropCheckoutReply = false
+      await route.abort('failed') // Commit succeeded; the client must reconnect the same purchase identity.
+      return
+    }
     await route.fulfill({ response })
   })
   const login = await context.request.post(api + '/api/auth/login', { headers: { 'x-temuevent-client': 'web' },
@@ -49,12 +56,15 @@ try {
     await page.getByRole('button', { name: 'Periksa pesanan', exact: true }).click()
     const dialog = page.getByRole('dialog', { name: 'Konfirmasi pesanan', exact: true })
     await dialog.getByRole('button', { name: 'Buat pesanan', exact: true }).click()
+    if (f.width === 1280) await page.getByRole('button', { name: 'Sambungkan pesanan kembali', exact: true }).click()
     await page.waitForURL(/\/transactions\/[0-9a-f-]{36}$/)
     const id = new URL(page.url()).pathname.split('/').at(-1)
     await page.getByRole('heading', { name: 'Menunggu pembayaran', exact: true }).waitFor()
     const saved = await (await context.request.get(api + '/api/me/purchases/' + id)).json()
     assert.equal(saved.data.totalPrice, 70000); assert.equal(saved.data.items[0].quantity, 1)
     assert.equal(saved.data.pointsUsed, 5000); assert.equal(saved.data.couponDiscount, 25000)
+    const ownPurchases = await (await context.request.get(api + '/api/me/purchases')).json()
+    assert.equal(ownPurchases.data.length, 1, 'Lost response/retry must not create another purchase')
     await page.reload()
     await page.getByRole('heading', { name: 'Menunggu pembayaran', exact: true }).waitFor()
     await page.getByLabel('Bukti pembayaran', { exact: true }).setInputFiles({ name: 'isolated-proof.png', mimeType: 'image/png', buffer: png })
@@ -86,7 +96,7 @@ try {
     await page.getByText('Kamu sudah memberikan ulasan untuk event ini.', { exact: true }).waitFor()
     assert.equal(await page.getByRole('link', { name: /pilih tiket/i }).count(), 0)
     assert.deepEqual(errors, [])
-    results.push({ width: f.width, persistedCheckout: true, proofAfterReload: true, normalOrganizerDecision: true,
+    results.push({ width: f.width, persistedCheckout: true, lostReplyRetryChecked: f.width === 1280, proofAfterReload: true, normalOrganizerDecision: true,
       participantUpdated: true, optionalAttendanceReview: true, horizontalOverflow: false })
     await organizer.close(); await context.close()
   }

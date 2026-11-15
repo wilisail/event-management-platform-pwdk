@@ -82,7 +82,8 @@ export function TemporaryCheckout({ eventId }: { eventId: string }) {
     } catch (reason) {
       if (active.current !== userId) return
       setError(reason instanceof AuthApiError ? reason.message : 'Periksa pesanan sebelum mencoba kembali.')
-      if (reason instanceof AuthApiError && reason.status >= 400 && reason.status < 500) {
+      // Auth/rate failures do not establish that an earlier uncertain save was rolled back.
+      if (reason instanceof AuthApiError && [400, 409].includes(reason.status)) {
         setAttempt(null); setConfirming(false)
         try { sessionStorage.removeItem(key) } catch { /* Optional persistence. */ }
       }
