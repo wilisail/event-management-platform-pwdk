@@ -1,6 +1,6 @@
 # D — browser acceptance and corrections
 
-Updated: **14 November 2026, Asia/Jakarta**. Responsibilities: **Wili — F2; Rizky — F1**.
+Updated: **15 November 2026, Asia/Jakarta**. Responsibilities: **Wili — F2; Rizky — F1**.
 
 D is **partially accepted**. Wili's screenshots demonstrate real hosted decisions and inbox delivery. They also exposed UI and QA-fixture defects. The original A–F scope is unchanged; this is correction work within D, followed by the remaining acceptance and learning walkthroughs.
 
@@ -59,3 +59,19 @@ Event poster upload/Cloudinary is part of F1 event creation. F2 need not duplica
 New F1 checkpoint: `3ea06774a8461d649943fb95fc1f0c97af3f192e`, **14 November, 20:19 WIB**, “Adding Transaction Page Mockup”. This correction pass does not merge it or certify the new mockup as completed checkout.
 
 [Current A–F progress](final-prd-completion-progress.md) · [Original C/D guide](final-c-hosted-acceptance.md).
+
+## Owner acceptance checkpoint — 15 November
+
+Wili accepted the corrected control layout and readable private proof. Screenshots and read-only backend queries confirm:
+
+- Original Customer attendance was marked by **QA Organizer 1**, role **ORGANIZER**, at **15 November 2026, 13:06:08 WIB**. The Customer did not self-mark attendance.
+- **Xu Harga** submitted one persisted **four-star review** at **13:11:01 WIB**. The existing unique event/customer review record is present.
+- The manual purchase outcomes remain DONE / Rp45,000 and REJECTED / Rp25,000; both private proof objects exist. This pass changed no purchase, account, password or provider setting.
+- The referred Customer's Rp25,000 coupon is restored and currently available. Its own-account browser acceptance remains pending; the password lookup did not recover an earlier plaintext value and reset remains deferred.
+- The existing **30** DEMO-20261028 purchases remain: five in each of the six statuses. They belong to three legacy organizers (Jakarta Coffee Collective 14, Bandung Music Community 15, Jakarta Tech Community 1), all separate from the current QA Organizer. Those legacy organizer seed identities have no login password set. There are 35 purchases overall; the current Organizer owns three events and two purchases.
+- This QA attendance/review event has no poster URL or provider ID. **QA Round 4B - Poster Form** does have both. The deployed creation page contains the image upload control.
+- Remaining D owner checks: step 7 logout/role separation and evaluator access; referred-Customer own-account coupon UX. D is still partial.
+
+The payment decision confirms the manual payment proof; attendance is a separate check-in record used by review eligibility. A paid no-show does not lose DONE status simply because no attendance is recorded. The requirement notes describe reviews by attendees; the specific manual check-in mechanism is an implementation choice, not established verbatim original-assignment wording.
+
+For later demo preparation, use more engaging event names and suitable posters while retaining clear test-data descriptions. Do not change the accepted test identities/references or reassign the old demo organizers' records merely to fill the current dashboard.
