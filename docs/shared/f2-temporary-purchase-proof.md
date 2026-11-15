@@ -2,6 +2,8 @@
 
 Branch: `f2/temporary-purchase-proof-20261115`. Owner decision: 15 November 2026.
 
+**Hosted update, 15 November 2026:** the tested application commit `d300edd2136d313719cc657dc236f78c1400f2e5` is live at the combined QA address. [Release evidence](f2-temporary-qa-release-2026-11-15.md) records actual private Storage, Gmail transport and scheduled-worker checks plus complete temporary-data cleanup. [Owner evaluation/UX tour](f2-qa-evaluation-tour-2026-11-15.md) is ready; owner acceptance remains pending.
+
 ## Purpose and lifetime
 
 Provide a persisted Customer purchase and private-proof handoff so F2 can be evaluated as a complete journey: ticket selection -> saved purchase/reward reservation -> proof -> Organizer decision -> participants/wallet/email -> event feedback. This is temporary integration support owned by F2. It remains available as part of F2 until a compatible shared implementation is verified and deliberately replaces it. There is no automatic expiry, fallback to simulated orders, or second simultaneous purchase writer.
@@ -36,7 +38,7 @@ No bank credentials are invented. If all three server settings `F2_CHECKOUT_BANK
 | Organizer-created event vouchers | Voucher identity/quota reservation and restoration have no shared mapping in the current schema. This connection does not pretend to apply them. This remains separate from F2 referral coupons; full event-voucher acceptance remains outstanding. |
 | Event editing/deletion and draft management | Separate event-management coverage; not required to exercise a newly published event through F2 payment decisions. Future changes must preserve existing purchase/seat accounting and ownership. |
 | Reviews/Organizer rating | Existing real review APIs remain; confirmed Customer feedback does not request ticket selection or Organizer attendance. |
-| Hosted release and worker | Branch code is separate from the running QA alias. Check the exact deployed source, private Storage readiness and the shared deadline worker before owner testing. A source branch alone does not establish hosted acceptance. |
+| Hosted release and worker | Combined QA now serves the tested commit. Private Storage readiness and the existing shared deadline worker passed fresh hosted checks. Owner screen acceptance remains separate from automated verification. |
 
 ## Verification and later owner tour
 
@@ -44,6 +46,8 @@ The added disposable PostgreSQL runner exercises actual F2 runtime sessions and 
 
 The browser runner follows Customer ticket selection -> persisted purchase after reload -> proof after reload -> normal Organizer approval/participant list -> Customer DONE -> direct event review at 1280/360/320 px. It forwards real browser requests to the disposable runtime rather than synthesizing purchase success. CI runs both runners alongside existing checks. Current local evidence: 168 F2 tests, seven combined integration tests, eight new runtime scenario groups, nine existing final-B runtime groups, typechecks and production build passed. The local browser launch is restricted by workspace Chromium/socket permissions; CI browser completion is recorded with the PR checks.
 
-Full owner evaluation/UX testing is deferred as requested. Reuse accepted evidence and create fresh purchases for any new decisions; do not reset or repeat the existing terminal purchases/review. Choose a payable ticket for the proof/approval test, and test free/fully discounted tickets separately. No real account, hosted purchase, password, image provider, email inbox or accepted sample was changed during this branch's isolated verification.
+The initial isolated verification changed no live records. The subsequent hosted verification created four temporary accounts, one event, five purchases and two reviews through normal APIs, uploaded three private proofs and sent two normal decision notifications to the owner's established test inbox via temporary Gmail aliases. The existing worker processed accelerated deadlines only on those test orders. All temporary records and physical proofs were removed; counts and full-row fingerprints of eleven original tables match the pre-test baseline. Provider acceptance is confirmed; actual receipt in the owner's inbox remains a manual check.
+
+Full owner evaluation/UX testing now follows the ordered tour. Reuse accepted evidence and create fresh purchases for new decisions; do not reset or repeat existing terminal purchases/reviews. Choose a payable ticket for the proof/approval test, and test free/fully discounted tickets separately. Password recovery stays last.
 
 Before replacement, rerun this consumer journey and the security/accounting checks against the proposed adapter, preserve existing purchase/proof references, and explicitly remove the previous binding. If no replacement is selected, retain this connection within F2.
