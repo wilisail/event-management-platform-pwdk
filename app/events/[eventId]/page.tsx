@@ -386,8 +386,8 @@ export default function EventDetailsPage({
                                 </span>
                             </div>
                             <p className="mt-4 text-sm text-[#77738b]">
-                                Baca pengalaman peserta atau bagikan ulasan setelah
-                                kehadiranmu dicatat oleh penyelenggara.
+                                Setelah pembelian tiket terkonfirmasi, kamu bisa
+                                menulis ulasan. Keterangan kehadiran bersifat opsional.
                             </p>
                             <Link href={`/events/${event.id}/review`} className="mt-4 inline-flex text-sm font-bold text-[#5148df] hover:underline">
                                 Lihat dan tulis ulasan

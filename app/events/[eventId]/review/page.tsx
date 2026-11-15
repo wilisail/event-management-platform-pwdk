@@ -266,7 +266,7 @@ export default function EventReviewPage({
 
     return (
         <main className="min-h-screen bg-[#fcf9ff] text-[#11103d]">
-            <SiteHeader view="event" />
+            <SiteHeader view="review" />
             <div className="mx-auto max-w-[1050px] px-5 py-8 sm:py-12">
                 <div className="mb-8 flex items-center gap-2 text-xs text-[#8c879e]">
                     <Link href={`/events/${event.id}`}>Detail event</Link>

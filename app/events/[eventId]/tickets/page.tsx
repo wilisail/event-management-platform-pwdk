@@ -262,7 +262,7 @@ function TicketPreview({ eventId }: { eventId: string }) {
                             CHECKOUT PREVIEW
                         </p>
                         <h1 className="mt-2 text-3xl font-black sm:text-4xl">
-                            Pilih tiket & review pesanan
+                            Pilih tiket & periksa pesanan
                         </h1>
                         <p className="mt-2 text-sm text-[#77738b]">
                             Demo frontend — belum membuat transaksi atau
@@ -278,7 +278,7 @@ function TicketPreview({ eventId }: { eventId: string }) {
                         </span>
                         <ChevronRight size={14} className="text-[#aaa4bd]" />
                         <span className="rounded-full bg-[#eae7ff] px-3 py-2 text-[#5148df]">
-                            2 Review
+                            2 Periksa pesanan
                         </span>
                         <ChevronRight size={14} className="text-[#aaa4bd]" />
                         <span className="hidden rounded-full bg-white px-3 py-2 text-[#9a94ad] sm:inline">
