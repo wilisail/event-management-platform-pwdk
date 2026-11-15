@@ -20,6 +20,8 @@ import type { PasswordResetService } from './auth/password-reset'
 import type { PasswordChangeService } from './auth/change-password'
 import type { ProfileService } from './profile/service'
 import { scheduledEmailHandler, type ScheduledEmailJobs } from './email/job-runner'
+import { temporaryCheckoutRouter } from './temporary-checkout/http'
+import type { CheckoutService } from './temporary-checkout/service'
 
 export interface AppOptions {
   fallthrough?: boolean
@@ -44,6 +46,7 @@ export interface AppOptions {
   scheduledEmailJobs?: ScheduledEmailJobs
   checkReadiness?: () => Promise<void>
   passwordChangeLimit?: { limit: number; windowMs: number }
+  checkoutService?: CheckoutService
 }
 
 export function createApp(options: AppOptions = {}) {
@@ -108,6 +111,7 @@ export function createApp(options: AppOptions = {}) {
       sessionsConfigured: Boolean(options.sessionService),
       privateProofsConfigured: Boolean(options.organizerProofReader),
       organizerDecisionsConfigured: Boolean(options.organizerDecisionTransition),
+      checkoutConfigured: Boolean(options.checkoutService),
       purchaseDeadlinesConfigured: Boolean(options.scheduledEmailJobs?.purchaseDeadlines),
     }, 'Feature 2 API ready')
   })
@@ -186,6 +190,8 @@ export function createApp(options: AppOptions = {}) {
     secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production',
   }))
   app.use('/api', profileRouter({ service: options.profileService, sessions: options.sessionService,
+    secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production' }))
+  app.use('/api', temporaryCheckoutRouter({ service: options.checkoutService, sessions: options.sessionService,
     secureCookies: options.secureCookies ?? process.env.NODE_ENV === 'production' }))
 
   app.get('/api/demo/me', (req, res) => {

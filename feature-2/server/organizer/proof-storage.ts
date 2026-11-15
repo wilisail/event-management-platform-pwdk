@@ -23,11 +23,23 @@ export function supabasePaymentProofStorage(env: Record<string, string | undefin
     const { data, error } = await client.storage.getBucket(bucket)
     const limit = Number(data?.file_size_limit)
     if (error || !data || data.public || !(limit > 0 && limit <= MAX_PAYMENT_PROOF_BYTES) ||
-      !data.allowed_mime_types?.length || data.allowed_mime_types.some(type => !['image/png', 'image/jpeg'].includes(type))) {
+      !data.allowed_mime_types?.includes('image/jpeg') || data.allowed_mime_types.some(type => !['image/png', 'image/jpeg'].includes(type))) {
       throw new Error('Payment-proof bucket must be private and bounded')
     }
   }
   const storage: PaymentProofStorage = {
+    async write(key, file) {
+      if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}\/[0-9a-f-]{36}\.jpg$/.test(key)) throw new Error('Invalid new proof key')
+      await checkReadiness()
+      if (!file.bytes.byteLength || file.bytes.byteLength > MAX_PAYMENT_PROOF_BYTES || file.contentType !== 'image/jpeg') throw new Error('Invalid proof upload')
+      const { error } = await client.storage.from(bucket).upload(key, file.bytes, { contentType: 'image/jpeg', upsert: false })
+      if (error) throw new Error('Private proof upload failed')
+    },
+    async remove(key) {
+      if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}\/[0-9a-f-]{36}\.jpg$/.test(key)) throw new Error('Invalid proof cleanup key')
+      const { error } = await client.storage.from(bucket).remove([key])
+      if (error) throw new Error('Private proof cleanup failed')
+    },
     async read(key) {
       if (!/^[A-Za-z0-9][A-Za-z0-9/_.-]{0,511}$/.test(key) || key.endsWith('/') ||
         key.split('/').some(part => !part || part === '.' || part === '..')) throw new Error('Invalid private proof key')

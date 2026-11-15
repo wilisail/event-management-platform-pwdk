@@ -13,6 +13,7 @@ export function AccountHeader() {
   const auth = useAuth(), router = useRouter()
   const [busy, setBusy] = useState(false), [error, setError] = useState('')
   const discoveryUrl = featureOneUrl('/')
+  const purchasesUrl = featureOneUrl('/transactions')
   const signOut = async () => {
     setBusy(true); setError('')
     try { await auth.signOut(); router.replace('/login') }
@@ -25,6 +26,7 @@ export function AccountHeader() {
       <nav className="account-nav" aria-label="Navigasi utama">
         {discoveryUrl && <a className="link discovery-link" href={discoveryUrl}>Jelajahi event ↗</a>}
         {auth.user?.role === 'ORGANIZER' && <Link className="link" href="/organizer">Dashboard</Link>}
+        {auth.user?.role === 'CUSTOMER' && purchasesUrl && <a className="link" href={purchasesUrl}>Pesanan saya ↗</a>}
         {auth.user ? <><Link className="link" href="/account">Akun saya</Link>
           <button className="secondary compact" onClick={signOut} disabled={busy}>{busy ? 'Keluar…' : 'Keluar'}</button></>
           : <Link className="link" href="/login">Masuk</Link>}

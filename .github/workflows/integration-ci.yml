@@ -53,6 +53,8 @@ jobs:
         working-directory: database
       - run: npm run qa:final-b
         working-directory: database
+      - run: npm run qa:temporary-checkout
+        working-directory: database
       - run: node --check scripts/verify-round7-hosted.mjs
         working-directory: database
       - run: npm run build
@@ -63,3 +65,13 @@ jobs:
           QA_ORIGIN=http://127.0.0.1:3000 npm --prefix feature-2 run qa:layout
           QA_ORIGIN=http://127.0.0.1:3000 node scripts/verify-f1-submission.mjs
           QA_ORIGIN=http://127.0.0.1:3000 node scripts/verify-review-ux.mjs
+          (cd database && node --import tsx scripts/verify-temporary-checkout.mjs --serve > /tmp/temuevent-temporary-api.log 2>&1) &
+          QA_ORIGIN=http://127.0.0.1:3000 node scripts/verify-temporary-checkout.mjs
+      - name: Retain isolated checkout screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: temporary-f2-checkout-screens
+          path: /tmp/temuevent-temporary-*.png
+          if-no-files-found: ignore
+          retention-days: 3

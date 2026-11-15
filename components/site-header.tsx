@@ -29,6 +29,7 @@ export function SiteHeader({ view = 'discovery' }: { view?: 'discovery' | 'event
               {view !== 'create' ? <Link href="/organizer/events/new">Buat event</Link> : null}
             </> : null}
             <Link href="/account">Akun saya</Link>
+            {auth.user.role === 'CUSTOMER' && <Link href="/transactions">Pesanan saya</Link>}
             <button type="button" disabled={busy} onClick={() => void signOut()} className="rounded-full border border-[#ddd6f7] px-3 py-2 disabled:opacity-60">{busy ? 'Keluar…' : 'Keluar'}</button>
           </> : <>
             <Link href="/login">Masuk</Link>

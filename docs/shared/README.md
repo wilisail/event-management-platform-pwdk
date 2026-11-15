@@ -4,6 +4,8 @@ Updated: 15 November 2026.
 
 Start testing with [current UX acceptance](current-ux-acceptance.md): current owner decisions, live versus mock dependencies and the remaining seven-step sequence. Dated records below retain historical evidence and may describe superseded working defaults.
 
+Current branch work: [temporary F2 purchase/proof connection](f2-temporary-purchase-proof.md), supporting independent acceptance and a verified replacement boundary. Owner testing is deferred until release.
+
 | Reference | Contents |
 | --- | --- |
 | [Final C hosted F2 acceptance](final-c-hosted-acceptance.md) | Controlled hosted purchase inputs, real protected endpoint verification, temporary-data cleanup and the D manual walkthrough |
