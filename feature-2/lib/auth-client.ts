@@ -136,7 +136,7 @@ export function createAuthClient(options: Options = {}) {
     reviewEligibility: (eventId: string, signal?: AbortSignal) => get<EventReviewEligibility>(
       '/api/events/' + encodeURIComponent(eventId) + '/reviews/eligibility', signal,
     ),
-    submitEventReview: (eventId: string, input: { rating: number; comment?: string }, expectedUserId: string) => authenticatedWrite<EventReviewView>(
+    submitEventReview: (eventId: string, input: { rating: number; comment?: string; reportedAttendance?: boolean }, expectedUserId: string) => authenticatedWrite<EventReviewView>(
       '/api/events/' + encodeURIComponent(eventId) + '/reviews',
       { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(input) },
       'REVIEW_SUBMISSION_UNCERTAIN', expectedUserId,
@@ -226,7 +226,6 @@ export function accountError(error: unknown): string {
   const messages: Record<string, string> = {
     REVIEW_SUBMISSION_UNCERTAIN: 'Hasil pengiriman belum dapat dipastikan. Muat ulang daftar ulasan sebelum mencoba lagi.',
     REVIEW_ALREADY_EXISTS: 'Kamu sudah memberikan ulasan untuk event ini.',
-    ATTENDANCE_REQUIRED: 'Kehadiranmu harus dicatat penyelenggara sebelum memberikan ulasan.',
     PURCHASE_REQUIRED: 'Selesaikan pembelian tiket untuk event ini terlebih dahulu.',
     REVIEWS_UNAVAILABLE: 'Ulasan belum dapat dikirim saat ini. Coba lagi sebentar.',
     EVENT_CREATION_UNCERTAIN: 'Hasil penyimpanan belum dapat dipastikan. Periksa daftar event sebelum mengirim ulang.',

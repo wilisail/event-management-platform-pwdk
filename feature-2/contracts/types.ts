@@ -62,7 +62,7 @@ export interface OrganizerView {
 
 export interface EventReviewEligibility {
   eligible: boolean
-  reason: 'ELIGIBLE' | 'PURCHASE_REQUIRED' | 'ATTENDANCE_REQUIRED' | 'ALREADY_REVIEWED'
+  reason: 'ELIGIBLE' | 'PURCHASE_REQUIRED' | 'ALREADY_REVIEWED'
 }
 
 export interface EventReviewView {
@@ -72,6 +72,7 @@ export interface EventReviewView {
   reviewerName: string
   rating: number
   comment: string | null
+  reportedAttendance?: boolean | null
   createdAt: string
 }
 
