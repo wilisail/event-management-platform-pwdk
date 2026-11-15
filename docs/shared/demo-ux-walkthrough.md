@@ -27,6 +27,8 @@ For event feedback, open the event's **Ulasan & rating → Lihat dan tulis ulasa
 
 For Temu Kreator, the original Customer's four-star review already exists; opening its review page should display the saved review and prevent another submission. A fresh create → purchase → proof → Organizer confirmation → review journey remains dependent on F1 completing persisted checkout. Referral, password recovery and existing F2 decisions/rewards can be inspected independently.
 
+Published clarification: [PR #97](https://github.com/wilisail/event-management-platform-pwdk/pull/97), integration merge `e13ca7a00fbd4fc323600c8d8a7393d604292769`, reviewed commit `cf1745f69740d006425a73a307d6f60e2bfe0d59` (identical source tree). [Integration CI](https://github.com/wilisail/event-management-platform-pwdk/actions/runs/43690008621) passed the full checks and all six detail-link-to-review cases at 1280/360/320 px, with both attendance answers, no ticket selection and no duplicate form. The usual combined QA alias now serves `dpl_4XaF9xYxbgHdSkVbN3qTQniuwjKb`; readiness and the direct review route returned 200 after assignment. This clarification changed no database records, passwords, purchase decisions or worker configuration.
+
 ## Cleanup boundaries
 
 Six published `Backend Test Event`/`Backend Test Event 2` fixtures with no purchases, reviews or attendance are changed to DRAFT. Meaningful owner-created events and all legacy purchases remain. The old 30 demo purchases belong to three different seed organizers; they are not reassigned to the current Organizer merely to populate its dashboard.
