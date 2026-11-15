@@ -35,7 +35,10 @@ try {
       } else { unexpected.push(request.method() + ' ' + path); status = 500 }
       await route.fulfill({ status, json: { success: status < 400, data } })
     })
-    await page.goto(`${origin}/events/${id}/review`)
+    await page.goto(`${origin}/events/${id}`)
+    await page.getByRole('link', { name: 'Lihat dan tulis ulasan', exact: true }).click()
+    await page.waitForURL(`${origin}/events/${id}/review`)
+    assert.equal(await page.locator('a[href$="/tickets"]').count(), 0, 'Review flow has no ticket selection link')
     const checkbox = page.getByRole('checkbox', { name: 'Saya menghadiri event ini', exact: true })
     await checkbox.waitFor()
     assert.equal(await checkbox.isChecked(), false)
@@ -52,7 +55,7 @@ try {
     assert.equal(await page.getByRole('checkbox').count(), 0)
     assert.deepEqual(unexpected, [], 'No Organizer attendance request or unexpected API call')
     assert.deepEqual(errors, [])
-    results.push({ width, reportedAttendance: checked, reviewSubmitted: true, organizerCheckInRequired: false, duplicateFormHidden: true })
+    results.push({ width, reportedAttendance: checked, directReviewNavigation: true, ticketSelectionRequired: false, reviewSubmitted: true, organizerCheckInRequired: false, duplicateFormHidden: true })
     await context.close()
   }
   console.log(JSON.stringify({ mode: 'isolated optional-attendance review browser', results }))

@@ -19,6 +19,14 @@ Use the combined QA host throughout, with the existing Organizer and Customer ac
 
 All three descriptions identify the records as demo data. The two formerly empty posters use stock photographs already present in F1's project assets. Creator Night retains the original uploaded Cloudinary image and provider ID, demonstrating the actual upload integration.
 
+## Event reviews and order checks are separate
+
+The Customer screenshot headed **Konfirmasi order / Sudah sesuai?**, with a ticket quantity and total, is the checkout confirmation preview. The former checkout labels “review pesanan” and “2 Review” meant checking an order before payment, and are now **periksa pesanan** to avoid confusing them with event reviews.
+
+For event feedback, open the event's **Ulasan & rating → Lihat dan tulis ulasan**. This goes directly to `/events/{eventId}/review`, identified as **Ulasan event**. It has stars, comments and the optional attendance checkbox, with no ticket selection or order confirmation. The Organizer dashboard's **Lihat halaman publik** intentionally opens the visitor-facing event details; return through **Dashboard organizer** for management. The screenshot's **Customer** badge identifies the active role at that moment.
+
+For Temu Kreator, the original Customer's four-star review already exists; opening its review page should display the saved review and prevent another submission. A fresh create → purchase → proof → Organizer confirmation → review journey remains dependent on F1 completing persisted checkout. Referral, password recovery and existing F2 decisions/rewards can be inspected independently.
+
 ## Cleanup boundaries
 
 Six published `Backend Test Event`/`Backend Test Event 2` fixtures with no purchases, reviews or attendance are changed to DRAFT. Meaningful owner-created events and all legacy purchases remain. The old 30 demo purchases belong to three different seed organizers; they are not reassigned to the current Organizer merely to populate its dashboard.

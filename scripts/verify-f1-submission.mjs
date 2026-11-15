@@ -37,7 +37,7 @@ try {
       return route.fulfill({ status: 500, json: { success: false } })
     })
     await page.goto(`${origin}/events/${id}/tickets`)
-    await page.getByRole('heading', { name: 'Pilih tiket & review pesanan' }).waitFor()
+    await page.getByRole('heading', { name: 'Pilih tiket & periksa pesanan' }).waitFor()
     await page.getByText('QA F1 Ticket Selection', { exact: true }).waitFor()
     assert.equal(detailReads, 1)
     await page.getByRole('button', { name: 'Lihat pratinjau pembayaran', exact: true }).click()

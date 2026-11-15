@@ -6,7 +6,7 @@ import { useAuth } from '../feature-2/components/auth-provider'
 import { UiLogo } from '../feature-2/components/ui-logo'
 import { accountError } from '../feature-2/lib/auth-client'
 
-export function SiteHeader({ view = 'discovery' }: { view?: 'discovery' | 'event' | 'organizer' | 'create' | 'checkout' }) {
+export function SiteHeader({ view = 'discovery' }: { view?: 'discovery' | 'event' | 'review' | 'organizer' | 'create' | 'checkout' }) {
   const auth = useAuth()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -38,6 +38,7 @@ export function SiteHeader({ view = 'discovery' }: { view?: 'discovery' | 'event
     </div>
     {view !== 'discovery' ? <div className="mx-auto max-w-[1180px] px-5 pb-3 text-xs text-[#77738b]">
       {view === 'event' ? 'Halaman publik event · tampilan untuk pengunjung'
+        : view === 'review' ? 'Ulasan event · baca dan bagikan pengalaman'
         : view === 'organizer' ? 'Profil publik penyelenggara'
         : view === 'create' ? 'Area organizer · buat event' : 'Informasi pembelian'}
     </div> : null}
