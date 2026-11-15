@@ -1,0 +1,102 @@
+{
+  "date": "2026-11-15",
+  "timeZone": "Asia/Jakarta",
+  "pullRequest": 96,
+  "reviewedCommit": "2402550584f95bea6b62e0832d24b8c6278a334c",
+  "integrationMerge": "461250477e0425d90659482f8ed95652c57a1554",
+  "reviewedAndMergedTree": "f3b320ae7d8a2b46be393d83a1406dd5ce0f0b19",
+  "ci": {
+    "feature2": {
+      "run": 43688684158,
+      "conclusion": "success"
+    },
+    "integration": {
+      "run": 43688684142,
+      "job": 132734493680,
+      "conclusion": "success"
+    }
+  },
+  "checks": {
+    "feature2Tests": 167,
+    "integrationTests": 7,
+    "round6Groups": 10,
+    "reviewBrowser": {
+      "widths": [
+        1280,
+        360,
+        320
+      ],
+      "attendanceAnswers": [
+        false,
+        true
+      ],
+      "cases": 6,
+      "allPassed": true,
+      "liveAccountWrites": false
+    },
+    "liveReadiness": 200,
+    "liveSavedReviewRead": 200,
+    "securityAdvisors": []
+  },
+  "migration": {
+    "name": "20261115064757_review_attendance_self_report",
+    "checksum": "a95b1f3a8ec36c34ddc1aa0773b04c02ab487a24a362c35c6df4ba3c8d0cd769",
+    "applied": true,
+    "oldReviewsSelfReport": "NULL/unknown; not backfilled"
+  },
+  "demoCleanup": {
+    "applied": true,
+    "events": [
+      {
+        "id": "18c663e1-f361-4c76-8875-d23507520bb7",
+        "date": "2026-11-25T07:00:00+00:00",
+        "name": "Creator Night Jakarta",
+        "poster": true,
+        "status": "PUBLISHED"
+      },
+      {
+        "id": "c57ed675-52e4-4d11-b1ca-4250226b5510",
+        "date": "2026-11-17T07:00:00+00:00",
+        "name": "Kopi & Karya Jakarta",
+        "poster": true,
+        "status": "PUBLISHED"
+      },
+      {
+        "id": "9d9339b2-adb3-4f23-b2ab-fc296391201d",
+        "date": "2026-11-13T05:56:30.095+00:00",
+        "name": "Temu Kreator Jakarta: Sesi November",
+        "poster": true,
+        "status": "PUBLISHED"
+      }
+    ],
+    "purchases": 35,
+    "review_fingerprint": "a86d2ad000cf5ba44d3c6f4728780c3a",
+    "purchase_fingerprint": "7211b60572bf2cf45b81c2081f759774",
+    "attendance_fingerprint": "b5f938cb29b9a476e53eb863e760c1f7",
+    "archived_backend_fixtures": 6,
+    "rewardsPreservedByTransactionalFingerprint": true,
+    "baseline": "demo-ux-before-2026-11-15.json",
+    "existingCloudinaryPosterPreserved": true,
+    "newStockImagesReturned200": true
+  },
+  "deployment": {
+    "id": "dpl_vvHtW9AhEdYiGJLE8DuiD5VgVvWb",
+    "url": "https://temuevent-fhv3018ip-andor2.vercel.app",
+    "alias": "https://temuevent-combined-qa-andor2.vercel.app",
+    "gitCommit": "2402550584f95bea6b62e0832d24b8c6278a334c",
+    "ready": true,
+    "aliasVerified": true
+  },
+  "boundaries": {
+    "passwordsChanged": 0,
+    "purchaseDecisionsRepeated": 0,
+    "decisionEmailsSent": 0,
+    "mainPromoted": false,
+    "standaloneWorkerChanged": false,
+    "f1Checkout": "mock preview; no persisted purchase/proof",
+    "remainingOwnerChecks": [
+      "session/role separation and evaluator access",
+      "referred Customer recovery and own-account coupon UI"
+    ]
+  }
+}

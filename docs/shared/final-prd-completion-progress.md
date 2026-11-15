@@ -8,6 +8,8 @@ Updated: **15 November 2026, Asia/Jakarta**. Submission/video target: **17 Novem
 
 This is the agreed A–F plan. Keep the scope and original working-time estimates stable; update the status and evidence as each block is completed.
 
+**15 November UX clarification:** Wili explicitly requested that Organizer attendance no longer gate reviews. Customers with a DONE purchase may submit one review with the optional attendance checkbox either checked or unchecked. The demo cleanup keeps three named existing events, hides six unused backend fixtures, and preserves all 35 purchases, rewards and accepted reviews. [Demo tour and current boundaries](demo-ux-walkthrough.md). The remaining session/evaluator and referred-account checks are still deferred to Wili; the mock F1 checkout is not certified as functional purchase submission.
+
 | Block | Bounded outcome | Original estimate | Owner | Status |
 | --- | --- | --- | --- | --- |
 | A — synchronize completed F2 work | Current F2 source and Rounds 5–7 records reach the appropriate submission/reference branches through reviewed PRs and passing CI. | 15–25 min | Wili | **Complete for this source checkpoint** |
