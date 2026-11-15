@@ -93,6 +93,8 @@ try {
     await page.locator('#review').fill('Ulasan melalui purchase dan proof yang disimpan.')
     await page.getByRole('button', { name: 'Kirim Ulasan', exact: true }).click()
     await page.getByRole('dialog').getByRole('button', { name: 'Ya, Kirim Ulasan', exact: true }).click()
+    await page.getByText('Ulasan berhasil dikirim', { exact: true }).waitFor()
+    await page.reload()
     await page.getByText('Kamu sudah memberikan ulasan untuk event ini.', { exact: true }).waitFor()
     assert.equal(await page.getByRole('link', { name: /pilih tiket/i }).count(), 0)
     assert.deepEqual(errors, [])
