@@ -37,7 +37,7 @@ try {
     const unexpected = [], errors = []
     page.on('pageerror', error => errors.push(error.message))
     page.on('dialog', dialog => dialog.accept())
-    const transaction = () => ({ id: purchase, reference: 'QA-D-ACCEPT', eventId: id, eventName: event.name, customerName: 'QA Customer', status,
+    const transaction = () => ({ id: purchase, reference: 'TE-11111111-1111-4111-8111-111111111111', eventId: id, eventName: event.name, customerName: 'QA Customer', status,
       totalPrice: 45000, createdAt: event.startAt, decisionAvailability: status === 'DONE' ? 'CLOSED' : 'READY', proofAvailability: 'READY',
       subtotal: 50000, voucherDiscount: 0, couponDiscount: 0, pointsUsed: 5000, paymentDueAt: event.endAt, decisionDueAt: '2026-11-16T00:00:00Z', proofUploadedAt: event.startAt,
       completedAt: status === 'DONE' ? event.endAt : null, items: [{ id: other, ticketName: 'Tiket uji', quantity: 1, unitPrice: 50000, lineTotal: 50000 }] })
@@ -53,7 +53,7 @@ try {
       else if (path === '/api/organizer/transactions') data = pageOf([transaction()])
       else if (path === `/api/organizer/transactions/${purchase}`) data = transaction()
       else if (path === `/api/organizer/transactions/${purchase}/decision` && request.method() === 'POST') { status = 'DONE'; data = { id: purchase, status } }
-      else if (path === `/api/organizer/events/${id}/attendees`) { attendeeReads++; data = pageOf(status === 'DONE' ? [{ purchaseId: purchase, purchaseReference: 'QA-D-ACCEPT', customerId: other, name: 'QA Customer', ticketQuantity: 1, totalPaid: 45000, attendedAt: null }] : []) }
+      else if (path === `/api/organizer/events/${id}/attendees`) { attendeeReads++; data = pageOf(status === 'DONE' ? [{ purchaseId: purchase, purchaseReference: 'TE-11111111-1111-4111-8111-111111111111', customerId: other, name: 'QA Customer', ticketQuantity: 1, totalPaid: 45000, attendedAt: null }] : []) }
       else if (path === '/api/me/wallet') data = { userId: other, asOf: event.startAt, currency: 'IDR', availablePoints: 5000, pointValueIdr: 1, pointGrants: [], coupons: [], policy: { referralAwardPoints: 10000, validityCalendarMonths: 3, couponAmountIsDemo: true } }
       else if (path === '/api/me/referral') data = { referralCode: 'QA1234567890', referredCount: 0 }
       else { unexpected.push(path); code = 500 }
@@ -63,7 +63,14 @@ try {
     await page.getByText('Belum ada event dipilih.', { exact: false }).waitFor()
     await page.getByRole('button', { name: 'Lihat peserta: QA Participant Event', exact: true }).click()
     await page.getByText('Belum ada pendaftaran terkonfirmasi pada halaman ini.', { exact: true }).waitFor()
-    await page.getByRole('button', { name: 'Lihat detail transaksi QA-D-ACCEPT', exact: true }).click()
+    const detailButton = page.getByRole('button', { name: 'Lihat detail transaksi TE-11111111-1111-4111-8111-111111111111', exact: true })
+    await detailButton.waitFor()
+    const actionLines = await detailButton.evaluate(node => {
+      const range = document.createRange(); range.selectNodeContents(node)
+      return new Set(Array.from(range.getClientRects()).filter(r => r.width > 1).map(r => Math.round(r.top))).size
+    })
+    assert.equal(actionLines, 1, 'Long transaction references must not squeeze the detail action into stacked letters')
+    await detailButton.click()
     const detail = page.getByRole('region', { name: 'Detail transaksi', exact: true })
     await detail.getByRole('link', { name: 'Lihat bukti pembayaran' }).waitFor()
     const proof = await box(detail.getByRole('link', { name: 'Lihat bukti pembayaran' }))

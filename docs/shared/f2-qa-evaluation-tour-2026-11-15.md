@@ -1,5 +1,7 @@
 # F2 evaluation and UX tour — 15 November 2026
 
+**16 November update:** Wili completed an exploratory version of this tour and rated intuitive UX 8/10. [Current feedback and bounded follow-up](ux-owner-feedback-2026-11-16.md). Publishing/image, purchase/points/proof/approval/review/statistics, recovery and profile rename are accepted. Do not repeat accepted decisions/reviews or the completed referred-account reset. The current useful quick checks are role/preview clarity, the order-detail affordance and Teman Sixu's restored coupon at `/account#rewards`. Full evaluator/rubric acceptance remains separate. The sequence below is retained as the original full-tour reference.
+
 Use one host throughout: **https://temuevent-combined-qa-andor2.vercel.app**. This tour is for the temporary F2 purchase/proof connection. Begin only after the release record confirms that the QA alias serves the tested build. No real transfer is needed; upload a test PNG/JPEG under 3 MB.
 
 The existing original and referred Customer accounts and the Organizer account are retained. Their previously DONE/REJECTED purchases and saved four-star review are completed evidence. Do not repeat those decisions or submit that review again. This tour uses a newly created event and new purchases.

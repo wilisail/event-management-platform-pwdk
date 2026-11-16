@@ -89,6 +89,12 @@ export function TemporaryCheckout({ eventId }: { eventId: string }) {
       }
     } finally { sending.current = false; setBusy(false) }
   }
+  if (auth.user?.role === 'ORGANIZER') return <main className="mx-auto max-w-4xl px-4 py-8 text-[#11103d] sm:px-6">
+    <h1 className="text-3xl font-black">Pratinjau event</h1>
+    <p className="mt-4 text-sm">Kamu masuk sebagai organizer. Lihat halaman publik untuk memeriksa informasi event, atau kelola transaksi melalui dashboard.</p>
+    <div className="mt-6 flex flex-wrap gap-3"><Link className={primary} href={'/events/' + eventId}>Lihat halaman publik event</Link>
+      <Link className="rounded-xl border px-5 py-3 text-sm font-bold text-[#5148df]" href="/organizer">Kembali ke dashboard organizer</Link></div>
+  </main>
   return <main className="mx-auto max-w-5xl px-4 py-8 text-[#11103d] sm:px-6">
     <Link href={'/events/' + eventId} className="text-sm font-bold text-[#5148df]">← Kembali ke event</Link>
     <h1 className="mt-5 text-3xl font-black">Pilih tiket & periksa pesanan</h1>
@@ -97,9 +103,8 @@ export function TemporaryCheckout({ eventId }: { eventId: string }) {
     {auth.status === 'loading' && <p role="status" className="mt-4">Memeriksa akun…</p>}
     {auth.status === 'error' && <p role="alert" className="mt-4">{auth.error} <Link href="/login" className="underline">Masuk ulang</Link></p>}
     {auth.status === 'anonymous' && <p className="mt-4 rounded-xl bg-[#f2edff] p-4">Masuk sebagai customer untuk membeli tiket. <Link className="font-bold underline" href={'/login?next=' + encodeURIComponent('/events/' + eventId + '/tickets')}>Masuk untuk membeli</Link></p>}
-    {auth.user?.role === 'ORGANIZER' && <p role="alert" className="mt-4 rounded-xl bg-[#f2edff] p-4">Pembelian menggunakan akun customer. <Link href="/organizer" className="font-bold underline">Kembali ke dashboard organizer</Link></p>}
     {!event && !error && <p className="mt-6" role="status">Memuat event…</p>}
-    {event && <div className="mt-6 grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_320px]">
+    {event && auth.status !== 'loading' && <div className="mt-6 grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_320px]">
       <section className="min-w-0 space-y-5">
         <div className={card}><h2 className="text-xl font-black">{event.title}</h2>
           <p className="mt-2 text-sm text-[#77738b]">{new Date(event.date).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', dateStyle: 'long', timeStyle: 'short' })} WIB · {event.location}</p>
@@ -112,7 +117,8 @@ export function TemporaryCheckout({ eventId }: { eventId: string }) {
               <button type="button" aria-label={'Tambah ' + ticket.name} disabled={(quantities[ticket.id] ?? 0) >= Math.min(20, ticket.availableSeats)} onClick={() => setQuantities(q => ({ ...q, [ticket.id]: Math.min(20, ticket.availableSeats, (q[ticket.id] ?? 0) + 1) }))} className="h-10 w-10 rounded-lg border disabled:opacity-40">+</button></div>
           </div>)}</fieldset>
         {ready && <fieldset disabled={busy || Boolean(attempt)} className={card + ' min-w-0 space-y-4'}><legend className="px-1 text-lg font-black">Poin & kupon referral</legend>
-          <label className="block text-sm font-bold">Kupon referral<select aria-label="Kupon referral" value={couponId} onChange={e => setCouponId(e.target.value)} className="mt-2 block w-full max-w-full rounded-xl border p-3 font-normal"><option value="">Tanpa kupon</option>{coupons.map(c => <option value={c.id} key={c.id}>{c.code} · {money(c.discountValue)}</option>)}</select></label>
+          <label className="block text-sm font-bold">Kupon referral<select aria-label="Kupon referral" aria-describedby="checkout-coupon-help" disabled={!coupons.length} value={couponId} onChange={e => setCouponId(e.target.value)} className="mt-2 block w-full max-w-full rounded-xl border p-3 font-normal disabled:bg-[#f7f5fb] disabled:text-[#77738b]"><option value="">{coupons.length ? 'Tanpa kupon' : 'Tidak ada kupon yang tersedia'}</option>{coupons.map(c => <option value={c.id} key={c.id}>{c.code} · {money(c.discountValue)}</option>)}</select></label>
+          <p id="checkout-coupon-help" className="text-xs leading-5 text-[#77738b]">{coupons.length ? 'Pilih satu kupon milik akun ini untuk mengurangi total pembayaran.' : wallet!.coupons.pagination.total ? 'Kupon akun ini sedang digunakan, ditahan pesanan lain, belum berlaku, atau kedaluwarsa.' : 'Akun ini belum memiliki kupon referral. Kupon diberikan kepada teman baru yang mendaftar memakai kode referral.'} <Link href="/account#rewards" className="font-bold text-[#5148df] underline">Lihat poin & kupon</Link></p>
           <label className="block text-sm font-bold">Poin yang digunakan<input aria-label="Poin yang digunakan" type="number" min={0} max={wallet!.availablePoints} value={points} onChange={e => setPoints(Math.min(wallet!.availablePoints, Math.max(0, Math.floor(Number(e.target.value) || 0))))} className="mt-2 block w-full rounded-xl border p-3 font-normal" /></label>
           <p className="text-xs text-[#77738b]">Saldo tersedia: {wallet!.availablePoints.toLocaleString('id-ID')} poin. 1 poin = Rp1.</p></fieldset>}
       </section>
@@ -127,7 +133,7 @@ export function TemporaryCheckout({ eventId }: { eventId: string }) {
       </aside>
     </div>}
     {confirming && !attempt && <dialog ref={dialog} onCancel={() => setConfirming(false)} aria-labelledby="checkout-confirm-title" className={card + ' m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-md overflow-y-auto backdrop:bg-black/40'}><h2 id="checkout-confirm-title" className="text-xl font-black">Konfirmasi pesanan</h2>
-        <p className="mt-3 text-sm">{selected.map(t => `${t.name} × ${quantities[t.id]}`).join(', ')}</p><p className="mt-4 text-xl font-black">{money(total)}</p><p className="mt-3 text-sm text-[#77738b]">Setelah disimpan, pesanan berbayar memiliki batas unggah bukti 2 jam. Pesanan Rp0 langsung dikonfirmasi.</p>
+        <p className="mt-3 text-sm">{selected.map(t => `${t.name} × ${quantities[t.id]}`).join(', ')}</p><p className="mt-4 text-xl font-black">{money(total)}</p><p className="mt-3 text-sm text-[#77738b]">{total > 0 ? 'Setelah pesanan dibuat, unggah bukti pembayaran dalam 2 jam. Pesanan akan dikonfirmasi setelah organizer memeriksa bukti pembayaran.' : subtotal === 0 ? 'Pesanan event gratis tidak perlu mengunggah bukti pembayaran dan langsung dikonfirmasi.' : 'Total pembayaran sudah tertutup oleh poin atau kupon. Pesanan langsung dikonfirmasi tanpa mengunggah bukti pembayaran.'}</p>
         <div className="mt-6 flex flex-wrap gap-3"><button autoFocus type="button" className="rounded-xl border px-5 py-3 text-sm font-bold" onClick={() => setConfirming(false)}>Kembali</button><button type="button" className={primary} disabled={busy} onClick={() => void submit()}>Buat pesanan</button></div>
     </dialog>}
   </main>

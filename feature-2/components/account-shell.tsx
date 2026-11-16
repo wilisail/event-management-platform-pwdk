@@ -8,9 +8,13 @@ import { accountError, safeReturnPath } from '../lib/auth-client'
 import { featureOneUrl } from '../lib/feature-one-links'
 import { useAuth } from './auth-provider'
 import { UiLogo } from './ui-logo'
+import { useRolePageTitle } from './use-role-page-title'
 
 export function AccountHeader() {
   const auth = useAuth(), router = useRouter()
+  const pathname = usePathname()
+  const organizer = auth.user?.role === 'ORGANIZER'
+  useRolePageTitle(pathname === '/organizer' ? 'Dashboard' : pathname === '/account' ? 'Akun saya' : 'Akun', auth.user?.role)
   const [busy, setBusy] = useState(false), [error, setError] = useState('')
   const discoveryUrl = featureOneUrl('/')
   const purchasesUrl = featureOneUrl('/transactions')
@@ -24,6 +28,7 @@ export function AccountHeader() {
     <header className="header"><div className="width flex items-center justify-between gap-3">
       <UiLogo />
       <nav className="account-nav" aria-label="Navigasi utama">
+        {auth.user && <span className={'badge role-badge' + (organizer ? ' organizer-role' : '')}>{organizer ? 'Organizer' : 'Customer'}</span>}
         {discoveryUrl && <a className="link discovery-link" href={discoveryUrl}>Jelajahi event ↗</a>}
         {auth.user?.role === 'ORGANIZER' && <Link className="link" href="/organizer">Dashboard</Link>}
         {auth.user?.role === 'CUSTOMER' && purchasesUrl && <a className="link" href={purchasesUrl}>Pesanan saya ↗</a>}
@@ -31,7 +36,7 @@ export function AccountHeader() {
           <button className="secondary compact" onClick={signOut} disabled={busy}>{busy ? 'Keluar…' : 'Keluar'}</button></>
           : <Link className="link" href="/login">Masuk</Link>}
       </nav>
-    </div></header>
+    </div>{auth.user && <p className="width account-context">{organizer ? 'Area organizer · Kelola event dan transaksi' : 'Area customer · Akun dan tiket saya'}</p>}</header>
     {error && <p className="width auth-error" role="alert">{error}</p>}
   </>
 }

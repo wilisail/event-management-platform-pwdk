@@ -42,7 +42,12 @@ export function ReferralSummary() {
   return <div className="panel"><div className="section-title"><div>
     <p className="eyebrow">KOMUNITASMU</p><h2>{number(data.referredCount)} teman sudah bergabung.</h2>
   </div><button className="secondary" onClick={reload}>Perbarui</button></div>
-    <p>Setiap teman yang mendaftar dengan kodemu mendapat kupon platform, dan kamu mendapat {number(data.referralAwardPoints)} poin.</p>
+    <ol className="referral-steps">
+      <li>Salin kodemu dan bagikan kepada teman baru.</li>
+      <li>Teman memasukkan kode tersebut saat mendaftar akun.</li>
+      <li>Kamu mendapat {number(data.referralAwardPoints)} poin; teman mendapat satu kupon potongan tiket di menu <strong>Poin & kupon</strong>.</li>
+    </ol>
+    <p className="help">Bonus diberikan sekali untuk setiap teman baru yang mendaftar. Pembelian tiket tidak menerbitkan kupon referral baru, dan kupon tidak dikirim manual antar-akun.</p>
     <p className="help">Poin dan kupon berlaku {data.validityCalendarMonths} bulan sejak diberikan. Kode referral akunmu tetap sama.</p>
   </div>
 }
@@ -82,7 +87,8 @@ export function WalletContent({ wallet, onPointPage, onCouponPage, onReload }: {
           <span className="badge">{couponLabels[coupon.status]}</span><h3>{money(coupon.discountValue)}</h3>
           <code className="break-all">{coupon.code}</code><p>Berlaku sampai {timestamp(coupon.expiresAt)}</p>
         </article>) : <p className="empty-state">{wallet.coupons.pagination.total ? 'Tidak ada kupon pada halaman ini.' : 'Belum ada kupon. Kupon referral diterima saat mendaftar menggunakan kode teman.'}</p>}</div>
-      <p className="help">Kupon platform berlaku lintas event. Kupon yang ditahan transaksi belum dapat digunakan kembali.</p>
+      <p className="help">Kupon referral diterima sekali saat mendaftar memakai kode teman, lalu dipilih saat checkout. Kupon ini berlaku lintas event dan berbeda dari voucher promosi yang dibuat organizer.</p>
+      <p className="help">Kupon yang sedang ditahan pesanan lain belum dapat dipakai kembali. Penolakan atau kedaluwarsa pesanan mengembalikannya sesuai masa berlaku asli.</p>
       <HistoryPager name="kupon" page={wallet.coupons} onPage={onCouponPage} />
     </div>
     <div className="panel"><div className="section-title"><div>
@@ -95,7 +101,7 @@ export function WalletContent({ wallet, onPointPage, onCouponPage, onReload }: {
         </div><div><strong>+{number(grant.amount)}</strong>
           <span className={`grant-status ${grant.status !== 'AVAILABLE' ? 'expired' : ''}`}>{pointLabels[grant.status]}</span>
         </div></li>)}</ul> : <p className="empty-state">{wallet.pointGrants.pagination.total ? 'Tidak ada bonus pada halaman ini.' : 'Belum ada bonus poin. Bagikan kode referralmu untuk mengundang teman.'}</p>}
-      <p className="help">Saldo tersedia tidak mencakup poin yang kedaluwarsa atau sudah digunakan maupun ditahan transaksi.</p>
+      <p className="help">1 poin = Rp1 potongan tiket. Saldo tersedia tidak mencakup poin yang kedaluwarsa, digunakan, atau ditahan transaksi. <a className="link" href="#referral">Undang teman untuk mendapat poin</a>.</p>
       <HistoryPager name="poin" page={wallet.pointGrants} onPage={onPointPage} />
     </div>
   </>

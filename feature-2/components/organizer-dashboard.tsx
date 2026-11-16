@@ -161,7 +161,7 @@ function TransactionList({ page, status, changePage, refreshStatistics, focusSta
   return <>
     {transactions.items.length === 0 ? <p>Belum ada transaksi pada halaman ini.</p>
       : <div className="table-scroll" tabIndex={0} role="region" aria-label="Tabel transaksi event">
-        <table className="attendee-table"><thead><tr>
+        <table className="attendee-table transaction-table"><thead><tr>
           <th scope="col">Referensi</th><th scope="col">Event</th><th scope="col">Pembeli</th>
           <th scope="col">Status</th><th scope="col">Total</th><th scope="col">Detail</th>
         </tr></thead><tbody>{transactions.items.map(row => <tr key={row.id}>
@@ -217,9 +217,6 @@ function OrganizerAttendees({ event, revision }: { event: ParticipantEvent; revi
   const { client } = useAuth()
   const [attendees, setAttendees] = useState<PageView<AttendeePurchaseView> | null>(null)
   const [error, setError] = useState(''), [page, setPage] = useState(1), [retry, setRetry] = useState(0)
-  const [marking, setMarking] = useState<string | null>(null)
-  const [notice, setNotice] = useState<{ message: string; error: boolean } | null>(null)
-  const inFlight = useRef(false)
 
   useEffect(() => {
     const abort = new AbortController()
@@ -231,37 +228,17 @@ function OrganizerAttendees({ event, revision }: { event: ParticipantEvent; revi
   }, [client, event.id, page, retry, revision])
 
   const refresh = () => { setAttendees(null); setError(''); setRetry(value => value + 1) }
-  const mark = async (row: AttendeePurchaseView) => {
-    if (inFlight.current || row.attendedAt || !window.confirm(`Tandai ${row.name} sudah hadir?`)) return
-    inFlight.current = true
-    setMarking(row.purchaseId)
-    setNotice(null)
-    try {
-      const record = await client.markAttendance(event.id, row.customerId, row.purchaseId)
-      setAttendees(current => current && { ...current, items: current.items.map(item =>
-        item.customerId === record.customerId ? { ...item, attendedAt: record.attendedAt } : item) })
-      setNotice({ message: `Kehadiran ${row.name} tercatat.`, error: false })
-    } catch (reason) {
-      setNotice({ message: accountError(reason), error: true })
-      if (reason instanceof AuthApiError && (reason.code === 'ATTENDANCE_UNCERTAIN' || reason.status === 404)) refresh()
-    } finally { inFlight.current = false; setMarking(null) }
-  }
 
   return <>
-    {notice && <p role={notice.error ? 'alert' : 'status'}>{notice.message}</p>}
     {error ? <LoadError message={error} retry={refresh} />
       : !attendees ? <p role="status">Memuat peserta…</p>
       : attendees.items.length === 0 ? <p>Belum ada pendaftaran terkonfirmasi pada halaman ini.</p>
       : <div className="table-scroll" tabIndex={0} role="region" aria-label="Tabel peserta terkonfirmasi"><table className="attendee-table"><thead><tr>
         <th scope="col">Nama</th><th scope="col">Tiket</th><th scope="col">Total dibayar</th><th scope="col">Referensi</th>
-        <th scope="col">Kehadiran</th>
       </tr></thead><tbody>{attendees.items.map(row => <tr key={row.purchaseId}>
         <td>{row.name}</td><td>{row.ticketQuantity}</td><td>{money(row.totalPaid)}</td><td>{row.purchaseReference}</td>
-        <td>{row.attendedAt ? <><span className="badge">Hadir</span> {dateTime(row.attendedAt)}</>
-          : <button className="secondary" disabled={marking !== null} aria-label={`Tandai hadir: ${row.name}`}
-            onClick={() => void mark(row)}>{marking === row.purchaseId ? 'Menyimpan…' : 'Tandai hadir'}</button>}</td>
       </tr>)}</tbody></table></div>}
-    {attendees && <Pager page={page} pages={attendees.pagination.totalPages} busy={marking !== null} change={nextPage => {
+    {attendees && <Pager page={page} pages={attendees.pagination.totalPages} change={nextPage => {
       setAttendees(null); setError(''); setPage(nextPage)
     }} />}
   </>
@@ -326,7 +303,7 @@ function OrganizerContent() {
       {selected ? <OrganizerAttendees key={selected.id} event={selected} revision={participantRevision} />
         : <div className="participant-selection"><p>Belum ada event dipilih. Klik <strong>Lihat peserta</strong> pada event di atas.
           Membuka detail transaksi tidak memilih daftar peserta.</p></div>}
-      <p className="help">Daftar ini menampilkan pendaftaran terkonfirmasi. Pencatatan kehadiran bersifat opsional dan tidak diperlukan untuk mengirim ulasan.</p>
+      <p className="help">Daftar ini menampilkan pembeli dengan tiket yang sudah dikonfirmasi. Customer dapat menulis ulasan dari detail pesanannya.</p>
     </section>
     <OrganizerTransactions onViewParticipants={viewParticipants} refreshStatistics={() => {
       setStatisticsRevision(value => value + 1)

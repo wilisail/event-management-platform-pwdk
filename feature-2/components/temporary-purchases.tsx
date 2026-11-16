@@ -21,6 +21,11 @@ function Access({ path }: { path: string }) {
   if (auth.user.role !== 'CUSTOMER') return <p role="alert" className="mt-6">Halaman pesanan untuk akun customer. <Link href="/organizer" className="font-bold text-[#5148df]">Buka dashboard organizer</Link></p>
   return null
 }
+function OrganizerPurchaseAccess() {
+  return <main className="mx-auto max-w-4xl px-4 py-8 text-[#11103d] sm:px-6"><h1 className="text-3xl font-black">Kelola transaksi event</h1>
+    <p className="mt-4 text-sm">Kamu masuk sebagai organizer. Pesanan customer diperiksa melalui dashboard organizer.</p>
+    <Link href="/organizer" className={primary + ' mt-6'}>Buka dashboard organizer</Link></main>
+}
 export function TemporaryPurchases() {
   const auth = useAuth(), userId = auth.user?.role === 'CUSTOMER' ? auth.user.id : null
   const [result, setResult] = useState<{ userId: string; rows: CustomerPurchase[] } | null>(null), [error, setError] = useState('')
@@ -32,14 +37,16 @@ export function TemporaryPurchases() {
     return () => abort.abort()
   }, [auth.client, userId])
   const rows = result?.userId === userId ? result.rows : null
+  if (auth.user?.role === 'ORGANIZER') return <OrganizerPurchaseAccess />
   return <main className="mx-auto max-w-4xl px-4 py-8 text-[#11103d] sm:px-6"><h1 className="text-3xl font-black">Pesanan saya</h1>
     <p className="mt-2 text-sm text-[#77738b]">20 pesanan terbaru dari akunmu.</p><Access path="/transactions" />
     {error && <p role="alert" className="mt-5">{error}</p>}
     {userId && !rows && !error && <p role="status" className="mt-6">Memuat pesanan…</p>}
     {rows && !rows.length && <p className={card + ' mt-6'}>Belum ada pesanan. <Link href="/" className="font-bold text-[#5148df]">Jelajahi event</Link></p>}
-    <div className="mt-6 space-y-4">{rows?.map(row => <Link href={'/transactions/' + row.id} key={row.id} className={card + ' block min-w-0'}>
+    <div className="mt-6 space-y-4">{rows?.map(row => <Link href={'/transactions/' + row.id} key={row.id} aria-label={'Lihat detail pesanan ' + row.event.title} className={card + ' group block min-w-0 transition-colors hover:border-[#5148df] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#5148df]'}>
       <h2 className="text-lg font-black">{row.event.title}</h2><p className="mt-2 text-sm font-bold text-[#5148df]">{labels[row.status]}</p>
-      <p className="mt-2 break-all text-xs text-[#77738b]">{row.reference}</p><p className="mt-3 font-bold">{money(row.totalPrice)} · {date(row.createdAt)}</p></Link>)}</div>
+      <p className="mt-2 break-all text-xs text-[#77738b]">{row.reference}</p><p className="mt-3 font-bold">{money(row.totalPrice)} · {date(row.createdAt)}</p>
+      <span className="mt-4 inline-flex items-center gap-2 rounded-xl border border-[#ddd6f7] px-4 py-2 text-sm font-bold text-[#5148df] group-hover:bg-[#f2edff]">Lihat detail pesanan <span aria-hidden="true">→</span></span></Link>)}</div>
   </main>
 }
 
@@ -85,6 +92,7 @@ export function TemporaryPurchase({ id }: { id: string }) {
     } catch (reason) { if (current.current === userId) setError(reason instanceof Error ? reason.message : 'Periksa status pesanan sebelum mencoba kembali.') }
     finally { sending.current = false; setBusy(false) }
   }
+  if (auth.user?.role === 'ORGANIZER') return <OrganizerPurchaseAccess />
   return <main className="mx-auto max-w-4xl px-4 py-8 text-[#11103d] sm:px-6"><Link href="/transactions" className="text-sm font-bold text-[#5148df]">← Pesanan saya</Link>
     <h1 className="mt-5 text-3xl font-black">Detail pesanan</h1><Access path={'/transactions/' + id} />
     {error && <p role="alert" className="mt-5 rounded-xl bg-rose-50 p-4 text-sm text-rose-800">{error}</p>}
@@ -113,7 +121,7 @@ export function TemporaryPurchase({ id }: { id: string }) {
         }} /></label><button type="button" disabled={busy || !file} className={primary + ' mt-5'} onClick={() => void upload()}>{busy ? 'Mengunggah…' : 'Kirim bukti pembayaran'}</button></section>}
       {purchase.proofUploadedAt && <section className={card}><h2 className="font-black">Bukti tersimpan</h2><p className="mt-2 text-sm">Diunggah {date(purchase.proofUploadedAt)}</p><a target="_blank" rel="noreferrer" href={'/api/me/purchases/' + id + '/proof'} className="mt-3 inline-block text-sm font-bold text-[#5148df]">Lihat bukti pembayaran</a></section>}
       {purchase.status === 'DONE' && <section className={card}><h2 className="text-xl font-black">Tiket dikonfirmasi</h2><p className="mt-3 text-sm">Pesananmu tercatat pada daftar peserta organizer. Kamu dapat membuka ulasan event secara langsung.</p><Link className={primary + ' mt-5'} href={'/events/' + purchase.event.id + '/review'}>Lihat dan tulis ulasan</Link></section>}
-      <div className="flex flex-wrap gap-5 text-sm font-bold text-[#5148df]"><Link href={'/events/' + purchase.event.id}>Lihat event</Link><Link href="/account">Lihat poin & kupon</Link></div>
+      <div className="flex flex-wrap gap-5 text-sm font-bold text-[#5148df]"><Link href={'/events/' + purchase.event.id}>Lihat event</Link><Link href="/account#rewards">Lihat poin & kupon</Link></div>
     </div>}
   </main>
 }

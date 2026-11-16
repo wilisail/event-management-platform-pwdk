@@ -4,7 +4,7 @@ Updated: 15 November 2026.
 
 Start testing with [current UX acceptance](current-ux-acceptance.md): current owner decisions, live versus mock dependencies and the remaining seven-step sequence. Dated records below retain historical evidence and may describe superseded working defaults.
 
-Current branch work: [temporary F2 purchase/proof connection](f2-temporary-purchase-proof.md), supporting independent acceptance and a verified replacement boundary. Owner testing is deferred until release.
+Current branch work: [temporary F2 purchase/proof connection](f2-temporary-purchase-proof.md), supporting independent acceptance and a verified replacement boundary. The [16 November owner review](ux-owner-feedback-2026-11-16.md) accepts the core screen journey at 8/10 intuitive UX and records the bounded clarity/layout follow-up. Full rubric assessment remains separate.
 
 | Reference | Contents |
 | --- | --- |
