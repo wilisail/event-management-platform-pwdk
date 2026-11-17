@@ -5,7 +5,11 @@ export const MAX_PAYMENT_PROOF_BYTES = 5 * 1024 * 1024
 export interface StoredPaymentProof { bytes: Uint8Array; contentType: string }
 /** Backend-only port. Never return a storage key or public/signed URL to the browser. */
 export type OrganizerProofReader = (organizerId: string, transactionId: string) => Promise<StoredPaymentProof | null>
-export interface PaymentProofStorage { read(key: string): Promise<StoredPaymentProof | null> }
+export interface PaymentProofStorage {
+  read(key: string): Promise<StoredPaymentProof | null>
+  write?(key: string, file: StoredPaymentProof): Promise<void>
+  remove?(key: string): Promise<void>
+}
 
 export function prismaOrganizerProofReader(db: Pick<PrismaClient, 'purchase'>, storage: PaymentProofStorage): OrganizerProofReader {
   return async (organizerId, transactionId) => {

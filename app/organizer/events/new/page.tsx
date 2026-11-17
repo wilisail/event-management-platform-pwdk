@@ -20,7 +20,6 @@ import {
 import { useRouter } from "next/navigation";
 
 type PricingMode = "free" | "paid";
-type DiscountType = "percentage" | "fixed";
 type TicketType = {
     id: number;
     name: string;
@@ -80,14 +79,6 @@ export default function NewEventPage() {
             description: "",
         },
     ]);
-    const [voucherEnabled, setVoucherEnabled] = useState(false);
-    const [voucherCode, setVoucherCode] = useState("");
-    const [discountType, setDiscountType] =
-        useState<DiscountType>("percentage");
-    const [discountValue, setDiscountValue] = useState(10);
-    const [voucherStart, setVoucherStart] = useState("");
-    const [voucherEnd, setVoucherEnd] = useState("");
-    const [voucherQuota, setVoucherQuota] = useState(20);
     const [errors, setErrors] = useState<FormErrors>({});
     const [showConfirm, setShowConfirm] = useState(false);
 
@@ -128,18 +119,6 @@ export default function NewEventPage() {
     const scheduleLabel = startDate
         ? `${new Date(`${startDate}T00:00:00`).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}${startTime ? `, ${startTime}` : ""}`
         : "Tanggal dan waktu belum diatur";
-    const voucherDiscountLabel =
-        discountType === "percentage"
-            ? `${discountValue || 0}% off eligible tickets`
-            : `${formatPrice(Number(discountValue) || 0)} off eligible tickets`;
-    const eventOverlap =
-        scheduleStart &&
-        scheduleEnd &&
-        voucherStart &&
-        voucherEnd &&
-        new Date(voucherEnd) >= scheduleStart &&
-        new Date(voucherStart) <= scheduleEnd;
-
     const validate = () => {
         const next: FormErrors = {};
         if (!name.trim()) next.name = "Nama event wajib diisi.";
@@ -178,31 +157,6 @@ export default function NewEventPage() {
                     next[`ticket-quantity-${index}`] =
                         "Kuota harus berupa angka bulat positif.";
             });
-        }
-        if (voucherEnabled) {
-            if (!voucherCode.trim())
-                next.voucherCode = "Kode voucher wajib diisi.";
-            if (
-                Number(discountValue) <= 0 ||
-                (discountType === "percentage" && Number(discountValue) > 100)
-            )
-                next.discount =
-                    discountType === "percentage"
-                        ? "Persentase harus antara 1–100%."
-                        : "Potongan harga harus lebih dari Rp0.";
-            if (!voucherStart || !voucherEnd)
-                next.voucherDate = "Periode voucher wajib diisi.";
-            else if (new Date(voucherEnd) <= new Date(voucherStart))
-                next.voucherDate = "Waktu berakhir harus setelah waktu mulai.";
-            else if (!eventOverlap)
-                next.voucherDate =
-                    "Periode voucher harus beririsan dengan jadwal event.";
-            if (
-                !Number.isInteger(Number(voucherQuota)) ||
-                Number(voucherQuota) <= 0
-            )
-                next.voucherQuota =
-                    "Kuota penggunaan harus berupa angka bulat positif.";
         }
         setErrors(next);
         return Object.keys(next).length === 0;
@@ -761,164 +715,11 @@ export default function NewEventPage() {
                         <Section
                             number="04"
                             title="Voucher Promosi Event"
-                            description="Voucher promosi belum tersedia. Kamu tetap dapat mempublikasikan event dan tiket."
+                            description="Voucher promosi event belum tersedia di versi ini. Kamu tetap dapat mempublikasikan event dan tiket."
                         >
-                            <label className="flex cursor-not-allowed items-center gap-3 rounded-xl border border-[#e9e4f5] p-4">
-                                <input
-                                    type="checkbox"
-                                    disabled
-                                    checked={voucherEnabled}
-                                    onChange={(e) =>
-                                        setVoucherEnabled(e.target.checked)
-                                    }
-                                    className="size-4 accent-[#5148d7]"
-                                />
-                                <span>
-                                    <span className="block text-sm font-bold">
-                                        Aktifkan Voucher Promosi
-                                    </span>
-                                    <span className="mt-1 block text-xs text-[#858196]">
-                                        Pengaturan voucher menyusul.
-                                    </span>
-                                </span>
-                            </label>
-                            {voucherEnabled && (
-                                <div className="mt-5 flex flex-col gap-5">
-                                    <div className="grid gap-5 sm:grid-cols-2">
-                                        <Field
-                                            label="Kode Voucher"
-                                            required
-                                            error={errors.voucherCode}
-                                        >
-                                            <input
-                                                className={`${inputClass} uppercase`}
-                                                value={voucherCode}
-                                                onChange={(e) =>
-                                                    setVoucherCode(
-                                                        e.target.value.toUpperCase(),
-                                                    )
-                                                }
-                                                placeholder="COFFEE10"
-                                            />
-                                        </Field>
-                                        <Field
-                                            label="Kuota Penggunaan"
-                                            required
-                                            error={errors.voucherQuota}
-                                        >
-                                            <input
-                                                type="number"
-                                                min="1"
-                                                className={inputClass}
-                                                value={voucherQuota}
-                                                onChange={(e) =>
-                                                    setVoucherQuota(
-                                                        Number(e.target.value),
-                                                    )
-                                                }
-                                            />
-                                        </Field>
-                                        <Field label="Jenis Diskon">
-                                            <select
-                                                className={inputClass}
-                                                value={discountType}
-                                                onChange={(e) =>
-                                                    setDiscountType(
-                                                        e.target
-                                                            .value as DiscountType,
-                                                    )
-                                                }
-                                            >
-                                                <option value="percentage">
-                                                    Persentase (%)
-                                                </option>
-                                                <option value="fixed">
-                                                    Potongan Harga Tetap (Rp)
-                                                </option>
-                                            </select>
-                                        </Field>
-                                        <Field
-                                            label="Nilai Diskon"
-                                            required
-                                            error={errors.discount}
-                                        >
-                                            <input
-                                                type="number"
-                                                min="1"
-                                                max={
-                                                    discountType ===
-                                                    "percentage"
-                                                        ? 100
-                                                        : undefined
-                                                }
-                                                className={inputClass}
-                                                value={discountValue}
-                                                onChange={(e) =>
-                                                    setDiscountValue(
-                                                        Number(e.target.value),
-                                                    )
-                                                }
-                                            />
-                                        </Field>
-                                        <Field
-                                            label="Tanggal dan Waktu Mulai"
-                                            required
-                                            className="sm:col-span-2"
-                                        >
-                                            <input
-                                                type="datetime-local"
-                                                className={inputClass}
-                                                value={voucherStart}
-                                                onChange={(e) =>
-                                                    setVoucherStart(
-                                                        e.target.value,
-                                                    )
-                                                }
-                                            />
-                                        </Field>
-                                        <Field
-                                            label="Tanggal dan Waktu Berakhir"
-                                            required
-                                            error={errors.voucherDate}
-                                            className="sm:col-span-2"
-                                        >
-                                            <input
-                                                type="datetime-local"
-                                                className={inputClass}
-                                                value={voucherEnd}
-                                                onChange={(e) =>
-                                                    setVoucherEnd(
-                                                        e.target.value,
-                                                    )
-                                                }
-                                            />
-                                        </Field>
-                                    </div>
-                                    <div className="rounded-2xl border border-dashed border-[#d8d0fa] bg-[#f7f4ff] p-4">
-                                        <p className="text-[10px] font-bold uppercase tracking-wider text-[#8177d6]">
-                                            Preview voucher
-                                        </p>
-                                        <div className="mt-3 flex items-center justify-between gap-4">
-                                            <div>
-                                                <p className="text-lg font-black tracking-widest text-[#5148d7]">
-                                                    {voucherCode || "COFFEE10"}
-                                                </p>
-                                                <p className="mt-1 text-sm font-semibold">
-                                                    {voucherDiscountLabel}
-                                                </p>
-                                                <p className="mt-1 text-xs text-[#858196]">
-                                                    {voucherStart
-                                                        ? `Berlaku mulai ${new Date(voucherStart).toLocaleString("id-ID")}`
-                                                        : "Pilih periode berlaku voucher"}
-                                                </p>
-                                            </div>
-                                            <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold text-[#5148d7]">
-                                                {voucherQuota} penggunaan
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                            <p className="rounded-xl bg-[#f7f4ff] p-4 text-sm leading-6 text-[#69657c]">
+                                Kupon referral milik customer berbeda dari voucher promosi event. Customer dapat menggunakan poin dan kupon referral yang tersedia saat membeli tiket.
+                            </p>
                         </Section>
                         <div className="flex flex-col-reverse gap-3 border-t border-[#e9e4f4] pt-6 sm:flex-row sm:items-center sm:justify-between">
                             <a
@@ -928,14 +729,7 @@ export default function NewEventPage() {
                                 Batal
                             </a>
                             <div className="flex flex-col gap-3 sm:flex-row">
-                                <button
-                                    type="button"
-                                    disabled
-                                    title="Penyimpanan draf belum tersedia"
-                                    className="rounded-xl border border-[#dcd6ee] bg-white px-5 py-3 text-sm font-bold text-[#77738b] disabled:cursor-not-allowed disabled:opacity-60"
-                                >
-                                    Draf belum tersedia
-                                </button>
+                                <p className="self-center text-xs text-[#77738b]">Publikasi dilakukan setelah konfirmasi.</p>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting || checkingAccount || !actor}
@@ -958,7 +752,7 @@ export default function NewEventPage() {
                                     </h2>
                                 </div>
                                 <span className="rounded-full bg-[#eeeaff] px-2.5 py-1 text-[10px] font-bold text-[#5148d7]">
-                                    Draft
+                                    Belum dipublikasikan
                                 </span>
                             </div>
                             <div className="mt-5 overflow-hidden rounded-2xl bg-[#f2effc]">
@@ -1006,18 +800,9 @@ export default function NewEventPage() {
                                     value={`${totalQuota || 0} tiket`}
                                 />
                             </div>
-                            <div className="mt-3 rounded-xl bg-[#faf8ff] px-3 py-3 text-xs text-[#77738b]">
-                                Voucher promosi{" "}
-                                <strong
-                                    className={
-                                        voucherEnabled
-                                            ? "text-emerald-600"
-                                            : "text-[#aaa6b8]"
-                                    }
-                                >
-                                    {voucherEnabled ? "Aktif" : "Belum aktif"}
-                                </strong>
-                            </div>
+                            <p className="mt-3 rounded-xl bg-[#faf8ff] px-3 py-3 text-xs text-[#77738b]">
+                                Voucher promosi event belum tersedia.
+                            </p>
                             <div className="mt-5 flex items-start gap-2 rounded-xl bg-[#fff9e8] p-3 text-xs leading-5 text-[#826b28]">
                                 {" "}
                                 <span>ⓘ</span>
@@ -1067,12 +852,7 @@ export default function NewEventPage() {
                                     ? "Gratis"
                                     : `${totalQuota} tiket · mulai ${formatPrice(lowestPrice)}`}
                             </p>
-                            <p className="mt-1 text-[#77738b]">
-                                Voucher:{" "}
-                                {voucherEnabled
-                                    ? voucherCode || "Belum diberi kode"
-                                    : "Tidak ada"}
-                            </p>
+
                         </div>
                         <p className="mt-4 text-xs leading-5 text-[#858196]">
                             Event akan dikirim ke server dan disimpan ke database

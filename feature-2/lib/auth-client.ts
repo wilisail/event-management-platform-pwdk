@@ -1,4 +1,5 @@
 import type { AttendanceView, EventReviewEligibility, EventReviewView, LoginRequest, LoginSuccess, OrganizerDecision, OrganizerDecisionResult, RegistrationRequest, RegistrationSuccess, Role, UserView } from '../contracts/types'
+import type { CheckoutInput, CustomerPurchase } from '../contracts/temporary-checkout'
 
 export class AuthApiError extends Error {
   constructor(public readonly status: number, public readonly code: string, message: string) {
@@ -19,7 +20,8 @@ export function safeReturnPath(value: string | null | undefined, fallback = '/ac
   if (!value || /[\\\u0000-\u0020]/.test(value) || !value.startsWith('/') || value.startsWith('//')) return fallback
   try {
     const url = new URL(value, 'https://temuevent.invalid')
-    const allowed = ['/account', '/organizer', '/organizer/events/new'].includes(url.pathname)
+    const allowed = ['/account', '/organizer', '/organizer/events/new', '/transactions'].includes(url.pathname)
+      || /^\/transactions\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(url.pathname)
       || /^\/events\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}(?:\/(?:tickets|review))?$/i.test(url.pathname)
     return url.origin === 'https://temuevent.invalid' && allowed
       ? url.pathname + url.search : fallback
@@ -133,6 +135,16 @@ export function createAuthClient(options: Options = {}) {
   }
   return {
     get,
+    customerPurchases: (signal?: AbortSignal) => get<CustomerPurchase[]>('/api/me/purchases', signal),
+    customerPurchase: (id: string, signal?: AbortSignal) => get<CustomerPurchase>('/api/me/purchases/' + encodeURIComponent(id), signal),
+    createPurchase: (input: CheckoutInput, expectedUserId: string) => authenticatedWrite<CustomerPurchase>(
+      '/api/checkout/purchases', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(input) },
+      'CHECKOUT_UNCERTAIN', expectedUserId,
+    ),
+    uploadPurchaseProof: (id: string, file: File, expectedUserId: string) => authenticatedWrite<CustomerPurchase>(
+      '/api/me/purchases/' + encodeURIComponent(id) + '/proof',
+      { method: 'POST', headers: { 'content-type': file.type }, body: file }, 'PROOF_UPLOAD_UNCERTAIN', expectedUserId,
+    ),
     reviewEligibility: (eventId: string, signal?: AbortSignal) => get<EventReviewEligibility>(
       '/api/events/' + encodeURIComponent(eventId) + '/reviews/eligibility', signal,
     ),

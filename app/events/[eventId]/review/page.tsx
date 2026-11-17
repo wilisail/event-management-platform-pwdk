@@ -281,11 +281,10 @@ export default function EventReviewPage({
                             Ulasan peserta
                         </p>
                         <h1 className="mt-2 text-3xl font-black sm:text-4xl">
-                            Bagikan Pengalamanmu
+                            {auth.user?.role === "ORGANIZER" ? "Ulasan peserta" : "Bagikan Pengalamanmu"}
                         </h1>
                         <p className="mt-3 max-w-xl text-sm leading-6 text-[#77738b]">
-                            Ceritakan pengalamanmu agar peserta lain tahu apa
-                            yang bisa mereka harapkan.
+                            {auth.user?.role === "ORGANIZER" ? "Lihat penilaian dan pengalaman yang dibagikan customer untuk event ini." : "Ceritakan pengalamanmu agar peserta lain tahu apa yang bisa mereka harapkan."}
                         </p>
                         {submitted ? (
                             <div className="mt-8 rounded-3xl border border-emerald-100 bg-emerald-50 p-7">
@@ -471,13 +470,13 @@ export default function EventReviewPage({
                                 className="mt-8 rounded-3xl border border-[#e6e1f2] bg-white p-7 shadow-sm"
                             >
                                 <h2 className="text-lg font-black">
-                                    Belum bisa memberikan ulasan
+                                    {auth.user?.role === "ORGANIZER" ? "Tampilan organizer" : "Belum bisa memberikan ulasan"}
                                 </h2>
                                 <p className="mt-2 text-sm leading-6 text-[#77738b]">
                                     {auth.status === "loading" ? "Memeriksa sesi akun…"
                                         : auth.status === "anonymous" ? "Masuk sebagai customer untuk memeriksa kelayakan ulasanmu."
                                         : auth.status === "error" ? auth.error
-                                        : !customerId ? "Gunakan akun customer yang membeli tiket event ini."
+                                        : !customerId ? "Ulasan ditulis oleh customer dengan tiket terkonfirmasi. Kamu dapat membaca ulasan peserta di bawah."
                                         : eligibilityError ? eligibilityError
                                         : !currentEligibility ? "Memeriksa pembelianmu…"
                                         : alreadyReviewed ? "Kamu sudah memberikan ulasan untuk event ini."

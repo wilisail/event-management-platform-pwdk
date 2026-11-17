@@ -2,6 +2,7 @@
 
 import { profileInitials } from "@/lib/profile-labels";
 import { SiteHeader } from "@/components/site-header";
+import { useAuth } from "@/feature-2/components/auth-provider";
 
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
@@ -57,6 +58,8 @@ export default function EventDetailsPage({
 }: {
     params: Promise<{ eventId: string }>;
 }) {
+    const auth = useAuth();
+    const organizerPreview = auth.user?.role === "ORGANIZER";
     const [saved, setSaved] = useState(false);
     const [shared, setShared] = useState(false);
     const [copied, setCopied] = useState(false);
@@ -390,7 +393,7 @@ export default function EventDetailsPage({
                                 menulis ulasan. Keterangan kehadiran bersifat opsional.
                             </p>
                             <Link href={`/events/${event.id}/review`} className="mt-4 inline-flex text-sm font-bold text-[#5148df] hover:underline">
-                                Lihat dan tulis ulasan
+                                {organizerPreview ? "Lihat ulasan peserta" : "Lihat dan tulis ulasan"}
                             </Link>
                         </section>
                     </div>
@@ -403,10 +406,7 @@ export default function EventDetailsPage({
                                 {formatPrice(event.price)}
                             </p>
                             <p className="mt-1 text-xs text-[#77738b]">
-                                per orang ·{" "}
-                                {event.price
-                                    ? "harga belum termasuk biaya layanan"
-                                    : "gratis"}
+                                per tiket · poin dan kupon diterapkan saat checkout
                             </p>
                             <div className="my-5 space-y-3 border-y border-[#f0edf7] py-5 text-xs text-[#69657c]">
                                 <p className="flex justify-between">
@@ -432,7 +432,10 @@ export default function EventDetailsPage({
                                     </strong>
                                 </p>
                             </div>
-                            {event.availableSeats ? (
+                            {auth.status === 'loading' ? <p role="status" className="text-sm">Memeriksa akun…</p> : organizerPreview ? <>
+                                <p className="mb-4 text-sm leading-6 text-[#69657c]">Kamu sedang melihat halaman publik sebagai organizer. Kelola peserta dan pembayaran melalui dashboard.</p>
+                                <Link href="/organizer" className="block w-full rounded-xl bg-[#5148df] px-4 py-3.5 text-center text-sm font-bold text-white">Dashboard organizer</Link>
+                            </> : event.availableSeats ? (
                                 <Link
                                     href={`/events/${event.id}/tickets`}
                                     className="block w-full rounded-xl bg-[#5148df] py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-indigo-200 transition hover:bg-[#4039c9]"
@@ -450,7 +453,7 @@ export default function EventDetailsPage({
                                 </button>
                             )}
                             <p className="mt-3 flex items-center justify-center gap-1 text-center text-[10px] text-[#9490a3]">
-                                <Clock3 size={12} /> Pembelian belum aktif pada preview ini
+                                <Clock3 size={12} /> {organizerPreview ? "Pratinjau publik · akun organizer" : "Pesanan dan status pembayaran tersimpan di akunmu"}
                             </p>
                         </div>
                     </aside>
