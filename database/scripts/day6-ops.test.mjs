@@ -80,7 +80,7 @@ test('cleanup is bounded, rolls back unexpected references, removes sessions, an
       [name, createHash('sha256').update(readFileSync(new URL(name + '/migration.sql', root))).digest('hex')])
     await db.query('INSERT INTO net._http_response VALUES(1,200,false,now(),$1)', [JSON.stringify({ success: true, passwordReset: true, decisionEmails: true, secret: 'DO_NOT_EXPOSE' })])
     const status = (await db.query(statusSql())).rows[0].ops_status
-    assert.equal(status.migrations.length, 9)
+    assert.equal(status.migrations.length, migrations.length)
     assert(status.migrations.every(row => row.current))
     assert.equal(status.tables.length, 4)
     assert(status.tables.every(row => row.rls))

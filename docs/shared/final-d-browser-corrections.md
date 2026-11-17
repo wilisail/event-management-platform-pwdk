@@ -1,6 +1,6 @@
 # D — browser acceptance and corrections
 
-Updated: **14 November 2026, Asia/Jakarta**. Responsibilities: **Wili — F2; Rizky — F1**.
+Updated: **15 November 2026, Asia/Jakarta**. Responsibilities: **Wili — F2; Rizky — F1**.
 
 D is **partially accepted**. Wili's screenshots demonstrate real hosted decisions and inbox delivery. They also exposed UI and QA-fixture defects. The original A–F scope is unchanged; this is correction work within D, followed by the remaining acceptance and learning walkthroughs.
 
@@ -49,7 +49,7 @@ The actual hosted browser confirmed the selected participant row and completed t
 ## Resume D after the corrected release
 
 1. Sign in as Organizer at the [combined dashboard](https://temuevent-combined-qa-andor2.vercel.app/organizer). Click **Lihat peserta** on **QA F2 - Persetujuan dan Kehadiran**, or open the DONE transaction and click **Lihat peserta event ini**. Expect the original Customer, one ticket and Rp45,000.
-2. Mark that Customer present once. Log out, then sign in as the original Customer and open the [event](https://temuevent-combined-qa-andor2.vercel.app/events/9d9339b2-adb3-4f23-b2ab-fc296391201d) to submit the post-event review.
+2. This attendance/review check was accepted on 15 November. Do not repeat the saved review. For later eligible purchases, the Customer can submit a review with the optional attendance checkbox checked or unchecked; Organizer check-in is not required.
 3. Later, complete the requested learning walkthrough from event creation through purchase/proof, payment decision, rewards and attendance/review. Amounts are rupiah (IDR), not dollars. F1 checkout/proof submission still needs its own functional acceptance.
 4. Complete step 7 together: sign out, revisit the restricted page, sign in with the other role, check permitted navigation and verify the evaluator's own authorized Preview access. The observed Customer 403 alone does not complete this test.
 5. Reset the referred Customer's password last, then inspect the restored coupon through its own account.
@@ -59,3 +59,25 @@ Event poster upload/Cloudinary is part of F1 event creation. F2 need not duplica
 New F1 checkpoint: `3ea06774a8461d649943fb95fc1f0c97af3f192e`, **14 November, 20:19 WIB**, “Adding Transaction Page Mockup”. This correction pass does not merge it or certify the new mockup as completed checkout.
 
 [Current A–F progress](final-prd-completion-progress.md) · [Original C/D guide](final-c-hosted-acceptance.md).
+
+## Owner acceptance checkpoint — 15 November
+
+Wili accepted the corrected control layout and readable private proof. Screenshots and read-only backend queries confirm:
+
+- Original Customer attendance was marked by **QA Organizer 1**, role **ORGANIZER**, at **15 November 2026, 13:06:08 WIB**. The Customer did not self-mark attendance.
+- **Xu Harga** submitted one persisted **four-star review** at **13:11:01 WIB**. The existing unique event/customer review record is present.
+- The manual purchase outcomes remain DONE / Rp45,000 and REJECTED / Rp25,000; both private proof objects exist. This pass changed no purchase, account, password or provider setting.
+- The referred Customer's Rp25,000 coupon is restored and currently available. Its own-account browser acceptance remains pending; the password lookup did not recover an earlier plaintext value and reset remains deferred.
+- The existing **30** DEMO-20261028 purchases remain: five in each of the six statuses. They belong to three legacy organizers (Jakarta Coffee Collective 14, Bandung Music Community 15, Jakarta Tech Community 1), all separate from the current QA Organizer. Those legacy organizer seed identities have no login password set. There are 35 purchases overall; the current Organizer owns three events and two purchases.
+- This QA attendance/review event has no poster URL or provider ID. **QA Round 4B - Poster Form** does have both. The deployed creation page contains the image upload control.
+- Remaining D owner checks: step 7 logout/role separation and evaluator access; referred-Customer own-account coupon UX. D is still partial.
+
+The payment decision confirms the manual payment proof. At this checkpoint the implementation used Organizer check-in for review eligibility. **Superseded by Wili's explicit 15 November UX decision:** check-in is optional operational information, and no longer gates reviews. A confirmed Customer can review with the self-reported attendance checkbox either checked or unchecked. A paid no-show retains DONE status.
+
+For later demo preparation, use more engaging event names and suitable posters while retaining clear test-data descriptions. Do not change the accepted test identities/references or reassign the old demo organizers' records merely to fill the current dashboard.
+
+## Optional attendance and demo cleanup — 15 November
+
+Wili requested an optional Customer attendance checkbox and a more coherent demo before resuming the remaining 1–7 checks. The current review rule is a signed-in Customer with a DONE purchase for a published event, one review per Customer/event. Organizer attendance is independent. New reviews store the checkbox as `reported_attendance`; existing reviews retain NULL (unknown), without inventing an answer for their authors.
+
+The source adds responsive browser checks for both checkbox states at 1280, 360 and 320 px, plus real isolated database/API checks for unchecked reviews without Organizer check-in, invalid boolean inputs, duplicate submissions, stale purchases, roles and CSRF. [Demo guide and cleanup scope](demo-ux-walkthrough.md).

@@ -1,5 +1,7 @@
 # Shared technical reference
 
+For present-day behavior and testing, use [current UX acceptance](current-ux-acceptance.md). This dated technical record contains earlier planned boundaries; it must not override later owner decisions or current release evidence. Organizer attendance no longer determines review eligibility.
+
 [Project record](consistency.en.md) · [UX reference](ux-reference.md)
 
 Updated: **1 November 2026**. Status: implemented foundations plus proposed behavior where marked; defaults remain open to changes following input. This record covers the database and backend boundaries connecting feature 1 and feature 2. Feature 1's internal implementation remains with Rizky; feature 2's remains with Wili.
@@ -97,7 +99,7 @@ Full demo payloads are in the [feature 2 contract](https://github.com/wilisail/e
 | `GET /api/organizers/:organizerId`, `/picture` — implemented on feature-2 | Real public organizer name/photo only; no account email/referral; rating slot remains unconnected | Event details can link to the profile; Feature 1 rating calculation and event-page wiring remain integration work. |
 | `POST /api/organizer/transactions/:transactionId/decision` | `{ "decision": "ACCEPT" }` or `"REJECT"`; returns updated transaction view | Calls the shared purchase transition service; no separate restoration implementation in the dashboard. |
 | `GET /api/organizer/events/:eventId/attendees` — implemented on feature-2 | Owned-event confirmed purchase rows: customer name/ID, purchase ID/reference, ticket quantity and total paid | DONE purchases only, including free confirmations. Other-owner/missing event returns 404; customer role returns 403. This is registration data, not actual attendance/check-in. |
-| `POST /api/organizer/events/:eventId/attendance` | Target `customerId` and qualifying `transactionId`; returns attendance record | Supplies backend review eligibility. Actor must own the event. |
+| `POST /api/organizer/events/:eventId/attendance` | Target `customerId` and qualifying `transactionId`; returns attendance record | Optional operational check-in, independent of review eligibility. Actor must own the event. |
 | `GET /api/organizer/statistics` | Date range and `groupBy=day|month|year`; owned-event aggregates | Requires consistent purchase totals/completion dates. Default revenue counts `DONE` final paid amounts at completion time; zero-price orders contribute zero revenue. |
 
 Feature 1 owns the routes for events, checkout, proof upload, transaction viewing and reviews. The shared need is a stable purchase/attendance/reward view; its internal route/controller organization stays with its builder. Route names above remain open to input before production wiring.

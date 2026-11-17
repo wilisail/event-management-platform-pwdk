@@ -19,6 +19,9 @@
 }
 .account-nav, .auth-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 .account-nav .compact { padding: 7px 12px; min-height: 36px; }
+.account-context { margin-block: 10px 0; color: var(--muted); font-size: 12px; }
+.role-badge { color: var(--primary); background: #f2edff; white-space: nowrap; }
+.role-badge.organizer-role { color: #1b654a; background: #e8f7f0; }
 .main.auth-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); gap: 36px; align-items: start; padding-top: 56px; min-height: calc(100vh - 140px); }
 .auth-story { background: var(--event-hero); border-radius: var(--card-radius); padding: 42px; min-height: 480px; overflow: hidden; }
 .auth-story h1 { max-width: 420px; }
@@ -485,6 +488,22 @@ h3 {
 .secondary {
   background: #fff;
   color: var(--primary);
+}
+.attendee-table .secondary {
+  min-width: 7.5rem;
+  max-width: none;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+.transaction-table td:first-child {
+  min-width: 12rem;
+  max-width: 22rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.transaction-table td:nth-child(2), .transaction-table td:nth-child(4) {
+  min-width: 8rem;
+  white-space: normal;
 }
 .referral-hero {
   border-radius: var(--card-radius);

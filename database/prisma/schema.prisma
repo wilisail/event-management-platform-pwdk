@@ -215,6 +215,7 @@ model Review {
   userId    String   @map("user_id") @db.Uuid
   rating    Int
   comment   String?
+  reportedAttendance Boolean? @map("reported_attendance")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Restrict)

@@ -25,3 +25,30 @@ export const events: Event[] = [
 ]
 
 export const formatPrice = (price: number | null) => price ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(price).replace('IDR', 'Rp') : 'Gratis'
+
+export type ApiTicketType = {
+  id: string
+  name: string
+  description: string
+  price: number
+  quota: number
+  availableSeats: number
+}
+
+export type ApiEvent = {
+  id: string
+  title: string
+  category: string
+  date: string
+  endDate: string
+  location: string
+  venue: string | null
+  address: string | null
+  description: string
+  image: string | null
+  price: number | null
+  availableSeats: number
+  organizerId: string
+  organizer: string
+  ticketTypes: ApiTicketType[]
+}
