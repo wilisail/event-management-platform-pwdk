@@ -2,6 +2,10 @@
 
 # TemuEvent — Event Management Platform
 
+- [Submission release 17 November](docs/shared/submission-release-2026-11-17.md) — accepted owner review, released source and video handoff.
+- [Current UX acceptance and remaining test steps](docs/shared/current-ux-acceptance.md) — current QA behavior, owner decisions and live versus mock dependencies. The UI snapshots below are dated historical previews.
+- [QA release verification](docs/shared/f2-temporary-qa-release-2026-11-15.md) · [Ordered evaluation and UX tour](docs/shared/f2-qa-evaluation-tour-2026-11-15.md) — temporary F2 saved purchase/proof journey, live on combined QA.
+- [16 November owner UX review](docs/shared/ux-owner-feedback-2026-11-16.md) — accepted screen journey, account/reward reconciliation and bounded UX refinements; full PRD assessment remains separate.
 - [Shared project record](docs/shared/README.md)
 - [TemuEvent UI reference](docs/ui/README.md) · [Social-preview image](docs/ui/temuevent-social-preview.png)
 - [Shared database/backend technical reference](docs/shared/technical-reference.md)

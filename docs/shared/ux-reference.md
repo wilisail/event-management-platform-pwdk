@@ -6,7 +6,7 @@
 
 [Project record](consistency.en.md) · [Technical reference](technical-reference.md) · [UI previews](../previews/README.md)
 
-Updated: **18 October 2026**. Status: working defaults supplied by Wili, open to changes following input. The bold options are the current defaults; the alternatives describe the resulting changes to feature 1 and feature 2. This reference records planned behavior; implementation status is in the project record.
+Planning baseline: **18 October 2026**; attendance policy updated **15 November 2026** by Wili. Use [current UX acceptance](current-ux-acceptance.md) for the implemented flow, dependencies and remaining owner tests. The matrices are a responsibility plan, not proof that every connection is live. Later explicit owner decisions supersede the earlier defaults.
 
 ## Journey and stack map
 
@@ -27,15 +27,15 @@ This is a planned responsibility map, not an implementation-completion checklist
 | **Backend — Express + TypeScript** | **Feature 1:** event search/filter/detail queries and current availability. Public discovery does not require a session. | **Feature 2:** account/session verification, role middleware, immutable referral code and referral issuance. **Feature 1:** uses verified identity for purchases. | **Feature 1:** recalculates totals, checks capacity, creates purchase/items and reserves seats/event voucher. **Feature 2 reward service:** reserves eligible coupon/point batches inside the same SQL transaction. A zero-payable registration goes directly to confirmed; see [choice 3](#3-free-events-and-a-final-payable-amount-of-zero). |
 | **Database — PostgreSQL through Prisma** | **Feature 1:** events and ticket types; organizer IDs link to feature 2 users. | **Feature 2:** users, sessions, referrals, point grants and platform coupons. Registration and referral awards commit together. | **Feature 1:** transactions/items, historical prices and actual deductions, capacity/voucher reservations. **Feature 2:** reward redemptions and point allocations linked to that transaction. |
 
-The two-hour payment-proof clock starts after authenticated purchase creation, not while browsing or signing in. A zero-payable registration skips the payment-proof and payment-review stages below and still needs attendance before reviewing.
+The two-hour payment-proof clock starts after authenticated purchase creation, not while browsing or signing in. A zero-payable registration skips the payment-proof and payment-review stages below. Review eligibility follows the current confirmed-purchase rule in choice 5; attendance is optional context.
 
 ### Customer journey: payment to review
 
 | Stack layer ↓ / UX journey → | 4. Upload proof and track payment | 5. Receive organizer decision | 6. Attend the event | 7. Review and view organizer ratings |
 | --- | --- | --- | --- | --- |
 | **Frontend — React + TypeScript** | **Feature 1:** payment instructions, protected proof upload, two-hour countdown, confirmation-stage deadline and transaction status. | **Feature 2:** organizer proof viewer and accept/reject confirmation. **Feature 1:** customer sees the resulting status. **Feature 2:** wallet reflects applicable reward changes. | **Feature 2:** organizer attendee list with name, ticket quantity, total paid and manual attendance action. | **Feature 1:** eligible review/rating form and review data. **Feature 2:** organizer profile displays the supplied ratings/reviews. |
-| **Backend — Express + TypeScript** | **Feature 1:** authorizes proof upload, stores its reference and advances the purchase to waiting for confirmation. Server timestamps drive both countdowns; see [choice 4](#4-three-day-organizer-decision-window). | **Feature 2:** verifies organizer ownership and calls the **feature 1 purchase-transition service**. The shared SQL operation confirms or rejects the purchase and consumes/restores applicable resources. **Feature 2:** records an email notification for delivery after commit. | **Feature 2:** reads confirmed purchases and records attendance through an organizer-authorized action. Confirmed registration alone does not mark attendance. | **Feature 1:** checks the feature 2 attendance record before accepting a review and calculates rating aggregates. See [choice 5](#5-attendance-before-reviewing). |
-| **Database — PostgreSQL through Prisma** | **Feature 1:** payment-proof metadata, purchase status, payment deadline and decision deadline. The private file is in file storage, outside SQL. | **Feature 1:** purchase state and capacity/event-voucher changes. **Feature 2:** coupon/point reservation state and email-outbox event. Related writes use one database transaction. | **Feature 1:** completed purchases/items supply the confirmed attendee list. **Feature 2:** attendance links customer, event and qualifying purchase. | **Feature 1:** review records link event/customer; aggregates feed the public organizer profile. **Feature 2:** supplies organizer identity/profile and attendance eligibility. |
+| **Backend — Express + TypeScript** | **Feature 1:** authorizes proof upload, stores its reference and advances the purchase to waiting for confirmation. Server timestamps drive both countdowns; see [choice 4](#4-three-day-organizer-decision-window). | **Feature 2:** verifies organizer ownership and calls the **feature 1 purchase-transition service**. The shared SQL operation confirms or rejects the purchase and consumes/restores applicable resources. **Feature 2:** records an email notification for delivery after commit. | **Feature 2:** reads confirmed purchases and records attendance through an organizer-authorized action. Confirmed registration alone does not mark attendance. | **Feature 1:** checks the confirmed purchase and unique Customer/event review, stores the optional self-report and calculates rating aggregates. Organizer check-in is not a review gate. See [choice 5](#5-attendance-before-reviewing). |
+| **Database — PostgreSQL through Prisma** | **Feature 1:** payment-proof metadata, purchase status, payment deadline and decision deadline. The private file is in file storage, outside SQL. | **Feature 1:** purchase state and capacity/event-voucher changes. **Feature 2:** coupon/point reservation state and email-outbox event. Related writes use one database transaction. | **Feature 1:** completed purchases/items supply the confirmed attendee list. **Feature 2:** attendance links customer, event and qualifying purchase. | **Feature 1:** review records link event/customer; aggregates feed the public organizer profile. **Feature 2:** supplies organizer identity/profile and the qualifying confirmed-purchase context. |
 
 ### Organizer and account journeys around the main path
 
@@ -58,7 +58,7 @@ These flows can happen before or alongside a purchase; they are not extra sequen
 | Available coupons/points and reserve/consume/restore helpers | Feature 2 reward service | Feature 1 purchase creation and lifecycle, within the caller's SQL transaction |
 | Owned events, purchases/items, proofs, totals, statuses and deadlines | Feature 1 event/purchase services | Feature 2 event management, decision queue, attendee queries, statistics and emails |
 | Accept/reject action | Feature 2 organizer endpoint calls feature 1 transition service | Feature 1 customer transaction status; feature 2 dashboard, rewards and notifications |
-| Attendance eligibility | Feature 2 attendance records | Feature 1 review authorization |
+| Optional attendance context | Feature 2 Organizer check-in and the Customer's separate optional review checkbox | Informational context; Organizer check-in does not authorize or block a review |
 | Reviews and rating aggregates | Feature 1 review service | Feature 2 public organizer profile |
 
 Database ownership follows these subfeatures. Wili's hosting, seed-data and migration coordination does not transfer feature 1's database queries or business logic to feature 2. Visual direction follows feature 1; each builder implements their own screens using that shared direction. Standalone demonstrations and the integrated application's authoritative dataset are described in the [technical reference](technical-reference.md#8-integration-migrations-and-checks).
@@ -131,24 +131,19 @@ The map follows the supplied PRD and the working defaults below. Website referen
 
 ## 5. Attendance before reviewing
 
-- **A — Default: the organizer finds the attendee by name/order and marks attendance in the attendee list. Feature 1 permits a review only after that attendance record exists.**
-- B — Alternative: the organizer verifies a ticket code or scans its QR/barcode to record attendance.
+**Superseded working default. Current owner decision, 15 November:** a Customer with a DONE purchase may submit one event review with **Saya menghadiri event ini** checked or unchecked. Organizer check-in is optional operational information and is not a prerequisite for reviews. Selecting or buying a ticket again is not part of the review form.
 
-**PRD source:** Feature 1 → Event Reviews and Ratings → Reviews permits customer reviews only after attending the event. Feature 2 → Event Management Dashboard → Attendee List requires the organizer attendee list. The PRD requires attendance-based eligibility but does not require a scanner.
+**Source boundary:** earlier notes attributed attendance-based eligibility to the assignment and chose manual Organizer check-in as its mechanism. A verbatim original assignment is not available in this repository to re-verify that attribution. Wili explicitly superseded that mechanism with optional self-report. Do not treat the earlier proposed button, a scanner, or the website examples as an additional current requirement.
 
-**Website basis:** [Eventbrite computer check-in][eb-checkin] supports finding a name/order and marking it checked in. [LOKET check-in][loket-checkin] supports manual name lookup and barcode scanning. Default A follows the documented manual check-in path.
+**Current UX:** **Ulasan & rating → Lihat dan tulis ulasan** opens the feedback form directly. The backend derives the Customer from the session, requires a qualifying DONE purchase and prevents duplicate reviews. It stores the optional answer independently of Organizer attendance; older reviews remain unknown rather than being backfilled. Organizer profiles still use the persisted rating aggregates.
 
-**Default UX:** feature 2 records which customer attended which event through an organizer-authorized action. Feature 1 checks that record on the backend before accepting a review. Confirmed payment/registration alone does not mark attendance. Organizer profiles display ratings supplied by the feature 1 review data.
-
-| Area | With default A | If changed to B |
-| --- | --- | --- |
-| Feature 1 | Review availability follows the shared attendance record; ticket display needs no scan code. | Ticket display must expose a verifiable code if scanning is chosen. The review UX can stay the same when the attendance response format is unchanged. |
-| Feature 2 | Attendee list has a manual attendance action. | Add code entry/scanning and duplicate-check-in feedback; write the same attendance record. |
+Historical product examples: [Eventbrite computer check-in][eb-checkin] and [LOKET check-in][loket-checkin] illustrate optional event operations; they do not prescribe this project's current review flow.
 
 ## Change record
 
 | Date | Record |
 | --- | --- |
+| 2026-11-15 | Replaced manual-attendance review gating with Wili's optional self-report decision; linked current acceptance and preserved the earlier section anchor for references. |
 | 2026-10-18 | Options A recorded as working defaults, open to changes following input. PRD requirements and inferred behavior are identified above. |
 | 2026-10-18 | Added journey/stack matrices, organizer/account flows and cross-feature data/operation ownership; linked the technical reference. |
 | 2026-10-18 | Added a colour-coded journey/stack flow diagram at the top, with full-size PNG and editable SVG assets. Existing UX defaults are unchanged. |

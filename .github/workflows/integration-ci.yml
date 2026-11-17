@@ -1,0 +1,77 @@
+name: Integration CI
+
+on:
+  push:
+    branches: [integration]
+    paths: ['app/**', 'components/**', 'lib/**', 'server/**', 'pages/**', 'tests/**', 'scripts/**', 'prisma/**', 'feature-2/**', 'database/**', 'package*.json', 'next.config.mjs', 'tsconfig.json', '.github/workflows/integration-ci.yml']
+  pull_request:
+    paths: ['app/**', 'components/**', 'lib/**', 'server/**', 'pages/**', 'tests/**', 'scripts/**', 'prisma/**', 'feature-2/**', 'database/**', 'package*.json', 'next.config.mjs', 'tsconfig.json', '.github/workflows/integration-ci.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      TEMUEVENT_HOSTED_API: 'true'
+      F2_HOSTED_API: 'true'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            feature-2/package-lock.json
+            database/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
+        working-directory: feature-2
+      - run: npm ci --no-audit --no-fund
+        working-directory: database
+      - run: npm run typecheck
+      - run: npm run typecheck
+        working-directory: feature-2
+      - run: npm run test:integration
+      - run: npm test
+        working-directory: feature-2
+      - run: node --import tsx scripts/verify-day4-isolated.mjs
+        working-directory: database
+      - run: node --test scripts/day6-ops.test.mjs
+        working-directory: database
+      - run: node --import tsx scripts/verify-day7-integration.mjs
+        working-directory: database
+      - run: npm run qa:round5
+        working-directory: database
+      - run: npm run qa:round6
+        working-directory: database
+      - run: npm run qa:final-b
+        working-directory: database
+      - run: npm run qa:temporary-checkout
+        working-directory: database
+      - run: node --check scripts/verify-round7-hosted.mjs
+        working-directory: database
+      - run: npm run build
+      - name: Verify combined account and Organizer interactions
+        run: |
+          npm --prefix feature-2 exec -- playwright install chromium --only-shell --with-deps
+          npm run start:web > /tmp/temuevent-combined-web.log 2>&1 &
+          QA_ORIGIN=http://127.0.0.1:3000 npm --prefix feature-2 run qa:layout
+          QA_ORIGIN=http://127.0.0.1:3000 node scripts/verify-f1-submission.mjs
+          QA_ORIGIN=http://127.0.0.1:3000 node scripts/verify-review-ux.mjs
+          (cd database && node --import tsx scripts/verify-temporary-checkout.mjs --serve > /tmp/temuevent-temporary-api.log 2>&1) &
+          QA_ORIGIN=http://127.0.0.1:3000 node scripts/verify-temporary-checkout.mjs
+      - name: Retain isolated checkout screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: temporary-f2-checkout-screens
+          path: /tmp/temuevent-temporary-*.png
+          if-no-files-found: ignore
+          retention-days: 3

@@ -25,6 +25,7 @@ import type { Mailer } from './email/resend'
 import { prismaOrganizerProofReader, type PaymentProofStorage } from './organizer/private-proof'
 import { supabasePaymentProofStorage } from './organizer/proof-storage'
 import { prismaPurchaseTransitions } from './organizer/purchase-transitions'
+import { prismaTemporaryCheckout } from './temporary-checkout/service'
 
 const allowedOrigins = (
   process.env.F2_ALLOWED_ORIGINS || 'http://localhost:3000,http://localhost:3001'
@@ -61,6 +62,9 @@ export async function createRuntime(options: {
   const proofStorage = options.paymentProofStorage ?? configuredProofStorage?.storage
   const deadlineStartAt = env.F2_PURCHASE_DEADLINE_START_AT ? new Date(env.F2_PURCHASE_DEADLINE_START_AT) : undefined
   const purchaseTransitions = client ? prismaPurchaseTransitions(client, { deadlineStartAt }) : undefined
+  const bank = env.F2_CHECKOUT_BANK_NAME, accountNumber = env.F2_CHECKOUT_ACCOUNT_NUMBER, accountName = env.F2_CHECKOUT_ACCOUNT_NAME
+  const checkoutService = client && proofStorage?.write && proofStorage.remove
+    ? prismaTemporaryCheckout(client, proofStorage, bank && accountNumber && accountName ? { bank, accountNumber, accountName } : null) : undefined
   const profileService = client ? createProfileService({
     repository: prismaProfileRepository(client, work => client.$transaction(work, { timeout: 10000 })),
     normalize: normalizePicture, storage: pictureStorage?.storage,
@@ -83,6 +87,7 @@ export async function createRuntime(options: {
     }) : undefined,
     organizerRepository: client ? prismaOrganizerReadRepository(client) : undefined,
     organizerDecisionTransition: purchaseTransitions?.decide,
+    checkoutService,
     organizerProofReader: client && proofStorage ? prismaOrganizerProofReader(client, proofStorage) : undefined,
     rewardRepository: client ? prismaRewardReadRepository(client, work => client.$transaction(work,
       { isolationLevel: 'RepeatableRead', timeout: 10000 })) : undefined,

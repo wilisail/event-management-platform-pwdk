@@ -1,0 +1,206 @@
+{
+  "checkedAt": "2026-11-15T11:46:37.569Z",
+  "qaUrl": "https://temuevent-combined-qa-andor2.vercel.app",
+  "sourceCommit": "d300edd2136d313719cc657dc236f78c1400f2e5",
+  "deploymentId": "dpl_AXfoXCbFeQYXu2HsUWcWgAaTMU1W",
+  "deploymentState": "READY",
+  "canonicalAliasConfirmed": true,
+  "health": {
+    "status": 200,
+    "service": "feature-2-api",
+    "readOnly": false,
+    "registrationConfigured": true,
+    "sessionsConfigured": true,
+    "privateProofsConfigured": true,
+    "organizerDecisionsConfigured": true,
+    "checkoutConfigured": true,
+    "purchaseDeadlinesConfigured": true
+  },
+  "readiness": {
+    "status": 200,
+    "ready": true
+  },
+  "ordersPageStatus": 200,
+  "ci": {
+    "feature2": {
+      "run": 43697723880,
+      "result": "success"
+    },
+    "integration": {
+      "run": 43697723895,
+      "result": "success"
+    },
+    "browserWidths": [
+      1280,
+      360,
+      320
+    ]
+  },
+  "hostedVerification": {
+    "fixtureTag": "d18b2afb",
+    "normalApiSetupPassed": true,
+    "scheduledWorkerPassed": true,
+    "reviews": [
+      {
+        "rating": 4,
+        "reportedAttendance": false
+      },
+      {
+        "rating": 5,
+        "reportedAttendance": true
+      }
+    ],
+    "tickets": [
+      {
+        "price": 50000,
+        "quota": 6,
+        "availableSeats": 5
+      },
+      {
+        "price": 10000,
+        "quota": 3,
+        "availableSeats": 2
+      }
+    ],
+    "purchases": [
+      {
+        "id": "0b717d77-d43e-45a9-9957-ae89123e81e1",
+        "status": "DONE",
+        "hasProof": false,
+        "pointsUsed": 0,
+        "totalPrice": 0,
+        "rewardState": "CONSUMED",
+        "couponDiscount": 10000
+      },
+      {
+        "id": "50b506a1-2787-4859-9063-bb672442f254",
+        "status": "DONE",
+        "hasProof": true,
+        "pointsUsed": 5000,
+        "totalPrice": 45000,
+        "rewardState": "CONSUMED",
+        "couponDiscount": 0
+      },
+      {
+        "id": "5f5e7d19-07eb-4908-b516-2533cbb84e4f",
+        "status": "CANCELED",
+        "hasProof": true,
+        "pointsUsed": 0,
+        "totalPrice": 25000,
+        "rewardState": "RESTORED",
+        "couponDiscount": 25000
+      },
+      {
+        "id": "95a67690-4467-4d18-802f-4ffe9ce6017a",
+        "status": "REJECTED",
+        "hasProof": true,
+        "pointsUsed": 0,
+        "totalPrice": 25000,
+        "rewardState": "RESTORED",
+        "couponDiscount": 25000
+      },
+      {
+        "id": "f3b8f9a9-f4ea-40a2-bf71-e0d1b0ce5142",
+        "status": "EXPIRED",
+        "hasProof": false,
+        "pointsUsed": 1000,
+        "totalPrice": 49000,
+        "rewardState": "RESTORED",
+        "couponDiscount": 0
+      }
+    ],
+    "notifications": [
+      {
+        "state": "ACCEPTED",
+        "decision": "ACCEPT",
+        "acceptedAt": "2026-11-15T11:30:04.674+00:00"
+      },
+      {
+        "state": "ACCEPTED",
+        "decision": "REJECT",
+        "acceptedAt": "2026-11-15T11:32:05.05+00:00"
+      }
+    ],
+    "attendanceRows": 0,
+    "remainingProofObjects": 0
+  },
+  "cleanup": {
+    "temporaryAccountsRemoved": 4,
+    "temporaryEventsRemoved": 1,
+    "temporaryPurchasesRemoved": 5,
+    "temporaryReviewsRemoved": 2,
+    "privateProofsPhysicallyRemoved": 3,
+    "cleanupHelperRetired": true,
+    "retiredHelperStatus": 410,
+    "temporaryShareEntriesRemaining": 0,
+    "originalDataMatchesBaseline": true,
+    "baselineTables": [
+      {
+        "table_name": "users",
+        "row_count": 12,
+        "fingerprint": "dac2f3b904d524626ceb81b388e4526d"
+      },
+      {
+        "table_name": "events",
+        "row_count": 17,
+        "fingerprint": "96d13825fe855d43802ad1f87c9a5c7d"
+      },
+      {
+        "table_name": "ticket_types",
+        "row_count": 24,
+        "fingerprint": "0d9e8ae80c0cb82d3e3397d5d3271586"
+      },
+      {
+        "table_name": "purchases",
+        "row_count": 35,
+        "fingerprint": "d597bf3efac1f836e2290b488f9d8f7f"
+      },
+      {
+        "table_name": "purchase_items",
+        "row_count": 35,
+        "fingerprint": "3abe1d712ca114e00f2cffc0a19ed158"
+      },
+      {
+        "table_name": "point_grants",
+        "row_count": 1,
+        "fingerprint": "8f4ecd3348ece460db7bdaf91705d739"
+      },
+      {
+        "table_name": "reward_coupons",
+        "row_count": 1,
+        "fingerprint": "b1c44ca77f61128294b095429c8bee2e"
+      },
+      {
+        "table_name": "reward_redemptions",
+        "row_count": 2,
+        "fingerprint": "cf51a3f95bb46d7efd13357ed935d3a7"
+      },
+      {
+        "table_name": "point_allocations",
+        "row_count": 1,
+        "fingerprint": "ee5790208588c43aaca93b625f2bf865"
+      },
+      {
+        "table_name": "reviews",
+        "row_count": 3,
+        "fingerprint": "2ee45214cbc9495f319fb876eb1802ba"
+      },
+      {
+        "table_name": "attendance",
+        "row_count": 1,
+        "fingerprint": "b5f938cb29b9a476e53eb863e760c1f7"
+      }
+    ]
+  },
+  "rollbackDeploymentId": "dpl_4XaF9xYxbgHdSkVbN3qTQniuwjKb",
+  "runtimeErrorsOrFatalsInLast30Minutes": 0,
+  "ownerBrowserAcceptance": false,
+  "decisionEmailProviderAccepted": 2,
+  "inboxReceiptConfirmed": false,
+  "remaining": [
+    "Owner screen evaluation, event image reload and final role/logout tour",
+    "Existing referred-account coupon inspection after password recovery (last)",
+    "Evaluator Preview access with evaluator's own authorized identity",
+    "Event-specific vouchers and event edit/delete/draft acceptance are separate dependencies"
+  ]
+}
